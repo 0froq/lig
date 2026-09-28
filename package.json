@@ -1,0 +1,44 @@
+{
+  "name": "paper-landing",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.15.0",
+  "description": "A quiet product site template: paper, one pen line and a handwritten sentence.",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --cache --fix",
+    "typecheck": "nuxt typecheck",
+    "postinstall": "nuxt prepare",
+    "prepare": "npx simple-git-hooks"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "catalog:prod",
+    "@fontsource-variable/geist-mono": "catalog:prod",
+    "@fontsource/instrument-serif": "catalog:prod",
+    "@nuxt/content": "catalog:prod",
+    "@nuxtjs/i18n": "catalog:prod",
+    "nuxt": "catalog:prod",
+    "vue": "catalog:prod"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:dev",
+    "@nuxt/eslint": "catalog:dev",
+    "eslint": "catalog:dev",
+    "eslint-plugin-format": "catalog:dev",
+    "lint-staged": "catalog:dev",
+    "simple-git-hooks": "catalog:dev",
+    "typescript": "catalog:dev",
+    "vue-tsc": "catalog:dev"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}

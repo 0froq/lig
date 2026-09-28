@@ -1,0 +1,53 @@
+{
+  "site": {
+    "title": "",
+    "skip": "Skip to content",
+    "footer": ""
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "nav": {
+    "docs": "Docs",
+    "notes": "Notes",
+    "changelog": "Changelog",
+    "sections": "On this page"
+  },
+  "install": {
+    "label": "",
+    "done": "",
+    "back": "return",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "notes": {
+    "label": "Notes",
+    "title": "",
+    "lede": "",
+    "count": "{n} notes",
+    "read": "Read",
+    "minutes": "{n} min read",
+    "back": "All notes",
+    "next": "Next note",
+    "end": ""
+  },
+  "changelog": {
+    "label": "Changelog",
+    "title": "",
+    "lede": "",
+    "count": "{n} releases",
+    "latest": "latest",
+    "end": ""
+  },
+  "docs": {
+    "label": "Docs",
+    "prev": "Previous",
+    "next": "Next"
+  },
+  "notFound": {
+    "title": "",
+    "lede": "",
+    "back": "Back to home"
+  }
+}
