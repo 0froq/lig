@@ -76,22 +76,30 @@ const accentBases = computed(() =>
         {{ t('palette.hero.lede') }}
       </p>
       <PaletteVariantTabs v-model:variant="variant" />
-      <div
-        class="lig-accent-bar"
-        aria-hidden="true"
-      >
-        <span
-          v-for="sw in accentBases"
-          :key="sw.name"
-          :style="{ background: sw.hex }"
-        />
-      </div>
     </div>
   </section>
 
   <section
-    id="swatches"
+    id="syntax"
     class="l-section"
+  >
+    <p
+      class="l-label"
+      data-anchor="label"
+    >
+      {{ t('palette.sections.syntax') }}
+    </p>
+    <div class="l-body">
+      <h2 class="l-title">
+        {{ t('palette.sections.syntaxTitle') }}
+      </h2>
+      <PaletteSyntax :variant="variant" />
+    </div>
+  </section>
+
+  <section
+    id="palette"
+    class="l-section lig-section-quiet"
   >
     <p
       class="l-label"
@@ -100,9 +108,12 @@ const accentBases = computed(() =>
       {{ t('palette.sections.swatches') }}
     </p>
     <div class="l-body">
-      <h2 class="l-title">
+      <h2 class="lig-quiet-title">
         {{ t('palette.sections.swatchesTitle') }}
       </h2>
+      <p class="lig-aside">
+        {{ t('palette.paletteNote') }}
+      </p>
       <div
         class="lig-copy-bar"
         role="group"
@@ -119,11 +130,7 @@ const accentBases = computed(() =>
           {{ labelFor(item) }}
         </button>
       </div>
-
-      <p class="lig-group">
-        {{ t('palette.groups.neutrals') }}
-      </p>
-      <div class="lig-ramp">
+      <div class="lig-ramp lig-ramp-thin">
         <PaletteSwatch
           v-for="sw in neutrals"
           :key="sw.name"
@@ -132,72 +139,46 @@ const accentBases = computed(() =>
           :variant="variant"
         />
       </div>
-
-      <p class="lig-group">
-        {{ t('palette.groups.accents') }}
-      </p>
-      <div
-        v-for="family in families"
-        :key="family.name"
-        class="lig-family"
-      >
-        <h3>{{ family.name }}</h3>
-        <div class="lig-triad">
-          <PaletteSwatch
-            v-for="step in family.steps"
-            :key="step.swatch.name"
-            :name="step.swatch.name"
-            :hex="step.swatch.hex"
-            :caption="step.caption"
-            :variant="variant"
-          />
-        </div>
+      <div class="lig-bases">
+        <PaletteSwatch
+          v-for="sw in accentBases"
+          :key="sw.name"
+          :name="sw.name"
+          :hex="sw.hex"
+          :caption="sw.name.replace('_base', '')"
+          :variant="variant"
+        />
       </div>
-    </div>
-  </section>
-
-  <section
-    id="semantic"
-    class="l-section"
-  >
-    <p
-      class="l-label"
-      data-anchor="label"
-    >
-      {{ t('palette.sections.semantic') }}
-    </p>
-    <div class="l-body">
-      <h2 class="l-title">
-        {{ t('palette.sections.semanticTitle') }}
-      </h2>
-      <PaletteSemanticTable
-        :variant="variant"
-        :rows="semantics"
-      />
-    </div>
-  </section>
-
-  <section
-    id="previews"
-    class="l-section"
-  >
-    <p
-      class="l-label"
-      data-anchor="label"
-    >
-      {{ t('palette.sections.previews') }}
-    </p>
-    <div class="l-body">
-      <h2 class="l-title">
-        {{ t('palette.sections.previewsTitle') }}
-      </h2>
-      <PalettePreviews :variant="variant" />
+      <details class="lig-more">
+        <summary>{{ t('palette.more') }}</summary>
+        <div
+          v-for="family in families"
+          :key="family.name"
+          class="lig-family"
+        >
+          <h3>{{ family.name }}</h3>
+          <div class="lig-triad">
+            <PaletteSwatch
+              v-for="step in family.steps"
+              :key="step.swatch.name"
+              :name="step.swatch.name"
+              :hex="step.swatch.hex"
+              :caption="step.caption"
+              :variant="variant"
+            />
+          </div>
+        </div>
+        <PaletteSemanticTable
+          :variant="variant"
+          :rows="semantics"
+        />
+      </details>
     </div>
   </section>
 
   <section
     id="downloads"
-    class="l-section"
+    class="l-section lig-section-quiet"
   >
     <p
       class="l-label"
@@ -206,7 +187,7 @@ const accentBases = computed(() =>
       {{ t('palette.sections.downloads') }}
     </p>
     <div class="l-body">
-      <h2 class="l-title">
+      <h2 class="lig-quiet-title">
         {{ t('palette.sections.downloadsTitle') }}
       </h2>
       <PaletteDownloads />

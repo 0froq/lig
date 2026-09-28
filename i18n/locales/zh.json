@@ -1,8 +1,8 @@
 {
   "site": {
-    "title": "LiG 色板",
+    "title": "LiG",
     "skip": "跳到正文",
-    "footer": "froQ · LiG 配色 · v0 审阅"
+    "footer": "Less is Great."
   },
   "theme": {
     "dark": "深色",
@@ -13,19 +13,18 @@
     "notes": "笔记",
     "changelog": "更新日志",
     "sections": "本页",
-    "swatches": "色块",
-    "semantic": "语义",
-    "previews": "预览",
+    "syntax": "语法",
+    "palette": "色板",
     "downloads": "移植"
   },
   "palette": {
     "meta": {
       "title": "色板",
-      "description": "LiG 基础色、语义角色与实时预览（froQ 主题）。"
+      "description": "Less is Great。LiG 用少量颜色做语法高亮。"
     },
     "hero": {
-      "tagline": "quiet colors, loud syntax.",
-      "lede": "色板站初版：颜色来自 lig.nvim 与 vscode-theme-LiG，四种变体，色块点击复制。"
+      "tagline": "Less is Great.",
+      "lede": "语法高亮只用少量颜色。其余色板不进代码。"
     },
     "variantLabel": "LiG 变体",
     "variantHint": "页面外壳仍是 paper；下方预览使用所选 LiG 变体。",
@@ -38,8 +37,10 @@
     "sections": {
       "variants": "变体",
       "variantsTitle": "变体切换",
-      "swatches": "基础",
-      "swatchesTitle": "基础色板",
+      "syntax": "语法",
+      "syntaxTitle": "六种。",
+      "swatches": "色源",
+      "swatchesTitle": "色板",
       "semantic": "语义",
       "semanticTitle": "语义角色",
       "previews": "预览",
@@ -66,6 +67,21 @@
       "vscodeNote": "VS Code 移植；基础色来自 scripts/colors.ts。",
       "tokens": "本仓库生成的 token 文件"
     },
+    "syntax": {
+      "lede": "正文、弱化、类型、常量、函数、特殊。高亮就这些。",
+      "aside": "黄、青和其他强调色留给诊断和界面，不拿来涂语法。",
+      "comment": "less is great",
+      "ink": {
+        "text": "正文",
+        "quiet": "弱化",
+        "type": "类型",
+        "value": "常量",
+        "call": "函数",
+        "special": "特殊"
+      }
+    },
+    "paletteNote": "完整色源。要 hex 时再看，读代码用不到。",
+    "more": "三联色与界面角色",
     "copyAs": "复制为",
     "groups": {
       "neutrals": "中性色",

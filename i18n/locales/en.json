@@ -1,8 +1,8 @@
 {
   "site": {
-    "title": "LiG palette",
+    "title": "LiG",
     "skip": "Skip to content",
-    "footer": "froQ · LiG color theme · v0 review"
+    "footer": "Less is Great."
   },
   "theme": {
     "dark": "Dark",
@@ -13,19 +13,18 @@
     "notes": "Notes",
     "changelog": "Changelog",
     "sections": "On this page",
-    "swatches": "Swatches",
-    "semantic": "Roles",
-    "previews": "Previews",
+    "syntax": "Syntax",
+    "palette": "Palette",
     "downloads": "Ports"
   },
   "palette": {
     "meta": {
       "title": "Palette",
-      "description": "LiG base colors, semantic roles, and live previews for froQ's theme."
+      "description": "Less is Great. LiG highlights code with a few colors."
     },
     "hero": {
-      "tagline": "quiet colors, loud syntax.",
-      "lede": "First-pass palette site: tokens from lig.nvim and vscode-theme-LiG, four variants, click-to-copy swatches."
+      "tagline": "Less is Great.",
+      "lede": "Syntax highlighting uses a few colors. The rest of the palette stays out of the code."
     },
     "variantLabel": "LiG flavor",
     "variantHint": "Site chrome stays paper; previews below use the selected LiG variant.",
@@ -38,8 +37,10 @@
     "sections": {
       "variants": "Flavor",
       "variantsTitle": "Variant",
-      "swatches": "Base",
-      "swatchesTitle": "Base palette",
+      "syntax": "Syntax",
+      "syntaxTitle": "Six.",
+      "swatches": "Source",
+      "swatchesTitle": "Palette",
       "semantic": "Roles",
       "semanticTitle": "Semantic roles",
       "previews": "Live",
@@ -66,6 +67,21 @@
       "vscodeNote": "VS Code port; base accents/neutrals from scripts/colors.ts.",
       "tokens": "Generated token files in this repo"
     },
+    "syntax": {
+      "lede": "Text, quiet, type, value, call, special. That is the highlighter.",
+      "aside": "Yellow, cyan, and the other accents are for diagnostics and the UI. They do not paint syntax.",
+      "comment": "less is great",
+      "ink": {
+        "text": "Text",
+        "quiet": "Quiet",
+        "type": "Type",
+        "value": "Value",
+        "call": "Call",
+        "special": "Special"
+      }
+    },
+    "paletteNote": "The full source palette. Open it for a hex. Reading code does not need it.",
+    "more": "Triads and UI roles",
     "copyAs": "Copy as",
     "groups": {
       "neutrals": "Neutrals",

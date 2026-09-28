@@ -1,3 +1,117 @@
+.lig-hero {
+  min-height: 0;
+  align-content: start;
+  padding-top: clamp(72px, 8vh, 96px);
+}
+
+.lig-hero .l-word {
+  font-size: clamp(72px, 14vw, 168px);
+}
+
+.lig-hero + .l-section {
+  padding-top: clamp(40px, 6vh, 72px);
+}
+
+.lig-section-quiet {
+  padding-top: clamp(64px, 8vh, 96px);
+}
+
+.lig-quiet-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.lig-syntax-lede {
+  max-width: 34rem;
+  margin: 28px 0 0;
+  font-size: 18px;
+}
+
+.lig-aside {
+  max-width: 40rem;
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.lig-inks {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.lig-ink {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.lig-ink-fill {
+  display: block;
+  height: 64px;
+  background: var(--swatch);
+}
+
+.lig-ink-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.lig-ink-value {
+  font-family: var(--font-meta);
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.lig-ink:hover .lig-ink-name,
+.lig-ink.is-copied .lig-ink-name {
+  color: var(--accent);
+}
+
+.lig-stage-syntax {
+  grid-template-columns: 1.45fr 0.55fr;
+}
+
+.lig-bases {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.lig-ramp-thin .lig-chip-fill,
+.lig-bases .lig-chip-fill {
+  height: 28px;
+}
+
+.lig-more {
+  margin-top: 28px;
+}
+
+.lig-more summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-family: var(--font-meta);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .lig-variant-tabs {
   grid-column: 1 / -1;
   display: flex;
@@ -259,6 +373,14 @@
   color: var(--pv-muted);
 }
 
+.lig-code .num {
+  color: var(--pv-number);
+}
+
+.lig-code .sp {
+  color: var(--pv-special);
+}
+
 .lig-terminal {
   font-family: var(--font-meta);
   font-size: 13px;
@@ -354,9 +476,17 @@
   .lig-family,
   .lig-roles,
   .lig-stage,
+  .lig-stage-syntax,
   .lig-ports,
-  .lig-files {
+  .lig-files,
+  .lig-inks,
+  .lig-bases {
     grid-template-columns: 1fr;
+  }
+
+  .lig-inks,
+  .lig-bases {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .lig-editor {

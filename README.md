@@ -1,6 +1,6 @@
 # LiG palette
 
-froQ 的 LiG 配色主题色板站（初版审阅）。基于 paper-landing 模板：纸面、墨线、手写字体；色块与预览展示 LiG 真实颜色。
+froQ 的 LiG：**Less is Great**，用少量颜色做语法高亮。页面先讲这六种语法色，完整色板收在后面。基于 paper-landing：纸面、墨线、手写字体。
 
 ```bash
 pnpm i
