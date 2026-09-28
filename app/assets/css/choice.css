@@ -95,31 +95,11 @@
 
 .lig-stop-mark {
   position: absolute;
-  top: 12px;
-  left: 3px;
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: 3px;
   background: var(--accent);
   pointer-events: none;
-}
-
-.lig-stop-mark.is-ready {
-  transition: translate 0.7s var(--ease);
-}
-
-.lig-stop-mark.is-moving {
-  animation: lig-stop-lift 0.7s var(--ease);
-}
-
-@keyframes lig-stop-lift {
-  40% {
-    scale: 1.8 0.55;
-  }
-
-  75% {
-    scale: 0.85 1.15;
-  }
 }
 
 /* Sentence: the four variants are two axes, said as a line with words that flip. */
@@ -381,13 +361,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lig-stop-mark.is-ready,
   .lig-flip > span,
   .lig-matrix-dot {
     transition: none;
   }
 
-  .lig-stop-mark.is-moving,
   .lig-circle-ring.is-drawn path,
   .lig-wild-cursor {
     animation: none;
