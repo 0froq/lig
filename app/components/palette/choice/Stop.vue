@@ -4,6 +4,7 @@ import { radioKey, VARIANT_OPTIONS } from '~/utils/lig-variant'
 
 const variant = defineModel<LigVariant>('variant', { required: true })
 const { t } = useI18n()
+const labelId = useId()
 
 const ids = VARIANT_OPTIONS.map(option => option.id)
 const words: HTMLElement[] = []
@@ -44,31 +45,37 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    class="lig-stop"
-    role="radiogroup"
-    :aria-label="t('palette.variantLabel')"
-  >
-    <button
-      v-for="(option, index) in VARIANT_OPTIONS"
-      :key="option.id"
-      :ref="el => { if (el) words[index] = el as HTMLElement }"
-      type="button"
-      role="radio"
-      class="lig-stop-word"
-      :class="{ 'is-active': variant === option.id }"
-      :aria-checked="variant === option.id"
-      :tabindex="variant === option.id ? 0 : -1"
-      @click="choose(option.id)"
-      @keydown="radioKey($event, ids, variant, choose)"
-    >
-      {{ t(option.label) }}
-    </button>
+  <div class="lig-stop">
     <span
-      class="lig-stop-mark"
-      :class="{ 'is-ready': mark.ready, 'is-moving': mark.moving }"
-      :style="{ translate: `${mark.x}px ${mark.y}px` }"
-      aria-hidden="true"
-    >.</span>
+      :id="labelId"
+      class="lig-stop-label"
+    >{{ t('palette.choice.label') }}</span>
+    <div
+      class="lig-stop-options"
+      role="radiogroup"
+      :aria-labelledby="labelId"
+    >
+      <button
+        v-for="(option, index) in VARIANT_OPTIONS"
+        :key="option.id"
+        :ref="el => { if (el) words[index] = el as HTMLElement }"
+        type="button"
+        role="radio"
+        class="lig-stop-word"
+        :class="{ 'is-active': variant === option.id }"
+        :aria-checked="variant === option.id"
+        :tabindex="variant === option.id ? 0 : -1"
+        @click="choose(option.id)"
+        @keydown="radioKey($event, ids, variant, choose)"
+      >
+        {{ t(option.label) }}
+      </button>
+      <span
+        class="lig-stop-mark"
+        :class="{ 'is-ready': mark.ready, 'is-moving': mark.moving }"
+        :style="{ translate: `${mark.x}px ${mark.y}px` }"
+        aria-hidden="true"
+      />
+    </div>
   </div>
 </template>
