@@ -101,8 +101,9 @@
 .lig-choice {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 28px;
-  margin: 28px 0 14px;
+  gap: 10px 40px;
+  align-items: flex-end;
+  margin: 28px 0 16px;
 }
 
 .lig-choice + .lig-stage {
@@ -110,64 +111,82 @@
 }
 
 .lig-choice-item {
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-  padding: 4px 0;
+  position: relative;
+  display: grid;
+  align-items: end;
+  justify-items: start;
+  min-height: 34px;
+  padding: 0;
   border: 0;
   background: none;
   color: var(--muted);
   cursor: pointer;
+  font: inherit;
+}
+
+.lig-choice-set,
+.lig-choice-hand {
+  grid-area: 1 / 1;
+}
+
+.lig-choice-set {
   font-family: var(--font-meta);
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  transition: opacity 0.45s var(--ease);
 }
 
-.lig-choice-mark {
-  position: relative;
-  flex: none;
-  width: 13px;
-  height: 13px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
+.lig-choice-hand {
+  align-self: end;
+  overflow: visible;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease);
 }
 
-.lig-choice-mark::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  background: currentColor;
-  transform: scale(0);
-  transition: transform 0.35s var(--ease);
+.lig-choice-hand path {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 2400;
+  stroke-dashoffset: 2400;
+  transition: stroke-dashoffset 0.9s var(--ease);
 }
 
-.lig-choice-item:hover,
-.lig-choice-item:focus-visible {
-  color: var(--fg);
+.lig-choice-item:hover .lig-choice-set,
+.lig-choice-item:focus-visible .lig-choice-set {
+  opacity: 0.15;
 }
 
-.lig-choice-item:hover .lig-choice-mark::after {
-  transform: scale(0.45);
+.lig-choice-item.is-active .lig-choice-set {
+  opacity: 0;
 }
 
-.lig-choice-item.is-active,
-.lig-choice-item.is-active:hover {
-  color: var(--fg);
+.lig-choice-item:hover .lig-choice-hand,
+.lig-choice-item:focus-visible .lig-choice-hand,
+.lig-choice-item.is-active .lig-choice-hand {
+  opacity: 1;
 }
 
-.lig-choice-item.is-active .lig-choice-mark::after,
-.lig-choice-item.is-active:hover .lig-choice-mark::after {
-  transform: scale(1);
+.lig-choice-item:hover .lig-choice-hand path,
+.lig-choice-item:focus-visible .lig-choice-hand path,
+.lig-choice-item.is-active .lig-choice-hand path {
+  stroke-dashoffset: 0;
 }
 
 .lig-choice-item:focus-visible {
   outline: none;
 }
 
-.lig-choice-item:focus-visible .lig-choice-mark {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fg) 14%, transparent);
+@media (prefers-reduced-motion: reduce) {
+  .lig-choice-hand path {
+    transition: none;
+    stroke-dashoffset: 0;
+  }
 }
 
 .lig-accent-bar {
