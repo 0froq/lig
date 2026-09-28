@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { LigVariant } from '#palette/nvim-build'
 import { buildVariant } from '#palette/nvim-build'
+import { looseEllipse } from '~/kit/pen-geometry'
 
 const variant = defineModel<LigVariant>('variant', { required: true })
 const { t } = useI18n()
@@ -12,22 +13,27 @@ const tabs: { id: LigVariant, label: string }[] = [
   { id: 'dark-soft', label: 'palette.variants.darkSoft' },
 ]
 
-const faces = computed(() => {
-  const next = {} as Record<LigVariant, { bg: string, fg: string }>
-  for (const tab of tabs) {
-    const built = buildVariant(tab.id) as Record<string, unknown>
-    next[tab.id] = {
-      bg: typeof built.bg === 'string' ? built.bg : '#000',
-      fg: typeof built.fg === 'string' ? built.fg : '#fff',
-    }
+const ring = looseEllipse(50, 32, 47, 27)
+  .map((point, index) => `${index === 0 ? 'M' : 'L'}${point[0].toFixed(2)} ${point[1].toFixed(2)}`)
+  .join(' ')
+
+function face(id: LigVariant): Record<string, string> {
+  const built = buildVariant(id) as Record<string, unknown>
+  const pick = (key: string): string => typeof built[key] === 'string' ? built[key] : '#000'
+  return {
+    '--slip-bg': pick('bg'),
+    '--slip-fg': pick('fg'),
+    '--slip-muted': pick('fg_muted'),
+    '--slip-fn': pick('func'),
+    '--slip-str': pick('string'),
+    '--slip-num': pick('number'),
   }
-  return next
-})
+}
 </script>
 
 <template>
   <div
-    class="lig-variant-tabs"
+    class="lig-slips"
     role="tablist"
     :aria-label="t('palette.variantLabel')"
   >
@@ -36,17 +42,24 @@ const faces = computed(() => {
       :key="tab.id"
       type="button"
       role="tab"
-      class="lig-variant-tab"
+      class="lig-slip"
       :aria-selected="variant === tab.id"
       :class="{ 'is-active': variant === tab.id }"
+      :style="face(tab.id)"
       @click="variant = tab.id"
     >
-      <span
-        class="lig-variant-face"
-        :style="{ background: faces[tab.id].bg, color: faces[tab.id].fg }"
-        aria-hidden="true"
-      >a</span>
-      <span>{{ t(tab.label) }}</span>
+      <span class="lig-slip-page">
+        <svg
+          class="lig-slip-ring"
+          viewBox="-6 -8 112 80"
+          aria-hidden="true"
+        >
+          <path :d="ring" />
+        </svg>
+        <span class="lig-slip-code"><span class="fn">loadTheme</span>
+          <span class="muted">(</span><span class="str">"lig"</span><span class="muted">, </span><span class="num">6</span><span class="muted">)</span></span>
+      </span>
+      <span class="lig-slip-name">{{ t(tab.label) }}</span>
     </button>
   </div>
 </template>
