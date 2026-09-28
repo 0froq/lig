@@ -24,10 +24,6 @@ export default defineAppConfig({
     },
     signature: { paper: true, line: true, hand: true, bloom: true, pointer: { dwell: 'wash', click: 'wash', dwellAfter: 1.2 } },
     install: { href: '/#downloads' },
-    nav: [
-      { label: 'nav.syntax', to: '/#syntax' },
-      { label: 'nav.palette', to: '/#palette' },
-      { label: 'nav.downloads', to: '/#downloads' },
-    ],
+    nav: [],
   } satisfies ProductConfig,
 })

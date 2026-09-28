@@ -297,14 +297,18 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
   marks.forEach(m => seen.observe(m.el))
 
   // Resting the pointer lets colour bleed from the tip; a press drops a bead of colour
-  let tip: { x: number, y: number, still: number } | null = null
+  let tip: { x: number, y: number, still: number, paper: boolean } | null = null
   let dwellBloom: Bloom | null = null
+  const onPaper = (event: Event): boolean => {
+    const target = event.target
+    return !(target instanceof Element && target.closest('a, button, summary'))
+  }
   if (dwellAfter > 0) {
     window.addEventListener('pointermove', (event) => {
       const x = event.clientX
       const y = event.clientY
       if (!tip || Math.hypot(x - tip.x, y - tip.y) > 4) {
-        tip = { x, y, still: performance.now() }
+        tip = { x, y, still: performance.now(), paper: onPaper(event) }
         dwellBloom = null
       }
     }, { passive: true, signal })
@@ -312,10 +316,6 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
       tip = null
       dwellBloom = null
     }, { signal })
-  }
-  const onPaper = (event: Event): boolean => {
-    const target = event.target
-    return !(target instanceof Element && target.closest('a, button, summary'))
   }
   if (click) {
     window.addEventListener('pointerdown', (event) => {
@@ -326,7 +326,7 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
   }
 
   function dwell(now: number): void {
-    if (!tip || reduced || dwellAfter <= 0)
+    if (!tip || !tip.paper || reduced || dwellAfter <= 0)
       return
     const held = (now - tip.still) / 1000
     if (held < dwellAfter)

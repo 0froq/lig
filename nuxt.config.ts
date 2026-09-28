@@ -32,6 +32,7 @@ export default defineNuxtConfig({
     '@fontsource/instrument-serif/400-italic.css',
     '~/assets/css/kit.css',
     '~/assets/css/palette.css',
+    '~/assets/css/choice.css',
   ],
 
   app: {
@@ -72,7 +73,7 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       crawlLinks: true,
-      routes: ['/', '/zh'],
+      routes: ['/', '/zh', '/lab', '/zh/lab'],
     },
   },
 

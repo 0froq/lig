@@ -17,7 +17,9 @@ pnpm palette:generate   # 从 palette/src 重新生成 palette/generated/*
 | `palette/src/nvim-build.ts` | 变体推导（对齐 lig.nvim `lua/lig/colors/template.lua`） |
 | `palette/generated/` | 生成的 `tokens.json`、CSS 变量、SCSS、Tailwind JSON |
 | `app/components/palette/` | 色板页 UI |
-| `app/pages/index.vue`、`app/pages/zh/index.vue` | 首页（色板展示） |
+| `app/pages/index.vue` | 首页（Less is Great） |
+| `app/pages/lab.vue`（`/lab`） | 变体选择控件的五个方案，各自驱动同一段演示 |
+| `app/components/palette/choice/` | 五个方案：句号、句子、命令行、圈、矩阵 |
 
 笔记 / 文档 / changelog 等内容目录仍保留模板结构，首页已改为专用色板页。
 

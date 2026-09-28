@@ -92,6 +92,25 @@
       "rgb": "rgb",
       "hsl": "hsl",
       "css": "var"
+    },
+    "choice": {
+      "tone": "Tone",
+      "edge": "Edge",
+      "toneLight": "light",
+      "toneDark": "dark",
+      "edgeCrisp": "crisp",
+      "edgeSoft": "soft",
+      "sentence": { "lead": "Shown", "join": ", ", "tail": "", "mark": "." },
+      "lab": {
+        "kicker": "Lab",
+        "title": "Five ways to choose",
+        "lede": "Each control drives the same demo. One of them goes on the home page.",
+        "stop": { "name": "Stop", "note": "The site's full stop marks the choice and travels to it." },
+        "sentence": { "name": "Sentence", "note": "Four variants are two axes. Say them as a sentence and flip the words." },
+        "wildmenu": { "name": "Wildmenu", "note": "It is a Neovim theme. Choose it the way Neovim does, inside the editor." },
+        "circle": { "name": "Circle", "note": "The pen circles the choice, the way it circles a price." },
+        "matrix": { "name": "Matrix", "note": "Tone by edge. The grid shows where each variant sits." }
+      }
     }
   },
   "install": {

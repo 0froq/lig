@@ -92,6 +92,25 @@
       "rgb": "rgb",
       "hsl": "hsl",
       "css": "var"
+    },
+    "choice": {
+      "tone": "明暗",
+      "edge": "软硬",
+      "toneLight": "浅色",
+      "toneDark": "深色",
+      "edgeCrisp": "清晰",
+      "edgeSoft": "柔和",
+      "sentence": { "lead": "以", "join": "、", "tail": "呈现", "mark": "。" },
+      "lab": {
+        "kicker": "实验",
+        "title": "五种选法",
+        "lede": "每个控件都驱动同一段演示。挑一个放到首页。",
+        "stop": { "name": "句号", "note": "站点的句号标出选择，并走到它那里。" },
+        "sentence": { "name": "句子", "note": "四个变体其实是两根轴。写成一句话，点词来翻。" },
+        "wildmenu": { "name": "命令行", "note": "这是 Neovim 主题。就像在 Neovim 里一样，在编辑器里选。" },
+        "circle": { "name": "圈", "note": "笔圈住选中的那个，像它圈住价格一样。" },
+        "matrix": { "name": "矩阵", "note": "明暗乘软硬。格子说明每个变体在哪。" }
+      }
     }
   },
   "install": {
