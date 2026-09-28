@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LigVariant } from '#palette/nvim-build'
+import { buildVariant } from '#palette/nvim-build'
 
 const variant = defineModel<LigVariant>('variant', { required: true })
 const { t } = useI18n()
@@ -10,6 +11,18 @@ const tabs: { id: LigVariant, label: string }[] = [
   { id: 'light-soft', label: 'palette.variants.lightSoft' },
   { id: 'dark-soft', label: 'palette.variants.darkSoft' },
 ]
+
+const faces = computed(() => {
+  const next = {} as Record<LigVariant, { bg: string, fg: string }>
+  for (const tab of tabs) {
+    const built = buildVariant(tab.id) as Record<string, unknown>
+    next[tab.id] = {
+      bg: typeof built.bg === 'string' ? built.bg : '#000',
+      fg: typeof built.fg === 'string' ? built.fg : '#fff',
+    }
+  }
+  return next
+})
 </script>
 
 <template>
@@ -28,7 +41,12 @@ const tabs: { id: LigVariant, label: string }[] = [
       :class="{ 'is-active': variant === tab.id }"
       @click="variant = tab.id"
     >
-      {{ t(tab.label) }}
+      <span
+        class="lig-variant-face"
+        :style="{ background: faces[tab.id].bg, color: faces[tab.id].fg }"
+        aria-hidden="true"
+      >a</span>
+      <span>{{ t(tab.label) }}</span>
     </button>
   </div>
 </template>
