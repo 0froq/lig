@@ -1,8 +1,8 @@
 {
   "site": {
-    "title": "",
+    "title": "LiG 色板",
     "skip": "跳到正文",
-    "footer": ""
+    "footer": "froQ · LiG 配色 · v0 审阅"
   },
   "theme": {
     "dark": "深色",
@@ -12,7 +12,66 @@
     "docs": "文档",
     "notes": "笔记",
     "changelog": "更新日志",
-    "sections": "本页"
+    "sections": "本页",
+    "swatches": "色块",
+    "semantic": "语义",
+    "previews": "预览",
+    "downloads": "移植"
+  },
+  "palette": {
+    "meta": {
+      "title": "色板",
+      "description": "LiG 基础色、语义角色与实时预览（froQ 主题）。"
+    },
+    "hero": {
+      "tagline": "quiet colors, loud syntax.",
+      "lede": "色板站初版：颜色来自 lig.nvim 与 vscode-theme-LiG，四种变体，色块点击复制。"
+    },
+    "variantLabel": "LiG 变体",
+    "variantHint": "页面外壳仍是 paper；下方预览使用所选 LiG 变体。",
+    "variants": {
+      "light": "浅色",
+      "dark": "深色",
+      "lightSoft": "浅色柔和",
+      "darkSoft": "深色柔和"
+    },
+    "sections": {
+      "variants": "变体",
+      "variantsTitle": "变体切换",
+      "swatches": "基础",
+      "swatchesTitle": "基础色板",
+      "semantic": "语义",
+      "semanticTitle": "语义角色",
+      "previews": "预览",
+      "previewsTitle": "实时预览",
+      "downloads": "移植",
+      "downloadsTitle": "下载与移植"
+    },
+    "semantic": {
+      "role": "角色",
+      "ref": "源键名",
+      "hex": "Hex",
+      "rgb": "RGB"
+    },
+    "preview": {
+      "terminal": "终端",
+      "paper": "纸卡片",
+      "paperLede": "占位：迷你卡片上的 LiG 语义色。",
+      "paperCta": "占位按钮"
+    },
+    "downloads": {
+      "nvim": "lig.nvim（Neovim）",
+      "nvimNote": "Lua 主题源；色板推导与 lua/lig/colors/template.lua 一致。",
+      "vscode": "vscode-theme-LiG",
+      "vscodeNote": "VS Code 移植；基础色来自 scripts/colors.ts。",
+      "tokens": "本仓库生成的 token 文件"
+    },
+    "copy": {
+      "hex": "hex",
+      "rgb": "rgb",
+      "hsl": "hsl",
+      "css": "var"
+    }
   },
   "install": {
     "label": "",

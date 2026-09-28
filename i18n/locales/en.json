@@ -1,8 +1,8 @@
 {
   "site": {
-    "title": "",
+    "title": "LiG palette",
     "skip": "Skip to content",
-    "footer": ""
+    "footer": "froQ · LiG color theme · v0 review"
   },
   "theme": {
     "dark": "Dark",
@@ -12,7 +12,66 @@
     "docs": "Docs",
     "notes": "Notes",
     "changelog": "Changelog",
-    "sections": "On this page"
+    "sections": "On this page",
+    "swatches": "Swatches",
+    "semantic": "Roles",
+    "previews": "Previews",
+    "downloads": "Ports"
+  },
+  "palette": {
+    "meta": {
+      "title": "Palette",
+      "description": "LiG base colors, semantic roles, and live previews for froQ's theme."
+    },
+    "hero": {
+      "tagline": "quiet colors, loud syntax.",
+      "lede": "First-pass palette site: tokens from lig.nvim and vscode-theme-LiG, four variants, click-to-copy swatches."
+    },
+    "variantLabel": "LiG flavor",
+    "variantHint": "Site chrome stays paper; previews below use the selected LiG variant.",
+    "variants": {
+      "light": "Light",
+      "dark": "Dark",
+      "lightSoft": "Light soft",
+      "darkSoft": "Dark soft"
+    },
+    "sections": {
+      "variants": "Flavor",
+      "variantsTitle": "Variant",
+      "swatches": "Base",
+      "swatchesTitle": "Base palette",
+      "semantic": "Roles",
+      "semanticTitle": "Semantic roles",
+      "previews": "Live",
+      "previewsTitle": "Live previews",
+      "downloads": "Ports",
+      "downloadsTitle": "Downloads & ports"
+    },
+    "semantic": {
+      "role": "Role",
+      "ref": "Source key",
+      "hex": "Hex",
+      "rgb": "RGB"
+    },
+    "preview": {
+      "terminal": "Terminal",
+      "paper": "Paper card",
+      "paperLede": "占位：LiG semantic colors on a mini card.",
+      "paperCta": "占位 CTA"
+    },
+    "downloads": {
+      "nvim": "lig.nvim (Neovim)",
+      "nvimNote": "Canonical Lua theme; palette derivation matches lua/lig/colors/template.lua.",
+      "vscode": "vscode-theme-LiG",
+      "vscodeNote": "VS Code port; base accents/neutrals from scripts/colors.ts.",
+      "tokens": "Generated token files in this repo"
+    },
+    "copy": {
+      "hex": "hex",
+      "rgb": "rgb",
+      "hsl": "hsl",
+      "css": "var"
+    }
   },
   "install": {
     "label": "",

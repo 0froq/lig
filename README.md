@@ -1,134 +1,60 @@
-# paper-landing
+# LiG palette
 
-安静的产品站模板：纸面纹理、一笔画到底的墨线、一句手写的话，和一个强调色时刻。
-Nuxt 4 + Nuxt Content v3 + `@nuxtjs/i18n`，TypeScript。仓库里的文案是空的。空字符串会渲染成带字段名的方块，用来标出还没替换的位置。
+froQ 的 LiG 配色主题色板站（初版审阅）。基于 paper-landing 模板：纸面、墨线、手写字体；色块与预览展示 LiG 真实颜色。
 
 ```bash
-gh repo create my-product --template 0froq/paper-landing --private --clone
-cd my-product && pnpm i && pnpm dev
+pnpm i
+pnpm dev        # http://localhost:3000
+pnpm build
+pnpm palette:generate   # 从 palette/src 重新生成 palette/generated/*
 ```
 
-## 换成你的产品
+## 内容在哪
 
-1. `app/app.config.ts`：名字、强调色、签名效果开关、安装方式、导航。
-2. `i18n/locales/*.json`：界面文案（站点标题、导航、按钮、各列表页标题）。
-3. `content/<locale>/`：页面、笔记、更新日志、文档，全部是 Markdown。
+| 路径 | 说明 |
+| --- | --- |
+| `palette/src/source.ts` | 与上游一致的**基础色**（accents + neutrals） |
+| `palette/src/nvim-build.ts` | 变体推导（对齐 lig.nvim `lua/lig/colors/template.lua`） |
+| `palette/generated/` | 生成的 `tokens.json`、CSS 变量、SCSS、Tailwind JSON |
+| `app/components/palette/` | 色板页 UI |
+| `app/pages/index.vue`、`app/pages/zh/index.vue` | 首页（色板展示） |
 
-## 页面由内容决定
+笔记 / 文档 / changelog 等内容目录仍保留模板结构，首页已改为专用色板页。
 
-`content/<locale>/` 下的每个 `.md`（除了 `notes/`、`changelog/`、`docs/`）都是一个页面，路径即路由：
-`content/en/index.md` 是首页，`content/en/install.md` 是 `/install`，`content/zh/pricing.md` 是 `/zh/pricing`。
+## 颜色来源（勿臆造）
 
-页面由 MDC 区块拼成，**有几个、什么顺序、用哪种都随意**，也可以直接写 Markdown：
+基础色必须同时存在于两个公开仓库，本仓库 `palette/src/source.ts` 从下列文件抄写：
 
-```md
-::hero
----
-tagline: i shipped nothing.
-lede: One sentence about the product.
----
-::
+| 色 | lig.nvim | vscode-theme-LiG |
+| --- | --- | --- |
+| accents（red … azure） | `lua/lig/colors/source.lua` → `M.accents` | `scripts/colors.ts` → `createThemePalette({ accents })` |
+| neutrals `soft_*` | `lua/lig/colors/source.lua` → `M.neutrals` | `scripts/colors.ts` → `neutrals` |
+| `black` / `white` | `source.lua` 显式 `#000000` / `#ffffff` | `colors.ts` 未列出；`template.ts` 默认同色 |
 
-::block{id="specs" label="Specs" title="Four measurements. All zero."}
-  :::figures
-  ---
-  items:
-    - { value: '0', unit: ms, label: Latency, copy: Nothing waits. }
-  ---
-  :::
-::
+语义色与 syntax 角色由 `palette/src/nvim-build.ts` 按 nvim 的 `template.lua` 计算（与 vscode `scripts/template.ts` 同源算法）。
 
-::block{label="Why"}
-Plain markdown works inside any block.
-::
+## 两源差异 / 冲突
 
-::final{title="ship it."}
-::
-```
+**色值冲突（同一键、不同 hex）**：当前 accents 与 `soft_*` 在两仓库中一致，无冲突。
 
-| 区块        | 作用                                                         | 主要参数                                            |
-| ----------- | ------------------------------------------------------------ | --------------------------------------------------- |
-| `hero`      | 名字大字、手写句、首个 CTA；墨线从它的横线开始               | `tagline` `lede` `release` `cta`                    |
-| `block`     | 一个章节：左栏标签（墨线经过的地方）+ 正文，正文里放任何东西 | `id` `label` `title` `entry`                        |
-| `figures`   | 数字格（1–4 列自适应）                                       | `items: [{ value, unit, label, copy }]`             |
-| `statement` | 一句大字声明                                                 | `lines: []` 或直接写正文                            |
-| `quotes`    | 引语（1–3 列）                                               | `items: [{ quote, by }]`                            |
-| `price`     | 价格，墨线会圈住金额                                         | `price` `period` `lede` `facts: [{ label, value }]` |
-| `faq`       | 问答，`` `code` `` 可用                                      | `items: [{ q, a }]`                                 |
-| `step`      | 带复制按钮的命令步骤                                         | `label` `title` `code`，正文是说明                  |
-| `final`     | 收尾大字，墨线停在它的句号上                                 | `title` `lede` `cta` `end`                          |
+**结构差异（需知悉，非色值打架）**：
 
-需要新区块时，在 `app/components/content/` 加一个 Vue 组件即可在 Markdown 里用。
+- `black` / `white`：nvim `source.lua` 写在 `neutrals` 里；vscode `colors.ts` 的 `neutrals` 对象省略这两项，由 `createThemePalette` 默认 `#000000` / `#ffffff` 补齐。
 
-页面 frontmatter：`title`、`description`、`kicker`（页头小字）、`head: false`（不要页头，首页用 `::hero` 代替）、`line: false`（这页不画线）。
-
-带 `id` 的 `block` 出现在页头中间。滚过页头后，同一份章节固定在顶部，并标出当前这一段。`label` 有文字时用标签，空着就显示 `id`。
+若日后两仓库基础色分叉，请更新 `source.ts` 并在 README 此节列出冲突，不要静默选边。
 
 ## 占位
 
-字符串留空（`''`）时渲染成方块，方块上写着字段名，例如 `product.name`、`hero.tagline`、`figures.0.value`、`notes.title`。填上文字后方块消失。
-省略整个字段则不占位：区块不写 `title` 就没有标题，写成 `title: ''` 才出现方块。
-首页、安装页、笔记、更新日志和文档目前都是空的，打开就能看到还没替换的位置。
-方块上的字段名不会被手写，也不会被晕染。
-
-## 笔记、更新日志、文档
-
-- `content/<locale>/notes/*.md`：`title`、`description`（摘要）、`date`。
-- `content/<locale>/changelog/*.md`：`title`、`version`、`date`，正文写列表。首页 `hero` 会链接最新一条。
-- `content/<locale>/docs/**/*.md`：`title`、`description`。文件名前的数字（`1.installation.md`）决定目录顺序，不会出现在路径里；`0.index.md` 是 `/docs`。
-
-Markdown 里的站内链接要写上语言前缀，比如中文文档里写 `/zh/docs/installation`。
-
-## 签名效果
-
-`app.config.ts` 里的 `signature`：
-
-| 开关    | 效果                                                   |
-| ------- | ------------------------------------------------------ |
-| `paper` | WebGL 纸纤维与纸面颗粒                                 |
-| `line`    | 一笔画：页头横线 → 左栏标签 → 价格 → 最后的句号      |
-| `hand`    | 墨线手写 `hero` 的 `tagline`（手写字体只有拉丁字形） |
-| `bloom`   | 句号晕染。关掉后句号仍是字                           |
-| `pointer` | 背景对指针的响应。`dwell` / `click` 各为 `wash` 或 `false`。`dwellAfter` 是停多久才渗色，默认 `1.2` 秒 |
-
-墨线和晕染只认 DOM 上的锚点，不认内容类型：`data-anchor="rule | label | price | tagline | mark | final-mark"`。
-自定义组件带上这些锚点，就会被串进线里。
-
-## 安装
-
-`install.href` 为 `null` 时，「安装」会让整页消失，只留下纸和颜色，显示 `install.done`（空着就是方块）与返回链接。
-真实产品把它指向安装页（如 `/install`，已按语言前缀处理）或外部地址。
-
-## 皮肤
-
-样式收成一组角色变量，默认值就是现在这张页面。`app.config.ts` 的 `product.skin` 只写要改的项，缺省沿用 `app/assets/css/kit.css` 的 `:root`。
-
-| 键 | 作用 |
-| --- | --- |
-| `font.display` / `text` / `meta` | 展示、正文、标注三档字体 |
-| `scale.display` / `poster` / `title` / `section` | 字号和章节节奏的倍率，`1` 是当前页面 |
-| `gap` `section` | 栏距、章节间距 |
-| `margin` `body` | 左栏和正文各占几列，两者相加为 12 |
-
-颜色在 `product.theme.light` 和 `product.theme.dark`：`bg` `fg` `muted` `faint` `line` `accent`。签名效果只读这些颜色和 `data-anchor`。
-
-## 主题与语言
-
-深色是 `product.theme.dark`（纯净底色，纸颗粒在暗色着色器里关掉）。页脚切换并记在 `localStorage`，默认跟随系统。
-语言在 `nuxt.config.ts` 的 `i18n.locales` 里增删，同时在 `content/` 和 `i18n/locales/` 下加对应目录和文件。
+- 预览代码块与纸卡片上的部分文案标为「占位」
+- 站点未配置部署（仅本地）
 
 ## 命令
 
-推到 `main` 后，Cloudflare Pages（已连接 GitHub 仓库，不使用 API token secret）会执行 `pnpm generate` 并发布到 <https://paper-landing.pages.dev>。
-
 ```bash
-pnpm dev        # 开发
-pnpm generate   # 静态站点，输出到 .output/public
-pnpm build      # 带服务端的构建
 pnpm lint
 pnpm typecheck
 ```
 
 ## 许可
 
-手写字体来自 EMS Allure（Allura 的单线衍生版，Sheldon B. Michaels），SIL Open Font License 1.1，见 `app/kit/hand-font.ts` 文件头。
+手写字体见 `app/kit/hand-font.ts`（SIL OFL 1.1）。
