@@ -6,6 +6,7 @@ export type CopyFormat = 'hex' | 'rgb' | 'hsl' | 'css'
 
 export function usePaletteClipboard() {
   const { t } = useI18n()
+  const format = useState<CopyFormat>('lig-copy-format', () => 'hex')
   const copied = ref<string | null>(null)
   let timer: ReturnType<typeof setTimeout> | undefined
 
@@ -42,5 +43,5 @@ export function usePaletteClipboard() {
 
   onBeforeUnmount(() => clearTimeout(timer))
 
-  return { copied, copyValue, labelFor, textFor }
+  return { format, copied, copyValue, labelFor, textFor }
 }

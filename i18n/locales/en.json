@@ -66,6 +66,11 @@
       "vscodeNote": "VS Code port; base accents/neutrals from scripts/colors.ts.",
       "tokens": "Generated token files in this repo"
     },
+    "copyAs": "Copy as",
+    "groups": {
+      "neutrals": "Neutrals",
+      "accents": "Accents"
+    },
     "copy": {
       "hex": "hex",
       "rgb": "rgb",

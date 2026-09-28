@@ -13,36 +13,36 @@ const links = [
 ]
 
 const files = [
-  'palette/generated/tokens.json',
-  'palette/generated/tokens.css',
-  'palette/generated/tokens.scss',
-  'palette/generated/tailwind-colors.json',
+  'tokens.json',
+  'tokens.css',
+  'tokens.scss',
+  'tailwind-colors.json',
 ]
 </script>
 
 <template>
-  <ul class="lig-downloads">
-    <li
+  <div class="lig-ports">
+    <a
       v-for="item in links"
       :key="item.href"
+      class="lig-port"
+      :href="item.href"
+      target="_blank"
+      rel="noopener noreferrer"
     >
-      <a
-        :href="item.href"
-        target="_blank"
-        rel="noopener noreferrer"
-      >{{ $t(item.title) }}</a>
-      <span class="lig-download-note">{{ $t(item.note) }}</span>
-    </li>
-  </ul>
-  <p class="lig-download-files-title">
+      <span class="lig-port-title">{{ $t(item.title) }}</span>
+      <span class="lig-port-note">{{ $t(item.note) }}</span>
+    </a>
+  </div>
+  <p class="lig-group">
     {{ $t('palette.downloads.tokens') }}
   </p>
-  <ul class="lig-download-files">
+  <ul class="lig-files">
     <li
       v-for="file in files"
       :key="file"
     >
-      <code>{{ file }}</code>
+      <code>palette/generated/{{ file }}</code>
     </li>
   </ul>
 </template>

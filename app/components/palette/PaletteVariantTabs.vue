@@ -4,31 +4,31 @@ import type { LigVariant } from '#palette/nvim-build'
 const variant = defineModel<LigVariant>('variant', { required: true })
 const { t } = useI18n()
 
-const labels: Record<LigVariant, string> = {
-  'light': 'palette.variants.light',
-  'dark': 'palette.variants.dark',
-  'light-soft': 'palette.variants.lightSoft',
-  'dark-soft': 'palette.variants.darkSoft',
-}
+const tabs: { id: LigVariant, label: string }[] = [
+  { id: 'light', label: 'palette.variants.light' },
+  { id: 'dark', label: 'palette.variants.dark' },
+  { id: 'light-soft', label: 'palette.variants.lightSoft' },
+  { id: 'dark-soft', label: 'palette.variants.darkSoft' },
+]
 </script>
 
 <template>
   <div
     class="lig-variant-tabs"
     role="tablist"
-    :aria-label="$t('palette.variantLabel')"
+    :aria-label="t('palette.variantLabel')"
   >
     <button
-      v-for="(labelKey, id) in labels"
-      :key="id"
+      v-for="tab in tabs"
+      :key="tab.id"
       type="button"
       role="tab"
       class="lig-variant-tab"
-      :aria-selected="variant === id"
-      :class="{ 'is-active': variant === id }"
-      @click="variant = id as LigVariant"
+      :aria-selected="variant === tab.id"
+      :class="{ 'is-active': variant === tab.id }"
+      @click="variant = tab.id"
     >
-      {{ t(labelKey) }}
+      {{ t(tab.label) }}
     </button>
   </div>
 </template>

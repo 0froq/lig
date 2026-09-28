@@ -66,6 +66,11 @@
       "vscodeNote": "VS Code 移植；基础色来自 scripts/colors.ts。",
       "tokens": "本仓库生成的 token 文件"
     },
+    "copyAs": "复制为",
+    "groups": {
+      "neutrals": "中性色",
+      "accents": "强调色"
+    },
     "copy": {
       "hex": "hex",
       "rgb": "rgb",
