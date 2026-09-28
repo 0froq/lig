@@ -75,7 +75,6 @@ const accentBases = computed(() =>
       <p class="l-lede">
         {{ t('palette.hero.lede') }}
       </p>
-      <PaletteVariantTabs v-model:variant="variant" />
     </div>
   </section>
 
@@ -93,7 +92,7 @@ const accentBases = computed(() =>
       <h2 class="l-title">
         {{ t('palette.sections.syntaxTitle') }}
       </h2>
-      <PaletteSyntax :variant="variant" />
+      <PaletteSyntax v-model:variant="variant" />
     </div>
   </section>
 

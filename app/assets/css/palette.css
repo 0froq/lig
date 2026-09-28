@@ -99,11 +99,14 @@
 }
 
 .lig-variant-tabs {
-  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
   gap: 8px 22px;
-  margin: 22px 0 0;
+  margin: 28px 0 10px;
+}
+
+.lig-variant-tabs + .lig-stage {
+  margin-top: 0;
 }
 
 .lig-variant-tab {

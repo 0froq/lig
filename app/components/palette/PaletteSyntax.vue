@@ -2,12 +2,12 @@
 import type { LigVariant } from '#palette/nvim-build'
 import { buildVariant } from '#palette/nvim-build'
 
-const props = defineProps<{ variant: LigVariant }>()
+const variant = defineModel<LigVariant>('variant', { required: true })
 
 const { format, copied, copyValue, textFor } = usePaletteClipboard()
 const { t } = useI18n()
 
-const built = computed(() => buildVariant(props.variant))
+const built = computed(() => buildVariant(variant.value))
 
 function color(key: string): string {
   const value = (built.value as Record<string, unknown>)[key]
@@ -65,6 +65,7 @@ const stageStyle = computed(() => ({
   <p class="lig-aside">
     {{ t('palette.syntax.aside') }}
   </p>
+  <PaletteVariantTabs v-model:variant="variant" />
   <div
     class="lig-stage lig-stage-syntax"
     :style="stageStyle"
