@@ -5,6 +5,10 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  default:
+    jiti:
+      specifier: 2.7.0
+      version: 2.7.0
   dev:
     '@antfu/eslint-config':
       specifier: ^9.5.1
@@ -91,6 +95,9 @@ importers:
       eslint-plugin-format:
         specifier: catalog:dev
         version: 2.0.1(eslint@9.39.5(jiti@2.7.0))
+      jiti:
+        specifier: 'catalog:'
+        version: 2.7.0
       lint-staged:
         specifier: catalog:dev
         version: 16.4.0

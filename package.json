@@ -1,5 +1,5 @@
 {
-  "name": "paper-landing",
+  "name": "lig",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -13,6 +13,7 @@
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --cache --fix",
     "typecheck": "nuxt typecheck",
+    "palette:generate": "jiti palette/scripts/generate.ts",
     "postinstall": "nuxt prepare",
     "prepare": "npx simple-git-hooks"
   },
@@ -30,6 +31,7 @@
     "@nuxt/eslint": "catalog:dev",
     "eslint": "catalog:dev",
     "eslint-plugin-format": "catalog:dev",
+    "jiti": "catalog:",
     "lint-staged": "catalog:dev",
     "simple-git-hooks": "catalog:dev",
     "typescript": "catalog:dev",

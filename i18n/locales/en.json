@@ -1,8 +1,8 @@
 {
   "site": {
-    "title": "",
+    "title": "LiG",
     "skip": "Skip to content",
-    "footer": ""
+    "footer": "Less is Great."
   },
   "theme": {
     "dark": "Dark",
@@ -12,7 +12,127 @@
     "docs": "Docs",
     "notes": "Notes",
     "changelog": "Changelog",
-    "sections": "On this page"
+    "sections": "On this page",
+    "syntax": "Syntax",
+    "palette": "Palette",
+    "downloads": "Ports"
+  },
+  "palette": {
+    "meta": {
+      "title": "Palette",
+      "description": "Less is Great. LiG highlights code with a few colors."
+    },
+    "hero": {
+      "tagline": "Less is Great.",
+      "lede": "Syntax highlighting uses a few colors. The rest of the palette stays out of the code."
+    },
+    "variantLabel": "LiG flavor",
+    "variantHint": "Site chrome stays paper; previews below use the selected LiG variant.",
+    "variants": {
+      "light": "Light",
+      "dark": "Dark",
+      "lightSoft": "Light soft",
+      "darkSoft": "Dark soft"
+    },
+    "sections": {
+      "variants": "Flavor",
+      "variantsTitle": "Variant",
+      "syntax": "Syntax",
+      "syntaxTitle": "Six.",
+      "swatches": "Source",
+      "swatchesTitle": "Palette",
+      "semantic": "Roles",
+      "semanticTitle": "Semantic roles",
+      "previews": "Live",
+      "previewsTitle": "Live previews",
+      "downloads": "Ports",
+      "downloadsTitle": "Downloads & ports"
+    },
+    "semantic": {
+      "role": "Role",
+      "ref": "Source key",
+      "hex": "Hex",
+      "rgb": "RGB"
+    },
+    "preview": {
+      "terminal": "Terminal",
+      "paper": "Paper card",
+      "paperLede": "占位：LiG semantic colors on a mini card.",
+      "paperCta": "占位 CTA"
+    },
+    "downloads": {
+      "nvim": "lig.nvim (Neovim)",
+      "nvimNote": "Canonical Lua theme; palette derivation matches lua/lig/colors/template.lua.",
+      "vscode": "vscode-theme-LiG",
+      "vscodeNote": "VS Code port; base accents/neutrals from scripts/colors.ts.",
+      "tokens": "Generated token files in this repo"
+    },
+    "syntax": {
+      "lede": "Text, quiet, type, value, call, special. That is the highlighter.",
+      "aside": "Yellow, cyan, and the other accents are for diagnostics and the UI. They do not paint syntax.",
+      "comment": "less is great",
+      "ink": {
+        "text": "Text",
+        "quiet": "Quiet",
+        "type": "Type",
+        "value": "Value",
+        "call": "Call",
+        "special": "Special"
+      }
+    },
+    "paletteNote": "The full source palette. Open it for a hex. Reading code does not need it.",
+    "more": "Triads and UI roles",
+    "copyAs": "Copy as",
+    "groups": {
+      "neutrals": "Neutrals",
+      "accents": "Accents"
+    },
+    "copy": {
+      "hex": "hex",
+      "rgb": "rgb",
+      "hsl": "hsl",
+      "css": "var"
+    },
+    "choice": {
+      "label": "Variant",
+      "tone": "Tone",
+      "edge": "Edge",
+      "toneLight": "light",
+      "toneDark": "dark",
+      "edgeCrisp": "crisp",
+      "edgeSoft": "soft",
+      "sentence": {
+        "lead": "Shown",
+        "join": ", ",
+        "tail": "",
+        "mark": "."
+      },
+      "lab": {
+        "kicker": "Lab",
+        "title": "Five ways to choose",
+        "lede": "Each control drives the same demo. One of them goes on the home page.",
+        "stop": {
+          "name": "Stop",
+          "note": "The site's full stop marks the choice and travels to it."
+        },
+        "sentence": {
+          "name": "Sentence",
+          "note": "Four variants are two axes. Say them as a sentence and flip the words."
+        },
+        "wildmenu": {
+          "name": "Wildmenu",
+          "note": "It is a Neovim theme. Choose it the way Neovim does, inside the editor."
+        },
+        "circle": {
+          "name": "Circle",
+          "note": "The pen circles the choice, the way it circles a price."
+        },
+        "matrix": {
+          "name": "Matrix",
+          "note": "Tone by edge. The grid shows where each variant sits."
+        }
+      }
+    }
   },
   "install": {
     "label": "",

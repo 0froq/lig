@@ -1,8 +1,13 @@
+import { fileURLToPath } from 'node:url'
 import { keepEmptyTitle } from './shared/empty-title'
 import { markFinalStop } from './shared/final-mark'
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-09-19',
+
+  alias: {
+    '#palette': fileURLToPath(new URL('./palette/src', import.meta.url)),
+  },
 
   hooks: {
     // Notes and docs have no `::final`; the stop that ends the text blooms instead.
@@ -26,6 +31,8 @@ export default defineNuxtConfig({
     '@fontsource/instrument-serif/400.css',
     '@fontsource/instrument-serif/400-italic.css',
     '~/assets/css/kit.css',
+    '~/assets/css/palette.css',
+    '~/assets/css/choice.css',
   ],
 
   app: {
@@ -66,7 +73,7 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       crawlLinks: true,
-      routes: ['/', '/zh'],
+      routes: ['/', '/zh', '/lab', '/zh/lab'],
     },
   },
 
