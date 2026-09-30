@@ -22,7 +22,7 @@ export default defineAppConfig({
         accent: '#6aca9a',
       },
     },
-    signature: { paper: true, line: true, hand: true, bloom: true, pointer: { dwell: 'wash', click: 'wash', dwellAfter: 1.2 } },
+    signature: { paper: true, line: true, hand: true, bloom: true, pointer: { dwell: false, click: false, dwellAfter: 1.2 } },
     install: { href: '/#downloads' },
     nav: [],
   } satisfies ProductConfig,
