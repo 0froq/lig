@@ -140,11 +140,9 @@
 
 .lig-ramp {
   display: grid;
-  grid-auto-columns: minmax(68px, 1fr);
-  grid-auto-flow: column;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
   margin-top: 16px;
-  overflow-x: auto;
 }
 
 .lig-family {
@@ -190,7 +188,7 @@
 }
 
 .lig-ramp .lig-chip-fill {
-  height: 148px;
+  height: 32px;
 }
 
 .lig-chip-name {
@@ -445,9 +443,12 @@
     border-bottom: 1px solid color-mix(in srgb, var(--pv-fg) 14%, transparent);
   }
 
-  .lig-chip-fill,
-  .lig-ramp .lig-chip-fill {
+  .lig-chip-fill {
     height: 72px;
+  }
+
+  .lig-ramp .lig-chip-fill {
+    height: 32px;
   }
 
   .lig-triad {

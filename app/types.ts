@@ -1,5 +1,5 @@
 export interface Signature {
-  /** WebGL paper fibre and tooth behind every page. */
+  /** Flat sheet colour. Fibre and specks are the paper canvas on top. */
   paper: boolean
   /** One pen line threading the page head, the label column and the last full stop. */
   line: boolean
