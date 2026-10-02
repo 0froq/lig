@@ -13,9 +13,13 @@
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --cache --fix",
     "typecheck": "nuxt typecheck",
-    "palette:generate": "jiti palette/scripts/generate.ts",
+    "palette:generate": "pnpm tokens:generate",
     "postinstall": "nuxt prepare",
-    "prepare": "npx simple-git-hooks"
+    "prepare": "npx simple-git-hooks",
+    "tokens:generate": "jiti core/scripts/generate.ts",
+    "tokens:check": "jiti core/scripts/generate.ts --check",
+    "tokens:test": "jiti core/tests/tokens.test.ts",
+    "tokens:typecheck": "tsc --project core/tsconfig.json"
   },
   "dependencies": {
     "@fontsource-variable/geist": "catalog:prod",
@@ -29,6 +33,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "catalog:dev",
     "@nuxt/eslint": "catalog:dev",
+    "@types/node": "catalog:dev",
     "eslint": "catalog:dev",
     "eslint-plugin-format": "catalog:dev",
     "jiti": "catalog:",
