@@ -1,61 +1,53 @@
-# LiG palette
+# LiG
 
-froQ 的 LiG：**Less is Great**，用少量颜色做语法高亮。页面先讲这六种语法色，完整色板收在后面。基于 paper-landing：纸面、墨线、手写字体。
+froQ 的 LiG：**Less is Great**，用少量颜色做语法高亮。本仓库维护 canonical token spec 和展示网站。
+
+基础色、语义角色及四个变体的唯一事实源是 [`core/spec.json`](core/spec.json)。网站从 core 派生；后续 Neovim、VS Code、终端等 port 也从同一套 core 生成，用户可以下载生成产物。
+
+## 开发
 
 ```bash
-pnpm i
-pnpm dev        # http://localhost:3000
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm tokens:generate
+pnpm tokens:test
+pnpm tokens:typecheck
+pnpm tokens:check
+pnpm typecheck
+pnpm lint
 pnpm build
-pnpm palette:generate   # 从 palette/src 重新生成 palette/generated/*
 ```
 
-## 内容在哪
+`pnpm palette:generate` 保留为 `tokens:generate` 的命令别名。
+
+## 目录
 
 | 路径 | 说明 |
 | --- | --- |
-| `palette/src/source.ts` | 与上游一致的**基础色**（accents + neutrals） |
-| `palette/src/nvim-build.ts` | 变体推导（对齐 lig.nvim `lua/lig/colors/template.lua`） |
-| `palette/generated/` | 生成的 `tokens.json`、CSS 变量、SCSS、Tailwind JSON |
-| `app/components/palette/` | 色板页 UI |
-| `app/pages/index.vue` | 首页（Less is Great） |
-| `app/pages/lab.vue`（`/lab`） | 变体选择控件的五个方案，各自驱动同一段演示 |
-| `app/components/palette/choice/` | 五个方案：句号、句子、命令行、圈、矩阵 |
+| `core/spec.json` | 唯一手工维护的基础色、语义引用、混色公式和变体定义 |
+| `core/resolve.ts` | 无全局状态的纯 token 解析器 |
+| `core/generated/tokens.json` | 可供不同语言、不同 port 消费的确定性 JSON |
+| `core/README.md` | token 契约、命名、混色规则和变体决策 |
+| `core/tests/` | 非 UI 的契约与回归检查 |
+| `palette/src/` | 将 core 转为现有网站 palette API 的适配层 |
+| `palette/generated/` | 现有网站格式的 JSON、CSS、SCSS 和 Tailwind 色板 |
+| `app/components/palette/` | 色板与代码预览 UI |
+| `app/pages/index.vue` | 首页 |
+| `app/pages/lab.vue` | 变体选择控件实验页 |
 
-笔记 / 文档 / changelog 等内容目录仍保留模板结构，首页已改为专用色板页。
+生成产物均提交到仓库，不能手工编辑。`tokens:check` 检查它们是否与 spec 一致，且不会写文件。
 
-## 颜色来源（勿臆造）
+## 这一阶段的颜色决策
 
-基础色必须同时存在于两个公开仓库，本仓库 `palette/src/source.ts` 从下列文件抄写：
+原有八种 accent 和十三种 neutral 色值保留。四个变体的计算不再依赖调用顺序。`text.secondary` 与 `surface.status` 分开定义，避免把背景色用于次级文字；它在四种画布上的对比度都至少为 4.5:1。原有较弱的注释、字符串和 operator 色暂时保留为 `text.subtle`。
 
-| 色 | lig.nvim | vscode-theme-LiG |
-| --- | --- | --- |
-| accents（red … azure） | `lua/lig/colors/source.lua` → `M.accents` | `scripts/colors.ts` → `createThemePalette({ accents })` |
-| neutrals `soft_*` | `lua/lig/colors/source.lua` → `M.neutrals` | `scripts/colors.ts` → `neutrals` |
-| `black` / `white` | `source.lua` 显式 `#000000` / `#ffffff` | `colors.ts` 未列出；`template.ts` 默认同色 |
+soft 画布和 accent 派生端点现在有明确公式；与旧的、依赖全局状态的结果可能不同。详见 [core 契约](core/README.md)。初始基础色来自 `0froq/lig.nvim` 和 `0froq/vscode-theme-LiG`，之后这里是维护源，旧 port 是迁移输入。
 
-语义色与 syntax 角色由 `palette/src/nvim-build.ts` 按 nvim 的 `template.lua` 计算（与 vscode `scripts/template.ts` 同源算法）。
+当前只完成 core 与网站的数据接入。port 生成、发布流程、远端下载和本机主题安装留待后续。
 
-## 两源差异 / 冲突
+## 手动验收
 
-**色值冲突（同一键、不同 hex）**：当前 accents 与 `soft_*` 在两仓库中一致，无冲突。
-
-**结构差异（需知悉，非色值打架）**：
-
-- `black` / `white`：nvim `source.lua` 写在 `neutrals` 里；vscode `colors.ts` 的 `neutrals` 对象省略这两项，由 `createThemePalette` 默认 `#000000` / `#ffffff` 补齐。
-
-若日后两仓库基础色分叉，请更新 `source.ts` 并在 README 此节列出冲突，不要静默选边。
-
-## 占位
-
-- 预览代码块与纸卡片上的部分文案标为「占位」
-- 站点未配置部署（仅本地）
-
-## 命令
-
-```bash
-pnpm lint
-pnpm typecheck
-```
+没有运行 UI 测试或浏览器检查。数据层改动可能影响：反复切换四个变体时的色板与代码预览、soft 背景、accent 的 highlight/faded 色、色板复制的 HEX/RGB/HSL/CSS 值、语义表新增的次级文字色。这些行为需要手动验收。
 
 ## 许可
 
