@@ -19,7 +19,15 @@
     "tokens:generate": "jiti core/scripts/generate.ts",
     "tokens:check": "jiti core/scripts/generate.ts --check",
     "tokens:test": "jiti core/tests/tokens.test.ts",
-    "tokens:typecheck": "tsc --project core/tsconfig.json"
+    "tokens:typecheck": "tsc --project core/tsconfig.json",
+    "syntax:generate": "jiti syntax/scripts/generate.ts",
+    "syntax:check": "jiti syntax/scripts/generate.ts --check",
+    "syntax:test": "jiti syntax/tests/parser.test.ts",
+    "syntax:typecheck": "tsc --project syntax/tsconfig.json",
+    "ports:generate": "jiti ports/compile.ts",
+    "ports:check": "jiti ports/compile.ts --check",
+    "ports:typecheck": "tsc --project ports/tsconfig.json",
+    "ports:test": "jiti ports/contracts.test.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "catalog:prod",

@@ -1,7 +1,7 @@
 import type { LigVariant } from '../../core'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { spec } from '../../core'
+import { resolveVariant, spec } from '../../core'
 import { writeArtifact } from '../../core/scripts/artifact'
 import { formats } from '../src/convert'
 import { baseSwatches, buildVariant, cssVarName, semanticRoles, VARIANTS } from '../src/nvim-build'
@@ -38,6 +38,10 @@ function flattenResolved(style: typeof VARIANTS[number]): Record<string, string>
   // Swatch copy names must also exist in the generated CSS/SCSS exports.
   for (const swatch of baseSwatches(style))
     flat[swatch.name] = swatch.hex
+  for (const [name, hex] of Object.entries(resolveVariant(style).tokens)) {
+    if (name.startsWith('family.'))
+      flat[name] = hex
+  }
   return flat
 }
 

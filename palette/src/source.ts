@@ -1,7 +1,9 @@
 /** Website compatibility names; primitives are authored only in core/spec.json. */
-import definition from '../../core/spec.json'
+import type definition from '../../core/spec.json'
+import { resolvePalette } from '../../core'
 
-export const accents = definition.palette.accents
-export const neutrals = definition.palette.neutrals
-export type AccentName = keyof typeof accents
-export type NeutralName = keyof typeof neutrals
+const palette = resolvePalette()
+export const accents = palette.accents
+export const neutrals = palette.neutrals
+export type AccentName = keyof typeof definition.palette.accents
+export type NeutralName = keyof typeof definition.palette.neutrals
