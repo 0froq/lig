@@ -19,6 +19,8 @@ export const SYNTAX_CAPTURES: Record<string, string> = {
   'type': 'syntax.type',
   'type.definition': 'syntax.type.definition',
   'constructor': 'syntax.constructor',
+  // Lua's constructor capture paints table braces, not callable symbols.
+  'constructor.lua': 'syntax.punctuation',
   'constant': 'syntax.constant',
   'constant.builtin': 'syntax.constant.builtin',
   'constant.macro': 'syntax.constant.builtin',
@@ -40,6 +42,8 @@ export const SYNTAX_CAPTURES: Record<string, string> = {
   'operator': 'syntax.operator',
   'punctuation': 'syntax.punctuation',
   'punctuation.special': 'syntax.punctuation',
+  'punctuation.bracket': 'syntax.punctuation',
+  'punctuation.delimiter': 'syntax.punctuation',
   'string': 'syntax.string',
   'string.escape': 'syntax.special',
   'string.regexp': 'syntax.special',

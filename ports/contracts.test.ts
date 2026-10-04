@@ -6,12 +6,44 @@ import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from '../core/resolve'
 import { neovimGroups } from './neovim/emit'
+import { INTEGRATIONS } from './neovim/integrations'
+import coverage from './neovim/integrations/coverage.json'
 import { compileTheme, requireStyle, requireToken } from './styles'
 import { vscodeStyle, vscodeTheme } from './vscode/emit'
 
 const root = fileURLToPath(new URL('../dist/ports/', import.meta.url))
 
 describe('shared theme and native adapter contracts', () => {
+  it('retains every group from all sixteen implemented upstream integrations', () => {
+    assert.deepEqual(Object.keys(INTEGRATIONS).sort(), Object.keys(coverage.plugins).sort())
+    for (const [name, upstream] of Object.entries(coverage.plugins)) {
+      const migrated = INTEGRATIONS[name]!
+      assert.equal(migrated.plugin, upstream.plugin)
+      for (const group of upstream.groups)
+        assert.ok(migrated.groups[group], `${name}: missing upstream group ${group}`)
+    }
+    const groups = neovimGroups()
+    for (const [name, binding] of Object.entries(groups)) {
+      if (binding.link)
+        assert.ok(groups[binding.link], `${name}: unresolved link ${binding.link}`)
+    }
+    assert.deepEqual(groups.WhichKeyIconBlue, groups.WhichKeylconBlue)
+    assert.equal(groups.GitSignsChangeLn!.bg, 'surface.git.change.line')
+    assert.equal(groups.MiniCursorword!.bg, 'surface.cursorword')
+  })
+
+  it('preserves syntax intent when two styles share a color token', () => {
+    const groups = neovimGroups()
+    for (const name of ['@boolean', '@constant', '@label']) {
+      assert.equal(groups[name]!.role, 'constant')
+      assert.equal(requireStyle(groups[name]!.role!).underline, undefined)
+    }
+    assert.equal(groups['@markup.link']!.role, 'markup.link')
+    assert.equal(requireStyle('markup.link').underline, true)
+    assert.equal(groups['@none']!.role, 'text')
+    assert.equal(groups['@constructor.lua']!.role, 'punctuation')
+    assert.equal(groups['@constructor']!.role, 'constructor')
+  })
   it('keeps semantic declarations and non-color modifiers separate', () => {
     const groups = neovimGroups()
     assert.equal(groups['@variable']!.role, 'variable')

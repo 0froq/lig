@@ -17,10 +17,24 @@ export interface HighlightBinding {
   italic?: boolean
   underline?: boolean
   undercurl?: boolean
+  underdouble?: boolean
   strikethrough?: boolean
   reverse?: boolean
   link?: string
 }
+
+export interface PluginIntegration {
+  plugin: string
+  groups: Record<string, HighlightBinding>
+}
+
+export interface StatuslineSection {
+  fg: string
+  bg: string
+  gui?: string
+}
+
+export type StatuslinePalette = Record<string, Record<string, StatuslineSection>>
 
 export interface ScopeBinding {
   scope: string[]

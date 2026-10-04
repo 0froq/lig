@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { spec, VARIANTS } from '../core/resolve'
 import { COMPILER_VERSION, PACKAGE_VERSION, SOURCE_REF, VARIANT_LABELS } from './constants'
 import { neovimData } from './neovim/emit'
+import { INTEGRATIONS } from './neovim/integrations'
 import { portReadme } from './readme'
 import { lua } from './serialize'
 import { compileTheme } from './styles'
@@ -56,6 +57,15 @@ for (const path of files(join(root, 'ports/neovim/runtime')))
 artifacts['neovim/colors/lig-preview.lua'] = 'require("lig_preview").load()\n'
 for (const theme of themes)
   artifacts[`neovim/colors/lig-preview-${theme.variant}.lua`] = `require("lig_preview").load({ style = ${lua(theme.variant)} })\n`
+artifacts['neovim/lua/lualine/themes/lig-preview.lua'] = 'return require("lig_preview.statusline").lualine()\n'
+artifacts['neovim/lua/lightline/colorscheme/lig_preview.lua'] = 'return require("lig_preview.statusline").lightline()\n'
+artifacts['neovim/autoload/lightline/colorscheme/lig_preview.vim'] = 'let s:palette = v:lua.require("lightline.colorscheme.lig_preview")\nlet g:lightline#colorscheme#lig_preview#palette = lightline#colorscheme#fill(s:palette)\n'
+for (const theme of themes) {
+  artifacts[`neovim/lua/lualine/themes/lig-preview-${theme.variant}.lua`] = `return require("lig_preview.statusline").lualine(${lua(theme.variant)})\n`
+  const suffix = theme.variant.replaceAll('-', '_')
+  artifacts[`neovim/lua/lightline/colorscheme/lig_preview_${suffix}.lua`] = `return require("lig_preview.statusline").lightline(${lua(theme.variant)})\n`
+  artifacts[`neovim/autoload/lightline/colorscheme/lig_preview_${suffix}.vim`] = `let s:palette = v:lua.require("lightline.colorscheme.lig_preview_${suffix}")\nlet g:lightline#colorscheme#lig_preview_${suffix}#palette = lightline#colorscheme#fill(s:palette)\n`
+}
 artifacts['neovim/LICENSE'] = readFileSync(join(root, 'ports/licenses/Apache-2.0.txt'), 'utf8')
 artifacts['neovim/README.md'] = portReadme('neovim', metadata)
 
@@ -82,7 +92,7 @@ for (const port of ['neovim', 'vscode']) {
     port,
     packageVersion: PACKAGE_VERSION,
     files: Object.fromEntries(Object.entries(artifacts).filter(([path]) => path.startsWith(`${port}/`)).map(([path, content]) => [path.slice(port.length + 1), hash(content)])),
-    coverage: port === 'neovim' ? { thirdPartyIntegrations: false, runtime: 'native Lua', syntax: ['classic', 'Tree-sitter', 'LSP'] } : { syntax: ['TextMate', 'semantic tokens'], runtime: 'declarative JSON' },
+    coverage: port === 'neovim' ? { integrations: Object.fromEntries(Object.entries(INTEGRATIONS).map(([name, integration]) => [name, { plugin: integration.plugin, groupCount: Object.keys(integration.groups).length }])), statuslines: ['lualine', 'lightline'], runtime: 'native Lua', syntax: ['classic', 'Tree-sitter', 'LSP'] } : { syntax: ['TextMate', 'semantic tokens'], runtime: 'declarative JSON' },
   })
 }
 artifacts['manifest.json'] = json({ ...metadata, files: Object.fromEntries(Object.entries(artifacts).map(([path, content]) => [path, hash(content)])) })

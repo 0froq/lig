@@ -19,7 +19,9 @@ Generation needs TypeScript/jiti only. It does not need Nuxt preparation, a pars
 - `constants.ts` pins the preview package version and immutable source/distribution tags.
 - Both preview identities are independent from stable LiG installations.
 
-This is the first implementation slice. Neovim third-party integrations, mono profile and old `on_colors` compatibility are not included. The namespaced preview API uses `on_tokens` and `on_highlights`. The site still uses the compatible shared core; it has not yet been refactored to consume this compiler's style IR. `core/syntax.ts` remains a capture vocabulary bridge for the existing demo.
+Neovim includes every implemented plugin module from lig.nvim at `7bb6ca25705baedaae22996eca17c3a8a1745bb2`: sixteen integrations, shared completion kinds and namespaced lualine/lightline entrypoints. `neovim/integrations/coverage.json` records upstream source hashes and exact legacy group names. The TypeScript bindings are now the maintained adapter source; generation does not depend on the legacy checkout. Correct which-key Icon aliases supplement the upstream misspelled lcon names. Plugin selection supports legacy module/plugin identifiers, boolean or `{enabled=...}`, lazy detection and the mini.nvim umbrella.
+
+Mono profile and old `on_colors` compatibility are not included. The namespaced preview API uses `on_tokens` and `on_highlights`. The site still uses the compatible shared core; it has not yet been refactored to consume this compiler's style IR. `core/syntax.ts` remains a capture vocabulary bridge for the existing demo. Capture styles are explicit and never inferred from color equality; `@constructor.lua` maps table braces to neutral punctuation while other constructor captures retain the shared action intent.
 
 Syntax role decisions are shared, but grammar/LSP classifications can differ. Native rendering and manual appearance are not asserted by data checks. The four variants are separate installable identities; current dark/dark-soft values are identical.
 

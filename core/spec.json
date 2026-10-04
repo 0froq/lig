@@ -324,7 +324,134 @@
     "terminal.ansi.5": "accent.magenta.base",
     "terminal.ansi.13": "accent.magenta.highlight",
     "terminal.ansi.6": "accent.cyan.base",
-    "terminal.ansi.14": "accent.cyan.highlight"
+    "terminal.ansi.14": "accent.cyan.highlight",
+    "surface.git.add.line": {
+      "mix": [
+        "git.add",
+        "surface.canvas"
+      ],
+      "weight": 0.2
+    },
+    "surface.git.add.inline": {
+      "mix": [
+        "git.add",
+        "surface.canvas"
+      ],
+      "weight": 0.3
+    },
+    "surface.git.add.overlay": {
+      "mix": [
+        "git.add",
+        "surface.canvas"
+      ],
+      "weight": 0.5
+    },
+    "git.add.staged": {
+      "mix": [
+        "git.add",
+        "surface.canvas"
+      ],
+      "weight": 0.5
+    },
+    "surface.git.change.line": {
+      "mix": [
+        "git.change",
+        "surface.canvas"
+      ],
+      "weight": 0.2
+    },
+    "surface.git.change.inline": {
+      "mix": [
+        "git.change",
+        "surface.canvas"
+      ],
+      "weight": 0.3
+    },
+    "surface.git.change.overlay": {
+      "mix": [
+        "git.change",
+        "surface.canvas"
+      ],
+      "weight": 0.5
+    },
+    "git.change.staged": {
+      "mix": [
+        "git.change",
+        "surface.canvas"
+      ],
+      "weight": 0.5
+    },
+    "surface.git.delete.line": {
+      "mix": [
+        "git.delete",
+        "surface.canvas"
+      ],
+      "weight": 0.2
+    },
+    "surface.git.delete.inline": {
+      "mix": [
+        "git.delete",
+        "surface.canvas"
+      ],
+      "weight": 0.3
+    },
+    "surface.git.delete.overlay": {
+      "mix": [
+        "git.delete",
+        "surface.canvas"
+      ],
+      "weight": 0.5
+    },
+    "git.delete.staged": {
+      "mix": [
+        "git.delete",
+        "surface.canvas"
+      ],
+      "weight": 0.5
+    },
+    "git.ignore.visible": {
+      "mix": [
+        "git.ignore",
+        "surface.canvas"
+      ],
+      "weight": 0.8
+    },
+    "surface.git.ignore.line": {
+      "mix": [
+        "git.ignore",
+        "surface.canvas"
+      ],
+      "weight": 0.5
+    },
+    "surface.cursorword": {
+      "mix": [
+        "accent.primary",
+        "surface.canvas"
+      ],
+      "weight": 0.2
+    },
+    "surface.cursorword.current": {
+      "mix": [
+        "accent.primary",
+        "surface.canvas"
+      ],
+      "weight": 0.3
+    },
+    "surface.diff.context": {
+      "mix": [
+        "surface.selection",
+        "surface.canvas"
+      ],
+      "weight": 0.5
+    },
+    "surface.diff.context.buffer": {
+      "mix": [
+        "surface.selection",
+        "surface.canvas"
+      ],
+      "weight": 0.8
+    },
+    "mode.terminal": "accent.green.base"
   },
   "modes": {
     "light": {

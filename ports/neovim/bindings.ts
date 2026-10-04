@@ -88,15 +88,65 @@ export const BASE: Record<string, HighlightBinding> = {
   Italic: { italic: true },
 }
 
-const roleByToken = Object.fromEntries(Object.entries(STYLES)
-  .filter(([, style]) => style.foreground)
-  .map(([role, style]) => [style.foreground!, role]))
+// Capture semantics are explicit: sharing a color never implies sharing decorators.
+export const CAPTURE_ROLES: Record<string, string> = {
+  'none': 'text',
+  'variable': 'variable',
+  'variable.builtin': 'variable.builtin',
+  'variable.parameter': 'parameter.binding',
+  'variable.parameter.builtin': 'parameter.builtin',
+  'variable.member': 'property',
+  'property': 'property',
+  'module': 'module',
+  'module.builtin': 'module.definition',
+  'attribute': 'attribute',
+  'tag': 'tag',
+  'tag.builtin': 'tag.builtin',
+  'tag.attribute': 'property',
+  'tag.delimiter': 'punctuation',
+  'type': 'type.reference',
+  'type.definition': 'type.definition',
+  'constructor': 'constructor',
+  'constructor.lua': 'punctuation',
+  'constant': 'constant',
+  'constant.builtin': 'constant.builtin',
+  'constant.macro': 'constant.builtin',
+  'label': 'constant',
+  'number': 'number',
+  'boolean': 'constant',
+  'function': 'function.definition',
+  'function.call': 'function.call',
+  'function.method': 'method.definition',
+  'function.method.call': 'method.call',
+  'keyword': 'keyword',
+  'keyword.modifier': 'keyword.modifier',
+  'keyword.directive': 'keyword.directive',
+  'keyword.coroutine': 'keyword.action',
+  'keyword.return': 'keyword.action',
+  'keyword.exception': 'keyword.action',
+  'keyword.debug': 'keyword.action',
+  'keyword.operator': 'operator',
+  'operator': 'operator',
+  'punctuation': 'punctuation',
+  'punctuation.special': 'punctuation',
+  'punctuation.bracket': 'punctuation',
+  'punctuation.delimiter': 'punctuation',
+  'string': 'string',
+  'string.escape': 'escape',
+  'string.regexp': 'escape',
+  'character': 'string',
+  'character.special': 'escape',
+  'comment': 'comment',
+  'comment.error': 'comment.error',
+  'comment.warning': 'comment.warning',
+  'comment.todo': 'comment.todo',
+}
 
 export const CAPTURES: Record<string, HighlightBinding> = Object.fromEntries(
   Object.entries(SYNTAX_CAPTURES).map(([capture, token]) => {
-    const role = roleByToken[token]
-    if (!role)
-      throw new Error(`Capture has no shared style: ${capture} -> ${token}`)
+    const role = CAPTURE_ROLES[capture]
+    if (!role || STYLES[role]?.foreground !== token)
+      throw new Error(`Capture has no matching shared style: ${capture} -> ${token}`)
     return [`@${capture}`, { role }]
   }),
 )

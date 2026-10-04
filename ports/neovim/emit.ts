@@ -3,9 +3,12 @@ import { spec } from '../../core/resolve'
 import { DECLARATIONS, SEMANTIC_TYPES } from '../semantics'
 import { requireStyle, requireToken, STYLES } from '../styles'
 import { BASE, CAPTURES } from './bindings'
+import { INTEGRATIONS } from './integrations'
+import { KINDS } from './integrations/kinds'
+import { STATUSLINE } from './statusline'
 
-export function neovimGroups(): Record<string, HighlightBinding> {
-  const groups: Record<string, HighlightBinding> = { ...BASE, ...CAPTURES, '@lsp': {} }
+export function neovimGroups(includePlugins = true): Record<string, HighlightBinding> {
+  const groups: Record<string, HighlightBinding> = { ...BASE, ...CAPTURES, ...KINDS, '@lsp': {} }
   for (const [type, role] of Object.entries(SEMANTIC_TYPES))
     groups[`@lsp.type.${type}`] = { role }
   for (const [type, role] of Object.entries(DECLARATIONS)) {
@@ -29,12 +32,20 @@ export function neovimGroups(): Record<string, HighlightBinding> {
     groups[group] = { fg: token }
   for (const name of ['SpellBad', 'SpellCap', 'SpellLocal', 'SpellRare'])
     groups[name] = { sp: 'diagnostic.error', undercurl: true }
+  if (includePlugins) {
+    for (const integration of Object.values(INTEGRATIONS)) {
+      for (const [name, binding] of Object.entries(integration.groups)) {
+        if (groups[name])
+          throw new Error(`Duplicate native group: ${name}`)
+        groups[name] = binding
+      }
+    }
+  }
   return groups
 }
 
 export function neovimData(themes: ThemeIR[], metadata: BuildMetadata): object {
-  const groups = neovimGroups()
-  for (const [name, binding] of Object.entries(groups)) {
+  for (const [name, binding] of Object.entries(neovimGroups())) {
     if (binding.link && Object.keys(binding).length !== 1)
       throw new Error(`Link mixed with attributes: ${name}`)
     if (binding.role)
@@ -46,10 +57,20 @@ export function neovimData(themes: ThemeIR[], metadata: BuildMetadata): object {
       }
     }
   }
+  for (const sections of Object.values(STATUSLINE)) {
+    for (const binding of Object.values(sections)) {
+      for (const theme of themes) {
+        requireToken(theme, binding.fg)
+        requireToken(theme, binding.bg)
+      }
+    }
+  }
   return {
     metadata,
     styles: STYLES,
-    groups,
+    groups: neovimGroups(false),
+    integrations: INTEGRATIONS,
+    statusline: STATUSLINE,
     variants: Object.fromEntries(themes.map(theme => ({ theme, expressions: { ...spec.tokens, ...spec.modes[theme.mode], ...spec.variants[theme.variant].overrides } })).map(({ theme, expressions }) => [theme.variant, {
       mode: theme.mode,
       tokens: theme.tokens,
