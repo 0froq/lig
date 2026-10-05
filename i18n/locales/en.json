@@ -68,20 +68,33 @@
       "tokens": "Generated token files in this repo"
     },
     "syntax": {
-      "lede": "Text, quiet, type, value, call, special. That is the highlighter.",
-      "aside": "Yellow, cyan, and the other accents are for diagnostics and the UI. They do not paint syntax.",
+      "lede": "Mono is the reading baseline. Struct marks bindings and structure, ref marks values and references, and action marks execution.",
+      "aside": "Highlight / base / muted set the reading hierarchy. Mono selects steps from the neutral ramp; colored families use OKLCH offsets. Contrast readings guide the balance, rather than set a hard limit.",
+      "lab": {
+        "title": "Try the coordinates",
+        "note": "Adjust the three colored families per variant; mono keeps its neutral steps. Background changes update WCAG 2.2 and APCA Lc for all tiers.",
+        "lightness": "Color base L",
+        "chroma": "Color base C",
+        "background": "Background token"
+      },
       "comment": "less is great",
-      "ink": {
-        "text": "Text",
-        "quiet": "Quiet",
-        "type": "Type",
-        "value": "Value",
-        "call": "Call",
-        "special": "Special"
+      "families": {
+        "mono": "Ordinary identifiers, text and comments",
+        "struct": "Parameter bindings, modules, tags and modifiers",
+        "ref": "Type references, constants, values and escapes",
+        "action": "Functions, constructors, calls, async and exceptions"
       }
     },
     "paletteNote": "The full source palette. Open it for a hex. Reading code does not need it.",
     "more": "Triads and UI roles",
+    "oklch": {
+      "title": "Where the colors sit",
+      "count": "{n} base colors",
+      "note": "Angle is hue (H); distance from the center is chroma (C). The plot below shows lightness (L). The outer ring is a hue reference.",
+      "lightnessTitle": "L · Lightness",
+      "lightnessNote": "Higher points are lighter. Colors on the same horizontal line share the same lightness.",
+      "table": "Base color coordinates in OKLCH"
+    },
     "copyAs": "Copy as",
     "groups": {
       "neutrals": "Neutrals",
@@ -132,6 +145,28 @@
           "note": "Tone by edge. The grid shows where each variant sits."
         }
       }
+    },
+    "inspect": {
+      "nodes": "nodes",
+      "title": "Node inspector",
+      "help": "Hover to inspect · click to pin · keyboard: ← → tokens, ↑ parent, ↓ child, Esc clear",
+      "codeLabel": "Inspect syntax in {file}",
+      "unpin": "Resume hover",
+      "named": "Named node",
+      "anonymous": "Anonymous node",
+      "bytes": "UTF-8 bytes",
+      "ancestors": "Ancestor nodes",
+      "position": "Captures at selected position",
+      "winner": "active",
+      "overlap": "overlap",
+      "metadata": "metadata",
+      "fallback": "No color capture; uses the primary foreground.",
+      "source": "Selected node source",
+      "empty": "Hover any part of the code, or choose a node below.",
+      "tree": "Full syntax tree",
+      "choose": "Choose a node",
+      "provenance": "Parsed by Neovim {version}. Positions are 1-based byte columns; end is exclusive. Tree-sitter only; no LSP.",
+      "family": "Semantic family"
     }
   },
   "install": {

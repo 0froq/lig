@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { SwatchEntry } from '#palette/nvim-build'
 import { accents } from '#palette/source'
+import { spec } from '../../../core'
 
 const { t } = useI18n()
 const { variant, swatches, semantics } = useLigVariant()
@@ -28,7 +29,7 @@ const neutrals = computed(() => {
   const byName = new Map(swatches.value.filter(sw => sw.role === 'neutral').map(sw => [sw.name, sw]))
   return neutralOrder.flatMap((name) => {
     const sw = byName.get(name)
-    return sw ? [sw] : []
+    return sw ? [{ ...sw, lightness: spec.palette.neutrals[name]!.l }] : []
   })
 })
 
@@ -135,6 +136,7 @@ const accentBases = computed(() =>
           :key="sw.name"
           :name="sw.name"
           :hex="sw.hex"
+          :detail="`L ${(sw.lightness * 100).toFixed(0)}%`"
           :variant="variant"
         />
       </div>
@@ -148,6 +150,7 @@ const accentBases = computed(() =>
           :variant="variant"
         />
       </div>
+      <PaletteOklch :variant="variant" />
       <details class="lig-more">
         <summary>{{ t('palette.more') }}</summary>
         <div

@@ -33,8 +33,9 @@ export function buildVariant(style: LigVariant): BuiltColors {
     colors[name] = requiredToken(tokens, token)
   for (const [group, aliases] of Object.entries(GROUP_ALIASES))
     colors[group] = Object.fromEntries(Object.entries(aliases).map(([name, token]) => [name, requiredToken(tokens, token)]))
-  for (const [role, name] of Object.entries({ struct: 'green', ref: 'blue', action: 'orange', member: 'cyan' }))
-    colors[role] = triad(tokens, name)
+  for (const family of ['struct', 'ref', 'action', 'mono'])
+    colors[family] = ['highlight', 'base', 'muted'].map(tier => requiredToken(tokens, `family.${family}.${tier}`))
+  colors.member = triad(tokens, 'cyan')
   return colors
 }
 

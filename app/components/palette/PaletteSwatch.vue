@@ -6,6 +6,7 @@ const props = defineProps<{
   hex: string
   variant: LigVariant
   caption?: string
+  detail?: string
 }>()
 
 const { format, copied, copyValue, textFor } = usePaletteClipboard()
@@ -26,6 +27,10 @@ async function onCopy(): Promise<void> {
   >
     <span class="lig-chip-fill" />
     <span class="lig-chip-name">{{ caption || name }}</span>
+    <span
+      v-if="detail"
+      class="lig-chip-detail"
+    >{{ detail }}</span>
     <span class="lig-chip-value">{{ copied === name ? $t('install.copied') : value }}</span>
   </button>
 </template>

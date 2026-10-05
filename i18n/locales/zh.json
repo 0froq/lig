@@ -68,20 +68,33 @@
       "tokens": "本仓库生成的 token 文件"
     },
     "syntax": {
-      "lede": "正文、弱化、类型、常量、函数、特殊。高亮就这些。",
-      "aside": "黄、青和其他强调色留给诊断和界面，不拿来涂语法。",
+      "lede": "mono 是普通阅读层；struct 表达绑定与结构，ref 表达值与引用，action 表达执行行为。",
+      "aside": "highlight / base / muted 表达阅读层级。mono 直接选取灰度阶梯，彩色家族使用 OKLCH 偏移；对比度读数用于辅助判断，不作为硬性限制。",
+      "lab": {
+        "title": "试调坐标",
+        "note": "分别调整每个变体的三组彩色，mono 保持选定灰阶。切换背景时，所有层级的 WCAG 2.2 和 APCA Lc 都会更新。",
+        "lightness": "彩色基准 L",
+        "chroma": "彩色基准 C",
+        "background": "背景 token"
+      },
       "comment": "less is great",
-      "ink": {
-        "text": "正文",
-        "quiet": "弱化",
-        "type": "类型",
-        "value": "常量",
-        "call": "函数",
-        "special": "特殊"
+      "families": {
+        "mono": "普通标识符、正文与注释",
+        "struct": "参数绑定、模块、标签与修饰",
+        "ref": "类型引用、常量、数值与转义",
+        "action": "函数、构造、调用、异步与异常"
       }
     },
     "paletteNote": "完整色源。要 hex 时再看，读代码用不到。",
     "more": "三联色与界面角色",
+    "oklch": {
+      "title": "颜色的位置",
+      "count": "{n} 个基础色",
+      "note": "角度是色相 H，距中心的距离是彩度 C；下方明度轴展示 L。外侧色环用于辨认色相。",
+      "lightnessTitle": "L · 明度",
+      "lightnessNote": "越靠上，明度越高；同一水平线上的颜色具有相同明度。",
+      "table": "基础色的 OKLCH 坐标"
+    },
     "copyAs": "复制为",
     "groups": {
       "neutrals": "中性色",
@@ -132,6 +145,28 @@
           "note": "明暗乘软硬。格子说明每个变体在哪。"
         }
       }
+    },
+    "inspect": {
+      "nodes": "个节点",
+      "title": "节点检查",
+      "help": "悬停检查 · 点击固定 · 键盘：← → 切换片段，↑ 父节点，↓ 子节点，Esc 清除",
+      "codeLabel": "检查 {file} 的语法节点",
+      "unpin": "恢复悬停",
+      "named": "具名节点",
+      "anonymous": "匿名节点",
+      "bytes": "UTF-8 字节",
+      "ancestors": "祖先节点",
+      "position": "所选位置的 captures",
+      "winner": "生效",
+      "overlap": "重叠",
+      "metadata": "元数据",
+      "fallback": "没有着色 capture，使用正文前景色。",
+      "source": "所选节点源码",
+      "empty": "悬停在代码任意位置，或在下方选择节点。",
+      "tree": "完整语法树",
+      "choose": "选择节点",
+      "provenance": "由 Neovim {version} 解析。行列从 1 开始，列为字节位置，结束位置不包含在范围内。仅 Tree-sitter，不含 LSP。",
+      "family": "语义分组"
     }
   },
   "install": {

@@ -1,0 +1,28 @@
+import type { TokenBundle, LigVariant } from './core'
+
+// Load one theme; every port shares the same tokens.
+export async function loadTheme(
+  variant: LigVariant,
+  retries = 3,
+): Promise<Record<string, string>> {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const response = await fetch('/tokens.json')
+      if (!response.ok)
+        throw new Error('Theme unavailable')
+
+      const bundle: TokenBundle = await response.json()
+      if (bundle.schemaVersion !== 2)
+        throw new Error('Unsupported schema')
+
+      return bundle.variants[variant].tokens
+    } catch (error) {
+      if (attempt === retries - 1)
+        throw error
+      await new Promise(resolve =>
+        setTimeout(resolve, 250 * 2 ** attempt),
+      )
+    }
+  }
+  throw new Error('No attempts remaining\n')
+}

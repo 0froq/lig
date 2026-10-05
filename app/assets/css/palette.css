@@ -17,6 +17,78 @@
   font-size: 18px;
 }
 
+.lig-syntax-lab {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+  padding: 16px 0;
+  border-block: 1px solid var(--line);
+}
+
+.lig-syntax-lab-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 20px;
+}
+
+.lig-syntax-lab-title,
+.lig-syntax-lab-note {
+  margin: 0;
+  font-family: var(--font-meta);
+  font-size: 11px;
+}
+
+.lig-syntax-lab-title {
+  color: var(--fg);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lig-syntax-lab-note {
+  color: var(--muted);
+}
+
+.lig-syntax-lab-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+
+.lig-syntax-control {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  color: var(--muted);
+  font: 11px/1.4 var(--font-meta);
+}
+
+.lig-syntax-control > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lig-syntax-control output {
+  color: var(--fg);
+}
+
+.lig-syntax-control input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.lig-syntax-control select {
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--fg);
+  background: transparent;
+  font: inherit;
+}
+
 .lig-aside {
   max-width: 40rem;
   margin: 16px 0 0;
@@ -69,8 +141,17 @@
   color: var(--accent);
 }
 
-.lig-stage-syntax {
-  grid-template-columns: 1.45fr 0.55fr;
+.lig-stage.lig-stage-syntax {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.lig-stage-syntax .lig-editor {
+  min-width: 0;
+  border-right: 0;
+}
+
+.lig-stage-syntax .lig-editor + .lig-editor {
+  border-top: 1px solid color-mix(in oklab, var(--pv-fg) 14%, transparent);
 }
 
 .lig-bases {
@@ -199,6 +280,7 @@
   letter-spacing: 0.04em;
 }
 
+.lig-chip-detail,
 .lig-chip-value {
   font-family: var(--font-meta);
   font-size: 11px;
@@ -332,6 +414,10 @@
   color: var(--pv-special);
 }
 
+.lig-code .op {
+  color: var(--pv-operator);
+}
+
 .lig-terminal {
   font-family: var(--font-meta);
   font-size: 13px;
@@ -452,5 +538,505 @@
 
   .lig-triad {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.lig-oklch {
+  margin: 48px 0 0;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+.lig-oklch-kicker {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-family: var(--font-meta);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.lig-oklch-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.lig-oklch-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(260px, 1fr);
+  gap: 20px;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.lig-oklch-plot {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  overflow: visible;
+  font-family: var(--font-meta);
+}
+
+.lig-oklch-charts {
+  min-width: 0;
+}
+
+.lig-oklch-lightness {
+  max-width: 480px;
+  margin: 16px auto 0;
+}
+
+.lig-oklch-axis-title {
+  margin: 0 0 12px;
+  color: var(--fg);
+  font-family: var(--font-meta);
+  font-size: 12px;
+}
+
+.lig-oklch-axis-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.lig-oklch-level {
+  stroke: var(--point);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+  opacity: 0.5;
+}
+
+.lig-oklch-hues {
+  opacity: 0.65;
+}
+
+.lig-oklch-grid {
+  fill: none;
+  stroke: color-mix(in oklab, var(--fg) 18%, transparent);
+  stroke-width: 0.8;
+}
+
+.lig-oklch-ticks {
+  fill: var(--muted);
+  font-size: 11px;
+}
+
+.lig-oklch-point {
+  cursor: pointer;
+}
+
+.lig-oklch-point line {
+  stroke: var(--point);
+  stroke-width: 1;
+  opacity: 0;
+}
+
+.lig-oklch-halo {
+  fill: none;
+  stroke: var(--point);
+  stroke-width: 1;
+  opacity: 0;
+}
+
+.lig-oklch-dot {
+  fill: var(--point);
+  stroke: var(--bg);
+  stroke-width: 2;
+}
+
+.lig-oklch-point text {
+  fill: var(--fg);
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+.lig-oklch-point.is-active line {
+  opacity: 0.4;
+}
+
+.lig-oklch-point.is-active .lig-oklch-halo {
+  opacity: 0.7;
+}
+
+.lig-oklch-point.is-active text {
+  fill: var(--point);
+  opacity: 1;
+}
+
+.lig-oklch-data {
+  min-width: 0;
+}
+
+.lig-oklch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-meta);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.lig-oklch-caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.lig-oklch-table th,
+.lig-oklch-table td {
+  padding: 10px 0 10px 10px;
+  text-align: right;
+  font-weight: 400;
+}
+
+.lig-oklch-table th:first-child {
+  padding-left: 0;
+  text-align: left;
+}
+
+.lig-oklch-table thead,
+.lig-oklch-table td {
+  color: var(--muted);
+}
+
+.lig-oklch-table tbody tr {
+  border-top: 1px solid var(--line);
+}
+
+.lig-oklch-table button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.lig-oklch-table button:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 4px;
+}
+
+.lig-oklch-table .is-active button,
+.lig-oklch-table .is-active td {
+  color: var(--fg);
+}
+
+.lig-oklch-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.lig-oklch-selection {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+  font-family: var(--font-meta);
+  font-size: 11px;
+}
+
+.lig-oklch-selection p {
+  margin: 0;
+  color: var(--fg);
+}
+
+.lig-oklch-selection code {
+  color: var(--point);
+  overflow-wrap: anywhere;
+}
+
+.lig-oklch-selection span {
+  color: var(--muted);
+}
+
+@media (max-width: 1100px) {
+  .lig-oklch-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .lig-oklch-data {
+    width: 100%;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+}
+
+/* Parsed source and its node inspector use the selected token variant. */
+.lig-parsed-stage {
+  display: grid;
+  gap: 32px;
+}
+
+.lig-parsed {
+  min-width: 0;
+  padding: 24px;
+  color: var(--pv-fg);
+  background: var(--pv-bg);
+  border: 1px solid var(--pv-line);
+}
+
+.lig-parsed-header,
+.lig-inspector-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  font: 12px/1.5 var(--font-meta);
+}
+
+.lig-parsed-header > :last-child,
+.lig-parsed-hint,
+.lig-node-meta,
+.lig-node-footnote,
+.lig-node-placeholder,
+.lig-inspector-label {
+  color: var(--pv-muted);
+}
+
+.lig-parsed-hint {
+  margin: 12px 0 24px;
+  font: 11px/1.7 var(--font-meta);
+}
+
+.lig-parsed-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  align-items: start;
+  gap: 28px;
+}
+
+.lig-parsed-code {
+  min-width: 0;
+  padding: 6px 0 16px;
+  tab-size: 2;
+}
+
+.lig-parsed-code .is-inspected {
+  background: var(--pv-selection);
+  text-decoration: underline;
+  text-decoration-color: var(--pv-muted);
+  text-underline-offset: 4px;
+}
+
+.lig-parsed-code:focus-visible,
+.lig-node-inspector button:focus-visible,
+.lig-node-inspector select:focus-visible {
+  outline: 1px solid var(--pv-fg);
+  outline-offset: 4px;
+}
+
+.lig-node-inspector {
+  position: sticky;
+  top: 24px;
+  height: min(560px, calc(100svh - 48px));
+  min-width: 0;
+  padding-left: 20px;
+  border-left: 1px solid var(--pv-line);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  overflow-anchor: none;
+  overflow-wrap: anywhere;
+  font: 11px/1.65 var(--font-meta);
+}
+
+.lig-inspector-heading {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-height: 30px;
+  background: var(--pv-bg);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--pv-line);
+}
+
+.lig-node-inspector button {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.lig-inspector-heading button,
+.lig-node-ancestors button:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lig-node-type {
+  margin: 16px 0 4px;
+  font-size: 14px;
+}
+
+.lig-node-meta,
+.lig-node-color {
+  margin: 5px 0;
+}
+
+.lig-node-ancestors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 16px 0;
+}
+
+.lig-node-ancestors button {
+  color: var(--pv-muted);
+}
+
+.lig-node-ancestors button[aria-current] {
+  color: var(--pv-fg);
+}
+
+.lig-inspector-label {
+  margin: 16px 0 8px;
+}
+
+.lig-capture-list > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  color: var(--pv-muted);
+}
+
+.lig-capture-list > .is-winning {
+  color: var(--pv-fg);
+}
+
+.lig-capture-list small {
+  font-size: 10px;
+}
+
+.lig-node-role {
+  margin: 14px 0 4px;
+}
+
+.lig-node-color {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lig-node-color i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--pv-muted);
+}
+
+.lig-node-source {
+  margin-top: 16px;
+}
+
+.lig-node-source summary {
+  cursor: pointer;
+}
+
+.lig-node-source pre {
+  font: inherit;
+  white-space: pre-wrap;
+}
+
+.lig-tree-select {
+  display: grid;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.lig-tree-select select {
+  width: 100%;
+  min-width: 0;
+  padding: 6px;
+  border: 1px solid var(--pv-muted);
+  border-radius: 0;
+  color: var(--pv-fg);
+  background: var(--pv-bg);
+  font: inherit;
+}
+
+.lig-node-footnote {
+  margin-top: 16px;
+  font-size: 10px;
+}
+
+@media (max-width: 1100px) {
+  .lig-parsed-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lig-node-inspector {
+    position: static;
+    height: min(420px, 60svh);
+    padding: 20px 0 0;
+    border-top: 1px solid var(--pv-line);
+    border-left: 0;
+  }
+}
+
+.lig-semantic-families {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.lig-family-colors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  gap: 1px;
+}
+
+.lig-family-level {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.lig-family-level i {
+  display: block;
+  height: 64px;
+}
+
+.lig-family-metrics {
+  display: grid;
+  gap: 2px;
+  color: var(--muted);
+  font: 9px/1.2 var(--font-meta);
+}
+
+.lig-family-metrics b {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+.lig-family-metrics.is-low-contrast {
+  color: var(--accent);
+}
+
+.lig-family-description {
+  font: 11px/1.6 var(--font-meta);
+  color: var(--muted);
+}
+
+@media (max-width: 700px) {
+  .lig-syntax-lab-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .lig-semantic-families {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
