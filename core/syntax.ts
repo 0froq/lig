@@ -1,3 +1,4 @@
+import type { LigVariant } from './types'
 import { spec } from './resolve'
 
 /** Shared Neovim capture vocabulary -> semantic color roles. No literal colors. */
@@ -69,7 +70,8 @@ export function captureRole(capture: string): { token: string, matched: string |
 }
 
 /** Syntax roles alias a family/tier in the core spec; the inspector uses the same link. */
-export function syntaxFamily(token: string): string | null {
-  const value = spec.tokens[token]
+export function syntaxFamily(token: string, variant?: LigVariant): string | null {
+  const selected = variant ? spec.variants[variant] : undefined
+  const value = selected?.overrides[token] ?? (selected ? spec.modes[selected.mode][token] : undefined) ?? spec.tokens[token]
   return typeof value === 'string' && value.startsWith('family.') ? value.slice(7) : null
 }

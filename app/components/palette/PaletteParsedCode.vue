@@ -181,10 +181,10 @@ function inSelection(start: number, end: number): boolean {
           </div>
           <template v-if="segment">
             <p
-              v-if="syntaxFamily(role)"
+              v-if="syntaxFamily(role, variant)"
               class="lig-inspector-label"
             >
-              {{ t('palette.inspect.family') }} · {{ syntaxFamily(role) }}
+              {{ t('palette.inspect.family') }} · {{ syntaxFamily(role, variant) }}
             </p>
             <p class="lig-node-role">
               {{ role }}

@@ -39,7 +39,7 @@ it('foreground hierarchy preserves readable primary/secondary text and quieter m
     for (const role of ['syntax.string', 'syntax.operator'])
       assert.equal(tokens[role], tokens['text.secondary'])
     for (const [role, hex] of Object.entries(tokens)) {
-      const family = syntaxFamily(role)
+      const family = syntaxFamily(role, variant)
       // Muted mono and light chromatic tiers intentionally prioritize hierarchy.
       const lighterInk = family === 'mono.muted' || (mode === 'light' && family?.endsWith('.muted'))
       if (role.startsWith('syntax.') && !lighterInk)
@@ -309,9 +309,14 @@ it('syntax roles preserve the mono/struct/ref/action family contract', () => {
     for (const family of ['mono', 'struct', 'ref', 'action'])
       assert.deepEqual(built[family], ['highlight', 'base', 'muted'].map(tier => tokens[`family.${family}.${tier}`]))
     for (const name of Object.keys(tokens).filter(name => name.startsWith('syntax.'))) {
-      const family = syntaxFamily(name)
+      const family = syntaxFamily(name, variant)
       assert.ok(family, name)
       assert.equal(tokens[name], tokens[`family.${family}`])
+    }
+    const tier = spec.variants[variant].mode === 'light' ? 'base' : 'highlight'
+    for (const role of ['syntax.function', 'syntax.method']) {
+      assert.equal(syntaxFamily(role, variant), `action.${tier}`)
+      assert.equal(tokens[role], tokens[`family.action.${tier}`])
     }
   }
 })

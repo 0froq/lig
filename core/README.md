@@ -150,7 +150,7 @@ The four syntax families describe visual roles, not a complete taxonomy of langu
 - `mono`: ordinary reading—variables use highlight, while general keywords and member properties use base, following lig.nvim's Tree-sitter mapping. Comments/punctuation use muted, strings/operators use secondary. Parameters and builtin variables retain their struct/ref roles.
 - `struct`: bindings and structural context—parameters, modules, tags and modifiers.
 - `ref`: types and values—type references use muted, constants/numbers use base, type definitions/builtins/escapes use highlight.
-- `action`: execution—function definitions use highlight; calls, constructors and coroutine/return/exception keywords use base.
+- `action`: execution—function/method definitions use highlight in dark modes and base in light modes, avoiding the brown cast of the darker orange highlight. Calls, constructors and coroutine/return/exception keywords use base. Light-mode definitions and calls intentionally share the same color; this iteration does not add a new typographic distinction.
 
 This preserves the family approach from lig.nvim. A declaration is not automatically `struct`: type definitions remain `ref`. The website legend shows each family once, with highlight/base/muted levels. All three chromatic families use the shared accent tier formulas, including `ref.muted`; there is no special blue-only muting formula. Default syntax foregrounds have at least 4.5:1 canvas contrast except mono muted roles and chromatic muted roles in light modes. These use the intentionally quieter tiers described above. Experimental L/C/background settings have no minimum-contrast guarantee.
 

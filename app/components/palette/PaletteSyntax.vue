@@ -108,11 +108,13 @@ const inks = computed(() => families.map((family) => {
 const preview = computed<ResolvedVariant>(() => {
   const nextTokens = { ...resolved.value.tokens }
   const nextOklch = { ...resolved.value.oklch }
+  const authored = new Set<string>()
 
   for (const ink of inks.value) {
     for (const level of ink.levels) {
       nextTokens[level.token] = level.hex
       nextOklch[level.token] = level.color
+      authored.add(level.token)
     }
   }
 
@@ -120,6 +122,7 @@ const preview = computed<ResolvedVariant>(() => {
   const monoSecondary = experimentalColor(monoBase, resolved.value.oklch['family.mono.secondary']!)
   nextOklch['family.mono.secondary'] = monoSecondary
   nextTokens['family.mono.secondary'] = oklchToHex(monoSecondary)
+  authored.add('family.mono.secondary')
   const monoMap = {
     'text.strong': 'family.mono.highlight',
     'text.primary': 'family.mono.base',
@@ -129,17 +132,29 @@ const preview = computed<ResolvedVariant>(() => {
   for (const [token, source] of Object.entries(monoMap)) {
     nextOklch[token] = nextOklch[source]!
     nextTokens[token] = nextTokens[source]!
+    authored.add(token)
   }
 
   const background = spec.palette.neutrals[backgroundName.value]!
   nextOklch['surface.canvas'] = background
   nextTokens['surface.canvas'] = backgroundHex.value
-  for (const [token, expression] of Object.entries(spec.tokens)) {
-    if (typeof expression === 'string' && nextOklch[expression]) {
-      nextOklch[token] = nextOklch[expression]!
-      nextTokens[token] = nextTokens[expression]!
-    }
+  authored.add('surface.canvas')
+  const selected = spec.variants[variant.value]
+  const expressions = { ...spec.tokens, ...spec.modes[selected.mode], ...selected.overrides }
+  const updated = new Set(authored)
+  function updateAlias(token: string): void {
+    if (updated.has(token))
+      return
+    updated.add(token)
+    const source = expressions[token]
+    if (typeof source !== 'string' || !nextOklch[source])
+      return
+    updateAlias(source)
+    nextOklch[token] = nextOklch[source]!
+    nextTokens[token] = nextTokens[source]!
   }
+  for (const token of Object.keys(expressions))
+    updateAlias(token)
   return { mode: resolved.value.mode, tokens: nextTokens, oklch: nextOklch }
 })
 
