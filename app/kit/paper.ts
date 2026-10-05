@@ -5,6 +5,7 @@
 // way a real wash does, with pigment gathering at the rim.
 
 import type { BloomOptions, LayerColors, PaperLayer, PaperOptions } from './types'
+import { createCanvasViewport } from './canvas-viewport'
 
 const MAX = 40
 
@@ -151,6 +152,7 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
     return null
   const gl: WebGL2RenderingContext = glContext
   document.body.prepend(canvas)
+  const viewport = createCanvasViewport(canvas, document.body, 1.5)
   document.documentElement.classList.add('has-paper')
   if (washes)
     document.documentElement.classList.add('has-bloom')
@@ -209,13 +211,13 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
 
   let W = 0
   let H = 0
+  let origin = 0
   function resize(): void {
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
-    W = window.innerWidth
-    H = window.innerHeight
-    canvas.width = Math.round(W * dpr)
-    canvas.height = Math.round(H * dpr)
-    dirty = true
+    const slice = viewport.update()
+    W = slice.width
+    H = slice.height
+    origin = slice.origin
+    dirty ||= slice.changed
   }
 
   // A bloom: soaks from 0 to `size` with time constant `tau`, then dries and fades unless held
@@ -336,7 +338,6 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
 
   const A = new Float32Array(MAX * 4)
   const B = new Float32Array(MAX * 4)
-  let lastScroll = -1
 
   function wet(x: number, y: number): number {
     const now = performance.now()
@@ -370,6 +371,7 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
   function frame(now: number): void {
     if (destroyed)
       return
+    resize()
     dwell(now)
 
     for (const m of marks) {
@@ -383,6 +385,8 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
       }
       if (m.bloom) {
         const c = centre(m)
+        if (m.bloom.x !== c.x || m.bloom.y !== c.y + window.scrollY || m.bloom.size !== c.r * 1.2)
+          dirty = true
         m.bloom.x = c.x
         m.bloom.y = c.y + window.scrollY
         m.bloom.size = c.r * 1.2
@@ -407,16 +411,15 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
       n++
     }
 
-    if (animating || dirty || window.scrollY !== lastScroll || dwellBloom) {
+    if (animating || dirty || dwellBloom) {
       gl.viewport(0, 0, canvas.width, canvas.height)
       gl.uniform2f(U.res, W, H)
-      gl.uniform1f(U.scroll, window.scrollY)
+      gl.uniform1f(U.scroll, origin)
       gl.uniform4fv(U.a, A)
       gl.uniform4fv(U.b, B)
       gl.uniform1i(U.count, n)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
       dirty = false
-      lastScroll = window.scrollY
     }
     if (!destroyed)
       raf = requestAnimationFrame(frame)

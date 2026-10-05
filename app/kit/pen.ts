@@ -5,6 +5,7 @@
 
 import type { LayerColors, PenLayer, PenOptions, Point } from './types'
 import { blend } from '../../core/color'
+import { createCanvasViewport } from './canvas-viewport'
 import { layoutText } from './hand-font'
 import { cubic, looseEllipse, resample, roundJoin, simplify, smooth, STEP, tangent, wobble } from './pen-geometry'
 
@@ -58,6 +59,7 @@ export function createPen(options: PenOptions): PenLayer {
   Object.assign(canvas.style, { position: 'fixed', inset: '0', width: '100%', height: '100%', zIndex: '-1', pointerEvents: 'none' })
   // Inside the page's stacking context, under its type: it fades out with the page it belongs to
   root.prepend(canvas)
+  const viewport = createCanvasViewport(canvas, root, 2)
   const html = document.documentElement
   html.classList.add('has-stroke')
   if (hand)
@@ -83,8 +85,7 @@ export function createPen(options: PenOptions): PenLayer {
   let destroyed = false
   let raf = 0
   let resizeTimer = 0
-  const ac = new AbortController()
-  const { signal } = ac
+  let layoutObserver: ResizeObserver | undefined
 
   let X = new Float32Array()
   let Y = new Float32Array()
@@ -325,25 +326,29 @@ export function createPen(options: PenOptions): PenLayer {
   let dpr = 1
   let W = 0
   let H = 0
+  let origin = 0
   function resize(): void {
-    dpr = Math.min(window.devicePixelRatio || 1, 2)
-    W = window.innerWidth
-    H = window.innerHeight
-    canvas.width = Math.round(W * dpr)
-    canvas.height = Math.round(H * dpr)
+    const slice = viewport.update()
+    dpr = slice.ratio
+    W = slice.width
+    H = slice.height
+    origin = slice.origin
+    dirty ||= slice.changed
   }
 
   function rebuild(): void {
     const done = segIndex
+    const current = segs[done]
+    const progress = current ? Math.max(0, Math.min(1, (head - current.from) / Math.max(1, current.to - current.from))) : 0
     const finished = head >= total - 1 && total > 0
     build()
     segIndex = Math.min(done, segs.length)
     const prev = segs[segIndex - 1]
-    head = finished ? total - 1 : (segIndex > 0 && prev ? prev.to : 0)
+    const next = segs[segIndex]
+    head = finished ? total - 1 : next ? next.from + (next.to - next.from) * progress : prev?.to ?? 0
     dirty = true
   }
 
-  let lastScroll = -1
   let last = performance.now()
   let started = 0
 
@@ -400,7 +405,7 @@ export function createPen(options: PenOptions): PenLayer {
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
     ctx.strokeStyle = ink
-    const sy = window.scrollY
+    const sy = origin
     const y0 = sy - 60
     const y1 = sy + H + 60
     const upto = Math.floor(head)
@@ -524,6 +529,7 @@ export function createPen(options: PenOptions): PenLayer {
   function frame(now: number): void {
     if (destroyed)
       return
+    resize()
     const dt = Math.min(0.05, (now - last) / 1000)
     last = now
     if (!started)
@@ -534,10 +540,9 @@ export function createPen(options: PenOptions): PenLayer {
       return
     if (flowing?.() || now >= wake)
       dirty = true
-    if (dirty || window.scrollY !== lastScroll || (dot && dotBorn && now - dotBorn < 500)) {
+    if (dirty || (dot && dotBorn && now - dotBorn < 500)) {
       draw(now)
       dirty = false
-      lastScroll = window.scrollY
     }
     if (!destroyed)
       raf = requestAnimationFrame(frame)
@@ -559,7 +564,7 @@ export function createPen(options: PenOptions): PenLayer {
     destroyed = true
     cancelAnimationFrame(raf)
     window.clearTimeout(resizeTimer)
-    ac.abort()
+    layoutObserver?.disconnect()
     for (const probe of probes)
       probe.remove()
     canvas.remove()
@@ -570,11 +575,18 @@ export function createPen(options: PenOptions): PenLayer {
 
   resize()
   build()
-  window.addEventListener('resize', () => {
-    resize()
+  // Browser chrome changes the visible height during scrolling, not the route.
+  let layoutWidth = root.clientWidth
+  let layoutHeight = root.clientHeight
+  layoutObserver = new ResizeObserver(() => {
+    if (root.clientWidth === layoutWidth && root.clientHeight === layoutHeight)
+      return
+    layoutWidth = root.clientWidth
+    layoutHeight = root.clientHeight
     window.clearTimeout(resizeTimer)
     resizeTimer = window.setTimeout(rebuild, 120)
-  }, { signal })
+  })
+  layoutObserver.observe(root)
   raf = requestAnimationFrame(frame)
 
   return { setColors, destroy }
