@@ -1,4 +1,4 @@
-import type { Oklch, TokenExpression } from '../types'
+import type { LigVariant, Oklch, TokenExpression } from '../types'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { it } from 'node:test'
@@ -42,8 +42,15 @@ it('foreground hierarchy preserves readable primary/secondary text and quieter m
       const family = syntaxFamily(role, variant)
       // Muted mono and light chromatic tiers intentionally prioritize hierarchy.
       const lighterInk = family === 'mono.muted' || (mode === 'light' && family?.endsWith('.muted'))
-      if (role.startsWith('syntax.') && !lighterInk)
-        assert.ok(contrast(hex, tokens['surface.canvas']!) >= 4.5, `${variant}/${role}: readable syntax`)
+      if (role.startsWith('syntax.') && !lighterInk) {
+        // Light-soft retains colorful base ink on a gentler gray canvas;
+        // this is an explicit visual calibration, not a WCAG AA claim.
+        // 59.5 Lc is the lower bound for the displayed rounded 60 Lc target.
+        const softBase = variant === 'light-soft' && family?.endsWith('.base') && !family.startsWith('mono.')
+        assert.ok(contrast(hex, tokens['surface.canvas']!) >= (softBase ? 3.8 : 4.5), `${variant}/${role}: calibrated syntax contrast`)
+        if (softBase)
+          assert.ok(apcaContrast(hex, tokens['surface.canvas']!) >= 59.5, `${variant}/${role}: soft base Lc`)
+      }
     }
     assert.notEqual(tokens['border.default'], tokens['text.subtle'])
     assert.equal(tokens['border.divider'], tokens['border.default'])
@@ -52,13 +59,15 @@ it('foreground hierarchy preserves readable primary/secondary text and quieter m
   }
 })
 
-it('canvases and raised surfaces use explicit neutral lightness endpoints', () => {
-  const canvases = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'dark-soft': ['#181818', 0.21], 'light-soft': ['#f8f8f8', 0.98] } as const
+it('canvases and raised surfaces use independently calibrated neutral lightness', () => {
+  const canvases = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'dark-soft': ['#2e2e2e', 0.30], 'light-soft': ['#ebebeb', 0.94] } as const
+  const raised = { 'dark': ['#2e2e2e', 0.30], 'light': ['#f8f8f8', 0.98], 'dark-soft': ['#383838', 0.34], 'light-soft': ['#f8f8f8', 0.98] } as const
   for (const variant of VARIANTS) {
-    const { tokens, oklch, mode } = resolveVariant(variant)
+    const { tokens, oklch } = resolveVariant(variant)
     assert.equal(tokens['surface.canvas'], canvases[variant][0])
     assert.equal(oklch['surface.canvas']!.l, canvases[variant][1])
-    assert.ok(mode === 'dark' ? oklch['surface.raised']!.l > oklch['surface.canvas']!.l : oklch['surface.raised']!.l < oklch['surface.canvas']!.l)
+    assert.equal(tokens['surface.raised'], raised[variant][0])
+    assert.ok(Math.abs(oklch['surface.raised']!.l - raised[variant][1]) < 1e-12)
   }
   assert.equal(blend('#000000', 0.5, '#ffffff'), '#636363')
   assert.equal(blend('#123456', 1, '#ffffff'), '#123456')
@@ -170,11 +179,11 @@ it('eight authored accents share intentional lightness/chroma and distinct hue a
 })
 
 it('each mode keeps base/layers balanced through sRGB export, with readable base accents', () => {
-  const mappedTiers = {
+  const mappedTiers: Record<LigVariant, string[]> = {
     'dark': ['blue.highlight'],
-    'dark-soft': ['blue.highlight'],
+    'dark-soft': [],
     'light': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
-    'light-soft': ['yellow.highlight', 'yellow.base', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'orange.highlight', 'azure.highlight', 'azure.base'],
+    'light-soft': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
   }
 
   for (const variant of VARIANTS) {
@@ -195,8 +204,15 @@ it('each mode keeps base/layers balanced through sRGB export, with readable base
         else {
           assert.deepEqual(mapped, color, `${variant}/${key}: no chroma reduction`)
         }
-        if (mode === 'dark' || layer !== 'faded')
+        if (variant === 'light-soft') {
+          const minimum = layer === 'highlight' ? 4.5 : layer === 'base' ? 3.8 : 3
+          const minimumLc = layer === 'highlight' ? 65 : layer === 'base' ? 59.5 : 50
+          assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= minimum, `${variant}/${key}: calibrated layer`)
+          assert.ok(apcaContrast(tokens[key]!, tokens['surface.canvas']!) >= minimumLc, `${variant}/${key}: calibrated Lc`)
+        }
+        else if (mode === 'dark' || layer !== 'faded') {
           assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= 4.5, `${variant}/${key}: readable layer`)
+        }
         const result = hexToOklch(tokens[key]!)
         assert.ok(Math.abs(result.l - mapped.l) < 0.002, `${variant}/${key}: exported L`)
         assert.ok(Math.abs(result.c - mapped.c) < 0.002, `${variant}/${key}: exported C`)
@@ -218,9 +234,9 @@ it('each mode keeps base/layers balanced through sRGB export, with readable base
     for (const name of Object.keys(spec.palette.accents)) {
       const key = `accent.${name}.base`
       const base = oklch[key]!
-      assert.ok(Math.abs(base.l - (mode === 'dark' ? 0.74 : variant === 'light' ? 0.55 : 0.49)) < 1e-12, `${variant}/${name}: mode lightness`)
+      assert.ok(Math.abs(base.l - (mode === 'dark' ? 0.74 : 0.55)) < 1e-12, `${variant}/${name}: mode lightness`)
       assert.ok(Math.abs(base.c - (mode === 'dark' ? 0.12 : 0.11)) < 1e-12)
-      assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= 4.5, `${variant}/${name}: canvas contrast`)
+      assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= (variant === 'light-soft' ? 3.8 : 4.5), `${variant}/${name}: canvas contrast`)
     }
   }
 })
@@ -260,10 +276,13 @@ it('accent ramps preserve hue and follow the mode emphasis direction', () => {
         assert.equal(color.h, base.h)
         if (mode === 'light') {
           assert.equal(color.c, base.c)
-          assert.ok(Math.abs(color.l - base.l - (step === 'highlight' ? -0.07 : 0.07)) < 1e-12)
+          const distance = variant === 'light-soft' ? 0.05 : 0.07
+          assert.ok(Math.abs(color.l - base.l - (step === 'highlight' ? -distance : distance)) < 1e-12)
         }
         else {
           assert.ok(color.c < base.c)
+          const distance = variant === 'dark-soft' ? 0.06 : 0.07
+          assert.ok(Math.abs(color.l - base.l - (step === 'highlight' ? distance : -distance)) < 1e-12)
         }
         const brighter = mode === 'dark' ? step === 'highlight' : step === 'faded'
         assert.ok(brighter ? color.l > base.l : color.l < base.l)
@@ -323,14 +342,16 @@ it('syntax roles preserve the mono/struct/ref/action family contract', () => {
 
 it('mono tiers select existing neutral steps in the mode emphasis direction', () => {
   const selections = {
-    light: ['soft_800', 'soft_600', 'soft_400'],
-    dark: ['soft_50', 'soft_300', 'soft_500'],
+    'light': ['soft_800', 'soft_600', 'soft_400'],
+    'dark': ['soft_50', 'soft_300', 'soft_500'],
+    'light-soft': ['soft_700', 'soft_600', 'soft_500'],
+    'dark-soft': ['soft_200', 'soft_300', 'soft_500'],
   }
   for (const variant of VARIANTS) {
     const { oklch, tokens, mode } = resolveVariant(variant)
     const tiers = ['highlight', 'base', 'muted']
     for (const [i, tier] of tiers.entries()) {
-      const neutral = spec.palette.neutrals[selections[mode][i]!]!
+      const neutral = spec.palette.neutrals[selections[variant][i]!]!
       assert.deepEqual(oklch[`family.mono.${tier}`], neutral)
       assert.equal(tokens[`family.mono.${tier}`], oklchToHex(neutral))
     }
@@ -340,6 +361,43 @@ it('mono tiers select existing neutral steps in the mode emphasis direction', ()
       assert.ok(mode === 'light' ? delta > 0 : delta < 0)
       assert.ok(Math.abs(delta) >= 0.10 - 1e-12)
     }
+  }
+})
+
+it('soft variants reduce extreme contrast without desaturating base accents or breaking aliases', () => {
+  for (const [softName, standardName] of [['light-soft', 'light'], ['dark-soft', 'dark']] as const) {
+    const soft = resolveVariant(softName)
+    const standard = resolveVariant(standardName)
+    assert.notEqual(soft.tokens['surface.canvas'], standard.tokens['surface.canvas'])
+    assert.ok(contrast(soft.tokens['text.strong']!, soft.tokens['surface.canvas']!) < contrast(standard.tokens['text.strong']!, standard.tokens['surface.canvas']!))
+    assert.ok(contrast(soft.tokens['text.primary']!, soft.tokens['surface.canvas']!) < contrast(standard.tokens['text.primary']!, standard.tokens['surface.canvas']!))
+    for (const name of Object.keys(spec.palette.accents)) {
+      const key = `accent.${name}.base`
+      assert.deepEqual(soft.oklch[key], standard.oklch[key], `${softName}/${name}: base color identity`)
+      assert.equal(soft.tokens[key], standard.tokens[key])
+      const softSpan = Math.abs(soft.oklch[`accent.${name}.highlight`]!.l - soft.oklch[`accent.${name}.faded`]!.l)
+      const standardSpan = Math.abs(standard.oklch[`accent.${name}.highlight`]!.l - standard.oklch[`accent.${name}.faded`]!.l)
+      assert.ok(softSpan < standardSpan, `${softName}/${name}: gentler tier span`)
+    }
+    for (const [token, source] of Object.entries({
+      'terminal.background': 'surface.canvas',
+      'terminal.foreground': 'text.primary',
+      'terminal.ansi.15': 'text.strong',
+      'terminal.ansi.2': 'accent.green.base',
+      'terminal.ansi.10': 'accent.green.highlight',
+      'syntax.variable': 'family.mono.highlight',
+      'syntax.keyword': 'family.mono.base',
+      'syntax.comment': 'family.mono.muted',
+      'syntax.parameter': 'family.struct.base',
+      'syntax.type': 'family.ref.muted',
+      'syntax.function': soft.mode === 'light' ? 'family.action.base' : 'family.action.highlight',
+    })) {
+      assert.equal(soft.tokens[token], soft.tokens[source], `${softName}/${token}: shared alias`)
+      assert.deepEqual(soft.oklch[token], soft.oklch[source])
+    }
+    // Raised light-soft panels are intentionally lighter than the gray canvas.
+    assert.ok(contrast(soft.tokens['text.primary']!, soft.tokens['surface.raised']!) >= 4.5)
+    assert.notEqual(soft.tokens['text.dim'], soft.tokens['surface.canvas'])
   }
 })
 

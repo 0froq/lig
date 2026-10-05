@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.2",
+  "version": "0.2.3",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -619,55 +619,188 @@
     "light-soft": {
       "mode": "light",
       "overrides": {
-        "surface.canvas": "palette.neutrals.soft_50",
-        "surface.raised": "palette.neutrals.soft_100",
-        "accent.red.base": {
-          "offset": "palette.accents.red",
-          "lightness": -0.25,
-          "chroma": -0.01
+        "surface.canvas": "palette.neutrals.soft_100",
+        "surface.raised": "palette.neutrals.soft_50",
+        "text.strong": "palette.neutrals.soft_700",
+        "text.subtle": "palette.neutrals.soft_500",
+        "accent.red.highlight": {
+          "offset": "accent.red.base",
+          "lightness": -0.05,
+          "chroma": 0
         },
-        "accent.green.base": {
-          "offset": "palette.accents.green",
-          "lightness": -0.25,
-          "chroma": -0.01
+        "accent.red.faded": {
+          "offset": "accent.red.base",
+          "lightness": 0.05,
+          "chroma": 0
         },
-        "accent.yellow.base": {
-          "offset": "palette.accents.yellow",
-          "lightness": -0.25,
-          "chroma": -0.01
+        "accent.green.highlight": {
+          "offset": "accent.green.base",
+          "lightness": -0.05,
+          "chroma": 0
         },
-        "accent.blue.base": {
-          "offset": "palette.accents.blue",
-          "lightness": -0.25,
-          "chroma": -0.01
+        "accent.green.faded": {
+          "offset": "accent.green.base",
+          "lightness": 0.05,
+          "chroma": 0
         },
-        "accent.magenta.base": {
-          "offset": "palette.accents.magenta",
-          "lightness": -0.25,
-          "chroma": -0.01
+        "accent.yellow.highlight": {
+          "offset": "accent.yellow.base",
+          "lightness": -0.05,
+          "chroma": 0
         },
-        "accent.cyan.base": {
-          "offset": "palette.accents.cyan",
-          "lightness": -0.25,
-          "chroma": -0.01
+        "accent.yellow.faded": {
+          "offset": "accent.yellow.base",
+          "lightness": 0.05,
+          "chroma": 0
         },
-        "accent.orange.base": {
-          "offset": "palette.accents.orange",
-          "lightness": -0.25,
-          "chroma": -0.01
+        "accent.blue.highlight": {
+          "offset": "accent.blue.base",
+          "lightness": -0.05,
+          "chroma": 0
         },
-        "accent.azure.base": {
-          "offset": "palette.accents.azure",
-          "lightness": -0.25,
-          "chroma": -0.01
+        "accent.blue.faded": {
+          "offset": "accent.blue.base",
+          "lightness": 0.05,
+          "chroma": 0
+        },
+        "accent.magenta.highlight": {
+          "offset": "accent.magenta.base",
+          "lightness": -0.05,
+          "chroma": 0
+        },
+        "accent.magenta.faded": {
+          "offset": "accent.magenta.base",
+          "lightness": 0.05,
+          "chroma": 0
+        },
+        "accent.cyan.highlight": {
+          "offset": "accent.cyan.base",
+          "lightness": -0.05,
+          "chroma": 0
+        },
+        "accent.cyan.faded": {
+          "offset": "accent.cyan.base",
+          "lightness": 0.05,
+          "chroma": 0
+        },
+        "accent.orange.highlight": {
+          "offset": "accent.orange.base",
+          "lightness": -0.05,
+          "chroma": 0
+        },
+        "accent.orange.faded": {
+          "offset": "accent.orange.base",
+          "lightness": 0.05,
+          "chroma": 0
+        },
+        "accent.azure.highlight": {
+          "offset": "accent.azure.base",
+          "lightness": -0.05,
+          "chroma": 0
+        },
+        "accent.azure.faded": {
+          "offset": "accent.azure.base",
+          "lightness": 0.05,
+          "chroma": 0
         }
       }
     },
     "dark-soft": {
       "mode": "dark",
       "overrides": {
-        "surface.canvas": "palette.neutrals.soft_900",
-        "surface.raised": "palette.neutrals.soft_800"
+        "surface.canvas": "palette.neutrals.soft_800",
+        "surface.raised": {
+          "mix": [
+            "palette.neutrals.soft_800",
+            "palette.neutrals.soft_700"
+          ],
+          "weight": 0.5
+        },
+        "surface.inverse": "palette.neutrals.soft_200",
+        "text.inverse": "surface.canvas",
+        "text.strong": "palette.neutrals.soft_200",
+        "text.dim": "palette.neutrals.soft_700",
+        "border.default": "palette.neutrals.soft_700",
+        "accent.red.highlight": {
+          "offset": "accent.red.base",
+          "lightness": 0.06,
+          "chroma": -0.02
+        },
+        "accent.red.faded": {
+          "offset": "accent.red.base",
+          "lightness": -0.06,
+          "chroma": -0.02
+        },
+        "accent.green.highlight": {
+          "offset": "accent.green.base",
+          "lightness": 0.06,
+          "chroma": -0.02
+        },
+        "accent.green.faded": {
+          "offset": "accent.green.base",
+          "lightness": -0.06,
+          "chroma": -0.02
+        },
+        "accent.yellow.highlight": {
+          "offset": "accent.yellow.base",
+          "lightness": 0.06,
+          "chroma": -0.02
+        },
+        "accent.yellow.faded": {
+          "offset": "accent.yellow.base",
+          "lightness": -0.06,
+          "chroma": -0.02
+        },
+        "accent.blue.highlight": {
+          "offset": "accent.blue.base",
+          "lightness": 0.06,
+          "chroma": -0.02
+        },
+        "accent.blue.faded": {
+          "offset": "accent.blue.base",
+          "lightness": -0.06,
+          "chroma": -0.02
+        },
+        "accent.magenta.highlight": {
+          "offset": "accent.magenta.base",
+          "lightness": 0.06,
+          "chroma": -0.02
+        },
+        "accent.magenta.faded": {
+          "offset": "accent.magenta.base",
+          "lightness": -0.06,
+          "chroma": -0.02
+        },
+        "accent.cyan.highlight": {
+          "offset": "accent.cyan.base",
+          "lightness": 0.06,
+          "chroma": -0.02
+        },
+        "accent.cyan.faded": {
+          "offset": "accent.cyan.base",
+          "lightness": -0.06,
+          "chroma": -0.02
+        },
+        "accent.orange.highlight": {
+          "offset": "accent.orange.base",
+          "lightness": 0.06,
+          "chroma": -0.02
+        },
+        "accent.orange.faded": {
+          "offset": "accent.orange.base",
+          "lightness": -0.06,
+          "chroma": -0.02
+        },
+        "accent.azure.highlight": {
+          "offset": "accent.azure.base",
+          "lightness": 0.06,
+          "chroma": -0.02
+        },
+        "accent.azure.faded": {
+          "offset": "accent.azure.base",
+          "lightness": -0.06,
+          "chroma": -0.02
+        }
       }
     }
   }
