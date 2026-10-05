@@ -13,7 +13,7 @@
 For example, the calibrated green is authored as:
 
 ```json
-{ "l": 0.74, "c": 0.105, "h": 148 }
+{ "l": 0.74, "c": 0.120, "h": 148 }
 ```
 
 `tokens` supplies shared semantic references and derived colors. `modes.light` / `modes.dark` supply mode-specific roles. The four `variants` select a mode and optional overrides. Dependencies always use the selected variant's final values, including overrides. Unknown references, cycles, invalid coordinates, weights, ramp parameters, schemas and overrides fail explicitly.
@@ -24,26 +24,26 @@ The eight colors are intended to have similar weight within each mode. Their des
 
 | Mode             | Base L | Base C | Derivation from authored accents |
 | ---------------- | ------ | ------ | -------------------------------- |
-| dark / dark-soft | 0.740  | 0.105  | Authored primitives              |
-| light            | 0.550  | 0.090  | Offset L −.19, C −.015           |
-| light-soft       | 0.490  | 0.080  | Offset L −.25, C −.025           |
+| dark / dark-soft | 0.740  | 0.120  | Authored primitives              |
+| light            | 0.550  | 0.110  | Offset L −.19, C −.010           |
+| light-soft       | 0.490  | 0.110  | Offset L −.25, C −.010           |
 
 All modes keep H. The authored `palette.accents` is the reference/dark palette; consumers must use `variants[variant].tokens` or `.oklch` for mode-specific colors. Light-soft uses slightly darker accents to retain contrast on its softer canvas.
 
 | Color   | H    | Dark hex  | Light hex |
 | ------- | ---- | --------- | --------- |
-| red     | 22°  | `#e6908d` | `#a05b5a` |
-| orange  | 60°  | `#dc9b64` | `#986438` |
-| yellow  | 100° | `#baac5a` | `#7e732e` |
-| green   | 148° | `#7cbd85` | `#4b8053` |
-| cyan    | 194° | `#48c0be` | `#138281` |
-| azure   | 234° | `#61b6e3` | `#337a9e` |
-| blue    | 275° | `#97a5ed` | `#626da6` |
-| magenta | 325° | `#cd94cf` | `#8c5f8f` |
+| red     | 22°  | `#ed8b88` | `#a85554` |
+| orange  | 60°  | `#e29858` | `#a06024` |
+| yellow  | 100° | `#bdac4a` | `#81720e` |
+| green   | 148° | `#73c07f` | `#3f834b` |
+| cyan    | 194° | `#26c2c1` | `#008282` |
+| azure   | 234° | `#51b7eb` | `#137ba8` |
+| blue    | 275° | `#95a4f6` | `#5f6bb1` |
+| magenta | 325° | `#d190d4` | `#915a95` |
 
-The base targets fit sRGB at all eight chosen hues. Light-mode cyan highlights exceed sRGB at their lower L: the export mapper reduces only their C (approximately .090 → .0820 in light and .080 → .0718 in light-soft), preserving L/H. Other default accent tiers export without chroma reduction.
+The eight dark base accents retain their authored C=.120 in sRGB. All three chromatic syntax-family bases (green/blue/orange) retain C=.110 in both light variants. Some other accents and tier endpoints require chroma reduction at constant L/H: dark blue highlight (.100 → .0955); light yellow/azure highlights; all light cyan tiers; and light-soft yellow/azure bases and highlights plus orange highlight. Cyan base exports at C≈.0940 in light and C≈.0838 in light-soft; cyan highlights export at C≈.0820/.0718. The spec coordinates remain the authored targets, not the mapped output coordinates. Raising the target C further does not increase colors already at the sRGB boundary.
 
-All default base and highlight accents have ≥4.5:1 contrast against their variant's canvas. Dark faded tiers also meet that bound. Light faded tiers intentionally have lower contrast to preserve a visible lightness gradient: approximately 3.49–3.80:1 in light and 4.20–4.57:1 in light-soft. The light calibration uses L=.55/C=.09 for light and L=.49/C=.08 for light-soft. Eight-bit rounding gives each mode's colors small L/C differences; tests bound export error from gamut-mapped coordinates in Cartesian OKLab to <0.002 for accent tiers.
+All default base and highlight accents have ≥4.5:1 contrast against their variant's canvas. Dark faded tiers also meet that bound. Light faded tiers intentionally have lower contrast to preserve a visible lightness gradient: approximately 3.45–3.85:1 in light and 4.16–4.64:1 in light-soft. This iteration raises chroma while retaining existing L/H: L=.55/C=.11 for light and L=.49/C=.11 for light-soft, versus L=.74/C=.12 for dark. Higher chroma increases colorfulness; it does not imply increased lightness or contrast. Eight-bit rounding gives each mode's colors small L/C differences; tests bound export error from gamut-mapped coordinates in Cartesian OKLab to <0.002 for accent tiers.
 
 This is a numerically calibrated starting design. Hue distinction and visual weight in real code still require manual assessment. The homepage's TypeScript/Python demos and polar plot consume these resolved coordinates. The demos use actual Neovim Tree-sitter trees and highlight captures; see [the parsing pipeline](../syntax/README.md). Capture-to-role mappings live in `core/syntax.ts`, separately from primitive colors. Every syntax role refers to an explicit `family.mono`, `family.struct`, `family.ref` or `family.action` tier in the spec. The site's decorative green also reads `accent.primary` from core for the site's light/dark mode, separately from the demo variant selector.
 

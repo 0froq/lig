@@ -159,7 +159,7 @@ it('eight authored accents share intentional lightness/chroma and distinct hue a
   for (const [name, hue] of Object.entries(hues)) {
     const color = spec.palette.accents[name]!
     assert.equal(color.l, 0.74, name)
-    assert.equal(color.c, 0.105, name)
+    assert.equal(color.c, 0.12, name)
     assert.equal(color.h, hue, name)
   }
   const angles = Object.values(hues).sort((a, b) => a - b)
@@ -170,6 +170,13 @@ it('eight authored accents share intentional lightness/chroma and distinct hue a
 })
 
 it('each mode keeps base/layers balanced through sRGB export, with readable base accents', () => {
+  const mappedTiers = {
+    'dark': ['blue.highlight'],
+    'dark-soft': ['blue.highlight'],
+    'light': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
+    'light-soft': ['yellow.highlight', 'yellow.base', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'orange.highlight', 'azure.highlight', 'azure.base'],
+  }
+
   for (const variant of VARIANTS) {
     const { tokens, oklch, mode } = resolveVariant(variant)
     for (const layer of ['base', 'highlight', 'faded']) {
@@ -180,7 +187,7 @@ it('each mode keeps base/layers balanced through sRGB export, with readable base
         const key = `accent.${name}.${layer}`
         const color = oklch[key]!
         const mapped = mapToSrgb(color)
-        if (mode === 'light' && name === 'cyan' && layer === 'highlight') {
+        if (mappedTiers[variant].includes(`${name}.${layer}`)) {
           assert.equal(mapped.l, color.l)
           assert.equal(mapped.h, color.h)
           assert.ok(mapped.c < color.c, `${variant}/${key}: sRGB boundary`)
@@ -212,7 +219,7 @@ it('each mode keeps base/layers balanced through sRGB export, with readable base
       const key = `accent.${name}.base`
       const base = oklch[key]!
       assert.ok(Math.abs(base.l - (mode === 'dark' ? 0.74 : variant === 'light' ? 0.55 : 0.49)) < 1e-12, `${variant}/${name}: mode lightness`)
-      assert.ok(Math.abs(base.c - (mode === 'dark' ? 0.105 : variant === 'light-soft' ? 0.08 : 0.09)) < 1e-12)
+      assert.ok(Math.abs(base.c - (mode === 'dark' ? 0.12 : 0.11)) < 1e-12)
       assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= 4.5, `${variant}/${name}: canvas contrast`)
     }
   }
