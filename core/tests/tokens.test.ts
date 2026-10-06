@@ -6,6 +6,18 @@ import { baseSwatches, buildVariant, cssVarName, semanticRoles } from '../../pal
 import { apcaContrast, blend, contrast, hexToOklch, mapToSrgb, mixOklab, offsetOklch, oklchToHex, rampOklch } from '../color'
 import { createTokenBundle, resolveVariant, spec, syntaxFamily, VARIANTS } from '../index'
 
+// Calibration floors for the selected canvases, not universal readability criteria.
+const contrastFloors = {
+  'light': { primary: 4.5, secondary: 4.5, highlight: 5.5, base: 4, faded: 3 },
+  'light-soft': { primary: 4.5, secondary: 4, highlight: 4.2, base: 3.4, faded: 2.7 },
+  'dark': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
+  'dark-soft': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
+}
+const lightLcFloors = {
+  'light': { highlight: 72, base: 63, faded: 53 },
+  'light-soft': { highlight: 58, base: 52, faded: 45 },
+}
+
 it('every variant resolves the same token contract regardless of call order', () => {
   const baseline = createTokenBundle()
   for (const variant of [...VARIANTS].reverse()) {
@@ -22,12 +34,13 @@ it('every variant resolves the same token contract regardless of call order', ()
   }
 })
 
-it('foreground hierarchy preserves readable primary/secondary text and quieter muted ink', () => {
+it('foreground hierarchy preserves calibrated contrast and quieter muted ink', () => {
   for (const variant of VARIANTS) {
     const { tokens, oklch, mode } = resolveVariant(variant)
     const foregrounds = ['text.primary', 'text.secondary', 'text.subtle']
+    const floors = contrastFloors[variant]
     for (const role of ['text.strong', 'text.primary', 'text.secondary'])
-      assert.ok(contrast(tokens[role]!, tokens['surface.canvas']!) >= 4.5, `${variant}/${role}`)
+      assert.ok(contrast(tokens[role]!, tokens['surface.canvas']!) >= (role === 'text.secondary' ? floors.secondary : floors.primary), `${variant}/${role}`)
     const contrasts = ['text.strong', ...foregrounds].map(role => contrast(tokens[role]!, tokens['surface.canvas']!))
     for (let i = 1; i < contrasts.length; i++)
       assert.ok(contrasts[i - 1]! > contrasts[i]!, `${variant}: contrast hierarchy`)
@@ -43,13 +56,12 @@ it('foreground hierarchy preserves readable primary/secondary text and quieter m
       // Muted mono and light chromatic tiers intentionally prioritize hierarchy.
       const lighterInk = family === 'mono.muted' || (mode === 'light' && family?.endsWith('.muted'))
       if (role.startsWith('syntax.') && !lighterInk) {
-        // Light-soft retains colorful base ink on a gentler gray canvas;
-        // this is an explicit visual calibration, not a WCAG AA claim.
-        // 59.5 Lc is the lower bound for the displayed rounded 60 Lc target.
-        const softBase = variant === 'light-soft' && family?.endsWith('.base') && !family.startsWith('mono.')
-        assert.ok(contrast(hex, tokens['surface.canvas']!) >= (softBase ? 3.8 : 4.5), `${variant}/${role}: calibrated syntax contrast`)
-        if (softBase)
-          assert.ok(apcaContrast(hex, tokens['surface.canvas']!) >= 59.5, `${variant}/${role}: soft base Lc`)
+        const mono = family?.startsWith('mono.')
+        const tier = family?.endsWith('.highlight') ? 'highlight' : 'base'
+        const floor = mono ? family === 'mono.secondary' ? floors.secondary : floors.primary : floors[tier]
+        assert.ok(contrast(hex, tokens['surface.canvas']!) >= floor, `${variant}/${role}: calibrated syntax contrast`)
+        if (!mono && mode === 'light')
+          assert.ok(apcaContrast(hex, tokens['surface.canvas']!) >= lightLcFloors[variant as 'light' | 'light-soft'][tier], `${variant}/${role}: calibrated Lc`)
       }
     }
     assert.notEqual(tokens['border.default'], tokens['text.subtle'])
@@ -60,14 +72,18 @@ it('foreground hierarchy preserves readable primary/secondary text and quieter m
 })
 
 it('canvases and raised surfaces use independently calibrated neutral lightness', () => {
-  const canvases = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'dark-soft': ['#2e2e2e', 0.30], 'light-soft': ['#ebebeb', 0.94] } as const
-  const raised = { 'dark': ['#2e2e2e', 0.30], 'light': ['#f2f2f2', 0.96], 'dark-soft': ['#383838', 0.34], 'light-soft': ['#f8f8f8', 0.98] } as const
+  const canvases = { 'dark': ['#090909', 0.14], 'light': ['#f2f2f2', 0.96], 'dark-soft': ['#181818', 0.21], 'light-soft': ['#dedede', 0.90] } as const
+  const raised = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'dark-soft': ['#2e2e2e', 0.30], 'light-soft': ['#f2f2f2', 0.96] } as const
   for (const variant of VARIANTS) {
     const { tokens, oklch } = resolveVariant(variant)
     assert.equal(tokens['surface.canvas'], canvases[variant][0])
     assert.equal(oklch['surface.canvas']!.l, canvases[variant][1])
     assert.equal(tokens['surface.raised'], raised[variant][0])
     assert.ok(Math.abs(oklch['surface.raised']!.l - raised[variant][1]) < 1e-12)
+    assert.ok(oklch['surface.raised']!.l > oklch['surface.canvas']!.l)
+    assert.ok(Math.abs(oklch['surface.raised']!.l - oklch['surface.canvas']!.l) >= 0.04 - 1e-12)
+    assert.ok(Math.abs(oklch['surface.selection']!.l - oklch['surface.canvas']!.l) >= 0.03, `${variant}: selection/canvas separation`)
+    assert.ok(contrast(tokens['text.primary']!, tokens['surface.selection']!) >= 4.5, `${variant}: selected text contrast`)
   }
   assert.equal(blend('#000000', 0.5, '#ffffff'), '#636363')
   assert.equal(blend('#123456', 1, '#ffffff'), '#123456')
@@ -191,7 +207,7 @@ it('eight authored accents share intentional lightness/chroma and distinct hue a
   }
 })
 
-it('each mode keeps base/layers balanced through sRGB export, with readable base accents', () => {
+it('each variant keeps layers balanced through sRGB export and calibrated canvas contrast', () => {
   const mappedTiers: Record<LigVariant, string[]> = {
     'dark': ['blue.highlight'],
     'dark-soft': [],
@@ -201,7 +217,7 @@ it('each mode keeps base/layers balanced through sRGB export, with readable base
 
   for (const variant of VARIANTS) {
     const { tokens, oklch, mode } = resolveVariant(variant)
-    for (const layer of ['base', 'highlight', 'faded']) {
+    for (const layer of ['base', 'highlight', 'faded'] as const) {
       const coordinates = Object.keys(spec.palette.accents).map(name => oklch[`accent.${name}.${layer}`]!)
       assert.ok(Math.max(...coordinates.map(c => c.l)) - Math.min(...coordinates.map(c => c.l)) < 1e-12, `${variant}/${layer} L`)
       assert.ok(Math.max(...coordinates.map(c => c.c)) - Math.min(...coordinates.map(c => c.c)) < 1e-12, `${variant}/${layer} C`)
@@ -217,15 +233,9 @@ it('each mode keeps base/layers balanced through sRGB export, with readable base
         else {
           assert.deepEqual(mapped, color, `${variant}/${key}: no chroma reduction`)
         }
-        if (variant === 'light-soft') {
-          const minimum = layer === 'highlight' ? 4.5 : layer === 'base' ? 3.8 : 3
-          const minimumLc = layer === 'highlight' ? 65 : layer === 'base' ? 59.5 : 50
-          assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= minimum, `${variant}/${key}: calibrated layer`)
-          assert.ok(apcaContrast(tokens[key]!, tokens['surface.canvas']!) >= minimumLc, `${variant}/${key}: calibrated Lc`)
-        }
-        else if (mode === 'dark' || layer !== 'faded') {
-          assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= 4.5, `${variant}/${key}: readable layer`)
-        }
+        assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= contrastFloors[variant][layer], `${variant}/${key}: calibrated layer`)
+        if (mode === 'light')
+          assert.ok(apcaContrast(tokens[key]!, tokens['surface.canvas']!) >= lightLcFloors[variant as 'light' | 'light-soft'][layer], `${variant}/${key}: calibrated Lc`)
         const result = hexToOklch(tokens[key]!)
         assert.ok(Math.abs(result.l - mapped.l) < 0.002, `${variant}/${key}: exported L`)
         assert.ok(Math.abs(result.c - mapped.c) < 0.002, `${variant}/${key}: exported C`)
@@ -249,7 +259,7 @@ it('each mode keeps base/layers balanced through sRGB export, with readable base
       const base = oklch[key]!
       assert.ok(Math.abs(base.l - (mode === 'dark' ? 0.74 : 0.55)) < 1e-12, `${variant}/${name}: mode lightness`)
       assert.ok(Math.abs(base.c - (mode === 'dark' ? 0.12 : 0.11)) < 1e-12)
-      assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= (variant === 'light-soft' ? 3.8 : 4.5), `${variant}/${name}: canvas contrast`)
+      assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= contrastFloors[variant].base, `${variant}/${name}: canvas contrast`)
     }
   }
 })

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.4",
+  "version": "0.2.5",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -455,8 +455,8 @@
   },
   "modes": {
     "light": {
-      "surface.canvas": "palette.neutrals.white",
-      "surface.raised": "palette.neutrals.soft_50",
+      "surface.canvas": "palette.neutrals.soft_50",
+      "surface.raised": "palette.neutrals.white",
       "surface.inverse": "palette.neutrals.soft_900",
       "surface.highlight": "palette.neutrals.soft_600",
       "text.primary": "palette.neutrals.soft_600",
@@ -591,11 +591,18 @@
         "chroma": 0
       },
       "syntax.function": "family.action.base",
-      "syntax.method": "family.action.base"
+      "syntax.method": "family.action.base",
+      "surface.selection": {
+        "mix": [
+          "surface.canvas",
+          "text.primary"
+        ],
+        "weight": 0.9
+      }
     },
     "dark": {
-      "surface.canvas": "palette.neutrals.soft_900",
-      "surface.raised": "palette.neutrals.soft_800",
+      "surface.canvas": "palette.neutrals.soft_950",
+      "surface.raised": "palette.neutrals.soft_900",
       "surface.inverse": "palette.neutrals.soft_100",
       "surface.highlight": "palette.neutrals.soft_400",
       "text.primary": "palette.neutrals.soft_300",
@@ -619,16 +626,8 @@
     "light-soft": {
       "mode": "light",
       "overrides": {
-        "surface.canvas": {
-          "offset": "palette.neutrals.white",
-          "lightness": -0.06,
-          "chroma": 0
-        },
-        "surface.raised": {
-          "offset": "palette.neutrals.white",
-          "lightness": -0.02,
-          "chroma": 0
-        },
+        "surface.canvas": "palette.neutrals.soft_100",
+        "surface.raised": "palette.neutrals.soft_50",
         "text.strong": "palette.neutrals.soft_700",
         "text.subtle": "palette.neutrals.soft_500",
         "accent.red.highlight": {
@@ -710,20 +709,21 @@
           "offset": "accent.azure.base",
           "lightness": 0.05,
           "chroma": 0
+        },
+        "surface.selection": {
+          "mix": [
+            "surface.raised",
+            "text.primary"
+          ],
+          "weight": 0.95
         }
       }
     },
     "dark-soft": {
       "mode": "dark",
       "overrides": {
-        "surface.canvas": "palette.neutrals.soft_800",
-        "surface.raised": {
-          "mix": [
-            "palette.neutrals.soft_800",
-            "palette.neutrals.soft_700"
-          ],
-          "weight": 0.5
-        },
+        "surface.canvas": "palette.neutrals.soft_900",
+        "surface.raised": "palette.neutrals.soft_800",
         "surface.inverse": "palette.neutrals.soft_100",
         "text.inverse": "surface.canvas",
         "text.strong": "palette.neutrals.soft_100",
