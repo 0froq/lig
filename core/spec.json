@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.3",
+  "version": "0.2.4",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -57,17 +57,17 @@
         "h": null
       },
       "soft_50": {
-        "l": 0.98,
+        "l": 0.96,
         "c": 0,
         "h": null
       },
       "soft_100": {
-        "l": 0.94,
+        "l": 0.9,
         "c": 0,
         "h": null
       },
       "soft_200": {
-        "l": 0.88,
+        "l": 0.84,
         "c": 0,
         "h": null
       },
@@ -619,8 +619,16 @@
     "light-soft": {
       "mode": "light",
       "overrides": {
-        "surface.canvas": "palette.neutrals.soft_100",
-        "surface.raised": "palette.neutrals.soft_50",
+        "surface.canvas": {
+          "offset": "palette.neutrals.white",
+          "lightness": -0.06,
+          "chroma": 0
+        },
+        "surface.raised": {
+          "offset": "palette.neutrals.white",
+          "lightness": -0.02,
+          "chroma": 0
+        },
         "text.strong": "palette.neutrals.soft_700",
         "text.subtle": "palette.neutrals.soft_500",
         "accent.red.highlight": {
@@ -716,9 +724,9 @@
           ],
           "weight": 0.5
         },
-        "surface.inverse": "palette.neutrals.soft_200",
+        "surface.inverse": "palette.neutrals.soft_100",
         "text.inverse": "surface.canvas",
-        "text.strong": "palette.neutrals.soft_200",
+        "text.strong": "palette.neutrals.soft_100",
         "text.dim": "palette.neutrals.soft_700",
         "border.default": "palette.neutrals.soft_700",
         "accent.red.highlight": {

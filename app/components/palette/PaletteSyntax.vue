@@ -32,10 +32,11 @@ const neutralOptions = neutralOrder.map(name => ({
 }))
 
 type NeutralName = typeof neutralOrder[number]
+type BackgroundName = NeutralName | 'surface.canvas'
 interface LabState {
   baseLightness: number
   baseChroma: number
-  background: NeutralName
+  background: BackgroundName
 }
 
 function labState(variant: LigVariant): LabState {
@@ -44,7 +45,7 @@ function labState(variant: LigVariant): LabState {
   return {
     baseLightness: base.l,
     baseChroma: base.c,
-    background: neutralOptions.find(option => option.hex === initial.tokens['surface.canvas'])?.name as NeutralName ?? 'white',
+    background: neutralOptions.find(option => option.hex === initial.tokens['surface.canvas'])?.name ?? 'surface.canvas',
   }
 }
 
@@ -55,7 +56,7 @@ const labByVariant = ref<Record<LigVariant, LabState>>({
   'dark-soft': labState('dark-soft'),
 })
 const activeLab = computed(() => labByVariant.value[variant.value])
-const backgroundName = computed<NeutralName>({
+const backgroundName = computed<BackgroundName>({
   get: () => activeLab.value.background,
   set: value => activeLab.value.background = value,
 })
@@ -67,7 +68,10 @@ const baseChroma = computed<number>({
   get: () => activeLab.value.baseChroma,
   set: value => activeLab.value.baseChroma = value,
 })
-const backgroundHex = computed(() => neutralOptions.find(option => option.name === backgroundName.value)?.hex ?? '#ffffff')
+const backgroundColor = computed(() => backgroundName.value === 'surface.canvas'
+  ? resolved.value.oklch['surface.canvas']!
+  : spec.palette.neutrals[backgroundName.value]!)
+const backgroundHex = computed(() => oklchToHex(backgroundColor.value))
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value))
@@ -135,7 +139,7 @@ const preview = computed<ResolvedVariant>(() => {
     authored.add(token)
   }
 
-  const background = spec.palette.neutrals[backgroundName.value]!
+  const background = backgroundColor.value
   nextOklch['surface.canvas'] = background
   nextTokens['surface.canvas'] = backgroundHex.value
   authored.add('surface.canvas')
@@ -200,6 +204,9 @@ function formatApca(value: number): string {
       <label class="lig-syntax-control">
         <span>{{ t('palette.syntax.lab.background') }}</span>
         <select v-model="backgroundName">
+          <option value="surface.canvas">
+            surface.canvas · L {{ resolved.oklch['surface.canvas']!.l.toFixed(2) }}
+          </option>
           <option
             v-for="option in neutralOptions"
             :key="option.name"

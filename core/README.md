@@ -48,14 +48,14 @@ This is a numerically calibrated starting design. Hue distinction and visual wei
 
 ## Neutral lightness ramp
 
-All neutrals have C=0 and H=null. The middle ramp uses mostly uniform OKLCH steps, while the white and black ends use deliberately different intervals. This trial keeps near-white surfaces light and lifts the darkest levels to improve their separation in exported sRGB. Display black level, ambient light and adaptation still affect their appearance; numeric intervals alone do not establish visual uniformity. Absolute white/black remain endpoints. The numeric names identify existing tokens, not percentages of RGB brightness.
+All neutrals have C=0 and H=null. The near-white samples use L=1/.96/.90/.84/.78 through soft_300; middle samples then use .10 steps through soft_700, while dark endpoints keep their independently calibrated intervals. The near-white gaps are .04/.06/.06/.06 rather than the earlier compressed .02/.04/.06/.10. This trial increases near-white separation without changing the middle/dark anchors. Display black level, ambient light and adaptation still affect their appearance; numeric intervals alone do not establish visual uniformity. Absolute white/black remain endpoints. The numeric names identify existing tokens, not percentages of RGB brightness.
 
 | Neutral  | L    | Exported hex |
 | -------- | ---- | ------------ |
 | white    | 1.00 | `#ffffff`    |
-| soft_50  | 0.98 | `#f8f8f8`    |
-| soft_100 | 0.94 | `#ebebeb`    |
-| soft_200 | 0.88 | `#d7d7d7`    |
+| soft_50  | 0.96 | `#f2f2f2`    |
+| soft_100 | 0.90 | `#dedede`    |
+| soft_200 | 0.84 | `#cacaca`    |
 | soft_300 | 0.78 | `#b7b7b7`    |
 | soft_400 | 0.68 | `#989898`    |
 | soft_500 | 0.58 | `#7a7a7a`    |
@@ -66,7 +66,11 @@ All neutrals have C=0 and H=null. The middle ramp uses mostly uniform OKLCH step
 | soft_950 | 0.14 | `#090909`    |
 | black    | 0.00 | `#000000`    |
 
-The homepage labels these authored L values. Exported hex is quantized: near black, one 8-bit sRGB step covers a larger L interval, so the coordinates remain the source of truth rather than the rounded hex. The ramp is intentionally calibrated against the exported display colors, not forced into a symmetric numeric scale.
+The homepage labels these authored L values. Exported hex is quantized: near black, one 8-bit sRGB step covers a larger L interval, so the coordinates remain the source of truth rather than the rounded hex. The ramp is intentionally calibrated against the exported display colors, not forced into a symmetric numeric scale. White→50 now spans 13 sRGB byte values instead of 7; 50→100 spans 20 instead of 13. These separations are regression guards for this design trial, not experimentally established just-noticeable differences.
+
+[OKLab's derivation](https://bottosson.github.io/posts/oklab/#motivation-and-derivation-of-oklab) already uses nonlinear response compression and assumes normal viewing conditions; applying a second generic gamma/Weber curve to L would not automatically improve uniformity. [Rudd's lightness model and psychophysical evidence](https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2014.00640/full) discuss contextual, spatial and lightness/darkness induction effects. They do not provide one universally valid UI gray-scale formula or imply that all symmetric ramps are wrong. [Radix's use-case scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale) assigns steps to surfaces, borders and text; its purpose is useful role distinctions, not equally spaced swatch differences. Our exact anchors are a contextual design trial responding to the user's observed near-white compression. WCAG/APCA measure text/background contrast and are not used to equalize swatch distances.
+
+Palette samples and surface roles need not coincide. Light-soft preserves canvas L=.94 / `#ebebeb` and raised L=.98 / `#f8f8f8` using white offsets −.06/−.02, so resampling the near-white ramp does not darken that variant. The lab exposes `surface.canvas` alongside neutral samples and uses it as the fallback when the actual canvas is not a ramp entry. Standard light raised surfaces now inherit soft_50=.96; dark strongest ink also inherits that step. Dark-soft reselects soft_100=.90 for strongest/inverse ink to retain separation from primary .78 after soft_200 moves to .84.
 
 ## Derived colors
 
@@ -119,14 +123,14 @@ Soft reduces luminance extremes while retaining hue/color identity and the share
 
 | Variant    | Canvas L / hex  | Raised L / hex  | Mono highlight/base/muted selections |
 | ---------- | --------------- | --------------- | ------------------------------------ |
-| light      | 1 / `#ffffff`   | .98 / `#f8f8f8` | soft_800 / soft_600 / soft_400       |
+| light      | 1 / `#ffffff`   | .96 / `#f2f2f2` | soft_800 / soft_600 / soft_400       |
 | light-soft | .94 / `#ebebeb` | .98 / `#f8f8f8` | soft_700 / soft_600 / soft_500       |
 | dark       | .21 / `#181818` | .30 / `#2e2e2e` | soft_50 / soft_300 / soft_500        |
-| dark-soft  | .30 / `#2e2e2e` | .34 / `#383838` | soft_200 / soft_300 / soft_500       |
+| dark-soft  | .30 / `#2e2e2e` | .34 / `#383838` | soft_100 / soft_300 / soft_500       |
 
-Light-soft lifts the darkest neutral ink from L=.30 to .38 and brings muted comments from .68 to .58 so they remain visible on the grayer canvas. Its raised panels are deliberately lighter than the canvas. Dark-soft lifts the canvas, caps strongest ink at .88 instead of .98 and uses a smaller .04 L surface gap; its raised color is the OKLab midpoint of soft_800/soft_700. Border/dim use soft_700 so they do not disappear into the new canvas. Inverse roles follow the softened strongest-ink/canvas pair.
+Light-soft lifts the darkest neutral ink from L=.30 to .38 and brings muted comments from .68 to .58 so they remain visible on the grayer canvas. Its raised panels are deliberately lighter than the canvas. Dark-soft lifts the canvas, caps strongest ink at .90 instead of .96 and uses a smaller .04 L surface gap; its raised color is the OKLab midpoint of soft_800/soft_700. Border/dim use soft_700 so they do not disappear into the new canvas. Inverse roles follow the softened strongest-ink/canvas pair.
 
-Strong-ink canvas contrast falls from 13.58 to 8.43:1 in light-soft and from 16.72 to 9.44:1 in dark-soft. Primary/secondary neutral ink remains ≥4.5:1 on both soft canvases; primary also meets that bound on raised panels. Soft/base accents remain identical to their standard mode, and syntax/ANSI/diagnostic references continue to consume the selected variant. These numerical checks do not establish visual acceptance or contrast for every possible surface/foreground pair. User assessment should compare gray keyword/variable/comment hierarchy, color identity and panel separation at actual editing sizes.
+Strong-ink canvas contrast falls from 13.58 to 8.43:1 in light-soft and from 15.86 to 10.09:1 in dark-soft. Primary/secondary neutral ink remains ≥4.5:1 on both soft canvases; primary also meets that bound on raised panels. Soft/base accents remain identical to their standard mode, and syntax/ANSI/diagnostic references continue to consume the selected variant. These numerical checks do not establish visual acceptance or contrast for every possible surface/foreground pair. User assessment should compare gray keyword/variable/comment hierarchy, color identity and panel separation at actual editing sizes.
 
 ## sRGB export and gamut
 
@@ -150,12 +154,12 @@ Foreground roles form a deliberate L hierarchy:
 
 | Role           | Light L / hex   | Dark L / hex    |
 | -------------- | --------------- | --------------- |
-| text.strong    | .30 / `#2e2e2e` | .98 / `#f8f8f8` |
+| text.strong    | .30 / `#2e2e2e` | .96 / `#f2f2f2` |
 | text.primary   | .48 / `#5d5d5d` | .78 / `#b7b7b7` |
 | text.secondary | .52 / `#696969` | .68 / `#989898` |
 | text.subtle    | .68 / `#989898` | .58 / `#7a7a7a` |
 
-Mono highlight/base/muted select the existing neutral ramp independently for all four variants, as listed above. Standard light gaps are .18/.20 and standard dark gaps .20/.20; light-soft uses .10/.10 and dark-soft .10/.20. Secondary ink remains between base and muted: primary +.04 L in light modes, `soft_400` in dark modes. Strong, primary and secondary retain at least 4.5:1 contrast on their default canvases. Muted ink intentionally trades some contrast for hierarchy: standard light is 2.88:1 / APCA +55 Lc; light-soft is 3.60:1 / +58 Lc; dark-soft is 3.16:1 / −27 Lc. Muted ink is not a normal-text readability guarantee, especially for small or thin text. WCAG/APCA readings remain visible rather than forcing every tier to meet a threshold. Website L/C controls affect chromatic families only, preserving the selected mono ramp steps.
+Mono highlight/base/muted select the existing neutral ramp independently for all four variants, as listed above. Standard light gaps are .18/.20 and standard dark gaps .18/.20; light-soft uses .10/.10 and dark-soft .12/.20. Secondary ink remains between base and muted: primary +.04 L in light modes, `soft_400` in dark modes. Strong, primary and secondary retain at least 4.5:1 contrast on their default canvases. Muted ink intentionally trades some contrast for hierarchy: standard light is 2.88:1 / APCA +55 Lc; light-soft is 3.60:1 / +58 Lc; dark-soft is 3.16:1 / −27 Lc. Muted ink is not a normal-text readability guarantee, especially for small or thin text. WCAG/APCA readings remain visible rather than forcing every tier to meet a threshold. Website L/C controls affect chromatic families only, preserving the selected mono ramp steps.
 
 The larger light-mode span is a visual calibration choice, not a theoretical requirement. [OKLab's derivation](https://bottosson.github.io/posts/oklab/#motivation-and-derivation-of-oklab) assumes normal viewing conditions without explicitly modelling background adaptation. [APCA](https://github.com/Myndex/SAPC-APCA/blob/master/documentation/README.md) evaluates text/background polarity and relates contrast to typography, while [Radix Colors](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale) assigns scale steps by intended use. These support independent role calibration on each background rather than mirrored indices. Radix's text contrast targets are not a claim that this experimental muted tier meets them.
 

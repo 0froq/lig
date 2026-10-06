@@ -61,7 +61,7 @@ it('foreground hierarchy preserves readable primary/secondary text and quieter m
 
 it('canvases and raised surfaces use independently calibrated neutral lightness', () => {
   const canvases = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'dark-soft': ['#2e2e2e', 0.30], 'light-soft': ['#ebebeb', 0.94] } as const
-  const raised = { 'dark': ['#2e2e2e', 0.30], 'light': ['#f8f8f8', 0.98], 'dark-soft': ['#383838', 0.34], 'light-soft': ['#f8f8f8', 0.98] } as const
+  const raised = { 'dark': ['#2e2e2e', 0.30], 'light': ['#f2f2f2', 0.96], 'dark-soft': ['#383838', 0.34], 'light-soft': ['#f8f8f8', 0.98] } as const
   for (const variant of VARIANTS) {
     const { tokens, oklch } = resolveVariant(variant)
     assert.equal(tokens['surface.canvas'], canvases[variant][0])
@@ -127,12 +127,12 @@ it('website CSS exports contain every exposed swatch and semantic token', () => 
   }
 })
 
-it('neutral ramp is achromatic with perceptually regular middle steps', () => {
+it('neutral ramp separates near-white exports and retains the middle/dark calibration', () => {
   const neutrals = {
     white: 1,
-    soft_50: 0.98,
-    soft_100: 0.94,
-    soft_200: 0.88,
+    soft_50: 0.96,
+    soft_100: 0.90,
+    soft_200: 0.84,
     soft_300: 0.78,
     soft_400: 0.68,
     soft_500: 0.58,
@@ -157,8 +157,21 @@ it('neutral ramp is achromatic with perceptually regular middle steps', () => {
   const levels = Object.values(neutrals)
   for (let i = 1; i < levels.length; i++)
     assert.ok(levels[i - 1]! > levels[i]!)
-  for (const [first, second] of [[200, 300], [300, 400], [400, 500], [500, 600], [600, 700]])
+  for (const [first, second] of [[300, 400], [400, 500], [500, 600], [600, 700]])
     assert.ok(Math.abs(spec.palette.neutrals[`soft_${first}`]!.l - spec.palette.neutrals[`soft_${second}`]!.l - 0.10) < 1e-12)
+  const nearWhite = ['white', 'soft_50', 'soft_100', 'soft_200', 'soft_300']
+  for (let i = 1; i < nearWhite.length; i++) {
+    const first = nearWhite[i - 1]!
+    const second = nearWhite[i]!
+    const targetGap = i === 1 ? 0.04 : 0.06
+    assert.ok(Math.abs(neutrals[first as keyof typeof neutrals] - neutrals[second as keyof typeof neutrals] - targetGap) < 1e-12)
+    const firstHex = bundle.palette.neutrals[first]!
+    const secondHex = bundle.palette.neutrals[second]!
+    assert.ok(hexToOklch(firstHex).l - hexToOklch(secondHex).l >= targetGap - 0.004)
+    // Guard exported separation too; this is a design threshold, not a JND claim.
+    const byteGap = Number.parseInt(firstHex.slice(1, 3), 16) - Number.parseInt(secondHex.slice(1, 3), 16)
+    assert.ok(byteGap >= (i === 1 ? 12 : 18), `${first}/${second}: near-white channel separation`)
+  }
   assert.equal(new Set(Object.values(bundle.palette.neutrals)).size, levels.length)
 })
 
@@ -345,7 +358,7 @@ it('mono tiers select existing neutral steps in the mode emphasis direction', ()
     'light': ['soft_800', 'soft_600', 'soft_400'],
     'dark': ['soft_50', 'soft_300', 'soft_500'],
     'light-soft': ['soft_700', 'soft_600', 'soft_500'],
-    'dark-soft': ['soft_200', 'soft_300', 'soft_500'],
+    'dark-soft': ['soft_100', 'soft_300', 'soft_500'],
   }
   for (const variant of VARIANTS) {
     const { oklch, tokens, mode } = resolveVariant(variant)
