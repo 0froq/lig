@@ -367,7 +367,7 @@ it('mono tiers select existing neutral steps in the mode emphasis direction', ()
   const selections = {
     'light': ['soft_800', 'soft_600', 'soft_400'],
     'dark': ['soft_50', 'soft_300', 'soft_500'],
-    'light-soft': ['soft_700', 'soft_600', 'soft_500'],
+    'light-soft': ['soft_800', 'soft_600', 'soft_500'],
     'dark-soft': ['soft_100', 'soft_300', 'soft_500'],
   }
   for (const variant of VARIANTS) {

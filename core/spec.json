@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.5",
+  "version": "0.2.6",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -628,7 +628,6 @@
       "overrides": {
         "surface.canvas": "palette.neutrals.soft_100",
         "surface.raised": "palette.neutrals.soft_50",
-        "text.strong": "palette.neutrals.soft_700",
         "text.subtle": "palette.neutrals.soft_500",
         "accent.red.highlight": {
           "offset": "accent.red.base",
