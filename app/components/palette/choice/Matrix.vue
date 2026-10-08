@@ -6,9 +6,9 @@ import { joinVariant, radioKey, splitVariant, VARIANT_OPTIONS } from '~/utils/li
 const variant = defineModel<LigVariant>('variant', { required: true })
 const { t } = useI18n()
 
-const ids = VARIANT_OPTIONS.map(option => option.id)
 const tones: Tone[] = ['light', 'dark']
-const edges: Edge[] = ['crisp', 'soft']
+const edges: Edge[] = ['crisp', 'soft', 'paper']
+const ids = tones.flatMap(tone => edges.map(edge => joinVariant(tone, edge)))
 const hover = ref<LigVariant | null>(null)
 
 const lit = computed(() => splitVariant(hover.value ?? variant.value))
@@ -32,7 +32,7 @@ function label(id: LigVariant): string {
         :key="edge"
         class="lig-matrix-axis"
         :class="{ 'is-lit': lit.edge === edge }"
-      >{{ t(edge === 'crisp' ? 'palette.choice.edgeCrisp' : 'palette.choice.edgeSoft') }}</span>
+      >{{ t(`palette.choice.edge${edge[0]!.toUpperCase()}${edge.slice(1)}`) }}</span>
       <template
         v-for="tone in tones"
         :key="tone"

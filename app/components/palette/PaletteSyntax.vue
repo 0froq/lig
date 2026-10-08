@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { LigVariant } from '#palette/nvim-build'
 import type { Oklch, ResolvedVariant } from '../../../core'
-import { apcaContrast, contrast, oklchToHex, resolveVariant, spec } from '../../../core'
+import { apcaContrast, contrast, oklchToHex, resolveVariant, spec, VARIANTS } from '../../../core'
 
 const variant = defineModel<LigVariant>('variant', { required: true })
 const { format, copied, copyValue, textFor } = usePaletteClipboard()
@@ -25,14 +25,17 @@ const neutralOrder = [
   'black',
 ] as const
 
-const neutralOptions = neutralOrder.map(name => ({
+const neutralOptions = [...neutralOrder.map(name => ({
   name,
   hex: oklchToHex(spec.palette.neutrals[name]!),
   lightness: spec.palette.neutrals[name]!.l,
-}))
+})), ...Object.entries(spec.palette.paper).map(([name, color]) => ({
+  name,
+  hex: oklchToHex(color),
+  lightness: color.l,
+}))]
 
-type NeutralName = typeof neutralOrder[number]
-type BackgroundName = NeutralName | 'surface.canvas'
+type BackgroundName = string
 interface LabState {
   baseLightness: number
   baseChroma: number
@@ -49,12 +52,7 @@ function labState(variant: LigVariant): LabState {
   }
 }
 
-const labByVariant = ref<Record<LigVariant, LabState>>({
-  'light': labState('light'),
-  'dark': labState('dark'),
-  'light-soft': labState('light-soft'),
-  'dark-soft': labState('dark-soft'),
-})
+const labByVariant = ref(Object.fromEntries(VARIANTS.map(name => [name, labState(name)])) as Record<LigVariant, LabState>)
 const activeLab = computed(() => labByVariant.value[variant.value])
 const backgroundName = computed<BackgroundName>({
   get: () => activeLab.value.background,
@@ -70,16 +68,16 @@ const baseChroma = computed<number>({
 })
 const backgroundColor = computed(() => backgroundName.value === 'surface.canvas'
   ? resolved.value.oklch['surface.canvas']!
-  : spec.palette.neutrals[backgroundName.value]!)
+  : (spec.palette.neutrals[backgroundName.value] ?? spec.palette.paper[backgroundName.value])!)
 const backgroundHex = computed(() => oklchToHex(backgroundColor.value))
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value))
 }
 
-function experimentalColor(sourceBase: Oklch, source: Oklch): Oklch {
+function experimentalColor(sourceBase: Oklch, source: Oklch, mono = false): Oklch {
   // Mono keeps its authored neutral-ramp selections while chromatic inks vary.
-  if (sourceBase.h === null)
+  if (mono || sourceBase.h === null)
     return source
   const targetBase = resolved.value.oklch['family.struct.base']!
   const lightnessDelta = baseLightness.value - targetBase.l
@@ -94,14 +92,14 @@ const inks = computed(() => families.map((family) => {
   const sourceBase = resolved.value.oklch[baseToken]!
   const levels = (['highlight', 'base', 'muted'] as const).map((tier) => {
     const token = `family.${family}.${tier}`
-    const color = experimentalColor(sourceBase, resolved.value.oklch[token]!)
+    const color = experimentalColor(sourceBase, resolved.value.oklch[token]!, family === 'mono')
     const hex = oklchToHex(color)
     return {
       tier,
       token,
       color,
       hex,
-      neutral: family === 'mono' ? neutralOptions.find(option => option.lightness === color.l)?.name : undefined,
+      neutral: family === 'mono' ? neutralOptions.find(option => option.hex === hex)?.name : undefined,
       wcag: contrast(hex, backgroundHex.value),
       apca: apcaContrast(hex, backgroundHex.value),
     }
@@ -122,8 +120,7 @@ const preview = computed<ResolvedVariant>(() => {
     }
   }
 
-  const monoBase = resolved.value.oklch['family.mono.base']!
-  const monoSecondary = experimentalColor(monoBase, resolved.value.oklch['family.mono.secondary']!)
+  const monoSecondary = resolved.value.oklch['family.mono.secondary']!
   nextOklch['family.mono.secondary'] = monoSecondary
   nextTokens['family.mono.secondary'] = oklchToHex(monoSecondary)
   authored.add('family.mono.secondary')
@@ -177,7 +174,7 @@ function formatApca(value: number): string {
         {{ t('palette.syntax.lab.title') }}
       </p>
       <p class="lig-syntax-lab-note">
-        {{ t('palette.syntax.lab.note') }}
+        {{ t(variant.endsWith('paper') ? 'palette.syntax.lab.paperNote' : 'palette.syntax.lab.note') }}
       </p>
     </div>
     <div class="lig-syntax-lab-controls">

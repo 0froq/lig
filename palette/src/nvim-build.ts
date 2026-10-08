@@ -1,7 +1,7 @@
 /** Compatibility adapter for the website's original nvim-shaped palette API. */
 import type { LigVariant } from '../../core'
 import type { BuiltColors, ColorTriad, SemanticRole, SwatchEntry } from './types'
-import { resolveVariant } from '../../core'
+import { oklchToHex, resolveVariant, spec } from '../../core'
 import { GROUP_ALIASES, ROLE_ALIASES, SEMANTIC_KEYS } from './constants'
 import { accents, neutrals } from './source'
 
@@ -47,6 +47,10 @@ export function baseSwatches(style: LigVariant): SwatchEntry[] {
     role: 'neutral',
     sourceKey: `palette.neutrals.${name}`,
   }))
+  if (style.endsWith('paper')) {
+    for (const [name, color] of Object.entries(spec.palette.paper))
+      entries.push({ name, hex: oklchToHex(color), role: 'neutral', sourceKey: `palette.paper.${name}` })
+  }
   for (const name of Object.keys(accents)) {
     const steps = { hl: 'highlight', base: 'base', fd: 'faded' }
     for (const [suffix, step] of Object.entries(steps)) {

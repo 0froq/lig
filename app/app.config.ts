@@ -7,7 +7,7 @@ export default defineAppConfig({
     mark: '.',
     theme: {
       light: {
-        bg: '#f4f2ec',
+        bg: resolveVariant('light-paper').tokens['surface.canvas']!,
         fg: '#1a1917',
         muted: '#85837c',
         faint: '#cfccc3',
@@ -15,7 +15,7 @@ export default defineAppConfig({
         accent: resolveVariant('light').tokens['accent.primary']!,
       },
       dark: {
-        bg: '#111113',
+        bg: resolveVariant('dark-paper').tokens['surface.canvas']!,
         fg: '#f2f0ea',
         muted: '#918f88',
         faint: '#32312d',

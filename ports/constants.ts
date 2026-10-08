@@ -9,4 +9,6 @@ export const VARIANT_LABELS: Record<LigVariant, string> = {
   'light': 'LiG Preview Light',
   'dark-soft': 'LiG Preview Dark Soft',
   'light-soft': 'LiG Preview Light Soft',
+  'light-paper': 'LiG Preview Light Paper',
+  'dark-paper': 'LiG Preview Dark Paper',
 }

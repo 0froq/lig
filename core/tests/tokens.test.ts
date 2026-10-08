@@ -9,12 +9,15 @@ import { createTokenBundle, resolveVariant, spec, syntaxFamily, VARIANTS } from 
 // Calibration floors for the selected canvases, not universal readability criteria.
 const contrastFloors = {
   'light': { primary: 4.5, secondary: 4.5, highlight: 5.5, base: 4, faded: 3 },
+  'light-paper': { primary: 4.5, secondary: 4.5, highlight: 5.5, base: 4, faded: 3 },
+  'dark-paper': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
   'light-soft': { primary: 4.5, secondary: 4, highlight: 4.2, base: 3.4, faded: 2.7 },
   'dark': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
   'dark-soft': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
 }
 const lightLcFloors = {
   'light': { highlight: 72, base: 63, faded: 53 },
+  'light-paper': { highlight: 72, base: 63, faded: 53 },
   'light-soft': { highlight: 58, base: 52, faded: 45 },
 }
 
@@ -61,19 +64,19 @@ it('foreground hierarchy preserves calibrated contrast and quieter muted ink', (
         const floor = mono ? family === 'mono.secondary' ? floors.secondary : floors.primary : floors[tier]
         assert.ok(contrast(hex, tokens['surface.canvas']!) >= floor, `${variant}/${role}: calibrated syntax contrast`)
         if (!mono && mode === 'light')
-          assert.ok(apcaContrast(hex, tokens['surface.canvas']!) >= lightLcFloors[variant as 'light' | 'light-soft'][tier], `${variant}/${role}: calibrated Lc`)
+          assert.ok(apcaContrast(hex, tokens['surface.canvas']!) >= lightLcFloors[variant as keyof typeof lightLcFloors][tier], `${variant}/${role}: calibrated Lc`)
       }
     }
     assert.notEqual(tokens['border.default'], tokens['text.subtle'])
     assert.equal(tokens['border.divider'], tokens['border.default'])
-    assert.equal(oklch['border.default']!.c, 0)
+    assert.ok(variant.endsWith('paper') ? oklch['border.default']!.c > 0 && oklch['border.default']!.c < 0.015 : oklch['border.default']!.c === 0)
     assert.notEqual(tokens['text.secondary'], tokens['surface.status'])
   }
 })
 
 it('canvases and raised surfaces use independently calibrated neutral lightness', () => {
-  const canvases = { 'dark': ['#090909', 0.14], 'light': ['#f2f2f2', 0.96], 'dark-soft': ['#181818', 0.21], 'light-soft': ['#dedede', 0.90] } as const
-  const raised = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'dark-soft': ['#2e2e2e', 0.30], 'light-soft': ['#f2f2f2', 0.96] } as const
+  const canvases = { 'dark': ['#090909', 0.14], 'light': ['#f2f2f2', 0.96], 'dark-soft': ['#181818', 0.21], 'light-soft': ['#dedede', 0.90], 'light-paper': ['#f4f2ec', 0.9610312307917526], 'dark-paper': ['#111113', 0.17852907078448418] } as const
+  const raised = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'dark-soft': ['#2e2e2e', 0.30], 'light-soft': ['#f2f2f2', 0.96], 'light-paper': ['#fdfcf9', 0.99], 'dark-paper': ['#201f1c', 0.24] } as const
   for (const variant of VARIANTS) {
     const { tokens, oklch } = resolveVariant(variant)
     assert.equal(tokens['surface.canvas'], canvases[variant][0])
@@ -81,7 +84,7 @@ it('canvases and raised surfaces use independently calibrated neutral lightness'
     assert.equal(tokens['surface.raised'], raised[variant][0])
     assert.ok(Math.abs(oklch['surface.raised']!.l - raised[variant][1]) < 1e-12)
     assert.ok(oklch['surface.raised']!.l > oklch['surface.canvas']!.l)
-    assert.ok(Math.abs(oklch['surface.raised']!.l - oklch['surface.canvas']!.l) >= 0.04 - 1e-12)
+    assert.ok(Math.abs(oklch['surface.raised']!.l - oklch['surface.canvas']!.l) >= (variant.endsWith('paper') ? 0.025 : 0.04) - 1e-12)
     assert.ok(Math.abs(oklch['surface.selection']!.l - oklch['surface.canvas']!.l) >= 0.03, `${variant}: selection/canvas separation`)
     assert.ok(contrast(tokens['text.primary']!, tokens['surface.selection']!) >= 4.5, `${variant}: selected text contrast`)
   }
@@ -211,6 +214,8 @@ it('each variant keeps layers balanced through sRGB export and calibrated canvas
   const mappedTiers: Record<LigVariant, string[]> = {
     'dark': ['blue.highlight'],
     'dark-soft': [],
+    'dark-paper': ['blue.highlight'],
+    'light-paper': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
     'light': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
     'light-soft': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
   }
@@ -235,7 +240,7 @@ it('each variant keeps layers balanced through sRGB export and calibrated canvas
         }
         assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= contrastFloors[variant][layer], `${variant}/${key}: calibrated layer`)
         if (mode === 'light')
-          assert.ok(apcaContrast(tokens[key]!, tokens['surface.canvas']!) >= lightLcFloors[variant as 'light' | 'light-soft'][layer], `${variant}/${key}: calibrated Lc`)
+          assert.ok(apcaContrast(tokens[key]!, tokens['surface.canvas']!) >= lightLcFloors[variant as keyof typeof lightLcFloors][layer], `${variant}/${key}: calibrated Lc`)
         const result = hexToOklch(tokens[key]!)
         assert.ok(Math.abs(result.l - mapped.l) < 0.002, `${variant}/${key}: exported L`)
         assert.ok(Math.abs(result.c - mapped.c) < 0.002, `${variant}/${key}: exported C`)
@@ -369,12 +374,15 @@ it('mono tiers select existing neutral steps in the mode emphasis direction', ()
     'dark': ['soft_50', 'soft_300', 'soft_500'],
     'light-soft': ['soft_800', 'soft_600', 'soft_500'],
     'dark-soft': ['soft_100', 'soft_300', 'soft_500'],
+    'light-paper': ['paper_800', 'paper_600', 'paper_400'],
+    'dark-paper': ['paper_50', 'paper_300', 'paper_500'],
   }
   for (const variant of VARIANTS) {
     const { oklch, tokens, mode } = resolveVariant(variant)
     const tiers = ['highlight', 'base', 'muted']
     for (const [i, tier] of tiers.entries()) {
-      const neutral = spec.palette.neutrals[selections[variant][i]!]!
+      const name = selections[variant][i]!
+      const neutral = (spec.palette.neutrals[name] ?? spec.palette.paper[name])!
       assert.deepEqual(oklch[`family.mono.${tier}`], neutral)
       assert.equal(tokens[`family.mono.${tier}`], oklchToHex(neutral))
     }
@@ -384,6 +392,40 @@ it('mono tiers select existing neutral steps in the mode emphasis direction', ()
       assert.ok(mode === 'light' ? delta > 0 : delta < 0)
       assert.ok(Math.abs(delta) >= 0.10 - 1e-12)
     }
+  }
+})
+
+it('paper variants retain semantic colors and propagate their tinted ink through shared aliases', () => {
+  const bundle = createTokenBundle()
+  for (const [paperName, standardName] of [['light-paper', 'light'], ['dark-paper', 'dark']] as const) {
+    const paper = resolveVariant(paperName)
+    const standard = resolveVariant(standardName)
+    for (const key of Object.keys(standard.tokens).filter(key => key.startsWith('accent.') || /^family\.(?:struct|ref|action)\./.test(key))) {
+      assert.deepEqual(paper.oklch[key], standard.oklch[key], `${paperName}/${key}: shared semantic coordinates`)
+      assert.equal(paper.tokens[key], standard.tokens[key])
+    }
+    for (const [alias, target] of Object.entries({
+      'syntax.variable': 'family.mono.highlight',
+      'syntax.keyword': 'family.mono.base',
+      'syntax.string': 'family.mono.secondary',
+      'syntax.comment': 'family.mono.muted',
+      'terminal.ansi.15': 'text.strong',
+      'terminal.ansi.8': 'text.subtle',
+      'terminal.background': 'surface.canvas',
+    })) {
+      assert.equal(paper.tokens[alias], paper.tokens[target])
+      assert.deepEqual(paper.oklch[alias], paper.oklch[target])
+    }
+    for (const tier of ['highlight', 'base', 'secondary', 'muted']) {
+      const key = `family.mono.${tier}`
+      assert.ok(Math.abs(paper.oklch[key]!.l - standard.oklch[key]!.l) < 0.002, `${paperName}/${tier}: matched emphasis lightness`)
+      assert.ok(paper.oklch[key]!.c > 0 && paper.oklch[key]!.c < 0.015)
+    }
+    const colors = buildVariant(paperName)
+    assert.equal(colors.variable, paper.tokens['text.strong'])
+    assert.equal(colors.bg, paper.tokens['surface.canvas'])
+    for (const [name, color] of Object.entries(spec.palette.paper))
+      assert.equal(bundle.palette.paper[name], oklchToHex(color))
   }
 })
 

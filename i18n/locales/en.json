@@ -32,7 +32,9 @@
       "light": "Light",
       "dark": "Dark",
       "lightSoft": "Light soft",
-      "darkSoft": "Dark soft"
+      "darkSoft": "Dark soft",
+      "lightPaper": "Light paper",
+      "darkPaper": "Dark paper"
     },
     "sections": {
       "variants": "Flavor",
@@ -75,7 +77,8 @@
         "note": "Adjust the three colored families per variant; mono keeps its neutral steps. Background changes update WCAG 2.2 and APCA Lc for all tiers.",
         "lightness": "Color base L",
         "chroma": "Color base C",
-        "background": "Background token"
+        "background": "Background token",
+        "paperNote": "Paper trial: tinted surfaces and mono inks; semantic colors match the standard variant."
       },
       "comment": "less is great",
       "families": {
@@ -130,7 +133,7 @@
         },
         "sentence": {
           "name": "Sentence",
-          "note": "Four variants are two axes. Say them as a sentence and flip the words."
+          "note": "Six variants combine two tones with three treatments."
         },
         "wildmenu": {
           "name": "Wildmenu",
@@ -144,7 +147,8 @@
           "name": "Matrix",
           "note": "Tone by edge. The grid shows where each variant sits."
         }
-      }
+      },
+      "edgePaper": "paper"
     },
     "inspect": {
       "nodes": "nodes",

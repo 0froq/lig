@@ -8,6 +8,11 @@ export function useLigVariant() {
 
   onMounted(() => {
     try {
+      const requested = new URLSearchParams(window.location.search).get('variant') as LigVariant | null
+      if (requested && VARIANTS.includes(requested)) {
+        variant.value = requested
+        return
+      }
       const stored = localStorage.getItem(STORAGE_KEY) as LigVariant | null
       if (stored && VARIANTS.includes(stored))
         variant.value = stored

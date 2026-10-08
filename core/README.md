@@ -4,8 +4,8 @@
 
 ## Color contract
 
-- `schemaVersion: 2`, token `version: 0.2.0`, `colorSpace: oklch`.
-- Eight accents and thirteen neutrals are authored only in `palette`, as `{ l, c, h }` coordinates.
+- `schemaVersion: 2`, token `version: 0.2.7`, `colorSpace: oklch`.
+- Eight accents, thirteen achromatic neutrals and a separate low-chroma paper palette are authored only in `palette`, as `{ l, c, h }` coordinates.
 - L is perceptual lightness in [0, 1], C is nonnegative chroma, H is degrees in [0, 360). Achromatic colors use `c: 0, h: null`.
 - Eight accent primitives are calibrated to a shared OKLCH lightness/chroma target with deliberate hue anchors. Thirteen neutral primitives are designed on the achromatic OKLCH axis, with deliberate L steps rather than inherited RGB values.
 - Resolution retains floating-point coordinates throughout the dependency graph. Quantization to lowercase 8-bit `#rrggbb` happens only at export.
@@ -16,16 +16,37 @@ For example, the calibrated green is authored as:
 { "l": 0.74, "c": 0.120, "h": 148 }
 ```
 
-`tokens` supplies shared semantic references and derived colors. `modes.light` / `modes.dark` supply mode-specific roles. The four `variants` select a mode and optional overrides. Dependencies always use the selected variant's final values, including overrides. Unknown references, cycles, invalid coordinates, weights, ramp parameters, schemas and overrides fail explicitly.
+`tokens` supplies shared semantic references and derived colors. `modes.light` / `modes.dark` supply mode-specific roles. The six `variants` select a mode and optional overrides. Dependencies always use the selected variant's final values, including overrides. Unknown references, cycles, invalid coordinates, weights, ramp parameters, schemas and overrides fail explicitly.
+
+## Paper trials
+
+`light-paper` and `dark-paper` are selectable preview profiles. Their semantic accent coordinates and emphasis tiers exactly match the corresponding standard light/dark mode. They adjust surfaces and mono inks, rather than applying a warm filter to every color. The original four resolved variants are unchanged.
+
+| Role                | Light paper                               | Dark paper                                 |
+| ------------------- | ----------------------------------------- | ------------------------------------------ |
+| Canvas              | `#f4f2ec`, L .96103 / C .00825 / H 91.48° | `#111113`, L .17853 / C .00407 / H 285.98° |
+| Raised              | `#fdfcf9`, L .99                          | `#201f1c`, L .24                           |
+| Selection           | `#e4e2dc`                                 | `#272622`                                  |
+| Mono highlight      | paper_800 / `#2f2e2a`                     | paper_50 / `#f4f2ec`                       |
+| Mono base           | paper_600 / `#5f5d59`                     | paper_300 / `#b9b7b2`                      |
+| Mono muted          | paper_400 / `#9a9893`                     | paper_500 / `#7c7a75`                      |
+| Primary WCAG / APCA | 5.87:1 / +75 Lc                           | 9.41:1 / −63 Lc                            |
+| Muted WCAG / APCA   | 2.57:1 / +47 Lc                           | 4.40:1 / −31 Lc                            |
+
+Paper ramp hue is approximately 91.48°, with C=.008 through paper_700, .006 at paper_800/900 and .003 at paper_950. Paper_50 reproduces the site's original warm background exactly; its L differs from neutral soft_50 by .00103. The dark canvas independently reproduces the site's slightly cool dark background; its warm raised surfaces and ink remain subtle. `app/app.config.ts` now reads both site canvas colors from core, avoiding independent background authoring.
+
+The paper ramp is separate from `palette.neutrals`, whose C=0 contract remains intact. The website shows the matching paper ramp, exposes both paper and neutral background choices, and keeps mono inks fixed when the colored L/C controls change. All six lab states are independent. A `?variant=light-paper` or `?variant=dark-paper` URL opens the chosen preview; an absent/invalid query retains the stored/default selection. WCAG/APCA readouts continue to report the actual chosen background.
+
+These profiles are visual trials, not claims of reduced eye strain or improved color discrimination. Manual comparison should inspect variable/keyword hierarchy, green/blue/orange separation, comments, selection and raised panels at actual editing sizes. Native compiler outputs include the two profiles, but editor preview repositories/releases are not republished by this website trial.
 
 ## Calibrated accents
 
 The eight colors are intended to have similar weight within each mode. Their design coordinates share L/C; H distinguishes the families. Hues are refined individually, including the additional orange and azure. The circular gaps are 38°, 40°, 48°, 46°, 40°, 41°, 50° and 57°: reasonably distributed without forcing all eight named families onto equal 45° steps.
 
-| Mode               | Base L | Base C | Derivation from authored accents |
-| ------------------ | ------ | ------ | -------------------------------- |
-| dark / dark-soft   | 0.740  | 0.120  | Authored primitives              |
-| light / light-soft | 0.550  | 0.110  | Offset L −.19, C −.010           |
+| Mode                             | Base L | Base C | Derivation from authored accents |
+| -------------------------------- | ------ | ------ | -------------------------------- |
+| dark / dark-soft / dark-paper    | 0.740  | 0.120  | Authored primitives              |
+| light / light-soft / light-paper | 0.550  | 0.110  | Offset L −.19, C −.010           |
 
 All modes keep H. The authored `palette.accents` is the reference/dark palette; consumers must use `variants[variant].tokens` or `.oklch` for mode-specific colors. Soft variants retain the standard mode's base accent coordinates; they soften surface/strong-ink contrast and adjust tier spacing independently.
 
@@ -40,7 +61,7 @@ All modes keep H. The authored `palette.accents` is the reference/dark palette; 
 | blue    | 275° | `#95a4f6` | `#5f6bb1` |
 | magenta | 325° | `#d190d4` | `#915a95` |
 
-The eight dark base accents retain their authored C=.120 in sRGB. All three chromatic syntax-family bases (green/blue/orange) retain C=.110 in both light variants. Some other accents and tier endpoints require chroma reduction at constant L/H: standard dark blue highlight (.100 → .0955), both light variants' yellow/azure highlights and all cyan tiers. Dark-soft's slightly narrower tiers are entirely in sRGB. Cyan base exports at C≈.0940 in both light variants. The spec coordinates remain the authored targets, not the mapped output coordinates. Raising the target C further does not increase colors already at the sRGB boundary.
+The eight dark base accents retain their authored C=.120 in sRGB. All three chromatic syntax-family bases (green/blue/orange) retain C=.110 in all light variants. Some other accents and tier endpoints require chroma reduction at constant L/H: standard dark blue highlight (.100 → .0955), all light variants' yellow/azure highlights and all cyan tiers. Dark-soft's slightly narrower tiers are entirely in sRGB. Cyan base exports at C≈.0940 in all light variants. The spec coordinates remain the authored targets, not the mapped output coordinates. Raising the target C further does not increase colors already at the sRGB boundary.
 
 Canvas selection changes contrast without changing the accent coordinates. The requested dark=950/dark-soft=900/light=50/light-soft=100 backgrounds produce these default WCAG ratios:
 
@@ -170,7 +191,7 @@ Foreground roles form a deliberate L hierarchy:
 | text.secondary | .52 / `#696969` | .68 / `#989898` |
 | text.subtle    | .68 / `#989898` | .58 / `#7a7a7a` |
 
-Mono highlight/base/muted select the existing neutral ramp independently for all four variants, as listed above. Standard light gaps are .18/.20 and standard dark gaps .18/.20; light-soft uses .18/.10 and dark-soft .12/.20. Secondary ink remains between base and muted: primary +.04 L in light modes, `soft_400` in dark modes. Strong/primary ink retains at least 4.5:1 canvas contrast; secondary ink does too except light-soft (4.08:1 / +58 Lc). Muted ink intentionally trades some contrast for hierarchy: standard light is 2.58:1 / APCA +47 Lc; light-soft is 3.19:1 / +50 Lc; dark-soft is 4.14:1 / −31 Lc. Muted ink is not a normal-text readability guarantee, especially for small or thin text. WCAG/APCA readings remain visible rather than forcing every tier to meet a threshold. Website L/C controls affect chromatic families only, preserving the selected mono ramp steps.
+Mono highlight/base/muted select the existing neutral ramp independently for all six variants, as listed above. Standard light gaps are .18/.20 and standard dark gaps .18/.20; light-soft uses .18/.10 and dark-soft .12/.20. Secondary ink remains between base and muted: primary +.04 L in light modes, `soft_400` in dark modes. Strong/primary ink retains at least 4.5:1 canvas contrast; secondary ink does too except light-soft (4.08:1 / +58 Lc). Muted ink intentionally trades some contrast for hierarchy: standard light is 2.58:1 / APCA +47 Lc; light-soft is 3.19:1 / +50 Lc; dark-soft is 4.14:1 / −31 Lc. Muted ink is not a normal-text readability guarantee, especially for small or thin text. WCAG/APCA readings remain visible rather than forcing every tier to meet a threshold. Website L/C controls affect chromatic families only, preserving the selected mono ramp steps.
 
 The larger light-mode span is a visual calibration choice, not a theoretical requirement. [OKLab's derivation](https://bottosson.github.io/posts/oklab/#motivation-and-derivation-of-oklab) assumes normal viewing conditions without explicitly modelling background adaptation. [APCA](https://github.com/Myndex/SAPC-APCA/blob/master/documentation/README.md) evaluates text/background polarity and relates contrast to typography, while [Radix Colors](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale) assigns scale steps by intended use. These support independent role calibration on each background rather than mirrored indices. Radix's text contrast targets are not a claim that this experimental muted tier meets them.
 

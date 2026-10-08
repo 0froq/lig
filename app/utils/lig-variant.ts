@@ -1,24 +1,26 @@
 import type { LigVariant } from '#palette/nvim-build'
 
 export type Tone = 'light' | 'dark'
-export type Edge = 'crisp' | 'soft'
+export type Edge = 'crisp' | 'soft' | 'paper'
 
 export const VARIANT_OPTIONS: { id: LigVariant, label: string }[] = [
   { id: 'light', label: 'palette.variants.light' },
   { id: 'dark', label: 'palette.variants.dark' },
   { id: 'light-soft', label: 'palette.variants.lightSoft' },
   { id: 'dark-soft', label: 'palette.variants.darkSoft' },
+  { id: 'light-paper', label: 'palette.variants.lightPaper' },
+  { id: 'dark-paper', label: 'palette.variants.darkPaper' },
 ]
 
 export function splitVariant(variant: LigVariant): { tone: Tone, edge: Edge } {
   return {
     tone: variant.startsWith('dark') ? 'dark' : 'light',
-    edge: variant.endsWith('soft') ? 'soft' : 'crisp',
+    edge: variant.endsWith('paper') ? 'paper' : variant.endsWith('soft') ? 'soft' : 'crisp',
   }
 }
 
 export function joinVariant(tone: Tone, edge: Edge): LigVariant {
-  return edge === 'soft' ? `${tone}-soft` : tone
+  return edge === 'crisp' ? tone : `${tone}-${edge}`
 }
 
 /** Arrow keys move a radio group's selection and focus with it. */

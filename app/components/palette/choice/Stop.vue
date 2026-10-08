@@ -78,7 +78,7 @@ function travel(from: LigVariant, to: LigVariant): void {
   const start = motion?.playState === 'running' ? current(el) : dot(a)
   motion?.cancel()
   settle()
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches)
+  if (a.offsetTop !== b.offsetTop || matchMedia('(prefers-reduced-motion: reduce)').matches)
     return
   const left = Math.min(a.offsetLeft, b.offsetLeft)
   const right = Math.max(a.offsetLeft + a.offsetWidth, b.offsetLeft + b.offsetWidth)

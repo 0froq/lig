@@ -32,7 +32,9 @@
       "light": "浅色",
       "dark": "深色",
       "lightSoft": "浅色柔和",
-      "darkSoft": "深色柔和"
+      "darkSoft": "深色柔和",
+      "lightPaper": "浅色纸张",
+      "darkPaper": "深色纸张"
     },
     "sections": {
       "variants": "变体",
@@ -75,7 +77,8 @@
         "note": "分别调整每个变体的三组彩色，mono 保持选定灰阶。切换背景时，所有层级的 WCAG 2.2 和 APCA Lc 都会更新。",
         "lightness": "彩色基准 L",
         "chroma": "彩色基准 C",
-        "background": "背景 token"
+        "background": "背景 token",
+        "paperNote": "Paper 试验：调整底色与灰阶，语义彩色沿用标准变体。"
       },
       "comment": "less is great",
       "families": {
@@ -130,7 +133,7 @@
         },
         "sentence": {
           "name": "句子",
-          "note": "四个变体其实是两根轴。写成一句话，点词来翻。"
+          "note": "两种明暗，三种底色处理，组成六个变体。"
         },
         "wildmenu": {
           "name": "命令行",
@@ -144,7 +147,8 @@
           "name": "矩阵",
           "note": "明暗乘软硬。格子说明每个变体在哪。"
         }
-      }
+      },
+      "edgePaper": "纸张"
     },
     "inspect": {
       "nodes": "个节点",

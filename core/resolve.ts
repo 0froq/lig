@@ -79,6 +79,7 @@ export function resolvePalette(source: CoreSpec = spec): TokenBundle['palette'] 
   return {
     accents: Object.fromEntries(Object.entries(source.palette.accents).map(([name, color]) => [name, oklchToHex(color)])),
     neutrals: Object.fromEntries(Object.entries(source.palette.neutrals).map(([name, color]) => [name, oklchToHex(color)])),
+    paper: Object.fromEntries(Object.entries(source.palette.paper).map(([name, color]) => [name, oklchToHex(color)])),
   }
 }
 

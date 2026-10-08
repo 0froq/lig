@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LigVariant } from '#palette/nvim-build'
+import type { Edge } from '~/utils/lig-variant'
 import { joinVariant, splitVariant } from '~/utils/lig-variant'
 
 const variant = defineModel<LigVariant>('variant', { required: true })
@@ -25,7 +26,8 @@ function flipTone(): void {
 }
 
 function flipEdge(): void {
-  variant.value = joinVariant(axes.value.tone, axes.value.edge === 'crisp' ? 'soft' : 'crisp')
+  const edges: Edge[] = ['crisp', 'soft', 'paper']
+  variant.value = joinVariant(axes.value.tone, edges[(edges.indexOf(axes.value.edge) + 1) % edges.length]!)
 }
 
 watch([variant, locale], () => nextTick(measure))
@@ -59,11 +61,9 @@ onMounted(async () => {
       >{{ t('palette.choice.toneDark') }}</span>
     </button>{{ t('palette.choice.sentence.join') }}<button
       type="button"
-      role="switch"
       class="lig-flip"
       :style="width.edge ? { width: `${width.edge}px` } : undefined"
-      :aria-checked="axes.edge === 'soft'"
-      :aria-label="t('palette.choice.edge')"
+      :aria-label="`${t('palette.choice.edge')}: ${axes.edge}`"
       @click="flipEdge"
     >
       <span
@@ -74,6 +74,10 @@ onMounted(async () => {
         :ref="keep('soft')"
         :class="{ 'is-on': axes.edge === 'soft' }"
       >{{ t('palette.choice.edgeSoft') }}</span>
+      <span
+        :ref="keep('paper')"
+        :class="{ 'is-on': axes.edge === 'paper' }"
+      >{{ t('palette.choice.edgePaper') }}</span>
     </button>{{ t('palette.choice.sentence.tail') }}<span class="lig-sentence-mark">{{ t('palette.choice.sentence.mark') }}</span>
   </p>
 </template>

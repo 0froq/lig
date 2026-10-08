@@ -27,9 +27,10 @@ const neutralOrder = [
 
 const neutrals = computed(() => {
   const byName = new Map(swatches.value.filter(sw => sw.role === 'neutral').map(sw => [sw.name, sw]))
-  return neutralOrder.flatMap((name) => {
+  const names = variant.value.endsWith('paper') ? neutralOrder.map(name => name.replace('soft_', 'paper_')) : neutralOrder
+  return names.flatMap((name) => {
     const sw = byName.get(name)
-    return sw ? [{ ...sw, lightness: spec.palette.neutrals[name]!.l }] : []
+    return sw ? [{ ...sw, lightness: (spec.palette.paper[name] ?? spec.palette.neutrals[name])!.l }] : []
   })
 })
 

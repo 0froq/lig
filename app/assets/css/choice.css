@@ -102,7 +102,7 @@
   pointer-events: none;
 }
 
-/* Sentence: the four variants are two axes, said as a line with words that flip. */
+/* Sentence: tone and treatment are said as a line with words that flip. */
 .lig-sentence {
   margin: 32px 0 22px;
   font-family: var(--font-display);
@@ -141,7 +141,7 @@
   opacity: 0;
 }
 
-.lig-flip > span:last-child:not(.is-on) {
+.lig-flip > span:not(:first-child):not(.is-on) {
   translate: 0 100%;
   opacity: 0;
 }
@@ -286,7 +286,7 @@
 
 .lig-matrix-grid {
   display: grid;
-  grid-template-columns: auto 64px 64px;
+  grid-template-columns: auto repeat(3, 64px);
   align-items: center;
 }
 
@@ -301,7 +301,8 @@
 }
 
 .lig-matrix-grid > .lig-matrix-axis:nth-child(2),
-.lig-matrix-grid > .lig-matrix-axis:nth-child(3) {
+.lig-matrix-grid > .lig-matrix-axis:nth-child(3),
+.lig-matrix-grid > .lig-matrix-axis:nth-child(4) {
   justify-self: center;
   padding-right: 0;
 }

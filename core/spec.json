@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.6",
+  "version": "0.2.7",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -110,6 +110,78 @@
         "l": 0.14,
         "c": 0,
         "h": null
+      }
+    },
+    "paper": {
+      "paper_50": {
+        "l": 0.9610312307917526,
+        "c": 0.008250666154588969,
+        "h": 91.48342224776007
+      },
+      "paper_100": {
+        "l": 0.9,
+        "c": 0.008,
+        "h": 91.48342224776007
+      },
+      "paper_200": {
+        "l": 0.84,
+        "c": 0.008,
+        "h": 91.48342224776007
+      },
+      "paper_300": {
+        "l": 0.78,
+        "c": 0.008,
+        "h": 91.48342224776007
+      },
+      "paper_400": {
+        "l": 0.68,
+        "c": 0.008,
+        "h": 91.48342224776007
+      },
+      "paper_500": {
+        "l": 0.58,
+        "c": 0.008,
+        "h": 91.48342224776007
+      },
+      "paper_600": {
+        "l": 0.48,
+        "c": 0.008,
+        "h": 91.48342224776007
+      },
+      "paper_700": {
+        "l": 0.38,
+        "c": 0.008,
+        "h": 91.48342224776007
+      },
+      "paper_800": {
+        "l": 0.3,
+        "c": 0.006,
+        "h": 91.48342224776007
+      },
+      "paper_900": {
+        "l": 0.21,
+        "c": 0.006,
+        "h": 91.48342224776007
+      },
+      "paper_950": {
+        "l": 0.14,
+        "c": 0.003,
+        "h": 91.48342224776007
+      },
+      "light_raised": {
+        "l": 0.99,
+        "c": 0.004,
+        "h": 91.48342224776007
+      },
+      "dark_canvas": {
+        "l": 0.17852907078448418,
+        "c": 0.004066343870083527,
+        "h": 285.98068337585653
+      },
+      "dark_raised": {
+        "l": 0.24,
+        "c": 0.006,
+        "h": 91.48342224776007
       }
     }
   },
@@ -808,6 +880,37 @@
           "lightness": -0.06,
           "chroma": -0.02
         }
+      }
+    },
+    "light-paper": {
+      "mode": "light",
+      "overrides": {
+        "surface.canvas": "palette.paper.paper_50",
+        "surface.raised": "palette.paper.light_raised",
+        "surface.inverse": "palette.paper.paper_900",
+        "surface.highlight": "palette.paper.paper_600",
+        "text.strong": "palette.paper.paper_800",
+        "text.primary": "palette.paper.paper_600",
+        "text.subtle": "palette.paper.paper_400",
+        "text.dim": "palette.paper.paper_200",
+        "text.inverse": "palette.paper.paper_100",
+        "border.default": "palette.paper.paper_200"
+      }
+    },
+    "dark-paper": {
+      "mode": "dark",
+      "overrides": {
+        "surface.canvas": "palette.paper.dark_canvas",
+        "surface.raised": "palette.paper.dark_raised",
+        "surface.inverse": "palette.paper.paper_100",
+        "surface.highlight": "palette.paper.paper_400",
+        "text.strong": "palette.paper.paper_50",
+        "text.primary": "palette.paper.paper_300",
+        "text.secondary": "palette.paper.paper_400",
+        "text.subtle": "palette.paper.paper_500",
+        "text.dim": "palette.paper.paper_800",
+        "text.inverse": "surface.canvas",
+        "border.default": "palette.paper.paper_800"
       }
     }
   }

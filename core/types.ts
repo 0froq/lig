@@ -1,4 +1,4 @@
-export type LigVariant = 'light' | 'dark' | 'light-soft' | 'dark-soft'
+export type LigVariant = 'light' | 'dark' | 'light-soft' | 'dark-soft' | 'light-paper' | 'dark-paper'
 export type LigMode = 'light' | 'dark'
 
 /** L is 0–1, C is nonnegative, H is degrees (null for achromatic colors). */
@@ -33,6 +33,7 @@ export interface CoreSpec {
   readonly palette: {
     readonly accents: Readonly<Record<string, Oklch>>
     readonly neutrals: Readonly<Record<string, Oklch>>
+    readonly paper: Readonly<Record<string, Oklch>>
   }
   readonly tokens: Readonly<Record<string, TokenExpression>>
   readonly modes: Readonly<Record<LigMode, Readonly<Record<string, TokenExpression>>>>
@@ -52,6 +53,6 @@ export interface TokenBundle {
   schemaVersion: number
   version: string
   colorSpace: 'oklch'
-  palette: { accents: Record<string, string>, neutrals: Record<string, string> }
+  palette: { accents: Record<string, string>, neutrals: Record<string, string>, paper: Record<string, string> }
   variants: Record<LigVariant, ResolvedVariant>
 }
