@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { LIGHTWEIGHT_PORTS, lightweightPath } from '../../../ports/catalog'
+import { VARIANT_OPTIONS } from '~/utils/lig-variant'
+import { LIGHTWEIGHT_PORTS, lightweightArchivePath, lightweightPath } from '../../../ports/catalog'
 
 const { variant } = useLigVariant()
 
@@ -39,7 +40,7 @@ const files = [
     </a>
   </div>
   <p class="lig-group">
-    {{ $t('palette.downloads.lightweight') }} · {{ variant }}
+    {{ $t('palette.downloads.lightweight') }}
   </p>
   <p class="lig-aside">
     {{ $t('palette.downloads.lightweightNote') }}
@@ -50,25 +51,42 @@ const files = [
       class="lig-oklch-note-link"
     >{{ $t('palette.downloads.install') }} ↗</a>
   </p>
-  <ul class="lig-files lig-port-downloads">
+  <ul class="lig-port-downloads">
     <li
       v-for="port in LIGHTWEIGHT_PORTS"
       :key="port.id"
     >
-      <a
-        :href="`/ports/${lightweightPath(port, variant)}`"
-        :download="lightweightPath(port, variant).split('/').pop()"
+      <h3 :id="`port-${port.id}`">
+        {{ port.title }}
+      </h3>
+      <div
+        class="lig-port-variants"
+        role="group"
+        :aria-labelledby="`port-${port.id}`"
       >
-        <span>{{ port.title }}</span><code>{{ lightweightPath(port, variant).split('/').pop() }}</code><span aria-hidden="true">↓</span>
-      </a>
-    </li>
-    <li>
-      <a
-        href="/ports/manifest.json"
-        download="lig-ports-manifest.json"
-      ><span>Manifest</span><code>SHA-256</code><span aria-hidden="true">↓</span></a>
+        <a
+          v-for="option in VARIANT_OPTIONS"
+          :key="option.id"
+          :href="`/ports/${lightweightPath(port, option.id)}`"
+          :download="lightweightPath(port, option.id).split('/').pop()"
+          :title="lightweightPath(port, option.id).split('/').pop()"
+          :class="{ 'is-current': variant === option.id }"
+          :aria-current="variant === option.id ? 'true' : undefined"
+        >{{ $t(option.label) }} <span aria-hidden="true">↓</span></a>
+        <a
+          class="lig-port-all"
+          :href="`/ports/${lightweightArchivePath(port)}`"
+          :download="lightweightArchivePath(port).split('/').pop()"
+        >{{ $t('palette.downloads.all') }} <span aria-hidden="true">↓</span></a>
+      </div>
     </li>
   </ul>
+  <p class="lig-port-manifest">
+    <a
+      href="/ports/manifest.json"
+      download="lig-ports-manifest.json"
+    >Manifest · SHA-256 <span aria-hidden="true">↓</span></a>
+  </p>
   <PaletteAgentSetup />
   <p class="lig-group">
     {{ $t('palette.downloads.tokens') }}

@@ -2,7 +2,7 @@
 
 Seven small ports, four variants: `light`, `dark`, `light-paper`, `dark-paper`. These files are generated together from `core/spec.json`; no separate repositories or palettes. Substitute the variant you want in the examples below. Commands assume you are in this download directory (`dist/ports/lightweight` after local generation).
 
-Download individual files from the website's **Downloads & ports** section. For the whole set, check out the LiG repository's `codex/lig-core-tokens` branch and run `pnpm install --frozen-lockfile` then `pnpm ports:generate`, or download the `lig-lightweight-ports` artifact from its GitHub Actions run. This preview is not yet on `main`. `manifest.json` contains SHA-256 checksums and compiler/design versions. Native editor preview repositories are released separately.
+Download any of the four variants from the website's **Downloads & ports** section; the current theme is highlighted. Each port also has a **Download all** ZIP containing its four variant files inside the tool's directory. For all tools together, check out the LiG repository's `codex/lig-core-tokens` branch and run `pnpm install --frozen-lockfile` then `pnpm ports:generate`, or download the `lig-lightweight-ports` artifact from its GitHub Actions run. This preview is not yet on `main`. `manifest.json` contains SHA-256 checksums for individual files and ZIPs, plus compiler/design versions. Native editor preview repositories are released separately.
 
 ## Ghostty
 

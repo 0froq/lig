@@ -1,6 +1,7 @@
 import { Buffer } from 'node:buffer'
 import { fileURLToPath } from 'node:url'
 import { deflateSync } from 'node:zlib'
+import { crc32 } from '../../shared/crc32'
 import { resolveVariant, VARIANTS } from '../index'
 import { writeArtifact } from './artifact'
 
@@ -22,16 +23,6 @@ function svg(colors: string[], dark?: string[]): string {
     ? `<style>@media(prefers-color-scheme:dark){${pixels.map((_, i) => `.p${i}{fill:${dark[i]}}`).join('')}}</style>`
     : ''
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 3" shape-rendering="crispEdges"><title>LiG</title>${style}${pixels.map((pixel, i) => `<rect class="p${i}" x="${pixel.x}" y="${pixel.y}" width="1" height="1" fill="${colors[i]}"/>`).join('')}</svg>\n`
-}
-
-function crc32(data: Uint8Array): number {
-  let crc = 0xFFFFFFFF
-  for (const byte of data) {
-    crc ^= byte
-    for (let bit = 0; bit < 8; bit++)
-      crc = (crc >>> 1) ^ ((crc & 1) ? 0xEDB88320 : 0)
-  }
-  return (crc ^ 0xFFFFFFFF) >>> 0
 }
 
 function chunk(type: string, data: Buffer): Buffer {

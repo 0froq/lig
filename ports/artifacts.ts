@@ -2,7 +2,7 @@ import { existsSync, readFileSync, rmSync } from 'node:fs'
 import { join, resolve, sep } from 'node:path'
 
 /** Remove only obsolete files owned by the previous build, never unmanaged files. */
-export function pruneArtifacts(output: string, current: Readonly<Record<string, string>>, check: boolean): void {
+export function pruneArtifacts(output: string, current: Readonly<Record<string, unknown>>, check: boolean): void {
   const manifest = join(output, 'manifest.json')
   if (!existsSync(manifest))
     return

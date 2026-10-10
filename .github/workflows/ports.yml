@@ -2,9 +2,9 @@ name: Preview port contracts
 
 on:
   push:
-    paths: ['core/**', 'ports/**', 'palette/**', package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
+    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
   pull_request:
-    paths: ['core/**', 'ports/**', 'palette/**', package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
+    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
 
 permissions:
   contents: read

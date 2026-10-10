@@ -9,20 +9,14 @@ const documents = examples.documents as SyntaxDocument[]
 
 <template>
   <div class="lig-parsed-stage">
-    <template
+    <PaletteParsedCode
       v-for="document in documents"
       :key="document.language"
-    >
-      <PaletteParsedCode
-        :document="document"
-        :variant="variant"
-        :neovim="examples.neovim"
-      />
-      <PaletteTerminal
-        v-if="document === documents[0]"
-        :variant="variant"
-      />
-    </template>
+      :document="document"
+      :variant="variant"
+      :neovim="examples.neovim"
+    />
+    <PaletteTerminal :variant="variant" />
     <slot name="foot" />
   </div>
 </template>

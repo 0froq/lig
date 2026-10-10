@@ -16,3 +16,7 @@ export type LightweightPort = typeof LIGHTWEIGHT_PORTS[number]['id']
 export function lightweightPath(port: typeof LIGHTWEIGHT_PORTS[number], variant: LigVariant): string {
   return `${port.id}/${port.id === 'bat' ? 'LiG' : 'lig'}-${variant}${port.extension}`
 }
+
+export function lightweightArchivePath(port: typeof LIGHTWEIGHT_PORTS[number]): string {
+  return `${port.id}/lig-${port.id}-all.zip`
+}

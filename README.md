@@ -58,7 +58,7 @@ pnpm build
 
 paper 画布使用独立的暖灰阶，彩色变体使用按色相校准的 OKLCH 坐标，黄色单独校准。详见 [core 契约](core/README.md)。初始映射来自 `0froq/lig.nvim` 和 `0froq/vscode-theme-LiG`，之后这里是维护源，旧 port 是迁移输入。
 
-`pnpm ports:generate` 生成两个编辑器 preview 分发包及七种轻量 port，各含四个变体。轻量文件集中在主仓库，通过网站下载与 CI 的 `lig-lightweight-ports` artifact 分发，无需独立仓库。`pnpm build` / `pnpm generate` 会先生成下载文件。安装说明见 [lightweight README](ports/lightweight/README.md)。本机配置不会被生成器修改，编辑器 preview 仓库仍独立发布。
+`pnpm ports:generate` 生成两个编辑器 preview 分发包及七种轻量 port，各含四个变体。网站为每个轻量 port 提供四个单文件链接和四变体 ZIP，当前主题只影响高亮状态；ZIP 与单文件一同受 manifest 的 SHA-256 校验。轻量文件集中在主仓库，通过网站下载与 CI 的 `lig-lightweight-ports` artifact 分发，无需独立仓库。`pnpm build` / `pnpm generate` 会先生成下载文件。安装说明见 [lightweight README](ports/lightweight/README.md)。本机配置不会被生成器修改，编辑器 preview 仓库仍独立发布。
 
 ## 手动验收
 
@@ -66,7 +66,9 @@ paper 画布使用独立的暖灰阶，彩色变体使用按色相校准的 OKLC
 
 agent 指令随当前语言和主题生成，包含当前站点的下载来源。指令要求先只读检测已安装技术栈并列出可用 port、变体和配置方案，等待用户确认后再备份、合并配置并验证。本网站不会执行本机扫描或安装。
 
-没有运行 UI 测试或浏览器检查。需要手动验收：agent 指令复制成功／拒绝状态、语言与主题切换后的指令内容、终端窄屏换行和彩字／彩底、四个主题切换后的下载文件名、旧 `/lab` 链接跳转、各工具的选中状态与边框、浅色背景黄色文字、tmux 内嵌颜色和 bat 语法高亮。原生配置解析检查不代表视觉验收。
+演示顺序为 TypeScript、Python、ANSI 终端。终端彩底上的文字取当前 `terminal.background`，形成反色，不额外维护黑白标签色。
+
+没有运行 UI 测试或浏览器检查。需要手动验收：agent 指令复制成功／拒绝状态、语言与主题切换后的指令内容、展开区域的间隔、终端窄屏换行和彩字／反色彩底、四个主题切换后的下载高亮与各下载链接、旧 `/lab` 链接跳转、各工具的选中状态与边框、浅色背景黄色文字、tmux 内嵌颜色和 bat 语法高亮。原生配置解析检查不代表视觉验收。
 
 ## 许可
 

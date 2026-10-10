@@ -137,8 +137,8 @@ const output = computed(() => {
 
 .lig-ansi-output {
   display: grid;
-  gap: 5px;
-  margin-top: 28px;
+  gap: 8px;
+  margin-top: 32px;
   overflow-x: auto;
 }
 

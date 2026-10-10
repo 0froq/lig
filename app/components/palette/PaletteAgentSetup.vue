@@ -35,7 +35,10 @@ const instruction = computed(() => t('palette.downloads.agentInstruction', {
       />
     </header>
     <p>{{ t('palette.downloads.agentNote') }}</p>
-    <Collapsible :label="t('palette.downloads.agentRead')">
+    <Collapsible
+      class="lig-agent-instruction"
+      :label="t('palette.downloads.agentRead')"
+    >
       <p>{{ instruction }}</p>
     </Collapsible>
   </section>
@@ -43,9 +46,13 @@ const instruction = computed(() => t('palette.downloads.agentInstruction', {
 
 <style scoped>
 .lig-agent-setup {
-  margin-top: 28px;
-  padding-block: 20px;
-  border-block: 1px solid var(--line);
+  margin-top: 40px;
+  padding-block: 24px 8px;
+  border-top: 1px solid var(--line);
+}
+
+.lig-agent-instruction {
+  margin-top: 16px;
 }
 
 .lig-agent-setup header {
