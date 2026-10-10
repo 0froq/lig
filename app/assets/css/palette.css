@@ -639,6 +639,11 @@
   stroke-width: 2;
 }
 
+.lig-oklch-point.is-extra circle {
+  stroke: var(--point-color);
+  stroke-width: 2.5;
+}
+
 .lig-oklch-point line {
   stroke-width: 2;
   opacity: 0.65;
@@ -847,10 +852,30 @@
   margin-top: 20px;
 }
 
+.lig-tree-select-control {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+.lig-tree-select-control svg {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 10px;
+  height: 7px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: var(--pv-muted);
+  stroke-width: 1.25;
+  pointer-events: none;
+}
+
 .lig-tree-select select {
+  appearance: none;
   width: 100%;
   min-width: 0;
-  padding: 6px;
+  padding: 6px 34px 6px 8px;
   border: 1px solid var(--pv-muted);
   border-radius: 0;
   color: var(--pv-fg);
@@ -910,20 +935,9 @@
   height: 64px;
 }
 
-.lig-family-metrics {
-  display: grid;
-  gap: 2px;
+.lig-family-tier {
   color: var(--muted);
   font: 9px/1.2 var(--font-meta);
-}
-
-.lig-family-metrics b {
-  color: var(--fg);
-  font-weight: 500;
-}
-
-.lig-family-metrics.is-low-contrast {
-  color: var(--accent);
 }
 
 .lig-family-description {

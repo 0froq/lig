@@ -7,12 +7,13 @@ const { t } = useI18n()
 const link = useKitLink()
 const center = 180
 const radius = 120
+const ansiAccents = new Set(['red', 'green', 'yellow', 'blue', 'magenta', 'cyan'])
 
 const colors = computed(() => {
   const { tokens, oklch } = resolveVariant(props.variant)
   return Object.keys(spec.palette.accents).map((name) => {
     const token = `accent.${name}.base`
-    return { name, hex: tokens[token]!, ...oklch[token]! }
+    return { name, hex: tokens[token]!, extra: !ansiAccents.has(name), ...oklch[token]! }
   }).sort((a, b) => (a.h ?? 0) - (b.h ?? 0))
 })
 
@@ -96,13 +97,15 @@ const points = computed(() => colors.value.map((color) => {
           v-for="point in points"
           :key="point.name"
           class="lig-oklch-point"
+          :class="{ 'is-extra': point.extra }"
+          :style="{ '--point-color': point.hex }"
         >
           <title>{{ point.name }}: L {{ point.l.toFixed(3) }}, C {{ point.c.toFixed(3) }}, H {{ point.h }}°</title>
           <circle
             :cx="point.x"
             :cy="point.y"
             r="11"
-            :fill="point.hex"
+            :fill="point.extra ? 'none' : point.hex"
           />
           <text
             :x="point.labelX"
@@ -145,6 +148,8 @@ const points = computed(() => colors.value.map((color) => {
           v-for="(color, index) in colors"
           :key="color.name"
           class="lig-oklch-point"
+          :class="{ 'is-extra': color.extra }"
+          :style="{ '--point-color': color.hex }"
         >
           <title>{{ color.name }}: L {{ color.l.toFixed(3) }}</title>
           <text
@@ -154,7 +159,7 @@ const points = computed(() => colors.value.map((color) => {
           <line
             x1="90"
             :y1="40 + index * 24"
-            :x2="90 + color.l * 200"
+            :x2="90 + color.l * 200 - (color.extra ? 8 : 0)"
             :y2="40 + index * 24"
             :stroke="color.hex"
           />
@@ -162,7 +167,7 @@ const points = computed(() => colors.value.map((color) => {
             :cx="90 + color.l * 200"
             :cy="40 + index * 24"
             r="8"
-            :fill="color.hex"
+            :fill="color.extra ? 'none' : color.hex"
           />
         </g>
       </svg>

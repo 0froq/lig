@@ -14,6 +14,20 @@ const style = computed(() => ({
   '--pv-line': tokens.value['border.default'],
 }))
 const banks = computed(() => terminalColors(tokens.value))
+const output = computed(() => {
+  const colors = banks.value.flatMap(bank => bank.colors)
+  return [
+    { label: '❯', index: 2, message: 'lig check --colors' },
+    { label: 'info', index: 4, message: 'loading theme tokens' },
+    { label: 'fetch', index: 6, message: 'origin/codex/lig-core-tokens' },
+    { label: 'pass', index: 2, message: 'palette resolved' },
+    { label: 'warning', index: 3, message: 'dependency deprecated' },
+    { label: 'error', index: 1, message: 'example diagnostic' },
+    { label: 'branch', index: 5, message: 'preview/hue-calibration' },
+    { label: 'quiet', index: 8, message: 'dimmed terminal output' },
+    { label: 'ready', index: 15, message: 'theme loaded' },
+  ].map(row => ({ ...row, color: colors[row.index]! }))
+})
 </script>
 
 <template>
@@ -59,21 +73,20 @@ const banks = computed(() => terminalColors(tokens.value))
       tabindex="0"
       :aria-label="t('palette.terminal.output')"
     >
-      <pre><code><span :style="{ color: tokens['terminal.ansi.2'] }">❯</span> lig check --colors
-<span :style="{ color: tokens['terminal.ansi.4'] }">info</span>    loading theme tokens
-<span :style="{ color: tokens['terminal.ansi.6'] }">fetch</span>   origin/codex/lig-core-tokens
-<span :style="{ color: tokens['terminal.ansi.2'] }">pass</span>    palette resolved
-<span :style="{ color: tokens['terminal.ansi.3'] }">warning</span> dependency deprecated
-<span :style="{ color: tokens['terminal.ansi.11'] }">warning</span> retrying connection
-<span :style="{ color: tokens['terminal.ansi.1'] }">error</span>   example diagnostic
-<span :style="{ color: tokens['terminal.ansi.5'] }">branch</span>  preview/hue-calibration
-<span :style="{ color: tokens['terminal.ansi.8'] }">quiet</span>   dimmed terminal output
-<span :style="{ color: tokens['terminal.ansi.15'] }">ready</span>   theme loaded</code></pre>
+      <div
+        v-for="row in output"
+        :key="row.label"
+        class="lig-ansi-output-row"
+      >
+        <code :style="{ color: row.color.hex }">{{ row.label }}</code>
+        <code
+          class="lig-ansi-output-fill"
+          :style="{ background: row.color.hex, color: row.color.label }"
+          aria-hidden="true"
+        >{{ row.label }}</code>
+        <code>{{ row.message }}</code>
+      </div>
     </div>
-    <p class="lig-ansi-fill-example">
-      <code :style="{ background: tokens['accent.yellow.fill'], color: tokens['text.on.yellow'] }">WARN</code>
-      2 warnings
-    </p>
   </section>
 </template>
 
@@ -123,31 +136,30 @@ const banks = computed(() => terminalColors(tokens.value))
 }
 
 .lig-ansi-output {
+  display: grid;
+  gap: 7px;
   margin-top: 28px;
   overflow-x: auto;
 }
 
-.lig-ansi-output pre {
-  margin: 0;
+.lig-ansi-output-row {
+  display: grid;
+  grid-template-columns: 5.5rem 5.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  min-width: 28rem;
   font: 13px/1.8 var(--font-meta);
+  white-space: nowrap;
+}
+
+.lig-ansi-output-fill {
+  padding-inline: 8px;
+  text-align: center;
 }
 
 .lig-ansi-output:focus-visible {
   outline: 1px solid var(--pv-fg);
   outline-offset: 4px;
-}
-
-.lig-ansi-fill-example {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  margin: 16px 0 0;
-  font: 11px/1.7 var(--font-meta);
-}
-
-.lig-ansi-fill-example code {
-  padding: 2px 8px;
 }
 
 @media (max-width: 600px) {

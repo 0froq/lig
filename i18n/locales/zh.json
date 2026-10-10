@@ -72,7 +72,7 @@
     },
     "syntax": {
       "lede": "mono 是普通阅读层；struct 表达绑定与结构，ref 表达值与引用，action 表达执行行为。",
-      "aside": "highlight / base / muted 表达阅读层级。mono 直接选取灰度阶梯，彩色家族使用 OKLCH 偏移；对比度读数用于辅助判断，不作为硬性限制。",
+      "aside": "highlight / base / muted 表达各个家族内部的阅读层级。",
       "comment": "less is great",
       "families": {
         "mono": "普通标识符、正文与注释",

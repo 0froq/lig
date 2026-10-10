@@ -72,7 +72,7 @@
     },
     "syntax": {
       "lede": "Mono is the reading baseline. Struct marks bindings and structure, ref marks values and references, and action marks execution.",
-      "aside": "Highlight / base / muted set the reading hierarchy. Mono selects steps from the neutral ramp; colored families use OKLCH offsets. Contrast readings guide the balance, rather than set a hard limit.",
+      "aside": "Highlight / base / muted set the reading hierarchy within each family.",
       "comment": "less is great",
       "families": {
         "mono": "Ordinary identifiers, text and comments",

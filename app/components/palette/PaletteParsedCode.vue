@@ -214,20 +214,29 @@ function inSelection(start: number, end: number): boolean {
           </p>
           <label class="lig-tree-select">
             <span>{{ t('palette.inspect.tree') }}</span>
-            <select
-              :value="inspected ?? ''"
-              @change="changeNode"
-            >
-              <option
-                disabled
-                value=""
-              >{{ t('palette.inspect.choose') }}</option>
-              <option
-                v-for="choice in choices"
-                :key="choice.id"
-                :value="choice.id"
-              >{{ choice.label }}</option>
-            </select>
+            <span class="lig-tree-select-control">
+              <select
+                :value="inspected ?? ''"
+                @change="changeNode"
+              >
+                <option
+                  disabled
+                  value=""
+                >{{ t('palette.inspect.choose') }}</option>
+                <option
+                  v-for="choice in choices"
+                  :key="choice.id"
+                  :value="choice.id"
+                >{{ choice.label }}</option>
+              </select>
+              <svg
+                viewBox="0 0 12 8"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="m1 1 5 5 5-5" />
+              </svg>
+            </span>
           </label>
           <p class="lig-node-footnote">
             {{ t('palette.inspect.provenance', { version: neovim }) }}
