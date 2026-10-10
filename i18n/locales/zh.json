@@ -91,11 +91,10 @@
     "more": "三联色与界面角色",
     "oklch": {
       "title": "颜色的位置",
-      "count": "{n} 个基础色",
-      "note": "角度是色相 H，距中心的距离是彩度 C；下方明度轴展示 L。外侧色环用于辨认色相。",
+      "note": "图中为 OKLCH 设计坐标，显示颜色已映射到 sRGB。",
       "lightnessTitle": "L · 明度",
-      "lightnessNote": "越靠上，明度越高；同一水平线上的颜色具有相同明度。",
-      "table": "基础色的 OKLCH 坐标"
+      "designNote": "为什么这样配色",
+      "hueChroma": "八个基础色的色相与彩度"
     },
     "copyAs": "复制为",
     "groups": {
@@ -172,11 +171,14 @@
     },
     "terminal": {
       "title": "终端 16 色",
-      "note": "读取 port 的 terminal.ansi.0–15；每格上方是前景文字，下方是背景样本。对比度针对当前终端背景计算。",
-      "normal": "普通色 · ANSI 0–7",
-      "bright": "强调色 · ANSI 8–15",
+      "note": "当前主题的 port 输出值，不含实验面板中的临时调整。SGR 为前景／背景控制码。文字对比度相对于 terminal.background 计算：",
+      "normal": "普通色",
+      "bright": "强调色",
       "output": "模拟终端彩色输出",
-      "fill": "暖黄底色与 ANSI 3 使用同一黄色基色，配深色文字。"
+      "referenceLink": "颜色数据",
+      "reference": "终端颜色参考",
+      "color": "颜色",
+      "contrastNote": "APCA 是实验性对比度模型，并非已定稿的 WCAG 3 要求。强调色在深色下更亮，在浅色下更深。"
     }
   },
   "install": {

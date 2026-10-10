@@ -152,6 +152,7 @@ const accentBases = computed(() =>
         />
       </div>
       <PaletteOklch :variant="variant" />
+      <PaletteTerminalReference :variant="variant" />
       <details class="lig-more">
         <summary>{{ t('palette.more') }}</summary>
         <div

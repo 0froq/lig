@@ -91,11 +91,10 @@
     "more": "Triads and UI roles",
     "oklch": {
       "title": "Where the colors sit",
-      "count": "{n} base colors",
-      "note": "Angle is hue (H); distance from the center is chroma (C). The plot below shows lightness (L). The outer ring is a hue reference.",
+      "note": "Design coordinates in OKLCH. Display colors are mapped to sRGB.",
       "lightnessTitle": "L · Lightness",
-      "lightnessNote": "Higher points are lighter. Colors on the same horizontal line share the same lightness.",
-      "table": "Base color coordinates in OKLCH"
+      "designNote": "Why these colors",
+      "hueChroma": "Hue and chroma of the eight base colors"
     },
     "copyAs": "Copy as",
     "groups": {
@@ -172,11 +171,14 @@
     },
     "terminal": {
       "title": "Terminal 16 colors",
-      "note": "Uses the port’s terminal.ansi.0–15. Each cell shows foreground text above a background sample. Contrast is measured against the current terminal background.",
-      "normal": "Normal · ANSI 0–7",
-      "bright": "Emphasis · ANSI 8–15",
+      "note": "Resolved port values for the selected theme, before lab edits. SGR lists foreground / background codes. Text contrast is measured against terminal.background:",
+      "normal": "Normal",
+      "bright": "Emphasis",
       "output": "Simulated terminal color output",
-      "fill": "This warm-yellow background uses the same base as ANSI 3, with dark text."
+      "referenceLink": "Color data",
+      "reference": "Terminal color reference",
+      "color": "Color",
+      "contrastNote": "APCA is an experimental contrast model, not a finalized WCAG 3 requirement. Emphasis follows the theme: lighter in dark mode, darker in light mode."
     }
   },
   "install": {
