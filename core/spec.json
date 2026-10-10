@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.10",
+  "version": "0.2.11",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -667,7 +667,8 @@
           "text.primary"
         ],
         "weight": 0.9
-      }
+      },
+      "terminal.ansi.3": "accent.yellow.highlight"
     },
     "dark": {
       "surface.canvas": "palette.neutrals.soft_950",

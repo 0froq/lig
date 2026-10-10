@@ -255,7 +255,7 @@ it('accent exports preserve calibrated coordinates and per-mode contrast ranges'
 
 it('yellow is replaced throughout the palette, foreground roles and terminal aliases', () => {
   for (const variant of VARIANTS) {
-    const { tokens, oklch } = resolveVariant(variant)
+    const { tokens, oklch, mode } = resolveVariant(variant)
     const fill = tokens['accent.yellow.fill']!
     assert.equal(fill, '#f5ce00')
     assert.equal(tokens['accent.yellow.base'], '#f5ce00')
@@ -263,14 +263,17 @@ it('yellow is replaced throughout the palette, foreground roles and terminal ali
     assert.equal(tokens['accent.yellow.fill'], tokens['accent.yellow.base'])
     assert.equal(tokens['surface.search'], fill)
     assert.equal(tokens['surface.search'], tokens['diagnostic.warning'])
-    for (const role of ['git.change', 'mode.replace', 'terminal.ansi.3'])
+    for (const role of ['git.change', 'mode.replace'])
       assert.equal(tokens[role], '#f5ce00', `${variant}/${role}: replaced yellow`)
     assert.equal(tokens['diagnostic.warning'], tokens['accent.yellow.base'])
     assert.equal(tokens['message.warning'], tokens['accent.yellow.base'])
+    assert.equal(tokens['terminal.ansi.3'], mode === 'light' ? '#dbb800' : '#f5ce00')
+    assert.equal(tokens['terminal.ansi.11'], mode === 'light' ? '#dbb800' : '#ffe88f')
     assert.ok(contrast(tokens['text.on.yellow']!, fill) >= 10, `${variant}: fill label`)
     assert.ok(contrast(tokens['text.strong']!, tokens['surface.search.match']!) >= 4.5, `${variant}: active search text`)
     for (const [index, name] of ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan'].entries()) {
-      assert.equal(tokens[`terminal.ansi.${index + 1}`], tokens[`accent.${name}.base`])
+      const normalTier = name === 'yellow' && mode === 'light' ? 'highlight' : 'base'
+      assert.equal(tokens[`terminal.ansi.${index + 1}`], tokens[`accent.${name}.${normalTier}`])
       assert.equal(tokens[`terminal.ansi.${index + 9}`], tokens[`accent.${name}.highlight`])
     }
     for (let index = 0; index < 16; index++)
