@@ -7,6 +7,7 @@ import { dirname, join, relative } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { spec, VARIANTS } from '../core/resolve'
+import { pruneArtifacts } from './artifacts'
 import { COMPILER_VERSION, PACKAGE_VERSION, SOURCE_REF, VARIANT_LABELS } from './constants'
 import { neovimData } from './neovim/emit'
 import { INTEGRATIONS } from './neovim/integrations'
@@ -96,6 +97,7 @@ for (const port of ['neovim', 'vscode']) {
   })
 }
 artifacts['manifest.json'] = json({ ...metadata, files: Object.fromEntries(Object.entries(artifacts).map(([path, content]) => [path, hash(content)])) })
+pruneArtifacts(output, artifacts, check)
 for (const [path, content] of Object.entries(artifacts)) {
   const target = join(output, path)
   if (check) {

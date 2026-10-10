@@ -4,7 +4,7 @@
 
 ## Color contract
 
-- `schemaVersion: 2`, token `version: 0.2.7`, `colorSpace: oklch`.
+- `schemaVersion: 2`, token `version: 0.2.8`, `colorSpace: oklch`.
 - Eight accents, thirteen achromatic neutrals and a separate low-chroma paper palette are authored only in `palette`, as `{ l, c, h }` coordinates.
 - L is perceptual lightness in [0, 1], C is nonnegative chroma, H is degrees in [0, 360). Achromatic colors use `c: 0, h: null`.
 - Eight accent primitives are calibrated to a shared OKLCH lightness/chroma target with deliberate hue anchors. Thirteen neutral primitives are designed on the achromatic OKLCH axis, with deliberate L steps rather than inherited RGB values.
@@ -16,11 +16,11 @@ For example, the calibrated green is authored as:
 { "l": 0.74, "c": 0.120, "h": 148 }
 ```
 
-`tokens` supplies shared semantic references and derived colors. `modes.light` / `modes.dark` supply mode-specific roles. The six `variants` select a mode and optional overrides. Dependencies always use the selected variant's final values, including overrides. Unknown references, cycles, invalid coordinates, weights, ramp parameters, schemas and overrides fail explicitly.
+`tokens` supplies shared semantic references and derived colors. `modes.light` / `modes.dark` supply mode-specific roles. The four `variants` select a mode and optional overrides. Dependencies always use the selected variant's final values, including overrides. Unknown references, cycles, invalid coordinates, weights, ramp parameters, schemas and overrides fail explicitly.
 
-## Paper trials
+## Paper variants
 
-`light-paper` and `dark-paper` are selectable preview profiles. Their semantic accent coordinates and emphasis tiers exactly match the corresponding standard light/dark mode. They adjust surfaces and mono inks, rather than applying a warm filter to every color. The original four resolved variants are unchanged.
+`light-paper` and `dark-paper` are supported alternatives to standard light/dark. Their semantic accent coordinates and emphasis tiers exactly match the corresponding standard light/dark mode. They adjust surfaces and mono inks, rather than applying a warm filter to every color. Standard light/dark and the accepted paper color definitions are retained.
 
 | Role                | Light paper                               | Dark paper                                 |
 | ------------------- | ----------------------------------------- | ------------------------------------------ |
@@ -35,20 +35,20 @@ For example, the calibrated green is authored as:
 
 Paper ramp hue is approximately 91.48°, with C=.008 through paper_700, .006 at paper_800/900 and .003 at paper_950. Paper_50 reproduces the site's original warm background exactly; its L differs from neutral soft_50 by .00103. The dark canvas independently reproduces the site's slightly cool dark background; its warm raised surfaces and ink remain subtle. `app/app.config.ts` now reads both site canvas colors from core, avoiding independent background authoring.
 
-The paper ramp is separate from `palette.neutrals`, whose C=0 contract remains intact. The website shows the matching paper ramp, exposes both paper and neutral background choices, and keeps mono inks fixed when the colored L/C controls change. All six lab states are independent. A `?variant=light-paper` or `?variant=dark-paper` URL opens the chosen preview; an absent/invalid query retains the stored/default selection. WCAG/APCA readouts continue to report the actual chosen background.
+The paper ramp is separate from `palette.neutrals`, whose C=0 contract remains intact. The website shows the matching paper ramp, exposes both paper and neutral background choices, and keeps mono inks fixed when the colored L/C controls change. All four lab states are independent. A `?variant=light-paper` or `?variant=dark-paper` URL opens the chosen preview; an absent/invalid query retains the stored/default selection. WCAG/APCA readouts continue to report the actual chosen background.
 
-These profiles are visual trials, not claims of reduced eye strain or improved color discrimination. Manual comparison should inspect variable/keyword hierarchy, green/blue/orange separation, comments, selection and raised panels at actual editing sizes. Native compiler outputs include the two profiles, but editor preview repositories/releases are not republished by this website trial.
+Paper is a design treatment, not a claim of reduced eye strain or improved color discrimination. Manual comparison should inspect variable/keyword hierarchy, green/blue/orange separation, comments, selection and raised panels at actual editing sizes. Native compiler outputs include the two profiles, but editor preview repositories/releases are not republished by this website update.
 
 ## Calibrated accents
 
 The eight colors are intended to have similar weight within each mode. Their design coordinates share L/C; H distinguishes the families. Hues are refined individually, including the additional orange and azure. The circular gaps are 38°, 40°, 48°, 46°, 40°, 41°, 50° and 57°: reasonably distributed without forcing all eight named families onto equal 45° steps.
 
-| Mode                             | Base L | Base C | Derivation from authored accents |
-| -------------------------------- | ------ | ------ | -------------------------------- |
-| dark / dark-soft / dark-paper    | 0.740  | 0.120  | Authored primitives              |
-| light / light-soft / light-paper | 0.550  | 0.110  | Offset L −.19, C −.010           |
+| Mode                | Base L | Base C | Derivation from authored accents |
+| ------------------- | ------ | ------ | -------------------------------- |
+| dark / dark-paper   | 0.740  | 0.120  | Authored primitives              |
+| light / light-paper | 0.550  | 0.110  | Offset L −.19, C −.010           |
 
-All modes keep H. The authored `palette.accents` is the reference/dark palette; consumers must use `variants[variant].tokens` or `.oklch` for mode-specific colors. Soft variants retain the standard mode's base accent coordinates; they soften surface/strong-ink contrast and adjust tier spacing independently.
+All modes keep H. The authored `palette.accents` is the reference/dark palette; consumers must use `variants[variant].tokens` or `.oklch` for mode-specific colors. Paper variants retain all of their standard mode's accent coordinates and tiers; only surfaces and mono inks differ.
 
 | Color   | H    | Dark hex  | Light hex |
 | ------- | ---- | --------- | --------- |
@@ -61,18 +61,16 @@ All modes keep H. The authored `palette.accents` is the reference/dark palette; 
 | blue    | 275° | `#95a4f6` | `#5f6bb1` |
 | magenta | 325° | `#d190d4` | `#915a95` |
 
-The eight dark base accents retain their authored C=.120 in sRGB. All three chromatic syntax-family bases (green/blue/orange) retain C=.110 in all light variants. Some other accents and tier endpoints require chroma reduction at constant L/H: standard dark blue highlight (.100 → .0955), all light variants' yellow/azure highlights and all cyan tiers. Dark-soft's slightly narrower tiers are entirely in sRGB. Cyan base exports at C≈.0940 in all light variants. The spec coordinates remain the authored targets, not the mapped output coordinates. Raising the target C further does not increase colors already at the sRGB boundary.
+The eight dark base accents retain their authored C=.120 in sRGB. All three chromatic syntax-family bases (green/blue/orange) retain C=.110 in all light variants. Some other accents and tier endpoints require chroma reduction at constant L/H: standard dark blue highlight (.100 → .0955), all light variants' yellow/azure highlights and all cyan tiers. Cyan base exports at C≈.0940 in all light variants. The spec coordinates remain the authored targets, not the mapped output coordinates. Raising the target C further does not increase colors already at the sRGB boundary.
 
-Canvas selection changes contrast without changing the accent coordinates. The requested dark=950/dark-soft=900/light=50/light-soft=100 backgrounds produce these default WCAG ratios:
+Canvas selection changes contrast without changing the accent coordinates. Standard canvases use dark=950/light=50, while paper canvases reproduce the site backgrounds. These default WCAG ratios describe the current calibration:
 
-| Variant    | Highlight   | Base      | Faded     | Base APCA magnitude |
-| ---------- | ----------- | --------- | --------- | ------------------- |
-| dark       | 10.59–11.44 | 8.20–9.08 | 6.38–6.93 | 54.3–59.4 Lc        |
-| dark-soft  | 9.15–9.88   | 7.31–8.10 | 5.90–6.41 | 53.2–58.4 Lc        |
-| light      | 5.55–6.17   | 4.11–4.58 | 3.08–3.43 | 64.0–67.4 Lc        |
-| light-soft | 4.23–4.74   | 3.42–3.81 | 2.79–3.10 | 52.3–55.8 Lc        |
+| Variant | Highlight   | Base      | Faded     | Base APCA magnitude |
+| ------- | ----------- | --------- | --------- | ------------------- |
+| dark    | 10.59–11.44 | 8.20–9.08 | 6.38–6.93 | 54.3–59.4 Lc        |
+| light   | 5.55–6.17   | 4.11–4.58 | 3.08–3.43 | 64.0–67.4 Lc        |
 
-These are explicit visual calibration bounds, not a WCAG AA guarantee for every syntax role or a font-size-independent APCA recommendation. Light-soft's faded colored text and secondary neutral ink are the main manual-readability checks on its grayer canvas. Higher chroma increases colorfulness; it does not imply increased lightness or contrast. Eight-bit rounding gives each variant's colors small L/C differences; tests bound export error from gamut-mapped coordinates in Cartesian OKLab to <0.002 for accent tiers.
+These are explicit visual calibration bounds, not a WCAG AA guarantee for every syntax role or a font-size-independent APCA recommendation. Muted mono and light faded colored text remain manual-readability checks. Higher chroma increases colorfulness; it does not imply increased lightness or contrast. Eight-bit rounding gives each variant's colors small L/C differences; tests bound export error from gamut-mapped coordinates in Cartesian OKLab to <0.002 for accent tiers.
 
 This is a numerically calibrated starting design. Hue distinction and visual weight in real code still require manual assessment. The homepage's TypeScript/Python demos and polar plot consume these resolved coordinates. The demos use actual Neovim Tree-sitter trees and highlight captures; see [the parsing pipeline](../syntax/README.md). Capture-to-role mappings live in `core/syntax.ts`, separately from primitive colors. Every syntax role refers to an explicit `family.mono`, `family.struct`, `family.ref` or `family.action` tier in the spec. The site's decorative green also reads `accent.primary` from core for the site's light/dark mode, separately from the demo variant selector.
 
@@ -100,7 +98,7 @@ The homepage labels these authored L values. Exported hex is quantized: near bla
 
 [OKLab's derivation](https://bottosson.github.io/posts/oklab/#motivation-and-derivation-of-oklab) already uses nonlinear response compression and assumes normal viewing conditions; applying a second generic gamma/Weber curve to L would not automatically improve uniformity. [Rudd's lightness model and psychophysical evidence](https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2014.00640/full) discuss contextual, spatial and lightness/darkness induction effects. They do not provide one universally valid UI gray-scale formula or imply that all symmetric ramps are wrong. [Radix's use-case scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale) assigns steps to surfaces, borders and text; its purpose is useful role distinctions, not equally spaced swatch differences. Our exact anchors are a contextual design trial responding to the user's observed near-white compression. WCAG/APCA measure text/background contrast and are not used to equalize swatch distances.
 
-Canvases now directly select neutral samples: dark=soft_950 (.14), dark-soft=soft_900 (.21), light=soft_50 (.96), light-soft=soft_100 (.90). Raised surfaces select 900/800/white/50 respectively, preventing light canvas/raised from becoming identical. The lab exposes `surface.canvas` alongside neutral samples and falls back to that semantic token when a future canvas is not a ramp entry. Dark-soft strongest/inverse ink remains soft_100=.90, keeping a .12 L separation from primary .78.
+Standard canvases directly select dark=soft_950 (.14) and light=soft_50 (.96); raised surfaces select soft_900 (.21) and white (1). Paper selects its separate canvas/raised anchors from `palette.paper`. The lab exposes `surface.canvas` alongside achromatic and paper samples.
 
 ## Derived colors
 
@@ -138,31 +136,25 @@ The accent tiers use fixed offsets instead of interpolation toward differently s
 
 An offset adds the signed L/C deltas and retains source H. Non-finite deltas or invalid result coordinates fail rather than silently clamp; zero chroma clears H.
 
-| Variant    | Highlight ΔL / ΔC | Faded ΔL / ΔC | Distance from base |
-| ---------- | ----------------- | ------------- | ------------------ |
-| dark       | +.070 / −.020     | −.070 / −.020 | .07280             |
-| dark-soft  | +.060 / −.020     | −.060 / −.020 | .06325             |
-| light      | −.070 / 0         | +.070 / 0     | .07000             |
-| light-soft | −.050 / 0         | +.050 / 0     | .05000             |
+| Variant | Highlight ΔL / ΔC | Faded ΔL / ΔC | Distance from base |
+| ------- | ----------------- | ------------- | ------------------ |
+| dark    | +.070 / −.020     | −.070 / −.020 | .07280             |
+| light   | −.070 / 0         | +.070 / 0     | .07000             |
 
-Both sides start from the selected variant's base, retain H and have equal Cartesian OKLab distances from it. Light tiers retain base C: darker highlight, base and lighter faded. The design L triplets are .48/.55/.62 for light, .50/.55/.60 for light-soft, .81/.74/.67 for dark and .80/.74/.68 for dark-soft. Equal numerical distance is a calibration constraint, not a guarantee of identical subjective prominence. Tests also bound asymmetry after sRGB mapping and 8-bit export. The website displays equal-width swatches and reports actual WCAG/APCA contrast for manual assessment.
+Both sides start from the selected variant's base, retain H and have equal Cartesian OKLab distances from it. Light tiers retain base C: darker highlight, base and lighter faded. The design L triplets are .48/.55/.62 for both light variants and .81/.74/.67 for both dark variants. Equal numerical distance is a calibration constraint, not a guarantee of identical subjective prominence. Tests also bound asymmetry after sRGB mapping and 8-bit export. The website displays equal-width swatches and reports actual WCAG/APCA contrast for manual assessment.
 
-## Soft variant intent
+## Surface and mono roles
 
-Soft reduces luminance extremes while retaining hue/color identity and the shared semantic mapping. It is not a desaturated preset. Earlier dark-soft resolved identically to dark; earlier light-soft darkened accents to L=.49 despite its lighter canvas. Both behaviors are replaced by explicit surface, neutral-ink and tier calibrations.
+| Variant     | Canvas                  | Raised                   | Mono highlight/base/muted         |
+| ----------- | ----------------------- | ------------------------ | --------------------------------- |
+| light       | soft_50 / `#f2f2f2`     | white / `#ffffff`        | soft_800 / soft_600 / soft_400    |
+| dark        | soft_950 / `#090909`    | soft_900 / `#181818`     | soft_50 / soft_300 / soft_500     |
+| light-paper | paper_50 / `#f4f2ec`    | light_raised / `#fdfcf9` | paper_800 / paper_600 / paper_400 |
+| dark-paper  | dark_canvas / `#111113` | dark_raised / `#201f1c`  | paper_50 / paper_300 / paper_500  |
 
-| Variant    | Canvas L / hex  | Raised L / hex  | Mono highlight/base/muted selections |
-| ---------- | --------------- | --------------- | ------------------------------------ |
-| light      | .96 / `#f2f2f2` | 1 / `#ffffff`   | soft_800 / soft_600 / soft_400       |
-| light-soft | .90 / `#dedede` | .96 / `#f2f2f2` | soft_800 / soft_600 / soft_500       |
-| dark       | .14 / `#090909` | .21 / `#181818` | soft_50 / soft_300 / soft_500        |
-| dark-soft  | .21 / `#181818` | .30 / `#2e2e2e` | soft_100 / soft_300 / soft_500       |
+Paper uses the standard mode's mono L hierarchy with small chroma additions. Primary/secondary ink remains at least 4.5:1 on the authored canvases. Light selection mixes canvas/primary at .9/.1; dark selection mixes raised/primary at .95/.05. Both policies also apply to the matching paper mode, with at least .03 design L separation from the canvas and at least 4.5:1 primary-text contrast. These numerical checks do not establish visual acceptance for every foreground/surface pair.
 
-Light-soft shares strongest neutral ink soft_800 (L=.30) with light, giving variables the same .18 L separation from ordinary keywords. It brings muted comments from .68 to .58 so they remain visible on the grayer canvas. Its raised panels are lighter than the canvas. Dark-soft keeps a lighter canvas than dark, caps strongest ink at .90 instead of .96 and uses raised soft_800. Border/dim use soft_700. Inverse roles follow the selected strongest-ink/canvas references.
-
-Strong-ink canvas contrast falls from 12.13 to 10.09:1 in light-soft and from 17.79 to 13.20:1 in dark-soft. Primary ink remains ≥4.5:1 on all canvases/raised panels; secondary ink is 4.08:1 in light-soft and ≥4.5 elsewhere. Softer backgrounds intentionally reduce color/neutral contrast. Tests enforce the selected per-variant calibration floors, not a blanket AA claim. Syntax/ANSI/diagnostic references continue to consume the selected variant.
-
-Light selection blends canvas/primary at .9/.1, separating it from the new soft_50 canvas. Light-soft selection retains the raised/primary mix at .95/.05 and is lighter than its gray canvas. Both maintain at least .03 design L separation from the canvas and ≥4.5:1 primary-text contrast. These numerical checks do not establish visual acceptance for every foreground/surface pair. Manual checks should compare panel/selection visibility, strongest-ink glare in dark, and light-soft types/comments/strings at actual editing sizes.
+The supported set is exactly light, dark, light-paper and dark-paper. Website bookmarks and local preferences using the retired soft names migrate to their corresponding paper names. Soft definitions, native entrypoints and exports are removed; historical plans remain as dated records.
 
 ## sRGB export and gamut
 
@@ -191,7 +183,7 @@ Foreground roles form a deliberate L hierarchy:
 | text.secondary | .52 / `#696969` | .68 / `#989898` |
 | text.subtle    | .68 / `#989898` | .58 / `#7a7a7a` |
 
-Mono highlight/base/muted select the existing neutral ramp independently for all six variants, as listed above. Standard light gaps are .18/.20 and standard dark gaps .18/.20; light-soft uses .18/.10 and dark-soft .12/.20. Secondary ink remains between base and muted: primary +.04 L in light modes, `soft_400` in dark modes. Strong/primary ink retains at least 4.5:1 canvas contrast; secondary ink does too except light-soft (4.08:1 / +58 Lc). Muted ink intentionally trades some contrast for hierarchy: standard light is 2.58:1 / APCA +47 Lc; light-soft is 3.19:1 / +50 Lc; dark-soft is 4.14:1 / −31 Lc. Muted ink is not a normal-text readability guarantee, especially for small or thin text. WCAG/APCA readings remain visible rather than forcing every tier to meet a threshold. Website L/C controls affect chromatic families only, preserving the selected mono ramp steps.
+Mono highlight/base/muted select the appropriate achromatic or paper ramp. Standard light/dark L gaps are .18/.20; paper retains the same hierarchy, with a .00103 L adjustment at paper_50 to reproduce the site color. Secondary ink remains between base and muted: primary +.04 L in light modes, soft_400/paper_400 in dark modes. Strong/primary/secondary ink retains at least 4.5:1 canvas contrast. Muted ink intentionally trades contrast for hierarchy: light is 2.58:1 / APCA +47 Lc, light-paper 2.57:1 / +47 Lc, dark 4.64:1 / −32 Lc and dark-paper 4.40:1 / −31 Lc. Muted ink is not a normal-text readability guarantee, especially for small or thin text. Website L/C controls affect chromatic families only, preserving mono inks even when their chroma is nonzero.
 
 The larger light-mode span is a visual calibration choice, not a theoretical requirement. [OKLab's derivation](https://bottosson.github.io/posts/oklab/#motivation-and-derivation-of-oklab) assumes normal viewing conditions without explicitly modelling background adaptation. [APCA](https://github.com/Myndex/SAPC-APCA/blob/master/documentation/README.md) evaluates text/background polarity and relates contrast to typography, while [Radix Colors](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale) assigns scale steps by intended use. These support independent role calibration on each background rather than mirrored indices. Radix's text contrast targets are not a claim that this experimental muted tier meets them.
 
@@ -202,9 +194,9 @@ The four syntax families describe visual roles, not a complete taxonomy of langu
 - `ref`: types and values—type references use muted, constants/numbers use base, type definitions/builtins/escapes use highlight.
 - `action`: execution—function/method definitions use highlight in dark modes and base in light modes, avoiding the brown cast of the darker orange highlight. Calls, constructors and coroutine/return/exception keywords use base. Light-mode definitions and calls intentionally share the same color; this iteration does not add a new typographic distinction.
 
-This preserves the family approach from lig.nvim. A declaration is not automatically `struct`: type definitions remain `ref`. The website legend shows each family once, with highlight/base/muted levels. All three chromatic families use the shared accent tier formulas, including `ref.muted`; there is no special blue-only muting formula. Default syntax foregrounds follow the explicit per-variant contrast calibration above. Light chromatic base/muted roles, light-soft chromatic tiers and light-soft secondary neutral ink may fall below 4.5:1, as do quieter mono tiers. These are visual hierarchy choices, not guaranteed AA-readable text. Experimental L/C/background settings have no minimum-contrast guarantee.
+This preserves the family approach from lig.nvim. A declaration is not automatically `struct`: type definitions remain `ref`. The website legend shows each family once, with highlight/base/muted levels. All three chromatic families use the shared accent tier formulas, including `ref.muted`; there is no special blue-only muting formula. Default syntax foregrounds follow the explicit per-variant contrast calibration above. Light chromatic base/muted roles may fall below 4.5:1, as do quieter mono tiers. These are visual hierarchy choices, not guaranteed AA-readable text. Experimental L/C/background settings have no minimum-contrast guarantee.
 
-Borders are independently assigned `soft_200` in light modes, `soft_800` in dark and `soft_700` in dark-soft. Border, shadow and dim colors are decorative and have no normal-text contrast guarantee. Canvas checks do not establish contrast on every raised, selected or highlighted surface.
+Borders select `soft_200`/`paper_200` in light modes and `soft_800`/`paper_800` in dark modes. Border, shadow and dim colors are decorative and have no normal-text contrast guarantee. Canvas checks do not establish contrast on every raised, selected or highlighted surface.
 
 `text.secondary` stays separate from `surface.status`: an ANSI adapter must map terminal foreground slots explicitly rather than reuse a background role.
 

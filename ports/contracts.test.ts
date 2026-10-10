@@ -1,10 +1,13 @@
 // @env node
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
-import { readFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from '../core/resolve'
+import { pruneArtifacts } from './artifacts'
 import { neovimGroups } from './neovim/emit'
 import { INTEGRATIONS } from './neovim/integrations'
 import coverage from './neovim/integrations/coverage.json'
@@ -84,4 +87,26 @@ describe('shared theme and native adapter contracts', () => {
       assert.equal(actual, checksum, path)
     }
   })
+})
+
+it('prunes retired manifest-owned files while preserving unmanaged files and check-only output', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'lig-artifacts-'))
+  try {
+    writeFileSync(join(directory, 'manifest.json'), JSON.stringify({ files: { 'retired.lua': 'hash', 'current.lua': 'hash' } }))
+    for (const name of ['retired.lua', 'current.lua', 'local-note.txt'])
+      writeFileSync(join(directory, name), name)
+    const artifacts = { 'current.lua': 'current.lua' }
+    assert.throws(() => pruneArtifacts(directory, artifacts, true), /obsolete/i)
+    assert.ok(existsSync(join(directory, 'retired.lua')))
+    pruneArtifacts(directory, artifacts, false)
+    assert.ok(!existsSync(join(directory, 'retired.lua')))
+    assert.equal(readFileSync(join(directory, 'current.lua'), 'utf8'), 'current.lua')
+    assert.equal(readFileSync(join(directory, 'local-note.txt'), 'utf8'), 'local-note.txt')
+    pruneArtifacts(directory, artifacts, true)
+    writeFileSync(join(directory, 'manifest.json'), JSON.stringify({ files: { '../outside.lua': 'hash' } }))
+    assert.throws(() => pruneArtifacts(directory, artifacts, false), /outside/i)
+  }
+  finally {
+    rmSync(directory, { recursive: true, force: true })
+  }
 })

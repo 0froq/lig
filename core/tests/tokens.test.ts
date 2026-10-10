@@ -11,17 +11,15 @@ const contrastFloors = {
   'light': { primary: 4.5, secondary: 4.5, highlight: 5.5, base: 4, faded: 3 },
   'light-paper': { primary: 4.5, secondary: 4.5, highlight: 5.5, base: 4, faded: 3 },
   'dark-paper': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
-  'light-soft': { primary: 4.5, secondary: 4, highlight: 4.2, base: 3.4, faded: 2.7 },
   'dark': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
-  'dark-soft': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
 }
 const lightLcFloors = {
   'light': { highlight: 72, base: 63, faded: 53 },
   'light-paper': { highlight: 72, base: 63, faded: 53 },
-  'light-soft': { highlight: 58, base: 52, faded: 45 },
 }
 
 it('every variant resolves the same token contract regardless of call order', () => {
+  assert.deepEqual(VARIANTS, ['light', 'dark', 'light-paper', 'dark-paper'])
   const baseline = createTokenBundle()
   for (const variant of [...VARIANTS].reverse()) {
     buildVariant(variant)
@@ -75,8 +73,8 @@ it('foreground hierarchy preserves calibrated contrast and quieter muted ink', (
 })
 
 it('canvases and raised surfaces use independently calibrated neutral lightness', () => {
-  const canvases = { 'dark': ['#090909', 0.14], 'light': ['#f2f2f2', 0.96], 'dark-soft': ['#181818', 0.21], 'light-soft': ['#dedede', 0.90], 'light-paper': ['#f4f2ec', 0.9610312307917526], 'dark-paper': ['#111113', 0.17852907078448418] } as const
-  const raised = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'dark-soft': ['#2e2e2e', 0.30], 'light-soft': ['#f2f2f2', 0.96], 'light-paper': ['#fdfcf9', 0.99], 'dark-paper': ['#201f1c', 0.24] } as const
+  const canvases = { 'dark': ['#090909', 0.14], 'light': ['#f2f2f2', 0.96], 'light-paper': ['#f4f2ec', 0.9610312307917526], 'dark-paper': ['#111113', 0.17852907078448418] } as const
+  const raised = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'light-paper': ['#fdfcf9', 0.99], 'dark-paper': ['#201f1c', 0.24] } as const
   for (const variant of VARIANTS) {
     const { tokens, oklch } = resolveVariant(variant)
     assert.equal(tokens['surface.canvas'], canvases[variant][0])
@@ -213,11 +211,9 @@ it('eight authored accents share intentional lightness/chroma and distinct hue a
 it('each variant keeps layers balanced through sRGB export and calibrated canvas contrast', () => {
   const mappedTiers: Record<LigVariant, string[]> = {
     'dark': ['blue.highlight'],
-    'dark-soft': [],
     'dark-paper': ['blue.highlight'],
     'light-paper': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
     'light': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
-    'light-soft': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
   }
 
   for (const variant of VARIANTS) {
@@ -304,12 +300,12 @@ it('accent ramps preserve hue and follow the mode emphasis direction', () => {
         assert.equal(color.h, base.h)
         if (mode === 'light') {
           assert.equal(color.c, base.c)
-          const distance = variant === 'light-soft' ? 0.05 : 0.07
+          const distance = 0.07
           assert.ok(Math.abs(color.l - base.l - (step === 'highlight' ? -distance : distance)) < 1e-12)
         }
         else {
           assert.ok(color.c < base.c)
-          const distance = variant === 'dark-soft' ? 0.06 : 0.07
+          const distance = 0.07
           assert.ok(Math.abs(color.l - base.l - (step === 'highlight' ? distance : -distance)) < 1e-12)
         }
         const brighter = mode === 'dark' ? step === 'highlight' : step === 'faded'
@@ -372,8 +368,6 @@ it('mono tiers select existing neutral steps in the mode emphasis direction', ()
   const selections = {
     'light': ['soft_800', 'soft_600', 'soft_400'],
     'dark': ['soft_50', 'soft_300', 'soft_500'],
-    'light-soft': ['soft_800', 'soft_600', 'soft_500'],
-    'dark-soft': ['soft_100', 'soft_300', 'soft_500'],
     'light-paper': ['paper_800', 'paper_600', 'paper_400'],
     'dark-paper': ['paper_50', 'paper_300', 'paper_500'],
   }
@@ -426,43 +420,6 @@ it('paper variants retain semantic colors and propagate their tinted ink through
     assert.equal(colors.bg, paper.tokens['surface.canvas'])
     for (const [name, color] of Object.entries(spec.palette.paper))
       assert.equal(bundle.palette.paper[name], oklchToHex(color))
-  }
-})
-
-it('soft variants reduce extreme contrast without desaturating base accents or breaking aliases', () => {
-  for (const [softName, standardName] of [['light-soft', 'light'], ['dark-soft', 'dark']] as const) {
-    const soft = resolveVariant(softName)
-    const standard = resolveVariant(standardName)
-    assert.notEqual(soft.tokens['surface.canvas'], standard.tokens['surface.canvas'])
-    assert.ok(contrast(soft.tokens['text.strong']!, soft.tokens['surface.canvas']!) < contrast(standard.tokens['text.strong']!, standard.tokens['surface.canvas']!))
-    assert.ok(contrast(soft.tokens['text.primary']!, soft.tokens['surface.canvas']!) < contrast(standard.tokens['text.primary']!, standard.tokens['surface.canvas']!))
-    for (const name of Object.keys(spec.palette.accents)) {
-      const key = `accent.${name}.base`
-      assert.deepEqual(soft.oklch[key], standard.oklch[key], `${softName}/${name}: base color identity`)
-      assert.equal(soft.tokens[key], standard.tokens[key])
-      const softSpan = Math.abs(soft.oklch[`accent.${name}.highlight`]!.l - soft.oklch[`accent.${name}.faded`]!.l)
-      const standardSpan = Math.abs(standard.oklch[`accent.${name}.highlight`]!.l - standard.oklch[`accent.${name}.faded`]!.l)
-      assert.ok(softSpan < standardSpan, `${softName}/${name}: gentler tier span`)
-    }
-    for (const [token, source] of Object.entries({
-      'terminal.background': 'surface.canvas',
-      'terminal.foreground': 'text.primary',
-      'terminal.ansi.15': 'text.strong',
-      'terminal.ansi.2': 'accent.green.base',
-      'terminal.ansi.10': 'accent.green.highlight',
-      'syntax.variable': 'family.mono.highlight',
-      'syntax.keyword': 'family.mono.base',
-      'syntax.comment': 'family.mono.muted',
-      'syntax.parameter': 'family.struct.base',
-      'syntax.type': 'family.ref.muted',
-      'syntax.function': soft.mode === 'light' ? 'family.action.base' : 'family.action.highlight',
-    })) {
-      assert.equal(soft.tokens[token], soft.tokens[source], `${softName}/${token}: shared alias`)
-      assert.deepEqual(soft.oklch[token], soft.oklch[source])
-    }
-    // Raised light-soft panels are intentionally lighter than the gray canvas.
-    assert.ok(contrast(soft.tokens['text.primary']!, soft.tokens['surface.raised']!) >= 4.5)
-    assert.notEqual(soft.tokens['text.dim'], soft.tokens['surface.canvas'])
   }
 })
 

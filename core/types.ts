@@ -1,4 +1,4 @@
-export type LigVariant = 'light' | 'dark' | 'light-soft' | 'dark-soft' | 'light-paper' | 'dark-paper'
+export type LigVariant = 'light' | 'dark' | 'light-paper' | 'dark-paper'
 export type LigMode = 'light' | 'dark'
 
 /** L is 0–1, C is nonnegative, H is degrees (null for achromatic colors). */

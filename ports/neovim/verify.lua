@@ -5,7 +5,7 @@ local preview = require("lig_preview")
 local data = require("lig_preview.generated")
 local function as_number(hex) return tonumber(hex:sub(2), 16) end
 
-for _, variant in ipairs({ "dark", "light", "dark-soft", "light-soft", "light", "dark" }) do
+for _, variant in ipairs({ "dark", "light", "dark-paper", "light-paper", "light", "dark" }) do
   local tokens, groups = preview.load({ style = variant })
   assert(vim.g.colors_name == "lig-preview-" .. variant)
   assert(vim.o.background == data.variants[variant].mode)
@@ -63,7 +63,7 @@ package.loaded["lazy.core.config"] = nil
 preview.load({ style = "dark" })
 local before = vim.api.nvim_get_hl(0, { name = "Normal" })
 local statusline = require("lig_preview.statusline")
-for _, variant in ipairs({ "dark", "light", "dark-soft", "light-soft" }) do
+for _, variant in ipairs({ "dark", "light", "dark-paper", "light-paper" }) do
   local lualine = require("lualine.themes.lig-preview-" .. variant)
   local tokens = preview.get_tokens(variant)
   assert(lualine.normal.a.bg == tokens["mode.normal"])
@@ -107,9 +107,9 @@ assert(vim.api.nvim_get_hl(0, { name = "@lsp.type.comment" }).italic)
 local patched = preview.load({ style = "dark", on_tokens = function(tokens) tokens["text.strong"] = "#abcdef" end })
 assert(patched["syntax.variable"] == "#abcdef")
 assert(vim.api.nvim_get_hl(0, { name = "@variable" }).fg == 0xabcdef)
-preview.setup({ style = "light-soft" })
+preview.setup({ style = "light-paper" })
 vim.cmd.colorscheme("lig-preview")
-assert(vim.g.colors_name == "lig-preview-light-soft")
+assert(vim.g.colors_name == "lig-preview-light-paper")
 vim.cmd.colorscheme("lig-preview-dark")
 assert(vim.g.colors_name == "lig-preview-dark")
 print("LiG Preview native API contracts passed: " .. vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch)

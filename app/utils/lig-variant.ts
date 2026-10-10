@@ -1,21 +1,29 @@
 import type { LigVariant } from '#palette/nvim-build'
+import { VARIANTS } from '#palette/nvim-build'
 
 export type Tone = 'light' | 'dark'
-export type Edge = 'crisp' | 'soft' | 'paper'
+export type Edge = 'crisp' | 'paper'
 
 export const VARIANT_OPTIONS: { id: LigVariant, label: string }[] = [
   { id: 'light', label: 'palette.variants.light' },
   { id: 'dark', label: 'palette.variants.dark' },
-  { id: 'light-soft', label: 'palette.variants.lightSoft' },
-  { id: 'dark-soft', label: 'palette.variants.darkSoft' },
   { id: 'light-paper', label: 'palette.variants.lightPaper' },
   { id: 'dark-paper', label: 'palette.variants.darkPaper' },
 ]
 
+/** Migrate retired website bookmarks/preferences without exporting soft themes. */
+export function parseVariant(value: string | null): LigVariant | null {
+  if (value === 'light-soft')
+    return 'light-paper'
+  if (value === 'dark-soft')
+    return 'dark-paper'
+  return VARIANTS.includes(value as LigVariant) ? value as LigVariant : null
+}
+
 export function splitVariant(variant: LigVariant): { tone: Tone, edge: Edge } {
   return {
     tone: variant.startsWith('dark') ? 'dark' : 'light',
-    edge: variant.endsWith('paper') ? 'paper' : variant.endsWith('soft') ? 'soft' : 'crisp',
+    edge: variant.endsWith('paper') ? 'paper' : 'crisp',
   }
 }
 

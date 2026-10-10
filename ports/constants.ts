@@ -7,8 +7,6 @@ export const SOURCE_REF = 'preview-ports-2026-10-04.2'
 export const VARIANT_LABELS: Record<LigVariant, string> = {
   'dark': 'LiG Preview Dark',
   'light': 'LiG Preview Light',
-  'dark-soft': 'LiG Preview Dark Soft',
-  'light-soft': 'LiG Preview Light Soft',
   'light-paper': 'LiG Preview Light Paper',
   'dark-paper': 'LiG Preview Dark Paper',
 }

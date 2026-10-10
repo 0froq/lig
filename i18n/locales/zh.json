@@ -31,8 +31,6 @@
     "variants": {
       "light": "浅色",
       "dark": "深色",
-      "lightSoft": "浅色柔和",
-      "darkSoft": "深色柔和",
       "lightPaper": "浅色纸张",
       "darkPaper": "深色纸张"
     },
@@ -78,7 +76,7 @@
         "lightness": "彩色基准 L",
         "chroma": "彩色基准 C",
         "background": "背景 token",
-        "paperNote": "Paper 试验：调整底色与灰阶，语义彩色沿用标准变体。"
+        "paperNote": "Paper 使用微染色底色与灰阶，语义彩色沿用标准变体。"
       },
       "comment": "less is great",
       "families": {
@@ -116,7 +114,6 @@
       "toneLight": "浅色",
       "toneDark": "深色",
       "edgeCrisp": "清晰",
-      "edgeSoft": "柔和",
       "sentence": {
         "lead": "以",
         "join": "、",
@@ -133,7 +130,7 @@
         },
         "sentence": {
           "name": "句子",
-          "note": "两种明暗，三种底色处理，组成六个变体。"
+          "note": "两种明暗，搭配中性灰或纸张底色，组成四个变体。"
         },
         "wildmenu": {
           "name": "命令行",

@@ -31,8 +31,6 @@
     "variants": {
       "light": "Light",
       "dark": "Dark",
-      "lightSoft": "Light soft",
-      "darkSoft": "Dark soft",
       "lightPaper": "Light paper",
       "darkPaper": "Dark paper"
     },
@@ -78,7 +76,7 @@
         "lightness": "Color base L",
         "chroma": "Color base C",
         "background": "Background token",
-        "paperNote": "Paper trial: tinted surfaces and mono inks; semantic colors match the standard variant."
+        "paperNote": "Paper uses tinted surfaces and mono inks; semantic colors match the standard variant."
       },
       "comment": "less is great",
       "families": {
@@ -116,7 +114,6 @@
       "toneLight": "light",
       "toneDark": "dark",
       "edgeCrisp": "crisp",
-      "edgeSoft": "soft",
       "sentence": {
         "lead": "Shown",
         "join": ", ",
@@ -133,7 +130,7 @@
         },
         "sentence": {
           "name": "Sentence",
-          "note": "Six variants combine two tones with three treatments."
+          "note": "Four variants combine two tones with neutral or paper treatments."
         },
         "wildmenu": {
           "name": "Wildmenu",

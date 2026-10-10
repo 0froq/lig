@@ -1,6 +1,8 @@
 import type { LigVariant } from '#palette/nvim-build'
 import { baseSwatches, buildVariant, semanticRoles, VARIANTS } from '#palette/nvim-build'
 
+import { parseVariant } from '~/utils/lig-variant'
+
 const STORAGE_KEY = 'lig-palette-variant'
 
 export function useLigVariant() {
@@ -8,14 +10,17 @@ export function useLigVariant() {
 
   onMounted(() => {
     try {
-      const requested = new URLSearchParams(window.location.search).get('variant') as LigVariant | null
-      if (requested && VARIANTS.includes(requested)) {
+      const requested = parseVariant(new URLSearchParams(window.location.search).get('variant'))
+      if (requested) {
         variant.value = requested
+        localStorage.setItem(STORAGE_KEY, requested)
         return
       }
-      const stored = localStorage.getItem(STORAGE_KEY) as LigVariant | null
-      if (stored && VARIANTS.includes(stored))
+      const stored = parseVariant(localStorage.getItem(STORAGE_KEY))
+      if (stored) {
         variant.value = stored
+        localStorage.setItem(STORAGE_KEY, stored)
+      }
     }
     catch { /* ignore */ }
   })

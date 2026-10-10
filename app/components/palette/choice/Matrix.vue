@@ -7,7 +7,7 @@ const variant = defineModel<LigVariant>('variant', { required: true })
 const { t } = useI18n()
 
 const tones: Tone[] = ['light', 'dark']
-const edges: Edge[] = ['crisp', 'soft', 'paper']
+const edges: Edge[] = ['crisp', 'paper']
 const ids = tones.flatMap(tone => edges.map(edge => joinVariant(tone, edge)))
 const hover = ref<LigVariant | null>(null)
 

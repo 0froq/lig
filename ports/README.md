@@ -23,7 +23,7 @@ Neovim includes every implemented plugin module from lig.nvim at `7bb6ca25705bae
 
 Mono profile and old `on_colors` compatibility are not included. The namespaced preview API uses `on_tokens` and `on_highlights`. The site still uses the compatible shared core; it has not yet been refactored to consume this compiler's style IR. `core/syntax.ts` remains a capture vocabulary bridge for the existing demo. Capture styles are explicit and never inferred from color equality; `@constructor.lua` maps table braces to neutral punctuation while other constructor captures retain the shared action intent.
 
-Syntax role decisions are shared, but grammar/LSP classifications can differ. Native rendering and manual appearance are not asserted by data checks. The four variants are separate installable identities; current dark/dark-soft values are identical.
+Syntax role decisions are shared, but grammar/LSP classifications can differ. Native rendering and manual appearance are not asserted by data checks. The four supported variants are light, dark, light-paper and dark-paper. Paper changes surfaces and mono inks while retaining its standard mode’s chromatic token coordinates. Retired soft variants are no longer emitted. Generation prunes obsolete files owned by the previous output manifest, retaining unmanaged files.
 
 Small ports such as Ghostty/fzf should eventually be grouped under the main LiG release artifacts. This compiler currently emits only the two requested editor distributions.
 

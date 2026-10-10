@@ -286,7 +286,7 @@
 
 .lig-matrix-grid {
   display: grid;
-  grid-template-columns: auto repeat(3, 64px);
+  grid-template-columns: auto repeat(2, 64px);
   align-items: center;
 }
 
@@ -301,8 +301,7 @@
 }
 
 .lig-matrix-grid > .lig-matrix-axis:nth-child(2),
-.lig-matrix-grid > .lig-matrix-axis:nth-child(3),
-.lig-matrix-grid > .lig-matrix-axis:nth-child(4) {
+.lig-matrix-grid > .lig-matrix-axis:nth-child(3) {
   justify-self: center;
   padding-right: 0;
 }
