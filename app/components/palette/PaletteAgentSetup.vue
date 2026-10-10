@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CopyButton } from '@froq/ui'
+import { Collapsible, CopyButton } from '@froq/ui'
 import { LIGHTWEIGHT_PORTS } from '../../../ports/catalog'
 
 const { t } = useI18n()
@@ -34,7 +34,10 @@ const instruction = computed(() => t('palette.downloads.agentInstruction', {
         :pending-label="t('palette.downloads.agentCopyPending')"
       />
     </header>
-    <p>{{ instruction }}</p>
+    <p>{{ t('palette.downloads.agentNote') }}</p>
+    <Collapsible :label="t('palette.downloads.agentRead')">
+      <p>{{ instruction }}</p>
+    </Collapsible>
   </section>
 </template>
 

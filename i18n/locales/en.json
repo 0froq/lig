@@ -70,6 +70,8 @@
       "lightweightNote": "Four variants from the same tokens. Downloads follow the selected theme.",
       "install": "Installation notes",
       "agentTitle": "Set up with an agent",
+      "agentNote": "Detect installed tools first. Review the proposed configuration before any changes.",
+      "agentRead": "Read the instruction",
       "agentCopy": "Copy instruction",
       "agentCopyError": "Copy failed · retry",
       "agentCopyPending": "Copying…",

@@ -70,6 +70,8 @@
       "lightweightNote": "四个变体共用同一套 token，下载文件跟随当前主题。",
       "install": "安装说明",
       "agentTitle": "让 agent 帮你配置",
+      "agentNote": "先检测已安装的工具，列出配置方案，确认后再实施。",
+      "agentRead": "查看完整指令",
       "agentCopy": "复制指令",
       "agentCopyError": "复制失败 · 重试",
       "agentCopyPending": "复制中…",
