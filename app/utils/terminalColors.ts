@@ -12,7 +12,7 @@ export function terminalColors(tokens: Record<string, string>) {
       const inverse = tokens['text.inverse']!
       return {
         index,
-        name,
+        name: start === 8 ? `bright ${name}` : name,
         hex,
         foregroundCode: (start === 0 ? 30 : 90) + offset,
         backgroundCode: (start === 0 ? 40 : 100) + offset,

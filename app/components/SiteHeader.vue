@@ -2,6 +2,8 @@
 const { product } = useAppConfig()
 const { t } = useI18n()
 const link = useKitLink()
+const route = useRoute()
+const isNotes = computed(() => /^\/(?:zh\/)?notes(?:\/|$)/.test(route.path))
 const pinned = ref(false)
 
 function onScroll(): void {
@@ -27,7 +29,7 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
         :size="4"
       /><span class="l-dot">{{ product.mark }}</span>
     </NuxtLink>
-    <PaletteThemeSwitch />
+    <PaletteThemeSwitch :tone-only="isNotes" />
     <nav class="l-nav">
       <NuxtLink
         v-for="item in product.nav"
@@ -39,7 +41,7 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
     </nav>
     <Transition name="theme-bar">
       <div
-        v-if="pinned"
+        v-if="pinned && !isNotes"
         class="l-theme-bar"
       >
         <PaletteThemeSwitch />

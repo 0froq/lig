@@ -131,47 +131,82 @@ const accentBases = computed(() =>
           {{ labelFor(item) }}
         </button>
       </div>
-      <div class="lig-neutral-ramp">
-        <PaletteSwatch
-          v-for="sw in neutrals"
-          :key="sw.name"
-          :name="sw.name"
-          :hex="sw.hex"
-          :detail="`L ${(sw.lightness * 100).toFixed(0)}%`"
-          :variant="variant"
-        />
-      </div>
-      <div class="lig-bases">
-        <PaletteSwatch
-          v-for="sw in accentBases"
-          :key="sw.name"
-          :name="sw.name"
-          :hex="sw.hex"
-          :caption="sw.name.replace('_base', '')"
-          :variant="variant"
-        />
+      <div class="lig-palette-columns">
+        <section class="lig-palette-column">
+          <h3 class="lig-palette-heading">
+            {{ t('palette.groups.neutrals') }}
+          </h3>
+          <div class="lig-neutral-ramp">
+            <PaletteSwatch
+              v-for="sw in neutrals"
+              :key="sw.name"
+              :name="sw.name"
+              :hex="sw.hex"
+              :detail="`L ${(sw.lightness * 100).toFixed(0)}%`"
+              :variant="variant"
+            />
+          </div>
+        </section>
+        <section class="lig-palette-column">
+          <h3 class="lig-palette-heading">
+            {{ t('palette.groups.accents') }}
+          </h3>
+          <div class="lig-bases">
+            <PaletteSwatch
+              v-for="sw in accentBases"
+              :key="sw.name"
+              :name="sw.name"
+              :hex="sw.hex"
+              :caption="sw.name.replace('_base', '')"
+              :variant="variant"
+            />
+          </div>
+        </section>
       </div>
       <PaletteOklch :variant="variant" />
       <PaletteTerminalReference :variant="variant" />
       <details class="lig-more">
         <summary>{{ t('palette.more') }}</summary>
-        <div
-          v-for="family in families"
-          :key="family.name"
-          class="lig-family"
-        >
-          <h3>{{ family.name }}</h3>
-          <div class="lig-triad">
-            <PaletteSwatch
-              v-for="step in family.steps"
-              :key="step.swatch.name"
-              :name="step.swatch.name"
-              :hex="step.swatch.hex"
-              :caption="step.caption"
-              :variant="variant"
-            />
-          </div>
-        </div>
+        <table class="lig-tier-table">
+          <thead>
+            <tr>
+              <th scope="col">
+                {{ t('palette.tiers.color') }}
+              </th>
+              <th
+                v-for="step in ['highlight', 'base', 'muted']"
+                :key="step"
+                scope="col"
+              >
+                {{ t(`palette.tiers.${step}`) }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="family in families"
+              :key="family.name"
+            >
+              <th scope="row">
+                {{ family.name }}
+              </th>
+              <td
+                v-for="step in family.steps"
+                :key="step.swatch.name"
+              >
+                <PaletteSwatch
+                  :name="step.swatch.name"
+                  :hex="step.swatch.hex"
+                  :caption="t(`palette.tiers.${step.caption === 'hl' ? 'highlight' : step.caption === 'fd' ? 'muted' : 'base'}`)"
+                  :variant="variant"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </details>
+      <details class="lig-more">
+        <summary>{{ t('palette.uiRoles') }}</summary>
         <PaletteSemanticTable
           :variant="variant"
           :rows="semantics"

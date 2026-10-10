@@ -88,7 +88,7 @@
       }
     },
     "paletteNote": "The full source palette. Open it for a hex. Reading code does not need it.",
-    "more": "Triads and UI roles",
+    "more": "Accent tiers",
     "oklch": {
       "title": "Where the colors sit",
       "note": "Design coordinates in OKLCH. Display colors are mapped to sRGB.",
@@ -177,8 +177,16 @@
       "output": "Simulated terminal color output",
       "referenceLink": "Color data",
       "reference": "Terminal color reference",
+      "color": "ANSI slot name",
+      "contrastNote": "APCA is an experimental contrast model, not a finalized WCAG 3 requirement. Emphasis follows the theme: lighter in dark mode, darker in light mode.",
+      "slotNote": "Black and white are ANSI slot names; in a light theme they can map to light and dark neutrals. Default foreground/background are separate settings."
+    },
+    "uiRoles": "UI roles",
+    "tiers": {
       "color": "Color",
-      "contrastNote": "APCA is an experimental contrast model, not a finalized WCAG 3 requirement. Emphasis follows the theme: lighter in dark mode, darker in light mode."
+      "highlight": "Highlight",
+      "base": "Base",
+      "muted": "Muted"
     }
   },
   "install": {

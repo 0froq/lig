@@ -27,8 +27,8 @@ const points = computed(() => colors.value.map((color) => {
     ...color,
     x: center + dx * r,
     y: center + dy * r,
-    labelX: center + dx * (r + 18),
-    labelY: center + dy * (r + 18) + 4,
+    labelX: center + dx * (r + 26),
+    labelY: center + dy * (r + 26) + 4,
     anchor: Math.abs(dx) < 0.2 ? 'middle' : dx > 0 ? 'start' : 'end',
   }
 }))
@@ -101,7 +101,7 @@ const points = computed(() => colors.value.map((color) => {
           <circle
             :cx="point.x"
             :cy="point.y"
-            r="5"
+            r="11"
             :fill="point.hex"
           />
           <text
@@ -124,7 +124,7 @@ const points = computed(() => colors.value.map((color) => {
           <text
             x="0"
             y="16"
-          >{{ t('palette.oklch.lightnessTitle') }}</text>
+          >L</text>
           <text
             x="90"
             y="16"
@@ -161,7 +161,7 @@ const points = computed(() => colors.value.map((color) => {
           <circle
             :cx="90 + color.l * 200"
             :cy="40 + index * 24"
-            r="4"
+            r="8"
             :fill="color.hex"
           />
         </g>

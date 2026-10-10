@@ -12,13 +12,14 @@ const { data } = await useAsyncData(
       queryCollection('notes').path(contentPath(`/notes/${slug.value}`)).first(),
       queryCollection('notes').where('path', 'LIKE', `${contentPath('/notes')}/%`).order('date', 'DESC').select('path', 'title').all(),
     ])
-    const index = all.findIndex(item => item.path === note?.path)
-    const next = all.length > 1 ? all[(index + 1) % all.length] : undefined
+    const published = all.filter(item => item.title?.trim())
+    const index = published.findIndex(item => item.path === note?.path)
+    const next = index >= 0 && published.length > 1 ? published[(index + 1) % published.length] : undefined
     return { note, next }
   },
 )
 const note = computed(() => data.value?.note)
-if (!note.value)
+if (!note.value?.title?.trim())
   throw createError({ statusCode: 404, statusMessage: 'Not found', fatal: true })
 
 const next = computed(() => data.value?.next)
@@ -47,7 +48,7 @@ useSeoMeta({ description: () => note.value?.description })
     <section class="l-section is-prose">
       <div class="l-body l-prose">
         <p
-          v-if="note.description != null"
+          v-if="note.description?.trim()"
           class="l-excerpt"
         >
           <Fill

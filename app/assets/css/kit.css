@@ -55,6 +55,42 @@
   box-sizing: border-box;
 }
 
+/* Native thin scrollbars: Firefox fallback, 4px track on WebKit/Blink. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, color-mix(in oklab, var(--fg) 30%, transparent)) transparent;
+}
+
+@supports selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb, color-mix(in oklab, var(--fg) 30%, transparent));
+    border-radius: 4px;
+  }
+}
+
+@media (forced-colors: active) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: CanvasText;
+  }
+}
+
 html {
   overflow-x: clip;
   background: var(--bg);

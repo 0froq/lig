@@ -88,7 +88,7 @@
       }
     },
     "paletteNote": "完整色源。要 hex 时再看，读代码用不到。",
-    "more": "三联色与界面角色",
+    "more": "彩色层级",
     "oklch": {
       "title": "颜色的位置",
       "note": "图中为 OKLCH 设计坐标，显示颜色已映射到 sRGB。",
@@ -177,8 +177,16 @@
       "output": "模拟终端彩色输出",
       "referenceLink": "颜色数据",
       "reference": "终端颜色参考",
+      "color": "ANSI 槽位名",
+      "contrastNote": "APCA 是实验性对比度模型，并非已定稿的 WCAG 3 要求。强调色在深色下更亮，在浅色下更深。",
+      "slotNote": "black / white 是 ANSI 槽位名；浅色主题可以分别映射为浅灰和深灰。默认前景与背景是独立设置。"
+    },
+    "uiRoles": "界面角色",
+    "tiers": {
       "color": "颜色",
-      "contrastNote": "APCA 是实验性对比度模型，并非已定稿的 WCAG 3 要求。强调色在深色下更亮，在浅色下更深。"
+      "highlight": "强调",
+      "base": "基色",
+      "muted": "弱化"
     }
   },
   "install": {

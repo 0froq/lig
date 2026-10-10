@@ -280,6 +280,22 @@ it('yellow is replaced throughout the palette, foreground roles and terminal ali
   }
 })
 
+it('terminal neutral slots stay distinct from the canvas without changing default ink', () => {
+  for (const variant of VARIANTS) {
+    const { tokens } = resolveVariant(variant)
+    const background = tokens['terminal.background']!
+    assert.equal(background, tokens['surface.canvas'])
+    assert.equal(tokens['terminal.foreground'], tokens['text.primary'])
+    const dim = tokens['terminal.ansi.0']!
+    const subtle = tokens['terminal.ansi.8']!
+    assert.notEqual(dim, background, `${variant}: explicit ANSI black must not disappear`)
+    assert.ok(contrast(dim, background) > 1.3, `${variant}: visible neutral separation`)
+    assert.ok(contrast(dim, background) < contrast(subtle, background), `${variant}: dim precedes subtle ink`)
+    assert.equal(tokens['terminal.ansi.7'], tokens['terminal.foreground'])
+    assert.ok(contrast(tokens['terminal.ansi.15']!, background) > contrast(tokens['terminal.ansi.7']!, background))
+  }
+})
+
 it('conversion matches reference primary colors and round-trips sRGB samples', () => {
   const red = hexToOklch('#ff0000')
   assert.ok(Math.abs(red.l - 0.62795536) < 1e-7)

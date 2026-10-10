@@ -5,6 +5,7 @@ import { resolveVariant } from '../../../core'
 const props = defineProps<{ variant: LigVariant }>()
 const { t } = useI18n()
 const route = useRoute()
+const link = useKitLink()
 const resolved = computed(() => resolveVariant(props.variant))
 const banks = computed(() => terminalColors(resolved.value.tokens))
 </script>
@@ -76,6 +77,15 @@ const banks = computed(() => terminalColors(resolved.value.tokens))
         </tbody>
       </table>
     </div>
+    <p class="lig-aside">
+      {{ t('palette.terminal.slotNote') }}
+      <NuxtLink
+        class="lig-oklch-note-link"
+        :to="link('/notes/color-design')"
+      >
+        {{ t('palette.oklch.designNote') }} ↗
+      </NuxtLink>
+    </p>
     <p class="lig-aside">
       {{ t('palette.terminal.contrastNote') }}
     </p>

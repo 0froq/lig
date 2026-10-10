@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.12",
+  "version": "0.2.13",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -381,7 +381,7 @@
     "terminal.foreground": "text.primary",
     "terminal.cursor": "text.strong",
     "terminal.selection": "surface.selection",
-    "terminal.ansi.0": "surface.canvas",
+    "terminal.ansi.0": "text.dim",
     "terminal.ansi.7": "text.primary",
     "terminal.ansi.8": "text.subtle",
     "terminal.ansi.15": "text.strong",

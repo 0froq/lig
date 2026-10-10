@@ -32,6 +32,14 @@ Higher yellow lightness reduces foreground contrast on light backgrounds. Agains
 
 `core/spec.json` maintains the colors, modes and aliases. The resolver produces semantic tokens; port adapters translate them into each editor's format. Neovim highlight groups and VS Code scopes have their own mappings, without separate palettes.
 
-Syntax uses mono, struct (green), ref (blue) and action (orange). Other colors serve diagnostics, UI and terminal output. ANSI 1-6 reference the corresponding colored bases, and 9-14 reference highlights. Slots 0, 7, 8 and 15 come from canvas and neutral text tokens. ANSI 16 is a mapping of existing tokens.
+Syntax uses mono, struct (green), ref (blue) and action (orange). Other colors serve diagnostics, UI and terminal output. ANSI 1-6 reference the corresponding colored bases, and 9-14 reference highlights. Slots 0, 7, 8 and 15 come from neutral text tokens. ANSI 16 is a mapping of existing tokens.
+
+## ANSI slot names and default colors
+
+ANSI 0 is named black and ANSI 7 white. These are slot identities, not a requirement to use `#000000` and `#ffffff`. [XTerm distinguishes explicit colors from defaults](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html): SGR 30/37 select black/white foreground, while 39 restores the default foreground; 40/47 select black/white background, while 49 restores the default background. Changing the theme does not change these codes or slot names.
+
+Light themes use different neutral mappings. [Catppuccin Latte](https://github.com/catppuccin/alacritty/blob/main/catppuccin-latte.toml) uses light gray `#bcc0cc` for black and dark gray `#5c5f77` for white, with its background separately set to `#eff1f5`. [Rosé Pine Dawn](https://github.com/rose-pine/alacritty/blob/main/dist/rose-pine-dawn.toml) similarly uses `#f2e9e1` for black and `#575279` for white against `#faf4ed`. Pure black is therefore not necessary for a light terminal theme.
+
+LiG keeps those conventional slot names and reverses neutral polarity in light themes. ANSI 0 now references `text.dim`, rather than the identical canvas color; 7 references `text.primary`, 8 `text.subtle` and 15 `text.strong`. Default foreground and background remain independent tokens. This avoids an invisible ANSI 0 sample while preserving the shared gray scale. Dim slots remain low contrast and are not ordinary-text readability guarantees. Programs that hard-code assumptions about black/white may still behave differently across terminal themes.
 
 WCAG 2.2 and APCA readings use the exported HEX and background. APCA is experimental; [WCAG 3 is still a draft](https://www.w3.org/TR/wcag-3.0/) with its contrast algorithm yet to be determined. Readability also depends on font size, weight and context.

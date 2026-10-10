@@ -32,6 +32,14 @@ LiG 的颜色先服务于阅读：识别结构、引用和动作，同时让普�
 
 `core/spec.json` 是维护颜色、模式和别名的事实源。解析器生成语义 token，再由各 port 转换为目标格式。Neovim 和 VS Code 的适配层维护各自的高亮组与 scope，不另造色盘。
 
-代码高亮分为 mono、struct（绿）、ref（蓝）、action（橙）。红色等其他原色供诊断、界面和终端使用。ANSI 1-6 引用对应彩色 base，9-14 引用 highlight；0、7、8、15 来自画布和文字灰度，所以 ANSI 16 色并不是再维护一套独立颜色。
+代码高亮分为 mono、struct（绿）、ref（蓝）、action（橙）。红色等其他原色供诊断、界面和终端使用。ANSI 1-6 引用对应彩色 base，9-14 引用 highlight；0、7、8、15 来自文字灰度，所以 ANSI 16 色并不是再维护一套独立颜色。
+
+## ANSI 槽位名与默认颜色
+
+ANSI 0 叫 black，ANSI 7 叫 white。这是槽位身份，不要求必须使用 `#000000` 和 `#ffffff`。[XTerm 将指定颜色与默认颜色分开](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html)：SGR 30/37 选择 black/white 前景，39 恢复默认前景；40/47 选择 black/white 背景，49 恢复默认背景。主题变化不应改变这些控制码和槽位名称。
+
+浅色主题可以采用不同的灰度映射。[Catppuccin Latte](https://github.com/catppuccin/alacritty/blob/main/catppuccin-latte.toml) 的 black 是浅灰 `#bcc0cc`，white 是深灰 `#5c5f77`，背景则独立设为 `#eff1f5`。[Rosé Pine Dawn](https://github.com/rose-pine/alacritty/blob/main/dist/rose-pine-dawn.toml) 同样将 black 设为 `#f2e9e1`、white 设为 `#575279`，背景为 `#faf4ed`。因此，浅色终端并不需要强制使用纯黑。
+
+LiG 保留标准槽位名，在浅色下反转灰度角色。ANSI 0 改为引用 `text.dim`，不再与画布同色；7 引用 `text.primary`，8 引用 `text.subtle`，15 引用 `text.strong`。默认前景和背景仍是独立 token。这样沿用同一套灰度，同时避免 ANSI 0 色样完全消失。dim 槽位仍是低对比度颜色，不保证适合普通正文；将 black/white 写死为特定视觉效果的程序，在不同终端主题中仍可能表现不同。
 
 WCAG 2.2 和 APCA 都基于最终 HEX 与背景计算，作为检查读数。APCA 是实验性模型；[WCAG 3 仍是草案](https://www.w3.org/TR/wcag-3.0/)，其对比度算法尚未确定。可读性最终仍要结合字号、字重和使用场景判断。

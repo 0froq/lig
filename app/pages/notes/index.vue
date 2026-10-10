@@ -6,7 +6,7 @@ const contentPath = useContentPath()
 
 const { data: notes } = await useAsyncData(
   () => `notes-${locale.value}`,
-  () => queryCollection('notes').where('path', 'LIKE', `${contentPath('/notes')}/%`).order('date', 'DESC').all(),
+  () => queryCollection('notes').where('path', 'LIKE', `${contentPath('/notes')}/%`).order('date', 'DESC').all().then(items => items.filter(item => item.title?.trim())),
 )
 
 const slug = (path: string): string => path.split('/').pop() ?? ''
@@ -47,7 +47,7 @@ useHead({ title: () => t('notes.label') })
           />
         </h2>
         <p
-          v-if="note.description != null"
+          v-if="note.description?.trim()"
           class="l-copy"
         >
           <Fill
