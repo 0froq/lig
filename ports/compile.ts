@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { spec, VARIANTS } from '../core/resolve'
 import { pruneArtifacts } from './artifacts'
 import { COMPILER_VERSION, PACKAGE_VERSION, SOURCE_REF, VARIANT_LABELS } from './constants'
+import { lightweightArtifacts } from './lightweight'
 import { neovimData } from './neovim/emit'
 import { INTEGRATIONS } from './neovim/integrations'
 import { portReadme } from './readme'
@@ -96,17 +97,34 @@ for (const port of ['neovim', 'vscode']) {
     coverage: port === 'neovim' ? { integrations: Object.fromEntries(Object.entries(INTEGRATIONS).map(([name, integration]) => [name, { plugin: integration.plugin, groupCount: Object.keys(integration.groups).length }])), statuslines: ['lualine', 'lightline'], runtime: 'native Lua', syntax: ['classic', 'Tree-sitter', 'LSP'] } : { syntax: ['TextMate', 'semantic tokens'], runtime: 'declarative JSON' },
   })
 }
+const lightweight = lightweightArtifacts(themes)
+lightweight['README.md'] = readFileSync(join(root, 'ports/lightweight/README.md'), 'utf8')
+lightweight['manifest.json'] = json({
+  ...metadata,
+  sourceRef: 'codex/lig-core-tokens',
+  port: 'lightweight',
+  files: Object.fromEntries(Object.entries(lightweight).map(([path, content]) => [path, hash(content)])),
+})
+for (const [path, content] of Object.entries(lightweight))
+  artifacts[`lightweight/${path}`] = content
+
 artifacts['manifest.json'] = json({ ...metadata, files: Object.fromEntries(Object.entries(artifacts).map(([path, content]) => [path, hash(content)])) })
-pruneArtifacts(output, artifacts, check)
-for (const [path, content] of Object.entries(artifacts)) {
-  const target = join(output, path)
-  if (check) {
-    if (!existsSync(target) || readFileSync(target, 'utf8') !== content)
-      throw new Error(`Artifact differs: ${target}`)
-  }
-  else {
-    mkdirSync(dirname(target), { recursive: true })
-    writeFileSync(target, content)
+function writeArtifacts(directory: string, artifacts: Record<string, string>): void {
+  pruneArtifacts(directory, artifacts, check)
+  for (const [path, content] of Object.entries(artifacts)) {
+    const target = join(directory, path)
+    if (check) {
+      if (!existsSync(target) || readFileSync(target, 'utf8') !== content)
+        throw new Error(`Artifact differs: ${target}`)
+    }
+    else {
+      mkdirSync(dirname(target), { recursive: true })
+      writeFileSync(target, content)
+    }
   }
 }
+writeArtifacts(output, artifacts)
+// Custom --out builds remain isolated; the standard build also serves identical bytes.
+if (outputFlag < 0)
+  writeArtifacts(join(root, 'public/ports'), lightweight)
 process.stdout.write(`${check ? 'Checked' : 'Generated'} ${Object.keys(artifacts).length} artifacts; input ${metadata.inputHash}\n`)

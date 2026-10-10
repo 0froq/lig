@@ -62,23 +62,17 @@
     },
     "downloads": {
       "nvim": "lig.nvim（Neovim）",
-      "nvimNote": "Lua 主题源；色板推导与 lua/lig/colors/template.lua 一致。",
+      "nvimNote": "Neovim 主题分发；编辑器包独立发布。",
       "vscode": "vscode-theme-LiG",
-      "vscodeNote": "VS Code 移植；基础色来自 scripts/colors.ts。",
-      "tokens": "本仓库生成的 token 文件"
+      "vscodeNote": "VS Code 主题分发；编辑器包独立发布。",
+      "tokens": "本仓库生成的 token 文件",
+      "lightweight": "轻量 port",
+      "lightweightNote": "四个变体共用同一套 token，下载文件跟随当前主题。",
+      "install": "安装说明"
     },
     "syntax": {
       "lede": "mono 是普通阅读层；struct 表达绑定与结构，ref 表达值与引用，action 表达执行行为。",
       "aside": "highlight / base / muted 表达阅读层级。mono 直接选取灰度阶梯，彩色家族使用 OKLCH 偏移；对比度读数用于辅助判断，不作为硬性限制。",
-      "lab": {
-        "title": "试调坐标",
-        "note": "每个变体分别存储 struct / ref / action 的实际 L/C；mono 保持选定灰阶。代码、终端颜色和对比度跟随试调。",
-        "lightness": "该组基准 L",
-        "chroma": "该组基准 C",
-        "background": "背景 token",
-        "paperNote": "Paper 使用微染色底色与灰阶，语义彩色沿用标准变体。",
-        "family": "彩色家族"
-      },
       "comment": "less is great",
       "families": {
         "mono": "普通标识符、正文与注释",
@@ -171,7 +165,7 @@
     },
     "terminal": {
       "title": "终端 16 色",
-      "note": "当前主题的 port 输出值，不含实验面板中的临时调整。SGR 为前景／背景控制码。文字对比度相对于 terminal.background 计算：",
+      "note": "当前主题的 port 输出值。SGR 为前景／背景控制码。文字对比度相对于 terminal.background 计算：",
       "normal": "普通色",
       "bright": "强调色",
       "output": "模拟终端彩色输出",

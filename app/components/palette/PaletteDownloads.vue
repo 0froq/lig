@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { LIGHTWEIGHT_PORTS, lightweightPath } from '../../../ports/catalog'
+
+const { variant } = useLigVariant()
+
 const links = [
   {
     title: 'palette.downloads.nvim',
@@ -34,6 +38,37 @@ const files = [
       <span class="lig-port-note">{{ $t(item.note) }}</span>
     </a>
   </div>
+  <p class="lig-group">
+    {{ $t('palette.downloads.lightweight') }} · {{ variant }}
+  </p>
+  <p class="lig-aside">
+    {{ $t('palette.downloads.lightweightNote') }}
+    <a
+      href="/ports/README.md"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="lig-oklch-note-link"
+    >{{ $t('palette.downloads.install') }} ↗</a>
+  </p>
+  <ul class="lig-files lig-port-downloads">
+    <li
+      v-for="port in LIGHTWEIGHT_PORTS"
+      :key="port.id"
+    >
+      <a
+        :href="`/ports/${lightweightPath(port, variant)}`"
+        :download="lightweightPath(port, variant).split('/').pop()"
+      >
+        <span>{{ port.title }}</span><code>{{ lightweightPath(port, variant).split('/').pop() }}</code><span aria-hidden="true">↓</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="/ports/manifest.json"
+        download="lig-ports-manifest.json"
+      ><span>Manifest</span><code>SHA-256</code><span aria-hidden="true">↓</span></a>
+    </li>
+  </ul>
   <p class="lig-group">
     {{ $t('palette.downloads.tokens') }}
   </p>

@@ -26,3 +26,8 @@ jobs:
       - run: pnpm ports:generate
       - run: pnpm ports:test
       - run: pnpm ports:check
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: lig-lightweight-ports
+          path: dist/ports/lightweight/
+          if-no-files-found: error

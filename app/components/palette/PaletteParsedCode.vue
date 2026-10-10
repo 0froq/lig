@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { LigVariant, ResolvedVariant } from '../../../core'
+import type { LigVariant } from '../../../core'
 import type { SyntaxDocument } from '../../../syntax/types'
 import { resolveVariant } from '../../../core'
 import { captureRole, syntaxFamily } from '../../../core/syntax'
 import { ancestry, segmentSource, sourceRange } from '../../../syntax/model'
 
-const props = defineProps<{ document: SyntaxDocument, variant: LigVariant, preview?: ResolvedVariant, neovim: string }>()
+const props = defineProps<{ document: SyntaxDocument, variant: LigVariant, neovim: string }>()
 const { t } = useI18n()
-const resolved = computed(() => props.preview ?? resolveVariant(props.variant))
+const resolved = computed(() => resolveVariant(props.variant))
 const segments = computed(() => segmentSource(props.document))
 const active = ref<number | null>(null)
 const inspected = ref<number | null>(null)

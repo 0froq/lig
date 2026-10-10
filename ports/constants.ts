@@ -1,6 +1,6 @@
 import type { LigVariant } from '../core/types'
 
-export const COMPILER_VERSION = '0.2.0'
+export const COMPILER_VERSION = '0.3.0'
 export const PACKAGE_VERSION = '0.0.2'
 export const PREVIEW_TAG = 'preview-2026-10-04.2'
 export const SOURCE_REF = 'preview-ports-2026-10-04.2'

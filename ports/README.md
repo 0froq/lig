@@ -1,6 +1,6 @@
 # LiG preview compiler
 
-Authoring source for the isolated Neovim and VS Code preview distributions.
+Authoring source for the isolated Neovim/VS Code preview distributions and the shared lightweight tool ports.
 
 ```sh
 pnpm ports:generate
@@ -8,9 +8,10 @@ pnpm ports:typecheck
 pnpm ports:test
 pnpm ports:check
 nvim --headless -u NONE -i NONE -l ports/neovim/verify.lua
+python3 ports/lightweight/verify.py
 ```
 
-Generation needs TypeScript/jiti only. It does not need Nuxt preparation, a parser, or either editor. Neovim is only required for the optional native API contract check.
+Generation needs TypeScript/jiti only. It does not need Nuxt preparation, a parser, or either editor. The optional native checks require Neovim or Python 3.11+ and the seven lightweight tools, respectively; lightweight validation uses isolated temporary configuration and servers.
 
 - `core/spec.json` is the color source, with unchanged existing calibration plus shared terminal/UI aliases.
 - `styles.ts` and `semantics.ts` define editor-independent intent.
@@ -25,6 +26,8 @@ Mono profile and old `on_colors` compatibility are not included. The namespaced 
 
 Syntax role decisions are shared, but grammar/LSP classifications can differ. Native rendering and manual appearance are not asserted by data checks. The four supported variants are light, dark, light-paper and dark-paper. Paper changes surfaces and mono inks while retaining its standard mode’s chromatic token coordinates. Retired soft variants are no longer emitted. Generation prunes obsolete files owned by the previous output manifest, retaining unmanaged files.
 
-Small ports such as Ghostty/fzf should eventually be grouped under the main LiG release artifacts. This compiler currently emits only the two requested editor distributions.
+Ghostty, fzf, Zellij, tmux, Starship, bat and eza ship together under `dist/ports/lightweight`, without separate repositories. `lightweight/` contains format adapters and installation notes; `catalog.ts` shares download paths with the site. bat reuses the existing TextMate bindings and style intent. All four variants are generated; no adapter maintains literal palette colors.
+
+The standard compiler also copies identical lightweight bytes to ignored `public/ports/`; Nuxt build/generate runs it first. `ports:check` verifies both outputs, while a custom `--out` build stays isolated. CI uploads `lig-lightweight-ports` as a downloadable artifact. Lightweight provenance names the current source branch and exact input hash; historical native preview tags are not republished automatically.
 
 The Workbench bindings are adapted from vscode-theme-LiG (MIT). Native Neovim family/group intent is based on lig.nvim (Apache-2.0). Original distribution licenses are retained under `licenses/`.

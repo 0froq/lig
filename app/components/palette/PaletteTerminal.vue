@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { LigVariant, ResolvedVariant } from '../../../core'
+import type { LigVariant } from '../../../core'
 import { resolveVariant } from '../../../core'
 
-const props = defineProps<{ variant: LigVariant, preview?: ResolvedVariant }>()
+const props = defineProps<{ variant: LigVariant }>()
 const { t } = useI18n()
 const route = useRoute()
-const resolved = computed(() => props.preview ?? resolveVariant(props.variant))
+const resolved = computed(() => resolveVariant(props.variant))
 const tokens = computed(() => resolved.value.tokens)
 const style = computed(() => ({
   '--pv-bg': tokens.value['terminal.background'],

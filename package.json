@@ -27,7 +27,9 @@
     "ports:generate": "jiti ports/compile.ts",
     "ports:check": "jiti ports/compile.ts --check",
     "ports:typecheck": "tsc --project ports/tsconfig.json",
-    "ports:test": "jiti ports/contracts.test.ts"
+    "ports:test": "jiti ports/contracts.test.ts",
+    "prebuild": "pnpm ports:generate",
+    "pregenerate": "pnpm ports:generate"
   },
   "dependencies": {
     "@fontsource-variable/geist": "catalog:prod",

@@ -62,23 +62,17 @@
     },
     "downloads": {
       "nvim": "lig.nvim (Neovim)",
-      "nvimNote": "Canonical Lua theme; palette derivation matches lua/lig/colors/template.lua.",
+      "nvimNote": "Neovim theme distribution; editor packages are released separately.",
       "vscode": "vscode-theme-LiG",
-      "vscodeNote": "VS Code port; base accents/neutrals from scripts/colors.ts.",
-      "tokens": "Generated token files in this repo"
+      "vscodeNote": "VS Code theme distribution; editor packages are released separately.",
+      "tokens": "Generated token files in this repo",
+      "lightweight": "Lightweight ports",
+      "lightweightNote": "Four variants from the same tokens. Downloads follow the selected theme.",
+      "install": "Installation notes"
     },
     "syntax": {
       "lede": "Mono is the reading baseline. Struct marks bindings and structure, ref marks values and references, and action marks execution.",
       "aside": "Highlight / base / muted set the reading hierarchy. Mono selects steps from the neutral ramp; colored families use OKLCH offsets. Contrast readings guide the balance, rather than set a hard limit.",
-      "lab": {
-        "title": "Try the coordinates",
-        "note": "Each variant stores actual L/C for struct / ref / action independently; mono keeps its neutral steps. Code, terminal colors and contrast follow these edits.",
-        "lightness": "Family base L",
-        "chroma": "Family base C",
-        "background": "Background token",
-        "paperNote": "Paper uses tinted surfaces and mono inks; semantic colors match the standard variant.",
-        "family": "Color family"
-      },
       "comment": "less is great",
       "families": {
         "mono": "Ordinary identifiers, text and comments",
@@ -171,7 +165,7 @@
     },
     "terminal": {
       "title": "Terminal 16 colors",
-      "note": "Resolved port values for the selected theme, before lab edits. SGR lists foreground / background codes. Text contrast is measured against terminal.background:",
+      "note": "Resolved port values for the selected theme. SGR lists foreground / background codes. Text contrast is measured against terminal.background:",
       "normal": "Normal",
       "bright": "Emphasis",
       "output": "Simulated terminal color output",
