@@ -24,51 +24,6 @@
   font-size: 14px;
 }
 
-.lig-inks {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 28px;
-}
-
-.lig-ink {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  cursor: pointer;
-  font: inherit;
-  text-align: left;
-}
-
-.lig-ink-fill {
-  display: block;
-  height: 64px;
-  background: var(--swatch);
-}
-
-.lig-ink-name {
-  font-family: var(--font-display);
-  font-size: 22px;
-  line-height: 1;
-}
-
-.lig-ink-value {
-  font-family: var(--font-meta);
-  font-size: 11px;
-  color: var(--muted);
-  overflow-wrap: anywhere;
-}
-
-.lig-ink:hover .lig-ink-name,
-.lig-ink.is-copied .lig-ink-name {
-  color: var(--accent);
-}
-
 .lig-stage.lig-stage-syntax {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -157,72 +112,61 @@
 .lig-neutral-ramp,
 .lig-bases {
   display: grid;
-  gap: 12px;
+  gap: 0;
 }
 
+/* Every palette uses the same square, typography and copy target. */
 .lig-chip {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  width: 100%;
   min-width: 0;
-  padding: 0;
+  min-height: 52px;
+  padding: 8px 0;
   border: 0;
-  background: none;
+  border-bottom: 1px solid var(--line);
   color: inherit;
+  background: none;
   cursor: pointer;
-  font: inherit;
+  font: 11px/1.5 var(--font-meta);
   text-align: left;
 }
 
 .lig-chip-fill {
   display: block;
-  height: 96px;
+  width: 36px;
+  height: 36px;
   background: var(--swatch);
-}
-
-.lig-palette-columns .lig-chip {
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  gap: 3px 12px;
-  align-content: center;
-  min-height: 40px;
-}
-
-.lig-palette-columns .lig-chip-fill {
-  grid-column: 1;
-  grid-row: 1 / 3;
-  width: 40px;
-  height: 40px;
-  align-self: center;
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
-.lig-palette-columns .lig-chip-name,
-.lig-palette-columns .lig-chip-detail,
-.lig-palette-columns .lig-chip-value {
-  grid-column: 2;
+.lig-chip-text {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  min-width: 0;
+}
+
+.lig-chip-name {
   overflow-wrap: anywhere;
 }
 
-.lig-neutral-ramp .lig-chip {
-  grid-template-columns: 40px minmax(0, 1fr) auto;
+.lig-chip-detail,
+.lig-chip-value {
+  color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
-.lig-neutral-ramp .lig-chip-detail {
-  grid-column: 3;
-}
-.lig-neutral-ramp .lig-chip-value {
-  grid-column: 2 / 4;
+.lig-chip-detail {
+  margin-left: auto;
+  font-size: 10px;
 }
 
-.lig-bases .lig-chip {
-  min-height: 64px;
-  grid-template-columns: 48px minmax(0, 1fr);
-}
-
-.lig-bases .lig-chip-fill {
-  width: 48px;
-  height: 48px;
+.lig-chip-value {
+  flex-basis: 100%;
 }
 
 .lig-chip:focus-visible {
@@ -230,159 +174,61 @@
   outline-offset: 4px;
 }
 
-.lig-chip-name {
-  font-family: var(--font-meta);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-}
-
-.lig-chip-detail,
-.lig-chip-value {
-  font-family: var(--font-meta);
-  font-size: 11px;
-  line-height: 1.35;
-  color: var(--muted);
-  overflow-wrap: anywhere;
-}
-
 .lig-chip:hover .lig-chip-name,
 .lig-chip.is-copied .lig-chip-name {
   color: var(--accent);
 }
 
-.lig-tier-table {
-  width: 100%;
-  max-width: 40rem;
-  margin-top: 20px;
-  table-layout: fixed;
-  border-collapse: collapse;
-  text-align: left;
-  font: 11px/1.5 var(--font-meta);
+.lig-swatch-groups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px 24px;
+  margin-top: 28px;
 }
 
-.lig-tier-table th {
-  font-weight: 400;
-  overflow-wrap: anywhere;
+.lig-swatch-group {
+  min-width: 0;
 }
 
-.lig-tier-table thead {
+.lig-swatch-group .lig-palette-heading {
+  margin-bottom: 8px;
+  color: var(--fg);
+}
+
+.lig-family-description {
+  margin: 12px 0 0;
   color: var(--muted);
-}
-
-.lig-tier-table th:first-child {
-  width: 18%;
-}
-
-.lig-tier-table th,
-.lig-tier-table td {
-  padding: 8px 6px;
-  vertical-align: middle;
-}
-
-.lig-tier-table th:first-child {
-  padding-left: 0;
-}
-
-.lig-tier-table .lig-chip {
-  gap: 6px;
-}
-.lig-tier-table .lig-chip-fill {
-  height: 40px;
-}
-.lig-tier-table .lig-chip-value {
-  font-size: 10px;
-}
-
-/* The shared column header is visible; retain each button's name for AT. */
-.lig-tier-table .lig-chip-name {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  font: 11px/1.6 var(--font-meta);
 }
 
 .lig-roles {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 32px;
-  max-width: 40rem;
   margin-top: 20px;
 }
 
-.lig-role {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  gap: 3px 12px;
-  align-items: center;
-  width: 100%;
-  padding: 12px 0;
-  border: 0;
-  border-top: 1px solid var(--line);
-  background: none;
-  color: inherit;
-  cursor: pointer;
-  text-align: left;
-  font: 11px/1.5 var(--font-meta);
-}
-
-.lig-role-mark {
-  grid-row: 1 / 3;
-  width: 28px;
-  height: 28px;
-  box-shadow: inset 0 0 0 1px var(--line);
-}
-
-.lig-role-name,
-.lig-role-value {
-  grid-column: 2;
-  overflow-wrap: anywhere;
-}
-
-.lig-role-value {
-  color: var(--muted);
+@media (max-width: 900px) {
+  .lig-swatch-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 600px) {
-  .lig-palette-columns .lig-chip {
+  .lig-chip {
     grid-template-columns: 28px minmax(0, 1fr);
-    gap: 3px 8px;
+    gap: 8px;
+    font-size: 10px;
   }
 
-  .lig-palette-columns .lig-chip-fill {
+  .lig-chip-fill {
     width: 28px;
     height: 28px;
   }
 
-  .lig-neutral-ramp .lig-chip {
-    grid-template-columns: 28px minmax(0, 1fr) auto;
-  }
-
-  .lig-bases .lig-chip {
-    grid-template-columns: 36px minmax(0, 1fr);
-    min-height: 58px;
-  }
-  .lig-bases .lig-chip-fill {
-    width: 36px;
-    height: 36px;
-  }
-  .lig-palette-columns .lig-chip-name {
-    letter-spacing: 0;
-    font-size: 10px;
-  }
-  .lig-palette-columns .lig-chip-detail,
-  .lig-palette-columns .lig-chip-value {
-    font-size: 10px;
-  }
   .lig-roles {
     grid-template-columns: minmax(0, 1fr);
   }
-}
-
-.lig-role:hover .lig-role-name,
-.lig-role.is-copied .lig-role-name {
-  color: var(--accent);
 }
 
 .lig-stage {
@@ -560,13 +406,8 @@
   .lig-stage,
   .lig-stage-syntax,
   .lig-ports,
-  .lig-files,
-  .lig-inks {
+  .lig-files {
     grid-template-columns: 1fr;
-  }
-
-  .lig-inks {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .lig-editor {
@@ -909,45 +750,6 @@
 
   .lig-parsed {
     padding: 16px;
-  }
-}
-
-.lig-semantic-families {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.lig-family-colors {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  width: 100%;
-  gap: 1px;
-}
-
-.lig-family-level {
-  display: grid;
-  min-width: 0;
-  gap: 6px;
-}
-
-.lig-family-level i {
-  display: block;
-  height: 64px;
-}
-
-.lig-family-tier {
-  color: var(--muted);
-  font: 9px/1.2 var(--font-meta);
-}
-
-.lig-family-description {
-  font: 11px/1.6 var(--font-meta);
-  color: var(--muted);
-}
-
-@media (max-width: 700px) {
-  .lig-semantic-families {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

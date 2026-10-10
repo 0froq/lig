@@ -1,5 +1,7 @@
 # LiG
 
+<img src="public/brand/lig.svg" width="96" height="96" alt="LiG pixel L: struct, ref, mono, action">
+
 froQ 的 LiG：**Less is Great**，用少量颜色做语法高亮。本仓库维护 canonical token spec 和展示网站。
 
 基础色、语义角色及四个变体的唯一事实源是 [`core/spec.json`](core/spec.json)。网站从 core 派生；Neovim、VS Code 与轻量工具 port 从同一套 core 生成，用户可以下载生成产物。
@@ -19,6 +21,15 @@ pnpm build
 ```
 
 `pnpm palette:generate` 保留为 `tokens:generate` 的命令别名。
+
+## Icon
+
+透明九宫格像素 L：1 = struct.base，4 = ref.base，7 = mono.base，8 = action.base；7 是转角，其余五格透明。图标颜色直接从 core 的语义 token 生成，随 `pnpm tokens:generate` 更新，由 `tokens:check` 检查。
+
+- 仓库 README / gallery：[SVG](public/brand/lig.svg)、[512px PNG](public/brand/lig.png)。SVG 根据系统明暗偏好切换颜色，PNG 固定使用 light 色值。
+- 各主题固定版本：`public/brand/lig-{light,dark,light-paper,dark-paper}.{svg,png}`。
+- Web：主题切换会更新 SVG favicon；提供 32px PNG fallback、180px Apple touch icon、192/512px manifest icon。图标不包含底色，也不提供离线缓存。
+- GitHub 没有仓库独立头像设置；README 使用上述图标。社交预览图是单独的仓库设置。
 
 ## 目录
 

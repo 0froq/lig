@@ -41,7 +41,12 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     head: {
-      link: [{ rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
+      link: [
+        { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml', key: 'favicon' },
+        { rel: 'icon', href: '/favicon.png', type: 'image/png', sizes: '32x32' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
       meta: [{ name: 'color-scheme', content: 'light dark' }],
       // Picks the theme before first paint so the paper never flashes the wrong stock
       script: [{

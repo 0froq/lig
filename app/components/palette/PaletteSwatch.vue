@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import type { LigVariant } from '#palette/nvim-build'
-
 const props = defineProps<{
   name: string
   hex: string
-  variant: LigVariant
   caption?: string
   detail?: string
+  showValue?: boolean
 }>()
 
 const { format, copied, copyValue, textFor } = usePaletteClipboard()
-const value = computed(() => textFor(props.hex, format.value, props.variant, props.name))
+const value = computed(() => textFor(props.hex, format.value))
 
 async function onCopy(): Promise<void> {
   await copyValue(value.value, props.name)
@@ -23,14 +21,23 @@ async function onCopy(): Promise<void> {
     class="lig-chip"
     :class="{ 'is-copied': copied === name }"
     :style="{ '--swatch': hex }"
+    :aria-label="`${name}: ${value}`"
     @click="onCopy"
   >
-    <span class="lig-chip-fill" />
-    <span class="lig-chip-name">{{ caption || name }}</span>
     <span
-      v-if="detail"
-      class="lig-chip-detail"
-    >{{ detail }}</span>
-    <span class="lig-chip-value">{{ copied === name ? $t('install.copied') : value }}</span>
+      class="lig-chip-fill"
+      aria-hidden="true"
+    />
+    <span class="lig-chip-text">
+      <span class="lig-chip-name">{{ caption || name }}</span>
+      <span
+        v-if="detail"
+        class="lig-chip-detail"
+      >{{ detail }}</span>
+      <span
+        v-if="showValue !== false || copied === name"
+        class="lig-chip-value"
+      >{{ copied === name ? $t('install.copied') : value }}</span>
+    </span>
   </button>
 </template>

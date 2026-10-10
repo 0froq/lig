@@ -8,15 +8,17 @@ export function terminalColors(tokens: Record<string, string>) {
     colors: names.map((name, offset) => {
       const index = start + offset
       const hex = tokens[`terminal.ansi.${index}`]!
-      const strong = tokens['text.strong']!
-      const inverse = tokens['text.inverse']!
+      // Fixed ink keeps labels consistent across hue families and both modes.
+      // Only the dark neutral slots need white ink; palette output is unchanged.
+      const strong = '#000000'
+      const inverse = '#ffffff'
       return {
         index,
         name: start === 8 ? `bright ${name}` : name,
         hex,
         foregroundCode: (start === 0 ? 30 : 90) + offset,
         backgroundCode: (start === 0 ? 40 : 100) + offset,
-        label: contrast(strong, hex) >= contrast(inverse, hex) ? strong : inverse,
+        label: [0, 7, 8, 15].includes(index) && contrast(strong, hex) < contrast(inverse, hex) ? inverse : strong,
         wcag: contrast(hex, tokens['terminal.background']!).toFixed(2),
         apca: apcaContrast(hex, tokens['terminal.background']!),
       }

@@ -2,6 +2,10 @@
 const { product } = useAppConfig()
 const { t } = useI18n()
 const installed = useInstalled()
+const { variant } = useLigVariant()
+useHead(() => ({
+  link: [{ rel: 'icon', href: `/brand/lig-${variant.value}.svg`, type: 'image/svg+xml', key: 'favicon' }],
+}))
 
 // `inert` off must be absent, not "false"
 const hidden = computed(() => installed.value || undefined)
