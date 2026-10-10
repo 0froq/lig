@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.9",
+  "version": "0.2.10",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -15,8 +15,8 @@
         "h": 148
       },
       "yellow": {
-        "l": 0.82,
-        "c": 0.16,
+        "l": 0.86,
+        "c": 0.18,
         "h": 95
       },
       "blue": {
@@ -524,11 +524,7 @@
       "weight": 0.8
     },
     "mode.terminal": "accent.green.base",
-    "accent.yellow.fill": {
-      "offset": "palette.accents.yellow",
-      "lightness": 0.04,
-      "chroma": 0.02
-    },
+    "accent.yellow.fill": "accent.yellow.base",
     "text.on.yellow": "palette.neutrals.soft_900"
   },
   "modes": {
@@ -556,11 +552,6 @@
         "offset": "palette.accents.green",
         "lightness": -0.14,
         "chroma": 0.02
-      },
-      "accent.yellow.base": {
-        "offset": "palette.accents.yellow",
-        "lightness": -0.22,
-        "chroma": -0.03
       },
       "accent.blue.base": {
         "offset": "palette.accents.blue",

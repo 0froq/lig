@@ -176,10 +176,7 @@
       "normal": "普通色 · ANSI 0–7",
       "bright": "强调色 · ANSI 8–15",
       "output": "模拟终端彩色输出",
-      "fill": "明亮黄色填充 + 深色文字；独立于 ANSI 黄色前景。",
-      "ink": "yellow · 文字",
-      "yellowFill": "yellow · 填充",
-      "yellowNote": "黄色文字保留金黄；填充使用更亮的暖黄，按用途选择。"
+      "fill": "暖黄底色与 ANSI 3 使用同一黄色基色，配深色文字。"
     }
   },
   "install": {

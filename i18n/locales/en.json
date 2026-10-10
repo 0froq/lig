@@ -176,10 +176,7 @@
       "normal": "Normal · ANSI 0–7",
       "bright": "Emphasis · ANSI 8–15",
       "output": "Simulated terminal color output",
-      "fill": "Bright yellow fill with dark text; independent of the ANSI yellow foreground.",
-      "ink": "yellow · ink",
-      "yellowFill": "yellow · fill",
-      "yellowNote": "Yellow ink stays golden; fills use a brighter warm yellow. Choose by usage."
+      "fill": "This warm-yellow background uses the same base as ANSI 3, with dark text."
     }
   },
   "install": {

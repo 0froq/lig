@@ -197,7 +197,7 @@ it('accents keep distinct hues with individually calibrated mode coordinates', (
   const targets = {
     red: { h: 22, dark: [0.74, 0.13], light: [0.59, 0.16] },
     green: { h: 148, dark: [0.74, 0.12], light: [0.60, 0.14] },
-    yellow: { h: 95, dark: [0.82, 0.16], light: [0.60, 0.13] },
+    yellow: { h: 95, dark: [0.86, 0.18], light: [0.86, 0.18] },
     blue: { h: 275, dark: [0.74, 0.12], light: [0.60, 0.15] },
     magenta: { h: 325, dark: [0.74, 0.14], light: [0.60, 0.15] },
     cyan: { h: 194, dark: [0.74, 0.12], light: [0.60, 0.11] },
@@ -234,8 +234,11 @@ it('accent exports preserve calibrated coordinates and per-mode contrast ranges'
         assert.equal(mapped.l, color.l)
         assert.equal(mapped.h, color.h)
         assert.ok(mapped.c > 0 && mapped.c <= color.c, `${variant}/${key}: chromatic export`)
-        assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= contrastFloors[variant][layer], `${variant}/${key}: calibrated layer`)
-        if (mode === 'light')
+        // Yellow deliberately uses the accepted bright base, including as foreground.
+        // Its real contrast remains visible in the terminal panel; ink floors apply to other hues.
+        if (name !== 'yellow' || mode === 'dark')
+          assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= contrastFloors[variant][layer], `${variant}/${key}: calibrated layer`)
+        if (mode === 'light' && name !== 'yellow')
           assert.ok(apcaContrast(tokens[key]!, tokens['surface.canvas']!) >= lightLcFloors[variant as keyof typeof lightLcFloors][layer], `${variant}/${key}: calibrated Lc`)
         const result = hexToOklch(tokens[key]!)
         const angle = Math.PI / 180
@@ -250,14 +253,18 @@ it('accent exports preserve calibrated coordinates and per-mode contrast ranges'
   }
 })
 
-it('yellow fill is separate from foreground ink while terminal slots retain their aliases', () => {
+it('yellow is replaced throughout the palette, foreground roles and terminal aliases', () => {
   for (const variant of VARIANTS) {
     const { tokens, oklch } = resolveVariant(variant)
     const fill = tokens['accent.yellow.fill']!
     assert.equal(fill, '#f5ce00')
-    assert.ok(oklch['accent.yellow.fill']!.l > oklch['accent.yellow.base']!.l)
+    assert.equal(tokens['accent.yellow.base'], '#f5ce00')
+    assert.deepEqual(oklch['accent.yellow.base'], { l: 0.86, c: 0.18, h: 95 })
+    assert.equal(tokens['accent.yellow.fill'], tokens['accent.yellow.base'])
     assert.equal(tokens['surface.search'], fill)
-    assert.notEqual(tokens['surface.search'], tokens['diagnostic.warning'])
+    assert.equal(tokens['surface.search'], tokens['diagnostic.warning'])
+    for (const role of ['git.change', 'mode.replace', 'terminal.ansi.3'])
+      assert.equal(tokens[role], '#f5ce00', `${variant}/${role}: replaced yellow`)
     assert.equal(tokens['diagnostic.warning'], tokens['accent.yellow.base'])
     assert.equal(tokens['message.warning'], tokens['accent.yellow.base'])
     assert.ok(contrast(tokens['text.on.yellow']!, fill) >= 10, `${variant}: fill label`)
@@ -448,7 +455,18 @@ it('both sides of chromatic families and accents have balanced perceptual distan
       assert.ok(left > 0.03, `${variant}/${group}: visible step`)
       assert.ok(Math.abs(left - right) < 1e-12, `${variant}/${group}: symmetric design distance`)
       const exported = ['highlight', 'base', end].map(tier => hexToOklch(tokens[`${group}.${tier}`]!))
-      assert.ok(Math.abs(distance(exported[0]!, exported[1]!) - distance(exported[2]!, exported[1]!)) < 0.004, `${variant}/${group}: symmetric exported distance`)
+      if (group === 'accent.yellow') {
+        // The accepted vivid yellow hits the sRGB boundary unevenly at the endpoints.
+        // Preserve the design steps and verify exports against the actual gamut mapping.
+        const mapped = [highlight!, base!, muted!].map(mapToSrgb)
+        for (const index of [0, 2]) {
+          assert.ok(distance(exported[index]!, exported[1]!) > 0.06, `${variant}/${group}: visible exported step`)
+          assert.ok(Math.abs(distance(exported[index]!, exported[1]!) - distance(mapped[index]!, mapped[1]!)) < 0.004, `${variant}/${group}: mapped exported distance`)
+        }
+      }
+      else {
+        assert.ok(Math.abs(distance(exported[0]!, exported[1]!) - distance(exported[2]!, exported[1]!)) < 0.004, `${variant}/${group}: symmetric exported distance`)
+      }
       assert.ok(mode === 'dark' ? highlight!.l > base!.l && base!.l > muted!.l : highlight!.l < base!.l && base!.l < muted!.l, `${variant}/${group}: correct emphasis direction`)
     }
   }

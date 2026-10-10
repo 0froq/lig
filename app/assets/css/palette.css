@@ -1101,21 +1101,3 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-
-/* Yellow fill is a separate usage role, not a fourth emphasis tier. */
-.lig-yellow-fill {
-  display: grid;
-  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
-  align-items: center;
-  gap: 16px;
-  max-width: 40rem;
-  margin-top: 16px;
-}
-
-.lig-yellow-fill .lig-chip-fill {
-  height: 20px;
-}
-
-.lig-yellow-fill .lig-aside {
-  margin: 0;
-}

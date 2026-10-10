@@ -4,7 +4,7 @@
 
 ## Color contract
 
-- `schemaVersion: 2`, token `version: 0.2.9`, `colorSpace: oklch`.
+- `schemaVersion: 2`, token `version: 0.2.10`, `colorSpace: oklch`.
 - Eight accents, thirteen achromatic neutrals and a separate low-chroma paper palette are authored only in `palette`, as `{ l, c, h }` coordinates.
 - L is perceptual lightness in [0, 1], C is nonnegative chroma, H is degrees in [0, 360). Achromatic colors use `c: 0, h: null`.
 - Eight accent primitives have individually calibrated OKLCH L/C and deliberate hue anchors; equal coordinates across hues are not a visual-balance requirement. Thirteen neutral primitives are designed on the achromatic OKLCH axis, with deliberate L steps rather than inherited RGB values.
@@ -47,7 +47,7 @@ Each hue now has its own mode-specific baseline. Uniform L/C was numerically tid
 | ------- | --- | --------------- | ---------------- |
 | red     | 22  | .74 / .13       | .59 / .16        |
 | orange  | 60  | .74 / .13       | .64 / .15        |
-| yellow  | 95  | .82 / .16       | .60 / .13        |
+| yellow  | 95  | .86 / .18       | .86 / .18        |
 | green   | 148 | .74 / .12       | .60 / .14        |
 | cyan    | 194 | .74 / .12       | .60 / .11        |
 | azure   | 234 | .74 / .12       | .59 / .13        |
@@ -58,19 +58,19 @@ Each hue now has its own mode-specific baseline. Uniform L/C was numerically tid
 
 These are design targets. sRGB mapping may reduce C at fixed L/H, notably light cyan/azure/yellow, light orange highlight and dark red/blue highlight. Consumers use the mapped generated hex values; the demo's OKLCH readouts show design coordinates. Raising target C at a gamut boundary cannot make the exported color more saturated.
 
-### Yellow ink and fill
+### Replacement yellow
 
-`accent.yellow.base` is foreground ink: light gold `#977e00`, dark yellow `#e5c226`. Warning/message/git foregrounds and ANSI 3 continue to reference this ink; ANSI 11 uses the mode-specific highlight tier. On a light canvas, emphasis is darker rather than physically brighter.
+The old muted yellow/gold is replaced, not retained as a separate foreground palette. `palette.accents.yellow` and `accent.yellow.base` now use L=.86/C=.18/H=95°, exporting `#f5ce00` in all four variants. The mode-specific darkening override is removed. Warning/message/git roles, mode.replace, ANSI 3 and the source-palette yellow all inherit this replacement through their existing aliases. ANSI 11 follows the normal mode-aware highlight formula: light `#dbb800`, dark `#ffe88f`.
 
-`accent.yellow.fill` is the independent warm-yellow fill `#f5ce00`, target L=.86/C=.18/H=95°, mapped C≈.1766. It derives from the single yellow primitive using an offset; it does not replace small foreground text. `text.on.yellow` selects soft_900 (`#181818`) for readable text on this fill. Search surfaces now derive from the fill, with active match text retaining `text.strong`. This distinction is a usage role, not another highlight/base/muted tier.
+`accent.yellow.fill` is now a compatibility alias to `accent.yellow.base`, not an independent alternative color. `text.on.yellow` still selects soft_900 (`#181818`) for text on a yellow background. The extra ink/fill swatch distinction is removed from the website.
 
-The approach follows the role distinction in [Radix's scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale): solid yellow/amber backgrounds use dark foregrounds. Hue-dependent gamut constraints are described in [Ottosson's color-picker discussion](https://bottosson.github.io/posts/colorpicker/). These references support the approach, not our exact trial coordinates or visual acceptance.
+This is an explicit visual trial. On the light canvas, yellow base has approximately 1.37:1 WCAG / +17 Lc; it is visibly yellow but weak as small foreground text. The terminal panel reports this unchanged rather than substituting a dark gold. At the .93 L endpoint sRGB mapping reduces chroma considerably, so the exported yellow steps are not perceptually symmetric despite symmetric authored L offsets. Tests preserve the target definition, role propagation, gamut mapping and export accuracy instead of forcing yellow back to the former dark ink.
 
 ### Verification and readability boundary
 
-This visual trial deliberately relaxes the earlier chromatic contrast calibration: light tiers are checked at ≥4:1 highlight, ≥3:1 base and ≥2.3:1 faded, with APCA ≥63/54/43 Lc respectively. These are regression bounds for this trial, not WCAG AA text guarantees or APCA font recommendations. Neutral primary/secondary ink still meets ≥4.5:1. At smaller text sizes, light orange, green and muted type references need manual assessment. Dark accent tiers retain ≥4.5:1.
+This visual trial deliberately relaxes the earlier chromatic contrast calibration: light non-yellow tiers are checked at ≥4:1 highlight, ≥3:1 base and ≥2.3:1 faded, with APCA ≥63/54/43 Lc respectively. Bright yellow is an explicit exception with its actual readings reported above. These are regression bounds for this trial, not WCAG AA text guarantees or APCA font recommendations. Neutral primary/secondary ink still meets ≥4.5:1. At smaller text sizes, light orange, green and muted type references need manual assessment. Dark accent tiers retain ≥4.5:1.
 
-The terminal panel reads exactly `terminal.ansi.0–15` from the resolved preview. It shows normal/emphasis banks, foreground text, background samples with adaptive neutral labels, SGR codes, WCAG/APCA readings and simulated command output. Yellow fill is shown separately from ANSI foreground yellow. ANSI 0 currently aliases the canvas, so its foreground sample is intentionally invisible and its contrast reads 1:1; the panel exposes the existing contract rather than disguising it.
+The terminal panel reads exactly `terminal.ansi.0–15` from the resolved preview. It shows normal/emphasis banks, foreground text, background samples with adaptive neutral labels, SGR codes, WCAG/APCA readings and simulated command output. The yellow-background example uses the same base as ANSI 3 with a dark label. ANSI 0 currently aliases the canvas, so its foreground sample is intentionally invisible and its contrast reads 1:1; the panel exposes the existing contract rather than disguising it.
 
 The coordinate lab selects struct/ref/action before editing that family's actual L/C. Each family and variant stores independent state. All aliases and derived surface mixes are re-resolved by the core, so parsed code, terminal ANSI colors, diagnostic samples and chosen background remain synchronized. Controls constrain both tier endpoints to valid L/C coordinates. These experiments do not change the canonical palette, downloads or ports.
 
@@ -143,7 +143,7 @@ An offset adds the signed L/C deltas and retains source H. Non-finite deltas or 
 | dark    | +.070 / −.020     | −.070 / −.020 | .07280             |
 | light   | −.070 / 0         | +.070 / 0     | .07000             |
 
-Both sides start from the selected variant's base, retain H and have equal Cartesian OKLab distances from it. Light tiers retain base C: darker highlight, base and lighter faded. Triplets are centered on each hue’s calibrated baseline rather than a universal L value. Equal numerical distance is a calibration constraint, not a guarantee of identical subjective prominence. Tests also bound asymmetry after sRGB mapping and 8-bit export. The website displays equal-width swatches and reports actual WCAG/APCA contrast for manual assessment.
+Both sides start from the selected variant's base, retain H and have equal Cartesian OKLab distances from it. Light tiers retain base C: darker highlight, base and lighter faded. Triplets are centered on each hue’s calibrated baseline rather than a universal L value. Equal numerical distance is a calibration constraint, not a guarantee of identical subjective prominence. Tests also bound asymmetry after sRGB mapping and 8-bit export, except the deliberately vivid yellow whose endpoint gamut mapping is checked directly. The website displays equal-width swatches and reports actual WCAG/APCA contrast for manual assessment.
 
 ## Surface and mono roles
 
