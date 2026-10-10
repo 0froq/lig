@@ -31,8 +31,8 @@
     "variants": {
       "light": "浅色",
       "dark": "深色",
-      "lightSoft": "浅色柔和",
-      "darkSoft": "深色柔和"
+      "lightPaper": "浅色纸张",
+      "darkPaper": "深色纸张"
     },
     "sections": {
       "variants": "变体",
@@ -62,26 +62,42 @@
     },
     "downloads": {
       "nvim": "lig.nvim（Neovim）",
-      "nvimNote": "Lua 主题源；色板推导与 lua/lig/colors/template.lua 一致。",
+      "nvimNote": "Neovim 主题分发；编辑器包独立发布。",
       "vscode": "vscode-theme-LiG",
-      "vscodeNote": "VS Code 移植；基础色来自 scripts/colors.ts。",
-      "tokens": "本仓库生成的 token 文件"
+      "vscodeNote": "VS Code 主题分发；编辑器包独立发布。",
+      "tokens": "本仓库生成的 token 文件",
+      "lightweight": "轻量 port",
+      "lightweightNote": "四个变体共用同一套 token。当前主题已突出显示；可下载单个变体，或各 port 的四变体合集。",
+      "install": "安装说明",
+      "agentTitle": "让 agent 帮你配置",
+      "agentNote": "先检测已安装的工具，列出配置方案，确认后再实施。",
+      "agentRead": "查看完整指令",
+      "agentCopy": "复制指令",
+      "agentCopyError": "复制失败 · 重试",
+      "agentCopyPending": "复制中…",
+      "agentInstruction": "请根据 {page}、{manifest} 和 {notes}，为我已安装的工具配置 LiG（{variant}）。先只读检测操作系统和本机技术栈（{tools}），列出检测到的版本、实际配置路径、可用 port 与变体及拟修改内容；编辑器的可用变体需核对页面所链接的发行仓库。请我确认工具、变体和修改方案后等待，确认前不得安装、修改配置或重启应用。确认后只实施已批准的方案，先备份受影响文件，再合并颜色配置并保留原有行为、快捷键和布局，最后报告验证结果与回滚方法。不要安装未检测到的工具，也不要自行编造尚未支持的 port。",
+      "all": "下载全部"
     },
     "syntax": {
-      "lede": "正文、弱化、类型、常量、函数、特殊。高亮就这些。",
-      "aside": "黄、青和其他强调色留给诊断和界面，不拿来涂语法。",
+      "lede": "mono 是普通阅读层；struct 表达绑定与结构，ref 表达值与引用，action 表达执行行为。",
+      "aside": "highlight / base / muted 表达各个家族内部的阅读层级。",
       "comment": "less is great",
-      "ink": {
-        "text": "正文",
-        "quiet": "弱化",
-        "type": "类型",
-        "value": "常量",
-        "call": "函数",
-        "special": "特殊"
+      "families": {
+        "mono": "普通标识符、正文与注释",
+        "struct": "参数绑定、模块、标签与修饰",
+        "ref": "类型引用、常量、数值与转义",
+        "action": "函数、构造、调用、异步与异常"
       }
     },
     "paletteNote": "完整色源。要 hex 时再看，读代码用不到。",
-    "more": "三联色与界面角色",
+    "more": "彩色层级",
+    "oklch": {
+      "title": "颜色的位置",
+      "note": "图中为 OKLCH 设计坐标，显示颜色已映射到 sRGB。",
+      "lightnessTitle": "L · 明度",
+      "designNote": "为什么这样配色",
+      "hueChroma": "八个基础色的色相与彩度"
+    },
     "copyAs": "复制为",
     "groups": {
       "neutrals": "中性色",
@@ -90,8 +106,7 @@
     "copy": {
       "hex": "hex",
       "rgb": "rgb",
-      "hsl": "hsl",
-      "css": "var"
+      "hsl": "hsl"
     },
     "choice": {
       "label": "变体",
@@ -100,7 +115,6 @@
       "toneLight": "浅色",
       "toneDark": "深色",
       "edgeCrisp": "清晰",
-      "edgeSoft": "柔和",
       "sentence": {
         "lead": "以",
         "join": "、",
@@ -117,7 +131,7 @@
         },
         "sentence": {
           "name": "句子",
-          "note": "四个变体其实是两根轴。写成一句话，点词来翻。"
+          "note": "两种明暗，搭配中性灰或纸张底色，组成四个变体。"
         },
         "wildmenu": {
           "name": "命令行",
@@ -131,7 +145,49 @@
           "name": "矩阵",
           "note": "明暗乘软硬。格子说明每个变体在哪。"
         }
-      }
+      },
+      "edgePaper": "纸张"
+    },
+    "inspect": {
+      "nodes": "个节点",
+      "title": "节点检查",
+      "help": "悬停检查 · 点击固定 · 键盘：← → 切换片段，↑ 父节点，↓ 子节点，Esc 清除",
+      "codeLabel": "检查 {file} 的语法节点",
+      "unpin": "恢复悬停",
+      "named": "具名节点",
+      "anonymous": "匿名节点",
+      "bytes": "UTF-8 字节",
+      "ancestors": "祖先节点",
+      "position": "所选位置的 captures",
+      "winner": "生效",
+      "overlap": "重叠",
+      "metadata": "元数据",
+      "fallback": "没有着色 capture，使用正文前景色。",
+      "source": "所选节点源码",
+      "empty": "悬停在代码任意位置，或在下方选择节点。",
+      "tree": "完整语法树",
+      "choose": "选择节点",
+      "provenance": "由 Neovim {version} 解析。行列从 1 开始，列为字节位置，结束位置不包含在范围内。仅 Tree-sitter，不含 LSP。",
+      "family": "语义分组"
+    },
+    "terminal": {
+      "title": "终端 16 色",
+      "note": "当前主题的 port 输出值。SGR 为前景／背景控制码。文字对比度相对于 terminal.background 计算：",
+      "normal": "普通色",
+      "bright": "强调色",
+      "output": "模拟终端彩色输出",
+      "referenceLink": "颜色数据",
+      "reference": "终端颜色参考",
+      "color": "ANSI 槽位名",
+      "contrastNote": "APCA 是实验性对比度模型，并非已定稿的 WCAG 3 要求。强调色在深色下更亮，在浅色下更深。",
+      "slotNote": "black / white 是 ANSI 槽位名；浅色主题可以分别映射为浅灰和深灰。默认前景与背景是独立设置。"
+    },
+    "uiRoles": "界面角色",
+    "tiers": {
+      "color": "颜色",
+      "highlight": "强调",
+      "base": "基色",
+      "muted": "弱化"
     }
   },
   "install": {

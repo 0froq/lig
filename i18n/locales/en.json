@@ -31,8 +31,8 @@
     "variants": {
       "light": "Light",
       "dark": "Dark",
-      "lightSoft": "Light soft",
-      "darkSoft": "Dark soft"
+      "lightPaper": "Light paper",
+      "darkPaper": "Dark paper"
     },
     "sections": {
       "variants": "Flavor",
@@ -62,26 +62,42 @@
     },
     "downloads": {
       "nvim": "lig.nvim (Neovim)",
-      "nvimNote": "Canonical Lua theme; palette derivation matches lua/lig/colors/template.lua.",
+      "nvimNote": "Neovim theme distribution; editor packages are released separately.",
       "vscode": "vscode-theme-LiG",
-      "vscodeNote": "VS Code port; base accents/neutrals from scripts/colors.ts.",
-      "tokens": "Generated token files in this repo"
+      "vscodeNote": "VS Code theme distribution; editor packages are released separately.",
+      "tokens": "Generated token files in this repo",
+      "lightweight": "Lightweight ports",
+      "lightweightNote": "Four variants from the same tokens. The current theme is highlighted; download a single variant or all four for each port.",
+      "install": "Installation notes",
+      "agentTitle": "Set up with an agent",
+      "agentNote": "Detect installed tools first. Review the proposed configuration before any changes.",
+      "agentRead": "Read the instruction",
+      "agentCopy": "Copy instruction",
+      "agentCopyError": "Copy failed · retry",
+      "agentCopyPending": "Copying…",
+      "agentInstruction": "Configure LiG ({variant}) for my installed tools, using {page}, {manifest} and {notes}. First perform read-only detection of my OS and installed stack ({tools}); report detected versions, active configuration paths, available ports and variants, and proposed changes. Check editor variants in the repositories linked from the page. Ask me to confirm the tools, variant and changes, then wait; do not install, edit configuration or restart applications before confirmation. Apply only the confirmed plan, back up affected files, merge color settings while preserving existing behavior, bindings and layouts, and report validation results and rollback steps. Do not install missing tools or invent unsupported ports.",
+      "all": "Download all"
     },
     "syntax": {
-      "lede": "Text, quiet, type, value, call, special. That is the highlighter.",
-      "aside": "Yellow, cyan, and the other accents are for diagnostics and the UI. They do not paint syntax.",
+      "lede": "Mono is the reading baseline. Struct marks bindings and structure, ref marks values and references, and action marks execution.",
+      "aside": "Highlight / base / muted set the reading hierarchy within each family.",
       "comment": "less is great",
-      "ink": {
-        "text": "Text",
-        "quiet": "Quiet",
-        "type": "Type",
-        "value": "Value",
-        "call": "Call",
-        "special": "Special"
+      "families": {
+        "mono": "Ordinary identifiers, text and comments",
+        "struct": "Parameter bindings, modules, tags and modifiers",
+        "ref": "Type references, constants, values and escapes",
+        "action": "Functions, constructors, calls, async and exceptions"
       }
     },
     "paletteNote": "The full source palette. Open it for a hex. Reading code does not need it.",
-    "more": "Triads and UI roles",
+    "more": "Accent tiers",
+    "oklch": {
+      "title": "Where the colors sit",
+      "note": "Design coordinates in OKLCH. Display colors are mapped to sRGB.",
+      "lightnessTitle": "L · Lightness",
+      "designNote": "Why these colors",
+      "hueChroma": "Hue and chroma of the eight base colors"
+    },
     "copyAs": "Copy as",
     "groups": {
       "neutrals": "Neutrals",
@@ -90,8 +106,7 @@
     "copy": {
       "hex": "hex",
       "rgb": "rgb",
-      "hsl": "hsl",
-      "css": "var"
+      "hsl": "hsl"
     },
     "choice": {
       "label": "Variant",
@@ -100,7 +115,6 @@
       "toneLight": "light",
       "toneDark": "dark",
       "edgeCrisp": "crisp",
-      "edgeSoft": "soft",
       "sentence": {
         "lead": "Shown",
         "join": ", ",
@@ -117,7 +131,7 @@
         },
         "sentence": {
           "name": "Sentence",
-          "note": "Four variants are two axes. Say them as a sentence and flip the words."
+          "note": "Four variants combine two tones with neutral or paper treatments."
         },
         "wildmenu": {
           "name": "Wildmenu",
@@ -131,7 +145,49 @@
           "name": "Matrix",
           "note": "Tone by edge. The grid shows where each variant sits."
         }
-      }
+      },
+      "edgePaper": "paper"
+    },
+    "inspect": {
+      "nodes": "nodes",
+      "title": "Node inspector",
+      "help": "Hover to inspect · click to pin · keyboard: ← → tokens, ↑ parent, ↓ child, Esc clear",
+      "codeLabel": "Inspect syntax in {file}",
+      "unpin": "Resume hover",
+      "named": "Named node",
+      "anonymous": "Anonymous node",
+      "bytes": "UTF-8 bytes",
+      "ancestors": "Ancestor nodes",
+      "position": "Captures at selected position",
+      "winner": "active",
+      "overlap": "overlap",
+      "metadata": "metadata",
+      "fallback": "No color capture; uses the primary foreground.",
+      "source": "Selected node source",
+      "empty": "Hover any part of the code, or choose a node below.",
+      "tree": "Full syntax tree",
+      "choose": "Choose a node",
+      "provenance": "Parsed by Neovim {version}. Positions are 1-based byte columns; end is exclusive. Tree-sitter only; no LSP.",
+      "family": "Semantic family"
+    },
+    "terminal": {
+      "title": "Terminal 16 colors",
+      "note": "Resolved port values for the selected theme. SGR lists foreground / background codes. Text contrast is measured against terminal.background:",
+      "normal": "Normal",
+      "bright": "Emphasis",
+      "output": "Simulated terminal color output",
+      "referenceLink": "Color data",
+      "reference": "Terminal color reference",
+      "color": "ANSI slot name",
+      "contrastNote": "APCA is an experimental contrast model, not a finalized WCAG 3 requirement. Emphasis follows the theme: lighter in dark mode, darker in light mode.",
+      "slotNote": "Black and white are ANSI slot names; in a light theme they can map to light and dark neutrals. Default foreground/background are separate settings."
+    },
+    "uiRoles": "UI roles",
+    "tiers": {
+      "color": "Color",
+      "highlight": "Highlight",
+      "base": "Base",
+      "muted": "Muted"
     }
   },
   "install": {

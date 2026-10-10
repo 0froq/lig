@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { SwatchEntry } from '#palette/nvim-build'
 import { accents } from '#palette/source'
+import { spec } from '../../../core'
 
 const { t } = useI18n()
 const { variant, swatches, semantics } = useLigVariant()
 const { format, labelFor } = usePaletteClipboard()
 
-const formats = ['hex', 'rgb', 'hsl', 'css'] as const
+const formats = ['hex', 'rgb', 'hsl'] as const
 
 const neutralOrder = [
   'white',
@@ -26,9 +27,10 @@ const neutralOrder = [
 
 const neutrals = computed(() => {
   const byName = new Map(swatches.value.filter(sw => sw.role === 'neutral').map(sw => [sw.name, sw]))
-  return neutralOrder.flatMap((name) => {
+  const names = variant.value.endsWith('paper') ? neutralOrder.map(name => name.replace('soft_', 'paper_')) : neutralOrder
+  return names.flatMap((name) => {
     const sw = byName.get(name)
-    return sw ? [sw] : []
+    return sw ? [{ ...sw, lightness: (spec.palette.paper[name] ?? spec.palette.neutrals[name])!.l }] : []
   })
 })
 
@@ -129,46 +131,62 @@ const accentBases = computed(() =>
           {{ labelFor(item) }}
         </button>
       </div>
-      <div class="lig-ramp lig-ramp-thin">
-        <PaletteSwatch
-          v-for="sw in neutrals"
-          :key="sw.name"
-          :name="sw.name"
-          :hex="sw.hex"
-          :variant="variant"
-        />
+      <div class="lig-palette-columns">
+        <section class="lig-palette-column">
+          <h3 class="lig-palette-heading">
+            {{ t('palette.groups.neutrals') }}
+          </h3>
+          <div class="lig-neutral-ramp">
+            <PaletteSwatch
+              v-for="sw in neutrals"
+              :key="sw.name"
+              :name="sw.name"
+              :hex="sw.hex"
+              :detail="`L ${(sw.lightness * 100).toFixed(0)}%`"
+            />
+          </div>
+        </section>
+        <section class="lig-palette-column">
+          <h3 class="lig-palette-heading">
+            {{ t('palette.groups.accents') }}
+          </h3>
+          <div class="lig-bases">
+            <PaletteSwatch
+              v-for="sw in accentBases"
+              :key="sw.name"
+              :name="sw.name"
+              :hex="sw.hex"
+              :caption="sw.name.replace('_base', '')"
+            />
+          </div>
+        </section>
       </div>
-      <div class="lig-bases">
-        <PaletteSwatch
-          v-for="sw in accentBases"
-          :key="sw.name"
-          :name="sw.name"
-          :hex="sw.hex"
-          :caption="sw.name.replace('_base', '')"
-          :variant="variant"
-        />
-      </div>
+      <PaletteOklch :variant="variant" />
+      <PaletteTerminalReference :variant="variant" />
       <details class="lig-more">
         <summary>{{ t('palette.more') }}</summary>
-        <div
-          v-for="family in families"
-          :key="family.name"
-          class="lig-family"
-        >
-          <h3>{{ family.name }}</h3>
-          <div class="lig-triad">
+        <div class="lig-swatch-groups">
+          <section
+            v-for="family in families"
+            :key="family.name"
+            class="lig-swatch-group"
+          >
+            <h3 class="lig-palette-heading">
+              {{ family.name }}
+            </h3>
             <PaletteSwatch
               v-for="step in family.steps"
               :key="step.swatch.name"
               :name="step.swatch.name"
               :hex="step.swatch.hex"
-              :caption="step.caption"
-              :variant="variant"
+              :caption="t(`palette.tiers.${step.caption === 'hl' ? 'highlight' : step.caption === 'fd' ? 'muted' : 'base'}`)"
             />
-          </div>
+          </section>
         </div>
+      </details>
+      <details class="lig-more">
+        <summary>{{ t('palette.uiRoles') }}</summary>
         <PaletteSemanticTable
-          :variant="variant"
           :rows="semantics"
         />
       </details>

@@ -1,26 +1,8 @@
 import type { LigVariant } from '#palette/nvim-build'
 import { baseSwatches, buildVariant, semanticRoles, VARIANTS } from '#palette/nvim-build'
 
-const STORAGE_KEY = 'lig-palette-variant'
-
 export function useLigVariant() {
   const variant = useState<LigVariant>('lig-variant', () => 'dark')
-
-  onMounted(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY) as LigVariant | null
-      if (stored && VARIANTS.includes(stored))
-        variant.value = stored
-    }
-    catch { /* ignore */ }
-  })
-
-  watch(variant, (v) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, v)
-    }
-    catch { /* ignore */ }
-  })
 
   const colors = computed(() => buildVariant(variant.value))
   const swatches = computed(() => baseSwatches(variant.value))

@@ -1,0 +1,33 @@
+name: Preview port contracts
+
+on:
+  push:
+    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
+  pull_request:
+    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  ports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v6.1.0
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm ports:typecheck
+      - run: pnpm tokens:test
+      - run: pnpm tokens:check
+      - run: pnpm ports:generate
+      - run: pnpm ports:test
+      - run: pnpm ports:check
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: lig-lightweight-ports
+          path: dist/ports/lightweight/
+          if-no-files-found: error

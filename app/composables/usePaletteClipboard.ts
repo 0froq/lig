@@ -1,8 +1,6 @@
-import type { LigVariant } from '#palette/nvim-build'
-import { formats, normalizeHex } from '#palette/convert'
-import { cssVarName } from '#palette/nvim-build'
+import { formats } from '#palette/convert'
 
-export type CopyFormat = 'hex' | 'rgb' | 'hsl' | 'css'
+export type CopyFormat = 'hex' | 'rgb' | 'hsl'
 
 export function usePaletteClipboard() {
   const { t } = useI18n()
@@ -23,7 +21,7 @@ export function usePaletteClipboard() {
     return t(`palette.copy.${format}`)
   }
 
-  function textFor(hex: string, format: CopyFormat, variant: LigVariant, token?: string): string {
+  function textFor(hex: string, format: CopyFormat): string {
     const f = formats(hex)
     switch (format) {
       case 'hex':
@@ -32,8 +30,6 @@ export function usePaletteClipboard() {
         return f.rgb
       case 'hsl':
         return f.hsl
-      case 'css':
-        return token ? `var(${cssVarName(variant, token)})` : `var(--lig-${normalizeHex(hex).slice(1)})`
       default: {
         const _exhaustive: never = format
         return _exhaustive

@@ -1,4 +1,5 @@
 import type { ProductConfig } from './types'
+import { resolveVariant } from '../core'
 
 export default defineAppConfig({
   product: {
@@ -6,23 +7,23 @@ export default defineAppConfig({
     mark: '.',
     theme: {
       light: {
-        bg: '#f4f2ec',
+        bg: resolveVariant('light-paper').tokens['surface.canvas']!,
         fg: '#1a1917',
         muted: '#85837c',
         faint: '#cfccc3',
         line: 'rgba(26, 25, 23, 0.12)',
-        accent: '#6aca9a',
+        accent: resolveVariant('light').tokens['accent.primary']!,
       },
       dark: {
-        bg: '#111113',
+        bg: resolveVariant('dark-paper').tokens['surface.canvas']!,
         fg: '#f2f0ea',
         muted: '#918f88',
         faint: '#32312d',
         line: 'rgba(242, 240, 234, 0.1)',
-        accent: '#6aca9a',
+        accent: resolveVariant('dark').tokens['accent.primary']!,
       },
     },
-    signature: { paper: true, line: true, hand: true, bloom: true, pointer: { dwell: 'wash', click: 'wash', dwellAfter: 1.2 } },
+    signature: { paper: true, line: true, hand: true, bloom: true, pointer: { dwell: false, click: false, dwellAfter: 1.2 } },
     install: { href: '/#downloads' },
     nav: [],
   } satisfies ProductConfig,

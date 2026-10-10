@@ -2,6 +2,10 @@
 const { product } = useAppConfig()
 const { t } = useI18n()
 const installed = useInstalled()
+const { variant } = useLigVariant()
+useHead(() => ({
+  link: [{ rel: 'icon', href: `/brand/lig-${variant.value}.svg`, type: 'image/svg+xml', key: 'favicon' }],
+}))
 
 // `inert` off must be absent, not "false"
 const hidden = computed(() => installed.value || undefined)
@@ -19,8 +23,7 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
 </script>
 
 <template>
-  <div class="l-site">
-    <PaperGrain />
+  <Paper class="l-site">
     <a
       class="l-skip"
       href="#main"
@@ -34,5 +37,5 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
     </main>
     <SiteFooter :inert="hidden" />
     <Installed v-if="!product.install.href" />
-  </div>
+  </Paper>
 </template>

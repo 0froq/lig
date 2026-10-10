@@ -1,6 +1,8 @@
 import { fileURLToPath } from 'node:url'
+import { VARIANTS } from './core/resolve'
 import { keepEmptyTitle } from './shared/empty-title'
 import { markFinalStop } from './shared/final-mark'
+import { themePreferenceScript } from './shared/theme-preference'
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-09-19',
@@ -26,24 +28,30 @@ export default defineNuxtConfig({
   ],
 
   css: [
+    '@froq/ui/style.css',
     '@fontsource-variable/geist/index.css',
     '@fontsource-variable/geist-mono/index.css',
     '@fontsource/instrument-serif/400.css',
     '@fontsource/instrument-serif/400-italic.css',
     '~/assets/css/kit.css',
+    '~/assets/css/ui.css',
     '~/assets/css/palette.css',
-    '~/assets/css/choice.css',
   ],
 
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     head: {
-      link: [{ rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
+      link: [
+        { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml', key: 'favicon' },
+        { rel: 'icon', href: '/favicon.png', type: 'image/png', sizes: '32x32' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
       meta: [{ name: 'color-scheme', content: 'light dark' }],
       // Picks the theme before first paint so the paper never flashes the wrong stock
       script: [{
         tagPosition: 'head',
-        innerHTML: `try{var t=localStorage.getItem('kit-theme');document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}`,
+        innerHTML: themePreferenceScript(VARIANTS),
       }],
     },
   },
@@ -78,6 +86,8 @@ export default defineNuxtConfig({
   },
 
   typescript: { strict: true },
+
+  build: { transpile: ['@froq/ui'] },
 
   eslint: { config: { standalone: false } },
 })
