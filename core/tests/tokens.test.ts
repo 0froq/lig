@@ -197,7 +197,7 @@ it('accents keep distinct hues with individually calibrated mode coordinates', (
   const targets = {
     red: { h: 22, dark: [0.74, 0.13], light: [0.59, 0.16] },
     green: { h: 148, dark: [0.74, 0.12], light: [0.60, 0.14] },
-    yellow: { h: 95, dark: [0.86, 0.18], light: [0.86, 0.18] },
+    yellow: { h: 95, dark: [0.79, 0.18], light: [0.79, 0.18] },
     blue: { h: 275, dark: [0.74, 0.12], light: [0.60, 0.15] },
     magenta: { h: 325, dark: [0.74, 0.14], light: [0.60, 0.15] },
     cyan: { h: 194, dark: [0.74, 0.12], light: [0.60, 0.11] },
@@ -255,25 +255,24 @@ it('accent exports preserve calibrated coordinates and per-mode contrast ranges'
 
 it('yellow is replaced throughout the palette, foreground roles and terminal aliases', () => {
   for (const variant of VARIANTS) {
-    const { tokens, oklch, mode } = resolveVariant(variant)
+    const { tokens, oklch } = resolveVariant(variant)
     const fill = tokens['accent.yellow.fill']!
-    assert.equal(fill, '#f5ce00')
-    assert.equal(tokens['accent.yellow.base'], '#f5ce00')
-    assert.deepEqual(oklch['accent.yellow.base'], { l: 0.86, c: 0.18, h: 95 })
+    assert.equal(fill, '#dbb800')
+    assert.equal(tokens['accent.yellow.base'], '#dbb800')
+    assert.deepEqual(oklch['accent.yellow.base'], { l: 0.79, c: 0.18, h: 95 })
     assert.equal(tokens['accent.yellow.fill'], tokens['accent.yellow.base'])
     assert.equal(tokens['surface.search'], fill)
     assert.equal(tokens['surface.search'], tokens['diagnostic.warning'])
     for (const role of ['git.change', 'mode.replace'])
-      assert.equal(tokens[role], '#f5ce00', `${variant}/${role}: replaced yellow`)
+      assert.equal(tokens[role], '#dbb800', `${variant}/${role}: replaced yellow`)
     assert.equal(tokens['diagnostic.warning'], tokens['accent.yellow.base'])
     assert.equal(tokens['message.warning'], tokens['accent.yellow.base'])
-    assert.equal(tokens['terminal.ansi.3'], mode === 'light' ? '#dbb800' : '#f5ce00')
-    assert.equal(tokens['terminal.ansi.11'], mode === 'light' ? '#dbb800' : '#ffe88f')
-    assert.ok(contrast(tokens['text.on.yellow']!, fill) >= 10, `${variant}: fill label`)
+    assert.equal(tokens['terminal.ansi.3'], '#dbb800')
+    assert.notEqual(tokens['terminal.ansi.11'], tokens['terminal.ansi.3'])
+    assert.ok(contrast(tokens['text.on.yellow']!, fill) >= 9, `${variant}: fill label`)
     assert.ok(contrast(tokens['text.strong']!, tokens['surface.search.match']!) >= 4.5, `${variant}: active search text`)
     for (const [index, name] of ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan'].entries()) {
-      const normalTier = name === 'yellow' && mode === 'light' ? 'highlight' : 'base'
-      assert.equal(tokens[`terminal.ansi.${index + 1}`], tokens[`accent.${name}.${normalTier}`])
+      assert.equal(tokens[`terminal.ansi.${index + 1}`], tokens[`accent.${name}.base`])
       assert.equal(tokens[`terminal.ansi.${index + 9}`], tokens[`accent.${name}.highlight`])
     }
     for (let index = 0; index < 16; index++)

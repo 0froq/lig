@@ -4,7 +4,7 @@
 
 ## Color contract
 
-- `schemaVersion: 2`, token `version: 0.2.11`, `colorSpace: oklch`.
+- `schemaVersion: 2`, token `version: 0.2.12`, `colorSpace: oklch`.
 - Eight accents, thirteen achromatic neutrals and a separate low-chroma paper palette are authored only in `palette`, as `{ l, c, h }` coordinates.
 - L is perceptual lightness in [0, 1], C is nonnegative chroma, H is degrees in [0, 360). Achromatic colors use `c: 0, h: null`.
 - Eight accent primitives have individually calibrated OKLCH L/C and deliberate hue anchors; equal coordinates across hues are not a visual-balance requirement. Thirteen neutral primitives are designed on the achromatic OKLCH axis, with deliberate L steps rather than inherited RGB values.
@@ -47,7 +47,7 @@ Each hue now has its own mode-specific baseline. Uniform L/C was numerically tid
 | ------- | --- | --------------- | ---------------- |
 | red     | 22  | .74 / .13       | .59 / .16        |
 | orange  | 60  | .74 / .13       | .64 / .15        |
-| yellow  | 95  | .86 / .18       | .86 / .18        |
+| yellow  | 95  | .79 / .18       | .79 / .18        |
 | green   | 148 | .74 / .12       | .60 / .14        |
 | cyan    | 194 | .74 / .12       | .60 / .11        |
 | azure   | 234 | .74 / .12       | .59 / .13        |
@@ -60,17 +60,17 @@ These are design targets. sRGB mapping may reduce C at fixed L/H, notably light 
 
 ### Replacement yellow
 
-The old muted yellow/gold is replaced, not retained as a separate foreground palette. `palette.accents.yellow` and `accent.yellow.base` now use L=.86/C=.18/H=95°, exporting `#f5ce00` in all four variants. The mode-specific darkening override is removed. Warning/message/git roles, mode.replace and the source-palette yellow all inherit this replacement through their existing aliases. ANSI 11 follows the normal mode-aware highlight formula: light `#dbb800`, dark `#ffe88f`. The light/light-paper terminal normal-yellow slot (ANSI 3) explicitly uses `accent.yellow.highlight` (`#dbb800`) for this comparison trial; dark normal yellow remains `#f5ce00`. The bright slot is unchanged, so light normal/bright yellows temporarily match. Palette, warning and git roles retain the accepted warm-yellow base.
+The yellow base itself is now L=.79/C=.18/H=95°, exporting `#dbb800` in all four variants. This replaces the over-bright `#f5ce00` base in the authored primitive, not through a terminal-only override. The source palette, warning/message/git roles, mode.replace and ANSI 3 all inherit the same replacement. The light-mode ANSI 3 override from the preceding trial is removed.
 
-`accent.yellow.fill` is now a compatibility alias to `accent.yellow.base`, not an independent alternative color. `text.on.yellow` still selects soft_900 (`#181818`) for text on a yellow background. The extra ink/fill swatch distinction is removed from the website.
+ANSI 11 again uses the ordinary mode-aware highlight formula: light `#c2a200`, dark `#f2cf3b`. Both remain derived from the new base. `accent.yellow.fill` is a compatibility alias to `accent.yellow.base`; `text.on.yellow` selects soft_900 (`#181818`) for text on the yellow background. No independent foreground/fill yellow palette is retained.
 
-This is an explicit visual trial. On the light canvas, yellow base has approximately 1.37:1 WCAG / +17 Lc; it is visibly yellow but weak as small foreground text. The terminal panel reports this unchanged rather than substituting a dark gold. At the .93 L endpoint sRGB mapping reduces chroma considerably, so the exported yellow steps are not perceptually symmetric despite symmetric authored L offsets. Tests preserve the target definition, role propagation, gamut mapping and export accuracy instead of forcing yellow back to the former dark ink.
+This is an explicit visual trial. On the light canvas, yellow base measures approximately 1.73:1 WCAG / +29 Lc. The terminal panel reports the actual readings. Yellow still maps to the sRGB boundary at several tier endpoints, reducing C at constant L/H. Tests verify the requested base hex, role propagation, distinct normal/bright slots, gamut mapping and export accuracy.
 
 ### Verification and readability boundary
 
 This visual trial deliberately relaxes the earlier chromatic contrast calibration: light non-yellow tiers are checked at ≥4:1 highlight, ≥3:1 base and ≥2.3:1 faded, with APCA ≥63/54/43 Lc respectively. Bright yellow is an explicit exception with its actual readings reported above. These are regression bounds for this trial, not WCAG AA text guarantees or APCA font recommendations. Neutral primary/secondary ink still meets ≥4.5:1. At smaller text sizes, light orange, green and muted type references need manual assessment. Dark accent tiers retain ≥4.5:1.
 
-The terminal panel reads exactly `terminal.ansi.0–15` from the resolved preview. It shows normal/emphasis banks, foreground text, background samples with adaptive neutral labels, SGR codes, WCAG/APCA readings and simulated command output. The yellow-background example uses the palette base with a dark label; light ANSI 3 uses the explicit darker terminal override. ANSI 0 currently aliases the canvas, so its foreground sample is intentionally invisible and its contrast reads 1:1; the panel exposes the existing contract rather than disguising it.
+The terminal panel reads exactly `terminal.ansi.0–15` from the resolved preview. It shows normal/emphasis banks, foreground text, background samples with adaptive neutral labels, SGR codes, WCAG/APCA readings and simulated command output. The yellow-background example uses the same base as ANSI 3, with a dark label. ANSI 0 currently aliases the canvas, so its foreground sample is intentionally invisible and its contrast reads 1:1; the panel exposes the existing contract rather than disguising it.
 
 The coordinate lab selects struct/ref/action before editing that family's actual L/C. Each family and variant stores independent state. All aliases and derived surface mixes are re-resolved by the core, so parsed code, terminal ANSI colors, diagnostic samples and chosen background remain synchronized. Controls constrain both tier endpoints to valid L/C coordinates. These experiments do not change the canonical palette, downloads or ports.
 
