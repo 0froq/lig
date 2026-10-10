@@ -131,7 +131,7 @@ const accentBases = computed(() =>
           {{ labelFor(item) }}
         </button>
       </div>
-      <div class="lig-ramp lig-ramp-thin">
+      <div class="lig-neutral-ramp">
         <PaletteSwatch
           v-for="sw in neutrals"
           :key="sw.name"

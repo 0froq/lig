@@ -129,104 +129,111 @@ function inSelection(start: number, end: number): boolean {
             {{ t('palette.inspect.unpin') }}
           </button>
         </div>
-        <template v-if="node">
-          <p class="lig-node-type">
-            {{ node.type }}
-          </p>
-          <p class="lig-node-meta">
-            {{ node.named ? t('palette.inspect.named') : t('palette.inspect.anonymous') }}
-            <span v-if="node.field"> · {{ node.field }}</span>
-            <span v-if="node.error"> · ERROR</span>
-            <span v-if="node.missing"> · MISSING</span>
-          </p>
-          <p class="lig-node-meta">
-            {{ node.range[0] + 1 }}:{{ node.range[1] + 1 }} → {{ node.range[2] + 1 }}:{{ node.range[3] + 1 }}
-            <br>{{ t('palette.inspect.bytes') }} {{ node.startByte }}–{{ node.endByte }}
-          </p>
-          <nav
-            class="lig-node-ancestors"
-            :aria-label="t('palette.inspect.ancestors')"
-          >
-            <button
-              v-for="parent in parents"
-              :key="parent.id"
-              type="button"
-              :aria-current="parent.id === node.id ? 'true' : undefined"
-              @click="selectNode(parent.id)"
-            >
-              {{ parent.type }}
-            </button>
-          </nav>
-          <p class="lig-inspector-label">
-            {{ t('palette.inspect.position') }}
-          </p>
-          <div
-            v-if="segment"
-            class="lig-capture-list"
-          >
-            <div
-              v-for="capture in segment.captures"
-              :key="capture.order"
-              :class="{ 'is-winning': capture === segment.winner }"
-            >
-              <span>@{{ capture.name }}</span>
-              <small>{{ capture.priority }} · {{ capture === segment.winner ? t('palette.inspect.winner') : captureRole(capture.name) ? t('palette.inspect.overlap') : t('palette.inspect.metadata') }}</small>
-            </div>
-            <p
-              v-if="!segment.winner"
-              class="lig-node-meta"
-            >
-              {{ t('palette.inspect.fallback') }}
-            </p>
-          </div>
-          <template v-if="segment">
-            <p
-              v-if="syntaxFamily(role, variant)"
-              class="lig-inspector-label"
-            >
-              {{ t('palette.inspect.family') }} · {{ syntaxFamily(role, variant) }}
-            </p>
-            <p class="lig-node-role">
-              {{ role }}
-            </p>
-            <p class="lig-node-color">
-              <i :style="{ background: color }" />{{ color }}
+        <div
+          class="lig-inspector-content"
+          role="region"
+          :aria-label="t('palette.inspect.title')"
+          tabindex="0"
+        >
+          <template v-if="node">
+            <p class="lig-node-type">
+              {{ node.type }}
             </p>
             <p class="lig-node-meta">
-              L {{ coordinates.l.toFixed(3) }} · C {{ coordinates.c.toFixed(3) }} · H {{ coordinates.h?.toFixed(1) ?? '—' }}
+              {{ node.named ? t('palette.inspect.named') : t('palette.inspect.anonymous') }}
+              <span v-if="node.field"> · {{ node.field }}</span>
+              <span v-if="node.error"> · ERROR</span>
+              <span v-if="node.missing"> · MISSING</span>
             </p>
+            <p class="lig-node-meta">
+              {{ node.range[0] + 1 }}:{{ node.range[1] + 1 }} → {{ node.range[2] + 1 }}:{{ node.range[3] + 1 }}
+              <br>{{ t('palette.inspect.bytes') }} {{ node.startByte }}–{{ node.endByte }}
+            </p>
+            <nav
+              class="lig-node-ancestors"
+              :aria-label="t('palette.inspect.ancestors')"
+            >
+              <button
+                v-for="parent in parents"
+                :key="parent.id"
+                type="button"
+                :aria-current="parent.id === node.id ? 'true' : undefined"
+                @click="selectNode(parent.id)"
+              >
+                {{ parent.type }}
+              </button>
+            </nav>
+            <p class="lig-inspector-label">
+              {{ t('palette.inspect.position') }}
+            </p>
+            <div
+              v-if="segment"
+              class="lig-capture-list"
+            >
+              <div
+                v-for="capture in segment.captures"
+                :key="capture.order"
+                :class="{ 'is-winning': capture === segment.winner }"
+              >
+                <span>@{{ capture.name }}</span>
+                <small>{{ capture.priority }} · {{ capture === segment.winner ? t('palette.inspect.winner') : captureRole(capture.name) ? t('palette.inspect.overlap') : t('palette.inspect.metadata') }}</small>
+              </div>
+              <p
+                v-if="!segment.winner"
+                class="lig-node-meta"
+              >
+                {{ t('palette.inspect.fallback') }}
+              </p>
+            </div>
+            <template v-if="segment">
+              <p
+                v-if="syntaxFamily(role, variant)"
+                class="lig-inspector-label"
+              >
+                {{ t('palette.inspect.family') }} · {{ syntaxFamily(role, variant) }}
+              </p>
+              <p class="lig-node-role">
+                {{ role }}
+              </p>
+              <p class="lig-node-color">
+                <i :style="{ background: color }" />{{ color }}
+              </p>
+              <p class="lig-node-meta">
+                L {{ coordinates.l.toFixed(3) }} · C {{ coordinates.c.toFixed(3) }} · H {{ coordinates.h?.toFixed(1) ?? '—' }}
+              </p>
+            </template>
+            <details class="lig-node-source">
+              <summary>{{ t('palette.inspect.source') }}</summary>
+              <pre>{{ selectedText }}</pre>
+            </details>
           </template>
-          <details class="lig-node-source">
-            <summary>{{ t('palette.inspect.source') }}</summary>
-            <pre>{{ selectedText }}</pre>
-          </details>
-        </template>
-        <p
-          v-else
-          class="lig-node-placeholder"
-        >
-          {{ t('palette.inspect.empty') }}
-        </p>
-        <label class="lig-tree-select">
-          <span>{{ t('palette.inspect.tree') }}</span>
-          <select
-            :value="inspected ?? ''"
-            @change="changeNode"
+          <p
+            v-else
+            class="lig-node-placeholder"
           >
-            <option
-              disabled
-              value=""
-            >{{ t('palette.inspect.choose') }}</option>
-            <option
-              v-for="choice in choices"
-              :key="choice.id"
-              :value="choice.id"
-            >{{ choice.label }}</option>
-          </select>
-        </label>
-        <p class="lig-node-footnote">
-          {{ t('palette.inspect.provenance', { version: neovim }) }}
-        </p>
+            {{ t('palette.inspect.empty') }}
+          </p>
+          <label class="lig-tree-select">
+            <span>{{ t('palette.inspect.tree') }}</span>
+            <select
+              :value="inspected ?? ''"
+              @change="changeNode"
+            >
+              <option
+                disabled
+                value=""
+              >{{ t('palette.inspect.choose') }}</option>
+              <option
+                v-for="choice in choices"
+                :key="choice.id"
+                :value="choice.id"
+              >{{ choice.label }}</option>
+            </select>
+          </label>
+          <p class="lig-node-footnote">
+            {{ t('palette.inspect.provenance', { version: neovim }) }}
+          </p>
+        </div>
       </aside>
     </div>
   </section>
