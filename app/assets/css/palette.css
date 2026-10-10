@@ -371,9 +371,20 @@
 }
 
 .lig-port-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   font-family: var(--font-display);
   font-size: clamp(28px, 3vw, 40px);
   line-height: 1;
+}
+
+.lig-project-icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 3px;
 }
 
 .lig-port:hover .lig-port-title {
@@ -764,14 +775,17 @@
 
 .lig-port-downloads li {
   display: grid;
-  grid-template-columns: 7rem minmax(0, 1fr);
-  align-items: baseline;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  align-items: center;
   gap: 12px 24px;
   padding-block: 20px;
   border-top: 1px solid var(--line);
 }
 
 .lig-port-downloads h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 0;
   font: inherit;
 }

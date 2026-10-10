@@ -4,15 +4,28 @@ import { LIGHTWEIGHT_PORTS, lightweightArchivePath, lightweightPath } from '../.
 
 const { variant } = useLigVariant()
 
+// GitHub project avatars; individual-owned repositories use their owner's avatar.
+const portIcons = {
+  ghostty: '169223740',
+  fzf: '700826',
+  zellij: '73778475',
+  tmux: '12054114',
+  starship: '49654870',
+  bat: '4209276',
+  eza: '141388427',
+}
+
 const links = [
   {
     title: 'palette.downloads.nvim',
     href: 'https://github.com/0froq/lig.nvim',
+    icon: 'https://avatars.githubusercontent.com/u/6471485?s=80&v=4',
     note: 'palette.downloads.nvimNote',
   },
   {
     title: 'palette.downloads.vscode',
     href: 'https://github.com/0froq/vscode-theme-LiG',
+    icon: 'https://raw.githubusercontent.com/microsoft/vscode/main/resources/linux/code.png',
     note: 'palette.downloads.vscodeNote',
   },
 ]
@@ -35,7 +48,18 @@ const files = [
       target="_blank"
       rel="noopener noreferrer"
     >
-      <span class="lig-port-title">{{ $t(item.title) }}</span>
+      <span class="lig-port-title">
+        <img
+          class="lig-project-icon"
+          :src="item.icon"
+          alt=""
+          width="24"
+          height="24"
+          loading="lazy"
+          decoding="async"
+        >
+        <span>{{ $t(item.title) }}</span>
+      </span>
       <span class="lig-port-note">{{ $t(item.note) }}</span>
     </a>
   </div>
@@ -57,6 +81,15 @@ const files = [
       :key="port.id"
     >
       <h3 :id="`port-${port.id}`">
+        <img
+          class="lig-project-icon"
+          :src="`https://avatars.githubusercontent.com/u/${portIcons[port.id]}?s=80&v=4`"
+          alt=""
+          width="24"
+          height="24"
+          loading="lazy"
+          decoding="async"
+        >
         {{ port.title }}
       </h3>
       <div
