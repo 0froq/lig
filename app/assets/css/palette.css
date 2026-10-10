@@ -157,12 +157,17 @@
 .lig-bases {
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 20px;
+  gap: 8px 10px;
+  max-width: 40rem;
+  margin-top: 16px;
+}
+
+.lig-bases .lig-chip {
+  gap: 4px;
 }
 
 .lig-bases .lig-chip-fill {
-  height: 28px;
+  height: 20px;
 }
 
 .lig-more {
@@ -220,7 +225,8 @@
 
 .lig-neutral-ramp {
   display: grid;
-  gap: 6px;
+  gap: 3px;
+  max-width: 40rem;
   margin-top: 16px;
 }
 
@@ -268,14 +274,14 @@
 
 .lig-neutral-ramp .lig-chip {
   display: grid;
-  grid-template-columns: minmax(64px, 1fr) minmax(100px, 1fr) 64px minmax(80px, 1fr);
+  grid-template-columns: clamp(56px, 14vw, 96px) minmax(100px, 1fr) 64px minmax(80px, 1fr);
   align-items: center;
   gap: 12px;
-  min-height: 44px;
+  min-height: 28px;
 }
 
 .lig-neutral-ramp .lig-chip-fill {
-  height: 40px;
+  height: 24px;
   border: 1px solid var(--line);
 }
 
@@ -286,9 +292,9 @@
 
 @media (max-width: 600px) {
   .lig-neutral-ramp .lig-chip {
-    grid-template-columns: 64px minmax(0, 1fr) minmax(80px, auto);
+    grid-template-columns: 48px minmax(0, 1fr) minmax(80px, auto);
     gap: 4px 12px;
-    padding-block: 4px;
+    padding-block: 2px;
   }
 
   .lig-neutral-ramp .lig-chip-fill {
@@ -548,9 +554,12 @@
     grid-template-columns: 1fr;
   }
 
-  .lig-inks,
-  .lig-bases {
+  .lig-inks {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lig-bases {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .lig-editor {
@@ -564,6 +573,12 @@
 
   .lig-triad {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .lig-bases {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -826,7 +841,6 @@
   font: 12px/1.5 var(--font-meta);
 }
 
-.lig-parsed-header > :last-child,
 .lig-parsed-hint,
 .lig-node-meta,
 .lig-node-footnote,

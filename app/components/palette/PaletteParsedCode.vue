@@ -92,7 +92,6 @@ function inSelection(start: number, end: number): boolean {
   >
     <header class="lig-parsed-header">
       <span>{{ document.filename }}</span>
-      <span>{{ document.language }} · Tree-sitter · {{ document.nodes.length }} {{ t('palette.inspect.nodes') }}</span>
     </header>
     <p
       :id="`syntax-help-${document.language}`"

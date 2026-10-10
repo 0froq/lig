@@ -253,7 +253,6 @@ function formatApca(value: number): string {
   <p class="lig-aside">
     {{ t('palette.syntax.aside') }}
   </p>
-  <PaletteChoiceStop v-model:variant="variant" />
   <PaletteStage
     :variant="variant"
     :preview="preview"

@@ -1,6 +1,8 @@
 import { fileURLToPath } from 'node:url'
+import { VARIANTS } from './core/resolve'
 import { keepEmptyTitle } from './shared/empty-title'
 import { markFinalStop } from './shared/final-mark'
+import { themePreferenceScript } from './shared/theme-preference'
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-09-19',
@@ -43,7 +45,7 @@ export default defineNuxtConfig({
       // Picks the theme before first paint so the paper never flashes the wrong stock
       script: [{
         tagPosition: 'head',
-        innerHTML: `try{var t=localStorage.getItem('kit-theme');document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}`,
+        innerHTML: themePreferenceScript(VARIANTS),
       }],
     },
   },

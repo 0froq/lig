@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { joinVariant, splitVariant } from '~/utils/lig-variant'
+
 const { product } = useAppConfig()
 const { t, locale, locales } = useI18n()
 const link = useKitLink()
 const switchLocalePath = useSwitchLocalePath()
-const { theme, ready, toggle } = useTheme()
+const { theme, ready } = useTheme()
+const { variant } = useLigVariant()
 const others = computed(() => locales.value.filter(l => l.code !== locale.value))
 const next = computed(() => theme.value === 'dark' ? 'light' : 'dark')
+
+function toggle(): void {
+  variant.value = joinVariant(next.value, splitVariant(variant.value).edge)
+}
 </script>
 
 <template>

@@ -2,7 +2,17 @@
 const { product } = useAppConfig()
 const { t } = useI18n()
 const link = useKitLink()
-const { sections, current, pinned } = usePageSections()
+const pinned = ref(false)
+
+function onScroll(): void {
+  pinned.value = window.scrollY > 220
+}
+
+onMounted(() => {
+  onScroll()
+  addEventListener('scroll', onScroll, { passive: true })
+})
+onBeforeUnmount(() => removeEventListener('scroll', onScroll))
 </script>
 
 <template>
@@ -17,11 +27,7 @@ const { sections, current, pinned } = usePageSections()
         :size="4"
       /><span class="l-dot">{{ product.mark }}</span>
     </NuxtLink>
-    <SectionNav
-      v-if="sections.length"
-      :sections="sections"
-      :current="current"
-    />
+    <PaletteThemeSwitch />
     <nav class="l-nav">
       <NuxtLink
         v-for="item in product.nav"
@@ -31,15 +37,12 @@ const { sections, current, pinned } = usePageSections()
         {{ t(item.label) }}
       </NuxtLink>
     </nav>
-    <Transition name="section-bar">
+    <Transition name="theme-bar">
       <div
-        v-if="pinned && sections.length"
-        class="l-section-bar"
+        v-if="pinned"
+        class="l-theme-bar"
       >
-        <SectionNav
-          :sections="sections"
-          :current="current"
-        />
+        <PaletteThemeSwitch />
       </div>
     </Transition>
   </header>

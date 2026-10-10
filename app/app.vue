@@ -2,6 +2,7 @@
 const { product } = useAppConfig()
 const { t } = useI18n()
 const localeHead = useLocaleHead()
+useLigTheme()
 
 function skinStyle(): string {
   const skin = product.skin
