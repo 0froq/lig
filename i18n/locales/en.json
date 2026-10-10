@@ -68,7 +68,12 @@
       "tokens": "Generated token files in this repo",
       "lightweight": "Lightweight ports",
       "lightweightNote": "Four variants from the same tokens. Downloads follow the selected theme.",
-      "install": "Installation notes"
+      "install": "Installation notes",
+      "agentTitle": "Set up with an agent",
+      "agentCopy": "Copy instruction",
+      "agentCopyError": "Copy failed · retry",
+      "agentCopyPending": "Copying…",
+      "agentInstruction": "Configure LiG ({variant}) for my installed tools, using {page}, {manifest} and {notes}. First perform read-only detection of my OS and installed stack ({tools}); report detected versions, active configuration paths, available ports and variants, and proposed changes. Check editor variants in the repositories linked from the page. Ask me to confirm the tools, variant and changes, then wait; do not install, edit configuration or restart applications before confirmation. Apply only the confirmed plan, back up affected files, merge color settings while preserving existing behavior, bindings and layouts, and report validation results and rollback steps. Do not install missing tools or invent unsupported ports."
     },
     "syntax": {
       "lede": "Mono is the reading baseline. Struct marks bindings and structure, ref marks values and references, and action marks execution.",

@@ -69,6 +69,7 @@ const files = [
       ><span>Manifest</span><code>SHA-256</code><span aria-hidden="true">↓</span></a>
     </li>
   </ul>
+  <PaletteAgentSetup />
   <p class="lig-group">
     {{ $t('palette.downloads.tokens') }}
   </p>

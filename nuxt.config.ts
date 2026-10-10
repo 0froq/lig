@@ -28,11 +28,13 @@ export default defineNuxtConfig({
   ],
 
   css: [
+    '@froq/ui/style.css',
     '@fontsource-variable/geist/index.css',
     '@fontsource-variable/geist-mono/index.css',
     '@fontsource/instrument-serif/400.css',
     '@fontsource/instrument-serif/400-italic.css',
     '~/assets/css/kit.css',
+    '~/assets/css/ui.css',
     '~/assets/css/palette.css',
   ],
 
@@ -79,6 +81,8 @@ export default defineNuxtConfig({
   },
 
   typescript: { strict: true },
+
+  build: { transpile: ['@froq/ui'] },
 
   eslint: { config: { standalone: false } },
 })

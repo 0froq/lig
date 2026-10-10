@@ -17,15 +17,15 @@ const banks = computed(() => terminalColors(tokens.value))
 const output = computed(() => {
   const colors = banks.value.flatMap(bank => bank.colors)
   return [
-    { label: '❯', index: 2, message: 'lig check --colors' },
-    { label: 'info', index: 4, message: 'loading theme tokens' },
-    { label: 'fetch', index: 6, message: 'origin/codex/lig-core-tokens' },
-    { label: 'pass', index: 2, message: 'palette resolved' },
-    { label: 'warning', index: 3, message: 'dependency deprecated' },
-    { label: 'error', index: 1, message: 'example diagnostic' },
-    { label: 'branch', index: 5, message: 'preview/hue-calibration' },
-    { label: 'quiet', index: 8, message: 'dimmed terminal output' },
-    { label: 'ready', index: 15, message: 'theme loaded' },
+    { label: '❯', index: 2, message: 'lig check', highlight: '--colors' },
+    { label: 'info', index: 4, message: 'loading', highlight: 'theme tokens' },
+    { label: 'fetch', index: 6, message: 'palette.json', highlight: 'cached' },
+    { label: 'pass', index: 2, message: 'palette', highlight: 'resolved' },
+    { label: 'warning', index: 3, message: 'dependency', highlight: 'deprecated' },
+    { label: 'error', index: 1, message: 'sample.ts', highlight: 'missing export' },
+    { label: 'branch', index: 5, message: 'on', highlight: 'preview' },
+    { label: 'quiet', index: 8, message: 'output', highlight: 'dimmed' },
+    { label: 'ready', index: 15, message: 'theme', highlight: 'loaded' },
   ].map(row => ({ ...row, color: colors[row.index]! }))
 })
 </script>
@@ -79,12 +79,12 @@ const output = computed(() => {
         class="lig-ansi-output-row"
       >
         <code :style="{ color: row.color.hex }">{{ row.label }}</code>
-        <code
-          class="lig-ansi-output-fill"
-          :style="{ background: row.color.hex, color: row.color.label }"
-          aria-hidden="true"
-        >{{ row.label }}</code>
-        <code>{{ row.message }}</code>
+        <code class="lig-ansi-output-message">
+          {{ row.message }} <span
+            class="lig-ansi-output-fill"
+            :style="{ background: row.color.hex, color: row.color.label }"
+          >{{ row.highlight }}</span>
+        </code>
       </div>
     </div>
   </section>
@@ -137,24 +137,33 @@ const output = computed(() => {
 
 .lig-ansi-output {
   display: grid;
-  gap: 7px;
+  gap: 5px;
   margin-top: 28px;
   overflow-x: auto;
 }
 
 .lig-ansi-output-row {
   display: grid;
-  grid-template-columns: 5.5rem 5.5rem minmax(0, 1fr);
+  grid-template-columns: 7ch minmax(0, 1fr);
   align-items: baseline;
-  gap: 12px;
-  min-width: 28rem;
+  gap: 18px;
+  min-width: 0;
   font: 13px/1.8 var(--font-meta);
-  white-space: nowrap;
+}
+
+.lig-ansi-output-row:first-child {
+  margin-bottom: 9px;
+}
+
+.lig-ansi-output-message {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .lig-ansi-output-fill {
-  padding-inline: 8px;
-  text-align: center;
+  padding: 1px 5px;
+  box-decoration-break: clone;
+  white-space: nowrap;
 }
 
 .lig-ansi-output:focus-visible {
