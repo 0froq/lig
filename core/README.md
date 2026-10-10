@@ -4,10 +4,10 @@
 
 ## Color contract
 
-- `schemaVersion: 2`, token `version: 0.2.8`, `colorSpace: oklch`.
+- `schemaVersion: 2`, token `version: 0.2.9`, `colorSpace: oklch`.
 - Eight accents, thirteen achromatic neutrals and a separate low-chroma paper palette are authored only in `palette`, as `{ l, c, h }` coordinates.
 - L is perceptual lightness in [0, 1], C is nonnegative chroma, H is degrees in [0, 360). Achromatic colors use `c: 0, h: null`.
-- Eight accent primitives are calibrated to a shared OKLCH lightness/chroma target with deliberate hue anchors. Thirteen neutral primitives are designed on the achromatic OKLCH axis, with deliberate L steps rather than inherited RGB values.
+- Eight accent primitives have individually calibrated OKLCH L/C and deliberate hue anchors; equal coordinates across hues are not a visual-balance requirement. Thirteen neutral primitives are designed on the achromatic OKLCH axis, with deliberate L steps rather than inherited RGB values.
 - Resolution retains floating-point coordinates throughout the dependency graph. Quantization to lowercase 8-bit `#rrggbb` happens only at export.
 
 For example, the calibrated green is authored as:
@@ -41,38 +41,40 @@ Paper is a design treatment, not a claim of reduced eye strain or improved color
 
 ## Calibrated accents
 
-The eight colors are intended to have similar weight within each mode. Their design coordinates share L/C; H distinguishes the families. Hues are refined individually, including the additional orange and azure. The circular gaps are 38°, 40°, 48°, 46°, 40°, 41°, 50° and 57°: reasonably distributed without forcing all eight named families onto equal 45° steps.
+Each hue now has its own mode-specific baseline. Uniform L/C was numerically tidy but made light yellow olive and orange brown. This trial raises yellow lightness, increases red/magenta chroma, and gives light orange extra lightness/chroma. Neutral and paper surfaces remain unchanged.
 
-| Mode                | Base L | Base C | Derivation from authored accents |
-| ------------------- | ------ | ------ | -------------------------------- |
-| dark / dark-paper   | 0.740  | 0.120  | Authored primitives              |
-| light / light-paper | 0.550  | 0.110  | Offset L −.19, C −.010           |
+| Color   | H   | Dark base L / C | Light base L / C |
+| ------- | --- | --------------- | ---------------- |
+| red     | 22  | .74 / .13       | .59 / .16        |
+| orange  | 60  | .74 / .13       | .64 / .15        |
+| yellow  | 95  | .82 / .16       | .60 / .13        |
+| green   | 148 | .74 / .12       | .60 / .14        |
+| cyan    | 194 | .74 / .12       | .60 / .11        |
+| azure   | 234 | .74 / .12       | .59 / .13        |
+| blue    | 275 | .74 / .12       | .60 / .15        |
+| magenta | 325 | .74 / .14       | .60 / .15        |
 
-All modes keep H. The authored `palette.accents` is the reference/dark palette; consumers must use `variants[variant].tokens` or `.oklch` for mode-specific colors. Paper variants retain all of their standard mode's accent coordinates and tiers; only surfaces and mono inks differ.
+`palette.accents` remains the authored dark/reference palette. Light baselines use per-color offsets from those primitives in `modes.light`. Both paper profiles inherit their standard mode's full chromatic definition. The existing resolver/schema and mode-aware emphasis formulas are unchanged; no per-port color authoring is added.
 
-| Color   | H    | Dark hex  | Light hex |
-| ------- | ---- | --------- | --------- |
-| red     | 22°  | `#ed8b88` | `#a85554` |
-| orange  | 60°  | `#e29858` | `#a06024` |
-| yellow  | 100° | `#bdac4a` | `#81720e` |
-| green   | 148° | `#73c07f` | `#3f834b` |
-| cyan    | 194° | `#26c2c1` | `#008282` |
-| azure   | 234° | `#51b7eb` | `#137ba8` |
-| blue    | 275° | `#95a4f6` | `#5f6bb1` |
-| magenta | 325° | `#d190d4` | `#915a95` |
+These are design targets. sRGB mapping may reduce C at fixed L/H, notably light cyan/azure/yellow, light orange highlight and dark red/blue highlight. Consumers use the mapped generated hex values; the demo's OKLCH readouts show design coordinates. Raising target C at a gamut boundary cannot make the exported color more saturated.
 
-The eight dark base accents retain their authored C=.120 in sRGB. All three chromatic syntax-family bases (green/blue/orange) retain C=.110 in all light variants. Some other accents and tier endpoints require chroma reduction at constant L/H: standard dark blue highlight (.100 → .0955), all light variants' yellow/azure highlights and all cyan tiers. Cyan base exports at C≈.0940 in all light variants. The spec coordinates remain the authored targets, not the mapped output coordinates. Raising the target C further does not increase colors already at the sRGB boundary.
+### Yellow ink and fill
 
-Canvas selection changes contrast without changing the accent coordinates. Standard canvases use dark=950/light=50, while paper canvases reproduce the site backgrounds. These default WCAG ratios describe the current calibration:
+`accent.yellow.base` is foreground ink: light gold `#977e00`, dark yellow `#e5c226`. Warning/message/git foregrounds and ANSI 3 continue to reference this ink; ANSI 11 uses the mode-specific highlight tier. On a light canvas, emphasis is darker rather than physically brighter.
 
-| Variant | Highlight   | Base      | Faded     | Base APCA magnitude |
-| ------- | ----------- | --------- | --------- | ------------------- |
-| dark    | 10.59–11.44 | 8.20–9.08 | 6.38–6.93 | 54.3–59.4 Lc        |
-| light   | 5.55–6.17   | 4.11–4.58 | 3.08–3.43 | 64.0–67.4 Lc        |
+`accent.yellow.fill` is the independent warm-yellow fill `#f5ce00`, target L=.86/C=.18/H=95°, mapped C≈.1766. It derives from the single yellow primitive using an offset; it does not replace small foreground text. `text.on.yellow` selects soft_900 (`#181818`) for readable text on this fill. Search surfaces now derive from the fill, with active match text retaining `text.strong`. This distinction is a usage role, not another highlight/base/muted tier.
 
-These are explicit visual calibration bounds, not a WCAG AA guarantee for every syntax role or a font-size-independent APCA recommendation. Muted mono and light faded colored text remain manual-readability checks. Higher chroma increases colorfulness; it does not imply increased lightness or contrast. Eight-bit rounding gives each variant's colors small L/C differences; tests bound export error from gamut-mapped coordinates in Cartesian OKLab to <0.002 for accent tiers.
+The approach follows the role distinction in [Radix's scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale): solid yellow/amber backgrounds use dark foregrounds. Hue-dependent gamut constraints are described in [Ottosson's color-picker discussion](https://bottosson.github.io/posts/colorpicker/). These references support the approach, not our exact trial coordinates or visual acceptance.
 
-This is a numerically calibrated starting design. Hue distinction and visual weight in real code still require manual assessment. The homepage's TypeScript/Python demos and polar plot consume these resolved coordinates. The demos use actual Neovim Tree-sitter trees and highlight captures; see [the parsing pipeline](../syntax/README.md). Capture-to-role mappings live in `core/syntax.ts`, separately from primitive colors. Every syntax role refers to an explicit `family.mono`, `family.struct`, `family.ref` or `family.action` tier in the spec. The site's decorative green also reads `accent.primary` from core for the site's light/dark mode, separately from the demo variant selector.
+### Verification and readability boundary
+
+This visual trial deliberately relaxes the earlier chromatic contrast calibration: light tiers are checked at ≥4:1 highlight, ≥3:1 base and ≥2.3:1 faded, with APCA ≥63/54/43 Lc respectively. These are regression bounds for this trial, not WCAG AA text guarantees or APCA font recommendations. Neutral primary/secondary ink still meets ≥4.5:1. At smaller text sizes, light orange, green and muted type references need manual assessment. Dark accent tiers retain ≥4.5:1.
+
+The terminal panel reads exactly `terminal.ansi.0–15` from the resolved preview. It shows normal/emphasis banks, foreground text, background samples with adaptive neutral labels, SGR codes, WCAG/APCA readings and simulated command output. Yellow fill is shown separately from ANSI foreground yellow. ANSI 0 currently aliases the canvas, so its foreground sample is intentionally invisible and its contrast reads 1:1; the panel exposes the existing contract rather than disguising it.
+
+The coordinate lab selects struct/ref/action before editing that family's actual L/C. Each family and variant stores independent state. All aliases and derived surface mixes are re-resolved by the core, so parsed code, terminal ANSI colors, diagnostic samples and chosen background remain synchronized. Controls constrain both tier endpoints to valid L/C coordinates. These experiments do not change the canonical palette, downloads or ports.
+
+This is a numerically calibrated starting design. Hue distinction and visual weight in real code still require manual assessment. The homepage's TypeScript/Python demos and polar plot consume these resolved coordinates. The demos use actual Neovim Tree-sitter trees and highlight captures; see [the parsing pipeline](../syntax/README.md). Capture-to-role mappings live in `core/syntax.ts`, separately from primitive colors. Every syntax role refers to an explicit `family.mono`, `family.struct`, `family.ref` or `family.action` tier in the spec. The global theme switch controls the site tone and all canonical token displays; the site's decorative green reads `accent.primary` from the selected tone.
 
 ## Neutral lightness ramp
 
@@ -141,7 +143,7 @@ An offset adds the signed L/C deltas and retains source H. Non-finite deltas or 
 | dark    | +.070 / −.020     | −.070 / −.020 | .07280             |
 | light   | −.070 / 0         | +.070 / 0     | .07000             |
 
-Both sides start from the selected variant's base, retain H and have equal Cartesian OKLab distances from it. Light tiers retain base C: darker highlight, base and lighter faded. The design L triplets are .48/.55/.62 for both light variants and .81/.74/.67 for both dark variants. Equal numerical distance is a calibration constraint, not a guarantee of identical subjective prominence. Tests also bound asymmetry after sRGB mapping and 8-bit export. The website displays equal-width swatches and reports actual WCAG/APCA contrast for manual assessment.
+Both sides start from the selected variant's base, retain H and have equal Cartesian OKLab distances from it. Light tiers retain base C: darker highlight, base and lighter faded. Triplets are centered on each hue’s calibrated baseline rather than a universal L value. Equal numerical distance is a calibration constraint, not a guarantee of identical subjective prominence. Tests also bound asymmetry after sRGB mapping and 8-bit export. The website displays equal-width swatches and reports actual WCAG/APCA contrast for manual assessment.
 
 ## Surface and mono roles
 

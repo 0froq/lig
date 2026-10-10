@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SwatchEntry } from '#palette/nvim-build'
 import { accents } from '#palette/source'
-import { spec } from '../../../core'
+import { resolveVariant, spec } from '../../../core'
 
 const { t } = useI18n()
 const { variant, swatches, semantics } = useLigVariant()
@@ -49,6 +49,7 @@ const families = computed(() => {
 const accentBases = computed(() =>
   families.value.flatMap(family => family.steps.filter(step => step.caption === 'base').map(step => step.swatch)),
 )
+const yellowFill = computed(() => resolveVariant(variant.value).tokens['accent.yellow.fill']!)
 </script>
 
 <template>
@@ -147,9 +148,20 @@ const accentBases = computed(() =>
           :key="sw.name"
           :name="sw.name"
           :hex="sw.hex"
-          :caption="sw.name.replace('_base', '')"
+          :caption="sw.name === 'yellow_base' ? t('palette.terminal.ink') : sw.name.replace('_base', '')"
           :variant="variant"
         />
+      </div>
+      <div class="lig-yellow-fill">
+        <PaletteSwatch
+          name="accent.yellow.fill"
+          :hex="yellowFill"
+          :caption="t('palette.terminal.yellowFill')"
+          :variant="variant"
+        />
+        <p class="lig-aside">
+          {{ t('palette.terminal.yellowNote') }}
+        </p>
       </div>
       <PaletteOklch :variant="variant" />
       <details class="lig-more">

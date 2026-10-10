@@ -39,7 +39,7 @@ function flattenResolved(style: typeof VARIANTS[number]): Record<string, string>
   for (const swatch of baseSwatches(style))
     flat[swatch.name] = swatch.hex
   for (const [name, hex] of Object.entries(resolveVariant(style).tokens)) {
-    if (name.startsWith('family.'))
+    if (name.startsWith('family.') || name === 'accent.yellow.fill' || name === 'text.on.yellow')
       flat[name] = hex
   }
   return flat

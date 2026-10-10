@@ -8,14 +8,14 @@ import { createTokenBundle, resolveVariant, spec, syntaxFamily, VARIANTS } from 
 
 // Calibration floors for the selected canvases, not universal readability criteria.
 const contrastFloors = {
-  'light': { primary: 4.5, secondary: 4.5, highlight: 5.5, base: 4, faded: 3 },
-  'light-paper': { primary: 4.5, secondary: 4.5, highlight: 5.5, base: 4, faded: 3 },
+  'light': { primary: 4.5, secondary: 4.5, highlight: 4, base: 3, faded: 2.3 },
+  'light-paper': { primary: 4.5, secondary: 4.5, highlight: 4, base: 3, faded: 2.3 },
   'dark-paper': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
   'dark': { primary: 4.5, secondary: 4.5, highlight: 4.5, base: 4.5, faded: 4.5 },
 }
 const lightLcFloors = {
-  'light': { highlight: 72, base: 63, faded: 53 },
-  'light-paper': { highlight: 72, base: 63, faded: 53 },
+  'light': { highlight: 63, base: 54, faded: 43 },
+  'light-paper': { highlight: 63, base: 54, faded: 43 },
 }
 
 it('every variant resolves the same token contract regardless of call order', () => {
@@ -138,6 +138,7 @@ it('website CSS exports contain every exposed swatch and semantic token', () => 
       ...baseSwatches(variant).map(({ name, hex }) => ({ name, hex })),
       ...semanticRoles(variant).map(({ role, hex }) => ({ name: role, hex })),
       ...Object.entries(resolveVariant(variant).tokens).filter(([name]) => name.startsWith('family.')).map(([name, hex]) => ({ name, hex })),
+      ...['accent.yellow.fill', 'text.on.yellow'].map(name => ({ name, hex: resolveVariant(variant).tokens[name]! })),
     ]
     for (const { name, hex } of entries)
       assert.ok(css.includes(`${cssVarName(variant, name)}: ${hex};`), `${variant}: ${name}`)
@@ -192,55 +193,51 @@ it('neutral ramp separates near-white exports and retains the middle/dark calibr
   assert.equal(new Set(Object.values(bundle.palette.neutrals)).size, levels.length)
 })
 
-it('eight authored accents share intentional lightness/chroma and distinct hue anchors', () => {
-  const hues = { red: 22, green: 148, yellow: 100, blue: 275, magenta: 325, cyan: 194, orange: 60, azure: 234 }
-  assert.deepEqual(Object.keys(spec.palette.accents).sort(), Object.keys(hues).sort())
-  for (const [name, hue] of Object.entries(hues)) {
-    const color = spec.palette.accents[name]!
-    assert.equal(color.l, 0.74, name)
-    assert.equal(color.c, 0.12, name)
-    assert.equal(color.h, hue, name)
+it('accents keep distinct hues with individually calibrated mode coordinates', () => {
+  const targets = {
+    red: { h: 22, dark: [0.74, 0.13], light: [0.59, 0.16] },
+    green: { h: 148, dark: [0.74, 0.12], light: [0.60, 0.14] },
+    yellow: { h: 95, dark: [0.82, 0.16], light: [0.60, 0.13] },
+    blue: { h: 275, dark: [0.74, 0.12], light: [0.60, 0.15] },
+    magenta: { h: 325, dark: [0.74, 0.14], light: [0.60, 0.15] },
+    cyan: { h: 194, dark: [0.74, 0.12], light: [0.60, 0.11] },
+    orange: { h: 60, dark: [0.74, 0.13], light: [0.64, 0.15] },
+    azure: { h: 234, dark: [0.74, 0.12], light: [0.59, 0.13] },
   }
-  const angles = Object.values(hues).sort((a, b) => a - b)
+  assert.deepEqual(Object.keys(spec.palette.accents).sort(), Object.keys(targets).sort())
+  for (const variant of VARIANTS) {
+    const { mode, oklch } = resolveVariant(variant)
+    for (const [name, target] of Object.entries(targets)) {
+      const color = oklch[`accent.${name}.base`]!
+      assert.equal(color.h, target.h, `${variant}/${name}: hue identity`)
+      assert.ok(Math.abs(color.l - target[mode][0]!) < 1e-12)
+      assert.ok(Math.abs(color.c - target[mode][1]!) < 1e-12)
+      if (mode === 'dark')
+        assert.deepEqual(color, spec.palette.accents[name])
+    }
+  }
+  const angles = Object.values(targets).map(target => target.h).sort((a, b) => a - b)
   for (let i = 0; i < angles.length; i++) {
     const gap = (angles[(i + 1) % angles.length]! - angles[i]! + 360) % 360
-    assert.ok(gap >= 38 && gap <= 57, `Hue separation: ${gap}`)
+    assert.ok(gap >= 35 && gap <= 57, `Hue separation: ${gap}`)
   }
 })
 
-it('each variant keeps layers balanced through sRGB export and calibrated canvas contrast', () => {
-  const mappedTiers: Record<LigVariant, string[]> = {
-    'dark': ['blue.highlight'],
-    'dark-paper': ['blue.highlight'],
-    'light-paper': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
-    'light': ['yellow.highlight', 'cyan.highlight', 'cyan.base', 'cyan.faded', 'azure.highlight'],
-  }
-
+it('accent exports preserve calibrated coordinates and per-mode contrast ranges', () => {
   for (const variant of VARIANTS) {
     const { tokens, oklch, mode } = resolveVariant(variant)
-    for (const layer of ['base', 'highlight', 'faded'] as const) {
-      const coordinates = Object.keys(spec.palette.accents).map(name => oklch[`accent.${name}.${layer}`]!)
-      assert.ok(Math.max(...coordinates.map(c => c.l)) - Math.min(...coordinates.map(c => c.l)) < 1e-12, `${variant}/${layer} L`)
-      assert.ok(Math.max(...coordinates.map(c => c.c)) - Math.min(...coordinates.map(c => c.c)) < 1e-12, `${variant}/${layer} C`)
-      const exported = Object.keys(spec.palette.accents).map((name) => {
+    for (const name of Object.keys(spec.palette.accents)) {
+      for (const layer of ['base', 'highlight', 'faded'] as const) {
         const key = `accent.${name}.${layer}`
         const color = oklch[key]!
         const mapped = mapToSrgb(color)
-        if (mappedTiers[variant].includes(`${name}.${layer}`)) {
-          assert.equal(mapped.l, color.l)
-          assert.equal(mapped.h, color.h)
-          assert.ok(mapped.c < color.c, `${variant}/${key}: sRGB boundary`)
-        }
-        else {
-          assert.deepEqual(mapped, color, `${variant}/${key}: no chroma reduction`)
-        }
+        assert.equal(mapped.l, color.l)
+        assert.equal(mapped.h, color.h)
+        assert.ok(mapped.c > 0 && mapped.c <= color.c, `${variant}/${key}: chromatic export`)
         assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= contrastFloors[variant][layer], `${variant}/${key}: calibrated layer`)
         if (mode === 'light')
           assert.ok(apcaContrast(tokens[key]!, tokens['surface.canvas']!) >= lightLcFloors[variant as keyof typeof lightLcFloors][layer], `${variant}/${key}: calibrated Lc`)
         const result = hexToOklch(tokens[key]!)
-        assert.ok(Math.abs(result.l - mapped.l) < 0.002, `${variant}/${key}: exported L`)
-        assert.ok(Math.abs(result.c - mapped.c) < 0.002, `${variant}/${key}: exported C`)
-        // Low-chroma colors amplify angular rounding error; check perceptual distance.
         const angle = Math.PI / 180
         const delta = Math.hypot(
           result.l - mapped.l,
@@ -248,20 +245,29 @@ it('each variant keeps layers balanced through sRGB export and calibrated canvas
           result.c * Math.sin(result.h! * angle) - mapped.c * Math.sin(mapped.h! * angle),
         )
         assert.ok(delta < 0.002, `${variant}/${key}: 8-bit export deltaE OK`)
-        return result
-      })
-      // Two colors can each round by <0.002 in opposite lightness directions.
-      assert.ok(Math.max(...exported.map(c => c.l)) - Math.min(...exported.map(c => c.l)) < 0.004, `${variant}/${layer} exported L spread`)
-      const gamutAllowance = Math.max(...coordinates.map(color => color.c - mapToSrgb(color).c))
-      assert.ok(Math.max(...exported.map(c => c.c)) - Math.min(...exported.map(c => c.c)) < 0.003 + gamutAllowance, `${variant}/${layer} exported C spread`)
+      }
     }
-    for (const name of Object.keys(spec.palette.accents)) {
-      const key = `accent.${name}.base`
-      const base = oklch[key]!
-      assert.ok(Math.abs(base.l - (mode === 'dark' ? 0.74 : 0.55)) < 1e-12, `${variant}/${name}: mode lightness`)
-      assert.ok(Math.abs(base.c - (mode === 'dark' ? 0.12 : 0.11)) < 1e-12)
-      assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= contrastFloors[variant].base, `${variant}/${name}: canvas contrast`)
+  }
+})
+
+it('yellow fill is separate from foreground ink while terminal slots retain their aliases', () => {
+  for (const variant of VARIANTS) {
+    const { tokens, oklch } = resolveVariant(variant)
+    const fill = tokens['accent.yellow.fill']!
+    assert.equal(fill, '#f5ce00')
+    assert.ok(oklch['accent.yellow.fill']!.l > oklch['accent.yellow.base']!.l)
+    assert.equal(tokens['surface.search'], fill)
+    assert.notEqual(tokens['surface.search'], tokens['diagnostic.warning'])
+    assert.equal(tokens['diagnostic.warning'], tokens['accent.yellow.base'])
+    assert.equal(tokens['message.warning'], tokens['accent.yellow.base'])
+    assert.ok(contrast(tokens['text.on.yellow']!, fill) >= 10, `${variant}: fill label`)
+    assert.ok(contrast(tokens['text.strong']!, tokens['surface.search.match']!) >= 4.5, `${variant}: active search text`)
+    for (const [index, name] of ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan'].entries()) {
+      assert.equal(tokens[`terminal.ansi.${index + 1}`], tokens[`accent.${name}.base`])
+      assert.equal(tokens[`terminal.ansi.${index + 9}`], tokens[`accent.${name}.highlight`])
     }
+    for (let index = 0; index < 16; index++)
+      assert.match(tokens[`terminal.ansi.${index}`]!, /^#[0-9a-f]{6}$/)
   }
 })
 

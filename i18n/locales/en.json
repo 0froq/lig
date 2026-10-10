@@ -72,11 +72,12 @@
       "aside": "Highlight / base / muted set the reading hierarchy. Mono selects steps from the neutral ramp; colored families use OKLCH offsets. Contrast readings guide the balance, rather than set a hard limit.",
       "lab": {
         "title": "Try the coordinates",
-        "note": "Adjust the three colored families per variant; mono keeps its neutral steps. Background changes update WCAG 2.2 and APCA Lc for all tiers.",
-        "lightness": "Color base L",
-        "chroma": "Color base C",
+        "note": "Each variant stores actual L/C for struct / ref / action independently; mono keeps its neutral steps. Code, terminal colors and contrast follow these edits.",
+        "lightness": "Family base L",
+        "chroma": "Family base C",
         "background": "Background token",
-        "paperNote": "Paper uses tinted surfaces and mono inks; semantic colors match the standard variant."
+        "paperNote": "Paper uses tinted surfaces and mono inks; semantic colors match the standard variant.",
+        "family": "Color family"
       },
       "comment": "less is great",
       "families": {
@@ -168,6 +169,17 @@
       "choose": "Choose a node",
       "provenance": "Parsed by Neovim {version}. Positions are 1-based byte columns; end is exclusive. Tree-sitter only; no LSP.",
       "family": "Semantic family"
+    },
+    "terminal": {
+      "title": "Terminal 16 colors",
+      "note": "Uses the port’s terminal.ansi.0–15. Each cell shows foreground text above a background sample. Contrast is measured against the current terminal background.",
+      "normal": "Normal · ANSI 0–7",
+      "bright": "Emphasis · ANSI 8–15",
+      "output": "Simulated terminal color output",
+      "fill": "Bright yellow fill with dark text; independent of the ANSI yellow foreground.",
+      "ink": "yellow · ink",
+      "yellowFill": "yellow · fill",
+      "yellowNote": "Yellow ink stays golden; fills use a brighter warm yellow. Choose by usage."
     }
   },
   "install": {

@@ -72,11 +72,12 @@
       "aside": "highlight / base / muted 表达阅读层级。mono 直接选取灰度阶梯，彩色家族使用 OKLCH 偏移；对比度读数用于辅助判断，不作为硬性限制。",
       "lab": {
         "title": "试调坐标",
-        "note": "分别调整每个变体的三组彩色，mono 保持选定灰阶。切换背景时，所有层级的 WCAG 2.2 和 APCA Lc 都会更新。",
-        "lightness": "彩色基准 L",
-        "chroma": "彩色基准 C",
+        "note": "每个变体分别存储 struct / ref / action 的实际 L/C；mono 保持选定灰阶。代码、终端颜色和对比度跟随试调。",
+        "lightness": "该组基准 L",
+        "chroma": "该组基准 C",
         "background": "背景 token",
-        "paperNote": "Paper 使用微染色底色与灰阶，语义彩色沿用标准变体。"
+        "paperNote": "Paper 使用微染色底色与灰阶，语义彩色沿用标准变体。",
+        "family": "彩色家族"
       },
       "comment": "less is great",
       "families": {
@@ -168,6 +169,17 @@
       "choose": "选择节点",
       "provenance": "由 Neovim {version} 解析。行列从 1 开始，列为字节位置，结束位置不包含在范围内。仅 Tree-sitter，不含 LSP。",
       "family": "语义分组"
+    },
+    "terminal": {
+      "title": "终端 16 色",
+      "note": "读取 port 的 terminal.ansi.0–15；每格上方是前景文字，下方是背景样本。对比度针对当前终端背景计算。",
+      "normal": "普通色 · ANSI 0–7",
+      "bright": "强调色 · ANSI 8–15",
+      "output": "模拟终端彩色输出",
+      "fill": "明亮黄色填充 + 深色文字；独立于 ANSI 黄色前景。",
+      "ink": "yellow · 文字",
+      "yellowFill": "yellow · 填充",
+      "yellowNote": "黄色文字保留金黄；填充使用更亮的暖黄，按用途选择。"
     }
   },
   "install": {
