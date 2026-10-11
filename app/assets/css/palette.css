@@ -223,6 +223,15 @@
   margin-top: 32px;
 }
 
+.lig-semantic-families {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px 16px;
+}
+
+.lig-semantic-families .lig-tier-ramp {
+  max-width: 200px;
+}
+
 .lig-roles {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -231,12 +240,16 @@
 }
 
 @media (max-width: 900px) {
-  .lig-swatch-groups {
+  .lig-swatch-groups:not(.lig-semantic-families) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 600px) {
+  .lig-semantic-families {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .lig-chip {
     grid-template-columns: 28px minmax(0, 1fr);
     gap: 8px;

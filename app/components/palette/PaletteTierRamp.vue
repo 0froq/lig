@@ -1,11 +1,10 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   family: string
   levels: { tier: string, hex: string, token: string }[]
 }>()
 
 const { format, copied, copyValue, textFor } = usePaletteClipboard()
-const baseColor = computed(() => props.levels.find(level => level.tier === 'base')?.hex)
 </script>
 
 <template>
@@ -14,10 +13,7 @@ const baseColor = computed(() => props.levels.find(level => level.tier === 'base
     role="group"
     :aria-label="family"
   >
-    <div
-      class="lig-tier-shapes"
-      :style="{ background: baseColor }"
-    >
+    <div class="lig-tier-shapes">
       <button
         v-for="level in levels"
         :key="level.tier"
@@ -53,7 +49,8 @@ const baseColor = computed(() => props.levels.find(level => level.tier === 'base
 <style scoped>
 .lig-tier-shapes {
   position: relative;
-  height: clamp(56px, 6vw, 80px);
+  height: 44px;
+  --half-gap: 1.5px;
 }
 
 .lig-tier-shape {
@@ -67,15 +64,20 @@ const baseColor = computed(() => props.levels.find(level => level.tier === 'base
 }
 
 .lig-tier-shape.is-highlight {
-  clip-path: polygon(0 0, 33.333333% 0, 0 100%);
+  clip-path: polygon(0 0, calc(33.333333% - var(--half-gap)) 0, calc(0px - var(--half-gap)) 100%);
 }
 
 .lig-tier-shape.is-base {
-  clip-path: polygon(33.333333% 0, 100% 0, 66.666667% 100%, 0 100%);
+  clip-path: polygon(
+    calc(33.333333% + var(--half-gap)) 0,
+    calc(100% - var(--half-gap)) 0,
+    calc(66.666667% - var(--half-gap)) 100%,
+    var(--half-gap) 100%
+  );
 }
 
 .lig-tier-shape.is-muted {
-  clip-path: polygon(100% 0, 100% 100%, 66.666667% 100%);
+  clip-path: polygon(calc(100% + var(--half-gap)) 0, 100% 0, 100% 100%, calc(66.666667% + var(--half-gap)) 100%);
 }
 
 .lig-tier-shapes:has(:focus-visible) {
@@ -91,7 +93,7 @@ const baseColor = computed(() => props.levels.find(level => level.tier === 'base
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 6px;
-  margin-top: 10px;
+  margin-top: 8px;
   color: var(--muted);
   font: 10px/1.5 var(--font-meta);
 }

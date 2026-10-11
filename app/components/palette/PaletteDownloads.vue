@@ -65,7 +65,7 @@ const links = [
           href="https://github.com/0froq/zed-theme-LiG"
           target="_blank"
           rel="noopener noreferrer"
-        >zed-theme-LiG (Zed) ↗</a>
+        >zed-theme-LiG (Zed)</a>
       </h3>
       <p class="lig-port-note">
         {{ $t('palette.downloads.zedNote') }}
