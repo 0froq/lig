@@ -2,9 +2,9 @@ local M = {}
 
 -- Reading a statusline palette must not clear highlights or change background.
 function M.lualine(style)
-  local tokens = require("lig_preview").get_tokens(style)
-  local definitions = require("lig_preview.generated").statusline
-  local bold = require("lig_preview").get_options().lualine_bold
+  local tokens = require("lig").get_tokens(style)
+  local definitions = require("lig.generated").statusline
+  local bold = require("lig").get_options().lualine_bold
   local result = {}
   for mode, sections in pairs(definitions) do
     result[mode] = {}
@@ -25,7 +25,7 @@ function M.lightline(style)
       right = { { sections.a.fg, sections.a.bg, sections.a.gui or "" }, { sections.b.fg, sections.b.bg, sections.b.gui or "" } },
     }
   end
-  local tokens = require("lig_preview").get_tokens(style)
+  local tokens = require("lig").get_tokens(style)
   result.normal.error = { { tokens["diagnostic.error"], tokens["surface.status"], "" } }
   result.normal.warning = { { tokens["diagnostic.warning"], tokens["surface.status"], "" } }
   result.tabline = {

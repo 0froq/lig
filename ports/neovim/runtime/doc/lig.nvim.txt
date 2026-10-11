@@ -1,0 +1,41 @@
+*lig.nvim.txt*                 LiG for Neovim                         *lig.nvim*
+
+LiG uses shared OKLCH tokens from https://github.com/0froq/lig.
+Requires Neovim 0.10+. See README.md for full configuration and migration notes.
+
+INSTALLATION                                                    *lig-install*
+
+Use 0froq/lig.nvim with your plugin manager, then: >lua
+    require("lig").setup({ style = "dark" })
+    vim.cmd.colorscheme("lig")
+<
+VARIANTS                                                         *lig-styles*
+
+    lig-dark            lig-light
+    lig-dark-paper      lig-light-paper
+
+Without an explicit style, lig follows 'background'. Changing 'background'
+retains the standard/paper family and remembers previously selected variants.
+Old lig-dark-soft / lig-light-soft entrypoints redirect to the paper variants.
+
+CONFIGURATION                                                    *lig-config*
+
+Call setup before loading. Supported options include style, light_style,
+transparent, terminal_colors, styles (comments/keywords/variables/functions/
+types), plugins, lualine_bold, on_tokens and on_highlights.
+
+on_tokens(tokens) receives resolved tokens, e.g. tokens["text.primary"]. Direct
+aliases follow overrides; mix/offset expressions are not recalculated.
+on_highlights(groups, tokens) receives native nvim_set_hl attributes.
+
+The old on_colors hook and enabled mono profile produce migration errors. The
+old cache/day_brightness/dim_inactive and sidebar/float style options are retired.
+
+STATUSLINES                                                   *lig-statusline*
+
+Lualine: options = { theme = "lig" }
+Lightline: let g:lightline = { 'colorscheme': 'lig' }
+Fixed variants use lig-dark-paper / lig_dark_paper respectively.
+Reading statusline palettes does not change highlights or 'background'.
+
+vim:tw=78:ts=8:noet:ft=help:norl:
