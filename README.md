@@ -58,7 +58,7 @@ pnpm build
 
 paper 画布使用独立的暖灰阶，彩色变体使用按色相校准的 OKLCH 坐标，黄色单独校准。详见 [core 契约](core/README.md)。初始映射来自 `0froq/lig.nvim` 和 `0froq/vscode-theme-LiG`，之后这里是维护源，旧 port 是迁移输入。
 
-`pnpm ports:generate` 生成两个编辑器 preview 分发包及七种轻量 port，各含四个变体。网站为每个轻量 port 提供四个单文件链接和四变体 ZIP，当前主题只影响高亮状态；ZIP 与单文件一同受 manifest 的 SHA-256 校验。轻量文件集中在主仓库，通过网站下载与 CI 的 `lig-lightweight-ports` artifact 分发，无需独立仓库。`pnpm build` / `pnpm generate` 会先生成下载文件。安装说明见 [lightweight README](ports/lightweight/README.md)。本机配置不会被生成器修改，编辑器 preview 仓库仍独立发布。
+`pnpm ports:generate` 生成 Neovim 正式分发包、VS Code preview 分发包及七种轻量 port，各含四个变体。网站为每个轻量 port 提供四个单文件链接和四变体 ZIP，当前主题只影响高亮状态；ZIP 与单文件一同受 manifest 的 SHA-256 校验。轻量文件集中在主仓库，通过网站下载与 CI 的 `lig-lightweight-ports` artifact 分发，无需独立仓库。`pnpm build` / `pnpm generate` 会先生成下载文件。安装说明见 [lightweight README](ports/lightweight/README.md)。本机配置不会被生成器修改，Neovim 正式产物发布至 `0froq/lig.nvim`，VS Code preview 仍独立发布。
 
 ## 手动验收
 
