@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LigVariant } from '#palette/nvim-build'
-import { looseEllipse } from '~/kit/pen-geometry'
+import { signatureEllipse as looseEllipse } from '@froq/ui/core'
 import { radioKey, VARIANT_OPTIONS } from '~/utils/lig-variant'
 
 const variant = defineModel<LigVariant>('variant', { required: true })

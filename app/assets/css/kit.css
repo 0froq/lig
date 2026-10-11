@@ -963,7 +963,7 @@ main,
   transition: opacity 1.2s var(--ease);
 }
 
-.stroke-layer {
+.ui-pen-layer {
   transition: opacity 1.2s var(--ease);
 }
 
@@ -974,7 +974,7 @@ main,
 .is-installed main,
 .is-installed .l-top,
 .is-installed .l-foot,
-.is-installed .stroke-layer {
+.is-installed .ui-pen-layer {
   opacity: 0;
   pointer-events: none;
 }

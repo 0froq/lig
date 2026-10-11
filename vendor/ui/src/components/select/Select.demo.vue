@@ -18,6 +18,12 @@ const tone = ref('plain')
     label="Tone"
     :options="options"
   />
+  <Select
+    v-model="tone"
+    label="Framed tone"
+    :options="options"
+    framed
+  />
   <p class="demo-readout">
     {{ tone }}
   </p>

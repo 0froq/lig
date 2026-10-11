@@ -5,6 +5,7 @@
 // way a real wash does, with pigment gathering at the rim.
 
 import type { BloomOptions, LayerColors, PaperLayer, PaperOptions } from './types'
+import { prefersReducedMotion } from '../motion'
 import { createCanvasViewport } from './canvas-viewport'
 
 const MAX = 40
@@ -140,9 +141,9 @@ function toMark(el: HTMLElement): Mark {
   return { el, probe: null, glyph: null, bloom: null, visible: false, visibleAt: 0, now: false }
 }
 
-export function createPaper(options: PaperOptions): PaperLayer | null {
+export function createInkWash(options: PaperOptions): PaperLayer | null {
   const { colors, marks: mark = [], washes = true, dwellAfter = 0, click = false } = options
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const reduced = prefersReducedMotion()
 
   const canvas = document.createElement('canvas')
   canvas.setAttribute('aria-hidden', 'true')
@@ -153,9 +154,6 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
   const gl: WebGL2RenderingContext = glContext
   document.body.prepend(canvas)
   const viewport = createCanvasViewport(canvas, document.body, 1.5)
-  document.documentElement.classList.add('has-paper')
-  if (washes)
-    document.documentElement.classList.add('has-bloom')
   let dirty = true
   let destroyed = false
   let raf = 0
@@ -435,9 +433,6 @@ export function createPaper(options: PaperOptions): PaperLayer | null {
     for (const m of marks)
       m.probe?.remove()
     canvas.remove()
-    document.documentElement.classList.remove('has-paper')
-    if (washes)
-      document.documentElement.classList.remove('has-bloom')
     gl.getExtension('WEBGL_lose_context')?.loseContext()
   }
 

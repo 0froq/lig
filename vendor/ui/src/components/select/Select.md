@@ -7,6 +7,10 @@ model:
   required: true
   description: The value of the selected option.
 props:
+  - name: framed
+    type: boolean
+    default: "false"
+    description: Full outline and token background; inherits the host font.
   - name: label
     type: string
     required: true
@@ -43,3 +47,7 @@ const tone = ref('plain')
   </div>
 </template>
 ```
+
+## Presentation
+
+The native control has a shared chevron inset 12 px from the right; 34 px of control padding reserves space for it. The chevron ignores pointer events, so native mouse, keyboard, touch and assistive-technology behavior remains on the select. Set optional `framed` (boolean, default false) for a full outline and token background; the framed control inherits its host font. The default keeps the understated underline. Both presentations read only the existing UI token contract.

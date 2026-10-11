@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { createPaperPaint } from '@froq/ui/core'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { createPaperPaint } from '~/utils/paper'
 
 const props = withDefaults(defineProps<{
   /** Fibre while the page is light. */

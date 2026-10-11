@@ -1,10 +1,10 @@
 // Stroke: the whole page is one sentence written with a single pen line.
 // It handwrites the tagline (if the page has one), rules off the page head, threads through
 // the empty label column, circles the price and ends on the final full stop.
-// The route is derived from data-anchor elements, so any content produces its own line.
+// The caller supplies semantic anchor elements; content determines the route.
 
 import type { LayerColors, PenLayer, PenOptions, Point } from './types'
-import { blend } from '../../core/color'
+import { prefersReducedMotion } from '../motion'
 import { createCanvasViewport } from './canvas-viewport'
 import { layoutText } from './hand-font'
 import { cubic, looseEllipse, resample, roundJoin, simplify, smooth, STEP, tangent, wobble } from './pen-geometry'
@@ -31,48 +31,34 @@ interface TravelOpts {
   emphasis?: boolean
 }
 
-/** Tagline text the pen writes. Slot labels inside a placeholder are not copy. */
-function handCopy(el: HTMLElement | null): string {
-  if (!el)
-    return ''
-  const clone = el.cloneNode(true) as HTMLElement
-  clone.querySelectorAll('.l-fill').forEach(node => node.remove())
-  return (clone.textContent ?? '').trim()
-}
-
 function smoothstep(a: number, b: number, x: number): number {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
   return t * t * (3 - 2 * t)
 }
 
 // `onArrive` hands the final full stop to another layer instead of stamping a flat dot
-export function createPen(options: PenOptions): PenLayer {
-  const { root, onArrive, wet, flowing } = options
-  const textEl = options.hand ?? null
-  const raw = handCopy(textEl)
+export function createPenStroke(options: PenOptions): PenLayer | null {
+  const { root, onArrive, wet, flowing, mixColors: blend } = options
+  const initialAnchors = options.anchors()
+  const textEl = initialAnchors.hand ?? null
+  const raw = (initialAnchors.handText ?? textEl?.textContent ?? '').trim()
   const hand = raw.length > 0 ? textEl : null
   const text = hand ? raw.replace(/[.!?]$/, '') : ''
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const reduced = prefersReducedMotion()
   const canvas = document.createElement('canvas')
-  canvas.className = 'stroke-layer'
+  canvas.className = 'ui-pen-layer'
   canvas.setAttribute('aria-hidden', 'true')
   Object.assign(canvas.style, { position: 'fixed', inset: '0', width: '100%', height: '100%', zIndex: '-1', pointerEvents: 'none' })
   // Inside the page's stacking context, under its type: it fades out with the page it belongs to
   root.prepend(canvas)
   const viewport = createCanvasViewport(canvas, root, 2)
-  const html = document.documentElement
-  html.classList.add('has-stroke')
-  if (hand)
-    html.classList.add('has-hand')
   const ctx2d = canvas.getContext('2d')
   if (!ctx2d) {
     canvas.remove()
-    html.classList.remove('has-stroke')
-    if (hand)
-      html.classList.remove('has-hand')
-    return { setColors() {}, destroy() {} }
+    return null
   }
   const ctx: CanvasRenderingContext2D = ctx2d
+  options.onReady?.(!!hand)
 
   let ink = options.colors.ink
   let accent = options.colors.accent
@@ -113,10 +99,10 @@ export function createPen(options: PenOptions): PenLayer {
   }
 
   function baseline(el: Element): number {
-    let probe = el.querySelector(':scope > .stroke-probe')
+    let probe = el.querySelector(':scope > .ui-pen-probe')
     if (!probe) {
       const created = document.createElement('i')
-      created.className = 'stroke-probe'
+      created.className = 'ui-pen-probe'
       Object.assign(created.style, { display: 'inline-block', width: '0', height: '0', verticalAlign: 'baseline' })
       el.append(created)
       probes.push(created)
@@ -126,6 +112,7 @@ export function createPen(options: PenOptions): PenLayer {
   }
 
   function build(): void {
+    const anchors = options.anchors()
     const pts: Point[] = []
     const widths: number[] = []
     const emphases: number[] = []
@@ -207,7 +194,7 @@ export function createPen(options: PenOptions): PenLayer {
     const lift = (to: Point, trigger: Element): Seg | null => pen ? append([pen, to], 0, { speed: 1e6, trigger }) : travel(to, [1, 0])
 
     // 2. The rule under the head of the page, drawn right to left
-    const foot = root.querySelector('[data-anchor="rule"]')
+    const foot = anchors.rule
     if (foot) {
       const fr = foot.getBoundingClientRect()
       const y = fr.top + window.scrollY
@@ -216,8 +203,7 @@ export function createPen(options: PenOptions): PenLayer {
     }
 
     // 3. Circle each section name with about one and a half loose turns; prices get their own mark.
-    root.querySelectorAll('.l-section').forEach((section) => {
-      const label = section.querySelector('[data-anchor="label"]')
+    anchors.sections?.forEach(({ label, price }) => {
       if (!label)
         return
       const lr = textRect(label)
@@ -231,7 +217,6 @@ export function createPen(options: PenOptions): PenLayer {
       draft.push(narrow ? lift(labelStart, label) : travel(labelStart, tangent(labelRing, false), connector, { speed: 1600, trigger: label }))
       draft.push(append(labelRing, connector * 1.05, { speed: 700, trigger: label }))
 
-      const price = section.querySelector('[data-anchor="price"]')
       if (!price)
         return
       const pr = textRect(price)
@@ -246,8 +231,8 @@ export function createPen(options: PenOptions): PenLayer {
     })
 
     // 4. The full stop
-    const mark = root.querySelector('[data-anchor="final-mark"]')
-    const section = mark?.closest('section') ?? null
+    const mark = anchors.finalMark
+    const section = anchors.finalSection ?? null
     const parent = mark?.parentElement ?? null
     const measure = mark ? document.createElement('canvas').getContext('2d') : null
     const glyphText = mark?.firstChild?.textContent
@@ -265,7 +250,7 @@ export function createPen(options: PenOptions): PenLayer {
       const top = section.getBoundingClientRect().top
       const bandY = (prev ? (prev.bottom + top) / 2 : top) + window.scrollY
       const title = textRect(parent)
-      const left = root.querySelector('[data-anchor="label"]')?.getBoundingClientRect().left ?? 40
+      const left = anchors.margin?.getBoundingClientRect().left ?? 40
       const over: Point = [Math.min(window.innerWidth - 40, c[0] + title.height * 1.1), title.top + window.scrollY - title.height * 0.9]
       if (narrow) {
         draft.push(lift(over, section))
@@ -568,9 +553,6 @@ export function createPen(options: PenOptions): PenLayer {
     for (const probe of probes)
       probe.remove()
     canvas.remove()
-    html.classList.remove('has-stroke')
-    if (hand)
-      html.classList.remove('has-hand')
   }
 
   resize()

@@ -1,8 +1,7 @@
+import type { LayerColors, PenAnchors } from '@froq/ui/core'
 import type { Ref } from 'vue'
-import type { LayerColors, PaperLayer, PenLayer } from '~/kit/types'
-import { createPaper } from '~/kit/paper'
-import { createPen } from '~/kit/pen'
-import { settled } from '~/kit/settle'
+import { usePaperSignature } from '@froq/ui/vue'
+import { blend } from '../../core/color'
 
 export interface SignatureOptions {
   /** The page leaves a margin for the pen; it still needs a `[data-anchor="rule"]`. */
@@ -16,70 +15,60 @@ function readColors(): LayerColors {
   return { paper: get('--bg'), ink: get('--fg'), accent: get('--accent'), dark: html.dataset.theme === 'dark' }
 }
 
-/**
- * Lays one sheet of paper under a page and, if it has a margin, draws the pen through it.
- * Layers are rebuilt per page: a new page is a new sheet.
- */
+/** LiG's content and visibility adapter; drawing and lifetime belong to @froq/ui. */
 export function useSignature(root: Ref<HTMLElement | undefined>, options: SignatureOptions): void {
   const { product } = useAppConfig()
   const { theme } = useTheme()
-  let paper: PaperLayer | null = null
-  let pen: PenLayer | null = null
-  const timers: ReturnType<typeof setTimeout>[] = []
-  let alive = true
-
-  onMounted(async () => {
-    const el = root.value
-    if (!el)
-      return
-    await Promise.all([document.fonts.ready, settled(el)])
-    if (!alive)
-      return
-    const sig = product.signature
-    const find = (anchor: string): HTMLElement | null => el.querySelector<HTMLElement>(`[data-anchor="${anchor}"]`)
-    const mark = find('mark')
-    const finalMark = find('final-mark')
-    // A page with a line holds its last stop back for the pen; one without lets it bloom when seen
-    const line = sig.line && !!options.line && !!find('rule')
-
-    if (sig.paper) {
-      const marks = sig.bloom ? [mark, line ? null : finalMark].filter((m): m is HTMLElement => !!m) : []
-      paper = createPaper({
-        colors: readColors(),
-        marks,
-        washes: sig.bloom,
+  const signature = usePaperSignature(root, {
+    colors: readColors,
+    mixColors: blend,
+    settings: () => {
+      const sig = product.signature
+      return {
+        paper: sig.paper,
+        bloom: sig.bloom,
+        line: sig.line && !!options.line,
+        hand: sig.hand,
         dwellAfter: sig.pointer.dwell === 'wash' ? sig.pointer.dwellAfter : 0,
         click: sig.pointer.click === 'wash',
-      })
-    }
-    const washes = !!paper && sig.bloom
-    if (washes)
-      timers.push(setTimeout(() => paper?.bloom(), 250))
-    if (line) {
-      timers.push(setTimeout(() => {
-        pen = createPen({
-          root: el,
-          hand: sig.hand ? find('tagline') : null,
-          colors: readColors(),
-          wet: (x, y) => paper?.wet(x, y) ?? 0,
-          flowing: () => paper?.flowing() ?? false,
-          onArrive: washes && finalMark ? () => paper?.soak(finalMark) : undefined,
-        })
-      }, 900))
-    }
+      }
+    },
+    anchors: (): PenAnchors & { mark: HTMLElement | null } => {
+      const el = root.value
+      const find = (anchor: string): HTMLElement | null => el?.querySelector<HTMLElement>(`[data-anchor="${anchor}"]`) ?? null
+      const hand = find('tagline')
+      const copy = hand?.cloneNode(true) as HTMLElement | undefined
+      copy?.querySelectorAll('.l-fill').forEach(node => node.remove())
+      const finalMark = find('final-mark')
+      return {
+        mark: find('mark'),
+        rule: find('rule'),
+        hand,
+        handText: copy?.textContent ?? '',
+        finalMark,
+        finalSection: finalMark?.closest('section'),
+        margin: find('label'),
+        sections: Array.from(el?.querySelectorAll('.l-section') ?? []).flatMap((element) => {
+          const label = element.querySelector('[data-anchor="label"]')
+          return label ? [{ element, label, price: element.querySelector('[data-anchor="price"]') }] : []
+        }),
+      }
+    },
   })
+
+  // These classes only control LiG's original type/layout fallback.
+  watch(signature.state, (state) => {
+    if (!import.meta.client)
+      return
+    for (const [key, active] of Object.entries(state))
+      document.documentElement.classList.toggle(`has-${key}`, active)
+  }, { flush: 'sync' })
 
   watch(theme, async () => {
     await nextTick()
-    const colors = readColors()
-    paper?.setColors(colors)
-    pen?.setColors(colors)
+    signature.setColors()
   })
-
   onBeforeUnmount(() => {
-    alive = false
-    timers.forEach(clearTimeout)
-    paper?.destroy()
-    pen?.destroy()
+    document.documentElement.classList.remove('has-paper', 'has-bloom', 'has-stroke', 'has-hand')
   })
 }
