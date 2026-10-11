@@ -3,7 +3,7 @@ local defaults = { terminal_colors = true, transparent = false, styles = {}, lua
 local config = vim.deepcopy(defaults)
 local active_style
 M.styles = {}
-M.version = "0.2.0"
+M.version = "0.2.1"
 
 local function normalize_style(style)
   if style == "light-soft" then return "light-paper" end

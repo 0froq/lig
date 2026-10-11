@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.13",
+  "version": "0.2.14",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -303,7 +303,7 @@
       "chroma": -0.02
     },
     "syntax.keyword": "family.mono.base",
-    "syntax.string": "family.mono.secondary",
+    "syntax.string": "family.mono.muted",
     "syntax.comment": "family.mono.muted",
     "syntax.type": "family.ref.muted",
     "syntax.constant": "family.ref.base",

@@ -26,7 +26,7 @@ Earlier yellow used a lightness close to the other light-mode colors and looked 
 
 All four themes share this yellow base. The palette, ANSI 3 and warning roles reference it; ANSI 11 references its highlight. Highlight is darker than base in light themes and lighter in dark themes. Here, “bright” means emphasis rather than a promise of larger RGB values.
 
-Higher yellow lightness reduces foreground contrast on light backgrounds. Against Light's `#f2f2f2`, the base measures about `1.73:1` and APCA `+29 Lc`, below WCAG AA for ordinary text. Yellow badges use dark text. Terminal foreground keeps the same yellow base so this tradeoff remains visible.
+Higher yellow lightness reduces foreground contrast on light backgrounds. Against Light's `#f2f2f2`, the base measures about `1.73:1` and APCA `+29 Lc`, below WCAG AA for ordinary text. The terminal demo uses the terminal canvas color as text on every filled sample, including yellow; it demonstrates reversed colors rather than a contrast-optimized badge. Terminal foreground keeps the same yellow base so this tradeoff remains visible.
 
 ## One color source, several adapters
 

@@ -2,11 +2,12 @@ import type { Buffer } from 'node:buffer'
 import type { BuildMetadata, ThemeIR } from '../types'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
+import { SOURCE_REF } from '../constants'
 import { zedFamily } from './emit'
 
 export const ZED_REPOSITORY = 'https://github.com/0froq/zed-theme-LiG'
-export const ZED_VERSION = '0.1.0'
-export const ZED_SOURCE_REF = 'zed-port-2026-10-11'
+export const ZED_VERSION = '0.1.1'
+export const ZED_SOURCE_REF = SOURCE_REF
 
 /** Native repository payload; authoring and palette remain in the LiG compiler. */
 export function zedDistribution(themes: ThemeIR[], metadata: BuildMetadata): Record<string, string | Buffer> {

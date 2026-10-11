@@ -1,5 +1,6 @@
+import type { SyntaxDecorations } from '../core/syntax'
 import type { SyntaxCapture, SyntaxDocument, SyntaxNode } from './types'
-import { captureRole } from '../core/syntax'
+import { captureDecorations, captureRole } from '../core/syntax'
 
 export interface SourceSegment {
   id: number
@@ -10,6 +11,7 @@ export interface SourceSegment {
   captures: SyntaxCapture[]
   winner: SyntaxCapture | null
   token: string
+  decorations: SyntaxDecorations
 }
 
 /** Byte boundaries -> JS UTF-16 indices; reject offsets inside a code point. */
@@ -61,6 +63,12 @@ export function segmentSource(document: SyntaxDocument): SourceSegment[] {
       .sort((a, b) => b.priority - a.priority || b.order - a.order)
     // Neovim uses priority, then application order for overlapping foregrounds.
     // Unmapped captures remain visible in the inspector but must not mask a known role.
+    const decorations: SyntaxDecorations = {}
+    for (const key of ['bold', 'italic', 'underline', 'strikethrough'] as const) {
+      const value = captures.map(item => captureDecorations(item.name)[key]).find(value => value !== undefined)
+      if (value !== undefined)
+        decorations[key] = value
+    }
     const winner = captures.find(item => captureRole(item.name)?.matched != null) ?? null
     return {
       id,
@@ -69,6 +77,7 @@ export function segmentSource(document: SyntaxDocument): SourceSegment[] {
       node: node.id,
       captures,
       winner,
+      decorations,
       text: document.source.slice(indices.get(startByte), indices.get(endByte)),
       token: winner ? captureRole(winner.name)!.token : 'text.primary',
     }

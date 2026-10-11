@@ -109,7 +109,12 @@ function inSelection(start: number, end: number): boolean {
       ><code><span
         v-for="item in segments"
         :key="item.id"
-        :style="{ color: resolved.tokens[item.token] }"
+        :style="{
+          color: resolved.tokens[item.token],
+          fontWeight: item.decorations.bold ? 'bold' : undefined,
+          fontStyle: item.decorations.italic ? 'italic' : undefined,
+          textDecoration: [item.decorations.underline ? 'underline' : '', item.decorations.strikethrough ? 'line-through' : ''].filter(Boolean).join(' ') || undefined,
+        }"
         :class="{ 'is-inspected': inSelection(item.startByte, item.endByte) }"
         @pointerenter="hover(item.id)"
         @click="selectSegment(item.id, true)"

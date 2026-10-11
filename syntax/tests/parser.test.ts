@@ -72,6 +72,12 @@ it('overlapping captures obey priority and order, while metadata never paints', 
   assert.equal(segmentSource(document).find(item => item.startByte === source.startByte)!.token, 'syntax.string')
   document.captures.push({ ...capture, name: 'type', order: 10002 })
   assert.equal(segmentSource(document).find(item => item.startByte === source.startByte)!.token, 'syntax.type')
+  document.captures.push({ ...capture, name: 'markup.italic.typescript', priority: 1000, order: 10003 })
+  const decorated = segmentSource(document).find(item => item.startByte === source.startByte)!
+  assert.equal(decorated.token, 'syntax.type', 'Decoration-only capture must preserve the foreground')
+  assert.deepEqual(decorated.decorations, { italic: true })
+  document.captures.push({ ...capture, name: 'comment.note', priority: 2000, order: 10004 })
+  assert.equal(segmentSource(document).find(item => item.startByte === source.startByte)!.token, 'diagnostic.hint')
 })
 
 it('native parsing preserves multibyte text and exposes real recovery nodes', () => {

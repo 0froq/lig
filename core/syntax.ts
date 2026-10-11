@@ -19,6 +19,7 @@ export const SYNTAX_CAPTURES: Record<string, string> = {
   'tag.delimiter': 'syntax.punctuation',
   'type': 'syntax.type',
   'type.definition': 'syntax.type.definition',
+  'type.builtin': 'syntax.type',
   'constructor': 'syntax.constructor',
   // Lua's constructor capture paints table braces, not callable symbols.
   'constructor.lua': 'syntax.punctuation',
@@ -30,6 +31,8 @@ export const SYNTAX_CAPTURES: Record<string, string> = {
   'boolean': 'syntax.constant',
   'function': 'syntax.function',
   'function.call': 'syntax.function.call',
+  'function.builtin': 'syntax.function',
+  'function.macro': 'syntax.function',
   'function.method': 'syntax.method',
   'function.method.call': 'syntax.method.call',
   'keyword': 'syntax.keyword',
@@ -54,6 +57,46 @@ export const SYNTAX_CAPTURES: Record<string, string> = {
   'comment.error': 'diagnostic.error',
   'comment.warning': 'diagnostic.warning',
   'comment.todo': 'diagnostic.info',
+  'comment.note': 'diagnostic.hint',
+  'markup': 'text.primary',
+  'markup.heading': 'text.strong',
+  'markup.strong': 'text.strong',
+  'markup.quote': 'text.primary',
+  'markup.link': 'syntax.constant',
+  'markup.link.url': 'syntax.constant',
+  'markup.link.label': 'text.primary',
+  'markup.raw': 'text.primary',
+}
+
+export interface SyntaxDecorations {
+  bold?: boolean
+  italic?: boolean
+  underline?: boolean
+  strikethrough?: boolean
+}
+
+/** Decoration-only captures inherit the foreground of underlying captures. */
+export const SYNTAX_DECORATIONS: Record<string, SyntaxDecorations> = {
+  'markup.heading': { bold: true },
+  'markup.strong': { bold: true },
+  'markup.italic': { italic: true },
+  'markup.quote': { italic: true },
+  'markup.link': { underline: true },
+  'markup.link.url': { underline: true },
+  // The label deliberately uses ordinary text rather than the link URL style.
+  'markup.link.label': {},
+  'markup.strikethrough': { strikethrough: true },
+  'markup.underline': { underline: true },
+}
+
+export function captureDecorations(capture: string): SyntaxDecorations {
+  let name = capture
+  while (name) {
+    if (SYNTAX_DECORATIONS[name])
+      return SYNTAX_DECORATIONS[name]!
+    name = name.slice(0, !name.includes('.') ? 0 : name.lastIndexOf('.'))
+  }
+  return {}
 }
 
 export function captureRole(capture: string): { token: string, matched: string | null } | null {
@@ -64,6 +107,8 @@ export function captureRole(capture: string): { token: string, matched: string |
   while (name) {
     if (SYNTAX_CAPTURES[name])
       return { token: SYNTAX_CAPTURES[name]!, matched: name }
+    if (SYNTAX_DECORATIONS[name])
+      return null
     name = name.slice(0, !name.includes('.') ? 0 : name.lastIndexOf('.'))
   }
   return { token: 'text.primary', matched: null }
