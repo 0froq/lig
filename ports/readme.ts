@@ -1,17 +1,20 @@
 import type { BuildMetadata } from './types'
-import { PACKAGE_VERSION, PREVIEW_TAG } from './constants'
+import { PACKAGE_VERSION } from './constants'
 import { neovimReadme } from './neovim/readme'
 
 export function portReadme(port: 'neovim' | 'vscode', metadata: BuildMetadata): string {
   if (port === 'neovim')
     return neovimReadme(metadata)
   const installation = `
-## 安装（MacBook 的 VS Code）
+## 打包并安装本快照（VS Code）
 
 \`\`\`sh
-curl -fL https://github.com/0froq/vscode-theme-LiG-preview/releases/download/${PREVIEW_TAG}/theme-lig-preview-${PACKAGE_VERSION}.vsix -o /tmp/theme-lig-preview.vsix
-code --install-extension /tmp/theme-lig-preview.vsix
+cd dist/ports/vscode
+npx @vscode/vsce package --no-dependencies
+code --install-extension theme-lig-preview-${PACKAGE_VERSION}.vsix
 \`\`\`
+
+从上面的 source snapshot 在 LiG 源码仓库运行 \`pnpm install\` 和 \`pnpm ports:generate\` 后再打包。这份生成目录不代表旧 Preview release 已被更新；旧 tag 中的 VSIX 不等于当前快照。
 
 若终端没有 \`code\`，在 VS Code 命令面板使用 \`Extensions: Install from VSIX...\` 选择下载文件。
 随后 \`Preferences: Color Theme\` 选择 LiG Preview Dark / Light / Dark Paper / Light Paper。

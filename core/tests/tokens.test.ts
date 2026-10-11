@@ -50,8 +50,8 @@ it('foreground hierarchy preserves calibrated contrast and quieter muted ink', (
       assert.ok(mode === 'dark' ? lightnesses[i - 1]! > lightnesses[i]! : lightnesses[i - 1]! < lightnesses[i]!, `${variant}: foreground hierarchy`)
     assert.equal(tokens['syntax.comment'], tokens['text.subtle'])
     assert.equal(tokens['syntax.punctuation'], tokens['text.subtle'])
-    for (const role of ['syntax.string', 'syntax.operator'])
-      assert.equal(tokens[role], tokens['text.secondary'])
+    assert.equal(tokens['syntax.string'], tokens['family.mono.muted'])
+    assert.equal(tokens['syntax.operator'], tokens['text.secondary'])
     for (const [role, hex] of Object.entries(tokens)) {
       const family = syntaxFamily(role, variant)
       // Muted mono and light chromatic tiers intentionally prioritize hierarchy.
@@ -432,7 +432,7 @@ it('paper variants retain semantic colors and propagate their tinted ink through
     for (const [alias, target] of Object.entries({
       'syntax.variable': 'family.mono.highlight',
       'syntax.keyword': 'family.mono.base',
-      'syntax.string': 'family.mono.secondary',
+      'syntax.string': 'family.mono.muted',
       'syntax.comment': 'family.mono.muted',
       'terminal.ansi.15': 'text.strong',
       'terminal.ansi.8': 'text.subtle',

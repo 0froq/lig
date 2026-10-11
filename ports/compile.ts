@@ -127,7 +127,7 @@ for (const port of LIGHTWEIGHT_PORTS) {
 lightweight['README.md'] = readFileSync(join(root, 'ports/lightweight/README.md'), 'utf8')
 lightweight['manifest.json'] = json({
   ...metadata,
-  sourceRef: 'codex/lig-core-tokens',
+  sourceRef: SOURCE_REF,
   port: 'lightweight',
   files: Object.fromEntries(Object.entries(lightweight).map(([path, content]) => [path, hash(content)])),
 })
@@ -156,7 +156,7 @@ if (outputFlag < 0) {
   delete downloads['manifest.json']
   downloads['manifest.json'] = json({
     ...metadata,
-    sourceRef: 'codex/lig-core-tokens',
+    sourceRef: SOURCE_REF,
     port: 'downloads',
     files: Object.fromEntries(Object.entries(downloads).map(([path, content]) => [path, hash(content)])),
   })
