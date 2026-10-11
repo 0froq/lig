@@ -49,7 +49,9 @@ const { format, copied, copyValue, textFor } = usePaletteClipboard()
 <style scoped>
 .lig-tier-shapes {
   position: relative;
-  height: 44px;
+  width: 100%;
+  max-width: 120px;
+  aspect-ratio: 15 / 8;
   --half-gap: 1.5px;
 }
 
@@ -92,10 +94,11 @@ const { format, copied, copyValue, textFor } = usePaletteClipboard()
 .lig-tier-captions {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 6px;
+  gap: 4px;
+  max-width: 120px;
   margin-top: 8px;
   color: var(--muted);
-  font: 10px/1.5 var(--font-meta);
+  font: 9px/1.5 var(--font-meta);
 }
 
 .lig-tier-captions span:nth-child(2) {

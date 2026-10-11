@@ -47,3 +47,18 @@ const inks = computed(() => families.map((family) => {
     :variant="variant"
   />
 </template>
+
+<style scoped>
+.lig-semantic-families {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px 16px;
+  max-width: 704px;
+}
+
+@media (max-width: 540px) {
+  .lig-semantic-families {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+</style>
