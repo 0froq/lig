@@ -8,6 +8,11 @@
     "dark": "Dark",
     "light": "Light"
   },
+  "download": {
+    "pending": "Downloading…",
+    "started": "Download started",
+    "error": "Download failed. Activate again to retry."
+  },
   "nav": {
     "docs": "Docs",
     "notes": "Notes",
@@ -66,7 +71,6 @@
       "vscode": "vscode-theme-LiG",
       "vscodeNote": "VS Code theme distribution; editor packages are released separately.",
       "zedNote": "Editor UI, syntax and terminal colors. Four variants, ready to install as local Zed themes.",
-      "tokens": "Generated token files in this repo",
       "lightweight": "Lightweight ports",
       "lightweightNote": "Four variants from the same tokens. The current theme is highlighted; download a single variant or all four for each port.",
       "install": "Installation notes",
@@ -81,7 +85,6 @@
     },
     "syntax": {
       "lede": "Mono is the reading baseline. Struct marks bindings and structure, ref marks values and references, and action marks execution.",
-      "aside": "Highlight / base / muted set the reading hierarchy within each family.",
       "comment": "less is great",
       "families": {
         "mono": "Ordinary identifiers, text and comments",

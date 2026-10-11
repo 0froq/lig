@@ -18,13 +18,6 @@ const links = [
     note: 'palette.downloads.vscodeNote',
   },
 ]
-
-const files = [
-  'tokens.json',
-  'tokens.css',
-  'tokens.scss',
-  'tailwind-colors.json',
-]
 </script>
 
 <template>
@@ -78,21 +71,23 @@ const files = [
         role="group"
         aria-labelledby="port-zed"
       >
-        <a
+        <DownloadLink
           v-for="option in VARIANT_OPTIONS"
           :key="option.id"
           :href="`/ports/zed/lig-${option.id}.json`"
           :download="`lig-${option.id}.json`"
           :class="{ 'is-current': variant === option.id }"
           :aria-current="variant === option.id ? 'true' : undefined"
-        >{{ $t(option.label) }} <span aria-hidden="true">↓</span></a>
-        <a
+        >
+          {{ $t(option.label) }}
+        </DownloadLink>
+        <DownloadLink
           class="lig-port-all"
           href="/ports/zed/lig-zed-all.zip"
           download="lig-zed-all.zip"
         >
-          {{ $t('palette.downloads.all') }} <span aria-hidden="true">↓</span>
-        </a>
+          {{ $t('palette.downloads.all') }}
+        </DownloadLink>
       </div>
       <a
         class="lig-port-install"
@@ -129,7 +124,7 @@ const files = [
         role="group"
         :aria-labelledby="`port-${port.id}`"
       >
-        <a
+        <DownloadLink
           v-for="option in VARIANT_OPTIONS"
           :key="option.id"
           :href="`/ports/${lightweightPath(port, option.id)}`"
@@ -137,31 +132,26 @@ const files = [
           :title="lightweightPath(port, option.id).split('/').pop()"
           :class="{ 'is-current': variant === option.id }"
           :aria-current="variant === option.id ? 'true' : undefined"
-        >{{ $t(option.label) }} <span aria-hidden="true">↓</span></a>
-        <a
+        >
+          {{ $t(option.label) }}
+        </DownloadLink>
+        <DownloadLink
           class="lig-port-all"
           :href="`/ports/${lightweightArchivePath(port)}`"
           :download="lightweightArchivePath(port).split('/').pop()"
-        >{{ $t('palette.downloads.all') }} <span aria-hidden="true">↓</span></a>
+        >
+          {{ $t('palette.downloads.all') }}
+        </DownloadLink>
       </div>
     </li>
   </ul>
   <p class="lig-port-manifest">
-    <a
+    <DownloadLink
       href="/ports/manifest.json"
       download="lig-ports-manifest.json"
-    >Manifest · SHA-256 <span aria-hidden="true">↓</span></a>
+    >
+      Manifest · SHA-256
+    </DownloadLink>
   </p>
   <PaletteAgentSetup />
-  <p class="lig-group">
-    {{ $t('palette.downloads.tokens') }}
-  </p>
-  <ul class="lig-files">
-    <li
-      v-for="file in files"
-      :key="file"
-    >
-      <code>palette/generated/{{ file }}</code>
-    </li>
-  </ul>
 </template>

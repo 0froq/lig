@@ -54,14 +54,23 @@ const accentBases = computed(() =>
 <template>
   <section class="l-hero lig-hero">
     <h1
-      class="l-word"
+      class="l-word lig-hero-title"
       :style="{ '--len': 3 }"
       aria-label="LiG"
     >
-      <span data-anchor="word">LiG</span><span
-        class="l-mark"
-        data-anchor="mark"
-      >.</span>
+      <img
+        class="lig-hero-icon"
+        :src="`/brand/lig-${variant}.svg`"
+        alt=""
+        width="96"
+        height="96"
+      >
+      <span class="lig-hero-name">
+        <span data-anchor="word">LiG</span><span
+          class="l-mark"
+          data-anchor="mark"
+        >.</span>
+      </span>
     </h1>
     <div
       class="l-hero-foot"

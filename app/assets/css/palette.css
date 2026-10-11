@@ -1,3 +1,21 @@
+.lig-hero-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.08em;
+  margin-left: 0;
+}
+
+.lig-hero-icon {
+  flex: none;
+  align-self: center;
+  width: 0.65em;
+  height: 0.65em;
+}
+
+.lig-hero-name {
+  white-space: nowrap;
+}
+
 .lig-section-quiet {
   padding-top: clamp(64px, 8svh, 96px);
 }
@@ -199,6 +217,10 @@
   margin: 12px 0 0;
   color: var(--muted);
   font: 11px/1.6 var(--font-meta);
+}
+
+.lig-semantic-families + .lig-parsed-stage {
+  margin-top: 32px;
 }
 
 .lig-roles {
@@ -424,27 +446,10 @@
   border-bottom: 1px solid var(--line);
 }
 
-.lig-files {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 32px;
-  margin: 12px 0 0;
-  padding: 0;
-  list-style: none;
-  font-family: var(--font-meta);
-  font-size: 13px;
-}
-
-.lig-files li {
-  padding: 10px 0;
-  border-top: 1px solid var(--line);
-}
-
 @media (max-width: 860px) {
   .lig-stage,
   .lig-stage-syntax,
-  .lig-ports,
-  .lig-files {
+  .lig-ports {
     grid-template-columns: 1fr;
   }
 

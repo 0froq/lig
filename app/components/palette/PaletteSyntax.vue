@@ -34,22 +34,15 @@ const inks = computed(() => families.map((family) => {
       <h3 class="lig-palette-heading">
         {{ ink.family }}
       </h3>
-      <PaletteSwatch
-        v-for="level in ink.levels"
-        :key="level.tier"
-        :name="level.token"
-        :hex="level.hex"
-        :caption="level.tier"
-        :show-value="false"
+      <PaletteTierRamp
+        :family="ink.family"
+        :levels="ink.levels"
       />
       <p class="lig-family-description">
         {{ t(`palette.syntax.families.${ink.family}`) }}
       </p>
     </section>
   </div>
-  <p class="lig-aside">
-    {{ t('palette.syntax.aside') }}
-  </p>
   <PaletteStage
     :variant="variant"
   />
