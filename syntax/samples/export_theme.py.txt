@@ -1,0 +1,24 @@
+import json
+from pathlib import Path
+
+# Export resolved colors without duplicating the palette.
+def export_theme(
+    source: Path,
+    destination: Path,
+    variant: str = "dark",
+) -> int:
+    """Write a stable, alphabetically sorted color table."""
+    bundle = json.loads(source.read_text(encoding="utf-8"))
+    if bundle["schemaVersion"] != 2:
+        raise ValueError("Unsupported token schema")
+
+    tokens = bundle["variants"][variant]["tokens"]
+    lines = [f"# LiG {variant} · {bundle['version']}"]
+    for name, color in sorted(tokens.items()):
+        if not color.startswith("#") or len(color) != 7:
+            raise ValueError(f"Invalid color: {name}")
+        lines.append(f"{name} = {color}")
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return len(tokens)

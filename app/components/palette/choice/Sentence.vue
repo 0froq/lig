@@ -25,7 +25,7 @@ function flipTone(): void {
 }
 
 function flipEdge(): void {
-  variant.value = joinVariant(axes.value.tone, axes.value.edge === 'crisp' ? 'soft' : 'crisp')
+  variant.value = joinVariant(axes.value.tone, axes.value.edge === 'crisp' ? 'paper' : 'crisp')
 }
 
 watch([variant, locale], () => nextTick(measure))
@@ -62,7 +62,7 @@ onMounted(async () => {
       role="switch"
       class="lig-flip"
       :style="width.edge ? { width: `${width.edge}px` } : undefined"
-      :aria-checked="axes.edge === 'soft'"
+      :aria-checked="axes.edge === 'paper'"
       :aria-label="t('palette.choice.edge')"
       @click="flipEdge"
     >
@@ -71,9 +71,9 @@ onMounted(async () => {
         :class="{ 'is-on': axes.edge === 'crisp' }"
       >{{ t('palette.choice.edgeCrisp') }}</span>
       <span
-        :ref="keep('soft')"
-        :class="{ 'is-on': axes.edge === 'soft' }"
-      >{{ t('palette.choice.edgeSoft') }}</span>
+        :ref="keep('paper')"
+        :class="{ 'is-on': axes.edge === 'paper' }"
+      >{{ t('palette.choice.edgePaper') }}</span>
     </button>{{ t('palette.choice.sentence.tail') }}<span class="lig-sentence-mark">{{ t('palette.choice.sentence.mark') }}</span>
   </p>
 </template>

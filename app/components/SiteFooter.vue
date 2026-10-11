@@ -3,9 +3,7 @@ const { product } = useAppConfig()
 const { t, locale, locales } = useI18n()
 const link = useKitLink()
 const switchLocalePath = useSwitchLocalePath()
-const { theme, ready, toggle } = useTheme()
 const others = computed(() => locales.value.filter(l => l.code !== locale.value))
-const next = computed(() => theme.value === 'dark' ? 'light' : 'dark')
 </script>
 
 <template>
@@ -30,12 +28,6 @@ const next = computed(() => theme.value === 'dark' ? 'light' : 'dark')
         :to="switchLocalePath(l.code)"
         :lang="l.language"
       >{{ l.name }}</NuxtLink>
-      <!-- The stored theme is only known on the client -->
-      <button
-        v-if="ready"
-        type="button"
-        @click="toggle"
-      >{{ t(`theme.${next}`) }}</button>
     </span>
   </footer>
 </template>

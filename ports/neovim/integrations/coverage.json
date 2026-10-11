@@ -1,0 +1,303 @@
+{
+  "repository": "https://github.com/0froq/lig.nvim",
+  "revision": "7bb6ca25705baedaae22996eca17c3a8a1745bb2",
+  "plugins": {
+    "blink": {
+      "plugin": "blink.cmp",
+      "source": "lua/lig/groups/blink.lua",
+      "sha256": "d0f65007b1965cb32965ea4ce1e900d47452d1c55a635f25cf798ad6075de85b",
+      "groups": [
+        "BlinkCmpKindArray",
+        "BlinkCmpKindBoolean",
+        "BlinkCmpKindClass",
+        "BlinkCmpKindColor",
+        "BlinkCmpKindConstant",
+        "BlinkCmpKindConstructor",
+        "BlinkCmpKindEnum",
+        "BlinkCmpKindEnumMember",
+        "BlinkCmpKindEvent",
+        "BlinkCmpKindField",
+        "BlinkCmpKindFile",
+        "BlinkCmpKindFolder",
+        "BlinkCmpKindFunction",
+        "BlinkCmpKindInterface",
+        "BlinkCmpKindKey",
+        "BlinkCmpKindKeyword",
+        "BlinkCmpKindMethod",
+        "BlinkCmpKindModule",
+        "BlinkCmpKindNamespace",
+        "BlinkCmpKindNull",
+        "BlinkCmpKindNumber",
+        "BlinkCmpKindObject",
+        "BlinkCmpKindOperator",
+        "BlinkCmpKindPackage",
+        "BlinkCmpKindProperty",
+        "BlinkCmpKindReference",
+        "BlinkCmpKindSnippet",
+        "BlinkCmpKindString",
+        "BlinkCmpKindStruct",
+        "BlinkCmpKindText",
+        "BlinkCmpKindTypeParameter",
+        "BlinkCmpKindUnit",
+        "BlinkCmpKindValue",
+        "BlinkCmpKindVariable",
+        "BlinkCmpLabelDeprecated",
+        "BlinkCmpMenuBorder"
+      ]
+    },
+    "dashboard": {
+      "plugin": "dashboard-nvim",
+      "source": "lua/lig/groups/dashboard.lua",
+      "sha256": "df8b9d89376eb97d5f3f9445ff0b1a9f0404a5394fd643135763e43250f887d0",
+      "groups": [
+        "DashboardDesc",
+        "DashboardFiles",
+        "DashboardFooter",
+        "DashboardHeader",
+        "DashboardIcon",
+        "DashboardKey",
+        "DashboardMruIcon",
+        "DashboardMruTitle",
+        "DashboardProjectIcon",
+        "DashboardProjectTitle",
+        "DashboardProjectTitleIcon",
+        "DashboardShortCut",
+        "DashboardShortCutIcon"
+      ]
+    },
+    "fzf": {
+      "plugin": "fzf-lua",
+      "source": "lua/lig/groups/fzf.lua",
+      "sha256": "b99c5fbaf582f2ae7e59cae198ff76e900c4e5452effdbd2b07197ca84e6ce66",
+      "groups": [
+        "FzfLuaBackdrop",
+        "FzfLuaBorder"
+      ]
+    },
+    "gitsigns": {
+      "plugin": "gitsigns.nvim",
+      "source": "lua/lig/groups/gitsigns.lua",
+      "sha256": "4b3d03f3dacbdac0f1862367ffe8dccded41fb779398d08b22d4900dc6ae686d",
+      "groups": [
+        "GitSignsAdd",
+        "GitSignsAddCul",
+        "GitSignsAddInline",
+        "GitSignsAddLn",
+        "GitSignsAddLnInline",
+        "GitSignsAddNr",
+        "GitSignsAddPreview",
+        "GitSignsChange",
+        "GitSignsChangeCul",
+        "GitSignsChangeDelete",
+        "GitSignsChangeDeleteCul",
+        "GitSignsChangeDeleteLn",
+        "GitSignsChangeDeleteNr",
+        "GitSignsChangeInline",
+        "GitSignsChangeLn",
+        "GitSignsChangeLnInline",
+        "GitSignsChangeNr",
+        "GitSignsCurrentLineBlame",
+        "GitSignsDelete",
+        "GitSignsDeleteCul",
+        "GitSignsDeleteInline",
+        "GitSignsDeleteLnInline",
+        "GitSignsDeleteNr",
+        "GitSignsDeletePreview",
+        "GitSignsDeleteVirtLn",
+        "GitSignsStagedAdd",
+        "GitSignsStagedAddCul",
+        "GitSignsStagedAddLn",
+        "GitSignsStagedAddNr",
+        "GitSignsStagedChange",
+        "GitSignsStagedChangeCul",
+        "GitSignsStagedChangeLn",
+        "GitSignsStagedChangeNr",
+        "GitSignsStagedChangedelete",
+        "GitSignsStagedChangedeleteCul",
+        "GitSignsStagedChangedeleteLn",
+        "GitSignsStagedChangedeleteNr",
+        "GitSignsStagedDelete",
+        "GitSignsStagedDeleteCul",
+        "GitSignsStagedDeleteNr",
+        "GitSignsStagedTopdelete",
+        "GitSignsStagedTopdeleteCul",
+        "GitSignsStagedTopdeleteNr",
+        "GitSignsTopdelete",
+        "GitSignsTopdeleteCul",
+        "GitSignsTopdeleteLn",
+        "GitSignsTopdeleteNr",
+        "GitSignsUntracked",
+        "GitSignsUntrackedCul",
+        "GitSignsUntrackedLn",
+        "GitSignsUntrackedNr",
+        "GitSignsVirtLnum"
+      ]
+    },
+    "mini_clue": {
+      "plugin": "mini.clue",
+      "source": "lua/lig/groups/mini_clue.lua",
+      "sha256": "5a0e46f1a748c079e200d767767369995caa2d46ad10a15fd6f260d038859f60",
+      "groups": [
+        "MiniClueBorder",
+        "MiniClueDescGroup",
+        "MiniClueDescSingle",
+        "MiniClueNextKey",
+        "MiniClueNextKeyWithPostkeys",
+        "MiniClueSeparator",
+        "MiniClueTitle"
+      ]
+    },
+    "mini_completion": {
+      "plugin": "mini.completion",
+      "source": "lua/lig/groups/mini_completion.lua",
+      "sha256": "1033838163a0cdcaf90004233d0562ee6b86721d3314e23f1b2c89b344208085",
+      "groups": [
+        "MiniCompletionActiveParameter",
+        "MiniCompletionDeprecated",
+        "MiniCompletionInfoBorderOutdated"
+      ]
+    },
+    "mini_cursorword": {
+      "plugin": "mini.cursorword",
+      "source": "lua/lig/groups/mini_cursorword.lua",
+      "sha256": "b714a368d06a3dcc631e0f23022f53c9fea978ced79d2cc3de2400e3ed80b5df",
+      "groups": [
+        "MiniCursorword",
+        "MiniCursorwordCurrent"
+      ]
+    },
+    "mini_diff": {
+      "plugin": "mini.diff",
+      "source": "lua/lig/groups/mini_diff.lua",
+      "sha256": "3feb8546a018e1dc584d1c43262200505fc56896f2154c1003471dd4145e419c",
+      "groups": [
+        "MiniDiffOverAdd",
+        "MiniDiffOverChange",
+        "MiniDiffOverChangeBuf",
+        "MiniDiffOverContext",
+        "MiniDiffOverContextBuf",
+        "MiniDiffOverDelete",
+        "MiniDiffSignAdd",
+        "MiniDiffSignChange",
+        "MiniDiffSignDelete"
+      ]
+    },
+    "mini_files": {
+      "plugin": "mini.files",
+      "source": "lua/lig/groups/mini_files.lua",
+      "sha256": "071fd7145159532252929d9e209ea3cc840b56999419471b83883d0d0732a1b5",
+      "groups": [
+        "MiniFilesBorder",
+        "MiniFilesBorderModified",
+        "MiniFilesCursorLine",
+        "MiniFilesDirectory",
+        "MiniFilesFile",
+        "MiniFilesNormal",
+        "MiniFilesTitle",
+        "MiniFilesTitleFocused"
+      ]
+    },
+    "mini_indentscope": {
+      "plugin": "mini.indentscope",
+      "source": "lua/lig/groups/mini_indentscope.lua",
+      "sha256": "490392fe92ccb2f101514b354e1e06491dde72be087b4531881d4272efe3fc50",
+      "groups": [
+        "MiniIndentscopeSymbol"
+      ]
+    },
+    "mini_jump2d": {
+      "plugin": "mini.jump2d",
+      "source": "lua/lig/groups/mini_jump2d.lua",
+      "sha256": "152e32a8cccb56dd49807117bab55669c34ea60119e37d8f57757cfc2a413bf6",
+      "groups": [
+        "MiniJump2dDim",
+        "MiniJump2dSpot",
+        "MiniJump2dSpotAhead",
+        "MiniJump2dSpotUnique"
+      ]
+    },
+    "mini_statusline": {
+      "plugin": "mini.statusline",
+      "source": "lua/lig/groups/mini_statusline.lua",
+      "sha256": "f135b86bd0403e7704616ba890189548c84eea8199fab4d643ccbc3e1c4ed720",
+      "groups": [
+        "MiniStatuslineDevinfo",
+        "MiniStatuslineFileinfo",
+        "MiniStatuslineFilename",
+        "MiniStatuslineInactive",
+        "MiniStatuslineModeCommand",
+        "MiniStatuslineModeInsert",
+        "MiniStatuslineModeNormal",
+        "MiniStatuslineModeOther",
+        "MiniStatuslineModeReplace",
+        "MiniStatuslineModeVisual"
+      ]
+    },
+    "mini_snippets": {
+      "plugin": "mini.snippets",
+      "source": "lua/lig/groups/mini_snippets.lua",
+      "sha256": "40f1d474316a665e2dfbb92bd5b06fa1e87e96e3367c4330d8e112f6d5daed7e",
+      "groups": [
+        "MiniSnippetsCurrent",
+        "MiniSnippetsCurrentReplace",
+        "MiniSnippetsFinal",
+        "MiniSnippetsUnvisited",
+        "MiniSnippetsVisited"
+      ]
+    },
+    "mini_tabline": {
+      "plugin": "mini.tabline",
+      "source": "lua/lig/groups/mini_tabline.lua",
+      "sha256": "19bde927e84fdb0794973cde1994dc0f1a84dd1b81a630cc16b4a0f301c82069",
+      "groups": [
+        "MiniTablineCurrent",
+        "MiniTablineFill",
+        "MiniTablineHidden",
+        "MiniTablineModifiedCurrent",
+        "MiniTablineModifiedHidden",
+        "MiniTablineModifiedVisible",
+        "MiniTablineTabpagesection",
+        "MiniTablineTrunc",
+        "MiniTablineVisible"
+      ]
+    },
+    "telescope": {
+      "plugin": "telescope.nvim",
+      "source": "lua/lig/groups/telescope.lua",
+      "sha256": "7c83f9388c71d1f6e66a4fa85030d66fbb6e747e8713d21fd3ec4a7a60213ecf",
+      "groups": [
+        "TelescopeBorder",
+        "TelescopeMatching",
+        "TelescopeNormal",
+        "TelescopeSelection",
+        "TelescopeSelectionCaret",
+        "TelescopeTitle"
+      ]
+    },
+    "which-key": {
+      "plugin": "which-key.nvim",
+      "source": "lua/lig/groups/which-key.lua",
+      "sha256": "f408d9c6258475a1fd843c4ec067cee6c6f3b2643fb86e85f957ee3dfee6f5cc",
+      "groups": [
+        "WhichKey",
+        "WhichKeyBorder",
+        "WhichKeyDesc",
+        "WhichKeyGroup",
+        "WhichKeyIcon",
+        "WhichKeyNormal",
+        "WhichKeySeparator",
+        "WhichKeyTitle",
+        "WhichKeyValue",
+        "WhichKeylconAzure",
+        "WhichKeylconBlue",
+        "WhichKeylconCyan",
+        "WhichKeylconGreen",
+        "WhichKeylconGrey",
+        "WhichKeylconOrange",
+        "WhichKeylconPurple",
+        "WhichKeylconRed",
+        "WhichKeylconYellow"
+      ]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "extends": "../core/tsconfig.json",
+  "compilerOptions": { "target": "ES2023", "lib": ["ES2023", "DOM"] },
+  "include": ["./**/*.ts", "../core/**/*.ts", "../palette/**/*.ts"],
+  "exclude": ["./generated", "../core/generated", "../palette/generated"]
+}

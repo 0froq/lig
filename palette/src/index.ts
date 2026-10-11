@@ -1,5 +1,3 @@
-export * from './conflicts'
 export * from './convert'
 export * from './nvim-build'
 export * from './source'
-export { SOURCE_DOCS } from './source'

@@ -1,0 +1,24 @@
+name: Core tokens
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tokens:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v6.1.0
+      # Core verification needs no Nuxt preparation or application build.
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm tokens:typecheck
+      - run: pnpm tokens:test
+      - run: pnpm tokens:check
