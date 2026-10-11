@@ -15,7 +15,7 @@ const instruction = computed(() => t('palette.downloads.agentInstruction', {
   manifest: `${origin.value}/ports/manifest.json`,
   notes: `${origin.value}/ports/README.md`,
   variant: variant.value,
-  tools: ['Neovim', 'VS Code', ...LIGHTWEIGHT_PORTS.map(port => port.title)].join(', '),
+  tools: ['Neovim', 'VS Code', 'Zed', ...LIGHTWEIGHT_PORTS.map(port => port.title)].join(', '),
 }))
 </script>
 

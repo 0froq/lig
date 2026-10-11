@@ -76,6 +76,8 @@ describe('lightweight tool distributions', () => {
       assert.equal(createHash('sha256').update(bytes).digest('hex'), checksum)
       assert.deepEqual(readFileSync(join(publicRoot, path)), bytes)
     }
-    assert.deepEqual(readFileSync(join(publicRoot, 'manifest.json')), readFileSync(join(root, 'manifest.json')))
+    const downloads = JSON.parse(readFileSync(join(publicRoot, 'manifest.json'), 'utf8')) as { files: Record<string, string> }
+    for (const [path, checksum] of Object.entries(manifest.files))
+      assert.equal(downloads.files[path], checksum)
   })
 })

@@ -31,3 +31,8 @@ jobs:
           name: lig-lightweight-ports
           path: dist/ports/lightweight/
           if-no-files-found: error
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: lig-zed-port
+          path: dist/ports/zed/
+          if-no-files-found: error

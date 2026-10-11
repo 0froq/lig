@@ -14,6 +14,7 @@ import coverage from './neovim/integrations/coverage.json'
 import { compileTheme, requireStyle, requireToken } from './styles'
 import { vscodeStyle, vscodeTheme } from './vscode/emit'
 import './lightweight/contracts.test'
+import './zed/contracts.test'
 
 const root = fileURLToPath(new URL('../dist/ports/', import.meta.url))
 

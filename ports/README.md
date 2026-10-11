@@ -1,6 +1,6 @@
 # LiG preview compiler
 
-Authoring source for the isolated Neovim/VS Code preview distributions and the shared lightweight tool ports.
+Authoring source for the isolated Neovim/VS Code preview distributions, Zed local themes and the shared lightweight tool ports.
 
 ```sh
 pnpm ports:generate
@@ -11,11 +11,12 @@ nvim --headless -u NONE -i NONE -l ports/neovim/verify.lua
 python3 ports/lightweight/verify.py
 ```
 
-Generation needs TypeScript/jiti only. It does not need Nuxt preparation, a parser, or either editor. The optional native checks require Neovim or Python 3.11+ and the seven lightweight tools, respectively; lightweight validation uses isolated temporary configuration and servers.
+Generation needs TypeScript/jiti only. It does not need Nuxt preparation, a parser, or an installed editor. The optional native checks require Neovim or Python 3.11+ and the seven lightweight tools, respectively; lightweight validation uses isolated temporary configuration and servers.
 
 - `core/spec.json` is the color source, with unchanged existing calibration plus shared terminal/UI aliases.
 - `styles.ts` and `semantics.ts` define editor-independent intent.
 - `neovim/` and `vscode/` bind native vocabularies and serialize data.
+- `zed/` maps editor UI, native captures and terminal slots to local JSON themes; installation and scope are documented in `zed/README.md`.
 - `dist/ports/` contains installable distributions, manifests and checksums.
 - `constants.ts` pins the preview package version and immutable source/distribution tags.
 - Both preview identities are independent from stable LiG installations.
@@ -28,6 +29,6 @@ Syntax role decisions are shared, but grammar/LSP classifications can differ. Na
 
 Ghostty, fzf, Zellij, tmux, Starship, bat and eza ship together under `dist/ports/lightweight`, without separate repositories. `lightweight/` contains format adapters and installation notes; `catalog.ts` shares download paths with the site. bat reuses the existing TextMate bindings and style intent. All four variants are generated; no adapter maintains literal palette colors.
 
-The standard compiler also copies identical lightweight bytes to ignored `public/ports/`; Nuxt build/generate runs it first. `ports:check` verifies both outputs, while a custom `--out` build stays isolated. CI uploads `lig-lightweight-ports` as a downloadable artifact. Lightweight provenance names the current source branch and exact input hash; historical native preview tags are not republished automatically.
+The standard compiler also copies identical lightweight and Zed bytes to ignored `public/ports/`, with a combined checksum manifest; Nuxt build/generate runs it first. `ports:check` verifies both outputs, while a custom `--out` build stays isolated. CI uploads `lig-lightweight-ports` and `lig-zed-port` as downloadable artifacts. Download provenance names the current source branch and exact input hash; historical native preview tags are not republished automatically.
 
 The Workbench bindings are adapted from vscode-theme-LiG (MIT). Native Neovim family/group intent is based on lig.nvim (Apache-2.0). Original distribution licenses are retained under `licenses/`.

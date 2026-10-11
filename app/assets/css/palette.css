@@ -376,6 +376,7 @@
   gap: 12px;
   font-family: var(--font-display);
   font-size: clamp(28px, 3vw, 40px);
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -387,7 +388,7 @@
   border-radius: 3px;
 }
 
-.lig-port:hover .lig-port-title {
+.lig-port[href]:hover .lig-port-title {
   color: var(--accent);
 }
 
@@ -395,6 +396,32 @@
   max-width: 36ch;
   color: var(--muted);
   font-size: 14px;
+}
+
+.lig-port-zed {
+  grid-column: 1 / -1;
+}
+
+.lig-port-zed h3,
+.lig-port-zed p {
+  margin: 0;
+}
+
+.lig-port-zed .lig-port-note {
+  max-width: 64ch;
+}
+
+.lig-port-zed .lig-port-variants {
+  margin-top: 10px;
+  font: 12px/1.6 var(--font-meta);
+}
+
+.lig-port-install {
+  align-self: flex-start;
+  margin-top: 6px;
+  color: var(--muted);
+  font: 11px/1.6 var(--font-meta);
+  border-bottom: 1px solid var(--line);
 }
 
 .lig-files {
@@ -775,7 +802,7 @@
 
 .lig-port-downloads li {
   display: grid;
-  grid-template-columns: 8rem minmax(0, 1fr);
+  grid-template-columns: 7rem minmax(0, 1fr);
   align-items: center;
   gap: 12px 24px;
   padding-block: 20px;
@@ -783,9 +810,6 @@
 }
 
 .lig-port-downloads h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   margin: 0;
   font: inherit;
 }
@@ -814,11 +838,13 @@
 }
 
 .lig-port-downloads a:hover,
+.lig-port-zed a:hover,
 .lig-port-manifest a:hover {
   color: var(--accent);
 }
 
 .lig-port-downloads a:focus-visible,
+.lig-port-zed a:focus-visible,
 .lig-port-manifest a:focus-visible {
   outline: 1px solid var(--accent);
   outline-offset: 4px;

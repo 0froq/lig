@@ -4,17 +4,6 @@ import { LIGHTWEIGHT_PORTS, lightweightArchivePath, lightweightPath } from '../.
 
 const { variant } = useLigVariant()
 
-// GitHub project avatars; individual-owned repositories use their owner's avatar.
-const portIcons = {
-  ghostty: '169223740',
-  fzf: '700826',
-  zellij: '73778475',
-  tmux: '12054114',
-  starship: '49654870',
-  bat: '4209276',
-  eza: '141388427',
-}
-
 const links = [
   {
     title: 'palette.downloads.nvim',
@@ -62,6 +51,58 @@ const files = [
       </span>
       <span class="lig-port-note">{{ $t(item.note) }}</span>
     </a>
+    <section
+      class="lig-port lig-port-zed"
+      aria-labelledby="port-zed"
+    >
+      <h3
+        id="port-zed"
+        class="lig-port-title"
+      >
+        <img
+          class="lig-project-icon"
+          src="https://avatars.githubusercontent.com/u/79345384?s=80&v=4"
+          alt=""
+          width="24"
+          height="24"
+          loading="lazy"
+          decoding="async"
+        >
+        <span>Zed</span>
+      </h3>
+      <p class="lig-port-note">
+        {{ $t('palette.downloads.zedNote') }}
+      </p>
+      <div
+        class="lig-port-variants"
+        role="group"
+        aria-labelledby="port-zed"
+      >
+        <a
+          v-for="option in VARIANT_OPTIONS"
+          :key="option.id"
+          :href="`/ports/zed/lig-${option.id}.json`"
+          :download="`lig-${option.id}.json`"
+          :class="{ 'is-current': variant === option.id }"
+          :aria-current="variant === option.id ? 'true' : undefined"
+        >{{ $t(option.label) }} <span aria-hidden="true">↓</span></a>
+        <a
+          class="lig-port-all"
+          href="/ports/zed/lig-zed-all.zip"
+          download="lig-zed-all.zip"
+        >
+          {{ $t('palette.downloads.all') }} <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+      <a
+        class="lig-port-install"
+        href="/ports/zed/README.md"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {{ $t('palette.downloads.install') }} ↗
+      </a>
+    </section>
   </div>
   <p class="lig-group">
     {{ $t('palette.downloads.lightweight') }}
@@ -81,15 +122,6 @@ const files = [
       :key="port.id"
     >
       <h3 :id="`port-${port.id}`">
-        <img
-          class="lig-project-icon"
-          :src="`https://avatars.githubusercontent.com/u/${portIcons[port.id]}?s=80&v=4`"
-          alt=""
-          width="24"
-          height="24"
-          loading="lazy"
-          decoding="async"
-        >
         {{ port.title }}
       </h3>
       <div
