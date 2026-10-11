@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+"""Import a verified canonical dist/ports/neovim payload into this checkout."""
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import sys
+
+if len(sys.argv) != 2:
+    raise SystemExit('Usage: python3 scripts/sync /path/to/lig/dist/ports/neovim')
+source = Path(sys.argv[1]).resolve()
+root = Path(__file__).resolve().parent.parent
+if source == root:
+    raise SystemExit('Source and destination must differ')
+manifest_path = source / 'lig-build.json'
+manifest = json.loads(manifest_path.read_text())
+assert manifest['port'] == 'neovim'
+assert manifest['distributionRepository'] == 'https://github.com/0froq/lig.nvim'
+
+def destination(name):
+    path = (root / name).resolve()
+    assert path.is_relative_to(root), f'Artifact outside destination: {name}'
+    return path
+
+for name, expected in manifest['files'].items():
+    path = (source / name).resolve()
+    assert path.is_relative_to(source), f'Artifact outside source: {name}'
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == expected, name
+    destination(name)
+previous_path = root / 'lig-build.json'
+if previous_path.exists():
+    previous = json.loads(previous_path.read_text())
+    obsolete = [destination(name) for name in previous['files'] if name not in manifest['files']]
+    for path in obsolete:
+        path.unlink(missing_ok=True)
+for name in [*manifest['files'], 'lig-build.json']:
+    target = destination(name)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source / name, target)
+print(f"Imported LiG {manifest['packageVersion']} from {manifest['sourceRef']}")

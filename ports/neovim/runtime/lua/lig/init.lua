@@ -1,9 +1,30 @@
 local M = {}
-local config = { terminal_colors = true, transparent = false, styles = {}, lualine_bold = false, plugins = { auto = true } }
+local defaults = { terminal_colors = true, transparent = false, styles = {}, lualine_bold = false, plugins = { auto = true } }
+local config = vim.deepcopy(defaults)
 local active_style
+M.styles = {}
+M.version = "0.2.1"
+
+local function normalize_style(style)
+  if style == "light-soft" then return "light-paper" end
+  if style == "dark-soft" then return "dark-paper" end
+  return style
+end
+
+local function validate_options(opts)
+  if opts.on_colors then
+    error("LiG 0.2 uses on_tokens(tokens), not on_colors(colors). See the migration section in README.md.")
+  end
+  if opts.mono and opts.mono.enabled then
+    error("LiG 0.2 no longer supports the mono profile. See README.md.")
+  end
+end
 
 function M.setup(opts)
-  config = vim.tbl_deep_extend("force", {}, config, opts or {})
+  validate_options(opts or {})
+  config = vim.tbl_deep_extend("force", {}, defaults, opts or {})
+  config.style = normalize_style(config.style)
+  M.styles = {}
 end
 
 function M.get_options()
@@ -11,11 +32,11 @@ function M.get_options()
 end
 
 local function palette(opts)
-  local data = require("lig_preview.generated")
-  local variant = opts.style or (vim.o.background == "light" and "light" or "dark")
+  local data = require("lig.generated")
+  local variant = normalize_style(opts.style) or (vim.o.background == "light" and "light" or "dark")
   local theme = data.variants[variant]
   if not theme then
-    error("Unknown LiG Preview variant: " .. tostring(variant))
+    error("Unknown LiG variant: " .. tostring(variant))
   end
   local tokens = vim.deepcopy(theme.tokens)
   if opts.on_tokens then opts.on_tokens(tokens) end
@@ -26,7 +47,7 @@ local function palette(opts)
   local visiting = {}
   local function alias(name)
     if theme.aliases[name] and not changed[name] then
-      if visiting[name] then error("LiG Preview alias cycle: " .. name) end
+      if visiting[name] then error("LiG alias cycle: " .. name) end
       visiting[name] = true
       tokens[name] = alias(theme.aliases[name])
       visiting[name] = nil
@@ -46,7 +67,7 @@ end
 
 local function enabled_integrations(data, opts)
   local settings = opts.plugins
-  if type(settings) ~= "table" then error("LiG Preview plugins must be a table") end
+  if type(settings) ~= "table" then error("LiG plugins must be a table") end
   local all = settings.all
   if all == nil then all = package.loaded.lazy == nil end
   local installed = {}
@@ -69,13 +90,24 @@ end
 
 function M.load(opts)
   opts = vim.tbl_deep_extend("force", {}, config, opts or {})
-  local data = require("lig_preview.generated")
+  validate_options(opts)
+  opts.style = normalize_style(opts.style)
+  local data = require("lig.generated")
+  local requested = opts.style or vim.o.background
+  -- Neovim re-sources the current colorscheme when 'background' changes.
+  -- Follow that change while retaining the selected standard/paper family.
+  if active_style == requested and vim.g.colors_name == "lig-" .. requested
+    and data.variants[requested] and vim.o.background ~= data.variants[requested].mode then
+    opts.style = M.styles[vim.o.background]
+      or (vim.o.background == "light" and opts.light_style)
+      or (vim.o.background .. (requested:match("%-paper$") and "-paper" or ""))
+  end
   local tokens, variant, theme = palette(opts)
   local function color(name)
     local value = tokens[name]
-    if not value then error("Missing LiG Preview token: " .. name) end
+    if not value then error("Missing LiG token: " .. name) end
     if not value:match("^#%x%x%x%x%x%x$") then
-      error("LiG Preview token must be #rrggbb: " .. name)
+      error("LiG token must be #rrggbb: " .. name)
     end
     return value
   end
@@ -124,8 +156,9 @@ function M.load(opts)
   vim.o.termguicolors = true
   vim.g.colors_name = nil
   vim.o.background = theme.mode
-  vim.g.colors_name = "lig-preview-" .. variant
+  vim.g.colors_name = "lig-" .. variant
   active_style = variant
+  M.styles[theme.mode] = variant
   for name, hl in pairs(groups) do vim.api.nvim_set_hl(0, name, hl) end
   if opts.terminal_colors then
     for index = 0, 15 do

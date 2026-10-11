@@ -1,13 +1,17 @@
 -- Non-visual verification of emitted Lua, token references and native API data.
 local root = vim.fn.getcwd()
-vim.opt.rtp:prepend(root .. "/dist/ports/neovim")
-local preview = require("lig_preview")
-local data = require("lig_preview.generated")
+vim.opt.rtp:prepend(vim.fn.filereadable(root .. "/lig-build.json") == 1 and root or root .. "/dist/ports/neovim")
+local lig = require("lig")
+local data = require("lig.generated")
+local distribution = vim.fn.filereadable(root .. "/lig-build.json") == 1 and root or root .. "/dist/ports/neovim"
+for _, path in ipairs(vim.fn.glob(distribution .. "/**/*.lua", false, true)) do
+  assert(loadfile(path), path)
+end
 local function as_number(hex) return tonumber(hex:sub(2), 16) end
 
 for _, variant in ipairs({ "dark", "light", "dark-paper", "light-paper", "light", "dark" }) do
-  local tokens, groups = preview.load({ style = variant })
-  assert(vim.g.colors_name == "lig-preview-" .. variant)
+  local tokens, groups = lig.load({ style = variant })
+  assert(vim.g.colors_name == "lig-" .. variant)
   assert(vim.o.background == data.variants[variant].mode)
   for name, binding in pairs(data.groups) do
     if not binding.link then
@@ -45,7 +49,7 @@ end
 assert(vim.api.nvim_get_hl(0, { name = "@markup.link" }).underline)
 assert(vim.api.nvim_get_hl(0, { name = "@constructor.lua" }).fg == as_number(data.variants.dark.tokens["syntax.punctuation"]))
 
-local _, disabled, selected = preview.load({ style = "dark", plugins = { all = false, auto = false, ["blink.cmp"] = true, telescope = { enabled = true }, gitsigns = false } })
+local _, disabled, selected = lig.load({ style = "dark", plugins = { all = false, auto = false, ["blink.cmp"] = true, telescope = { enabled = true }, gitsigns = false } })
 assert(selected.blink and selected.telescope and not selected.gitsigns)
 assert(disabled.BlinkCmpKindBoolean and disabled.TelescopeMatching and not disabled.GitSignsAdd)
 assert(vim.api.nvim_get_hl(0, { name = "GitSignsAdd" }).fg == nil)
@@ -53,33 +57,33 @@ assert(not vim.api.nvim_get_hl(0, { name = "BlinkCmpKindBoolean", link = false }
 
 package.loaded.lazy = {}
 package.loaded["lazy.core.config"] = { plugins = { ["mini.nvim"] = {}, ["gitsigns.nvim"] = {} } }
-local _, auto_groups, auto = preview.load({ style = "dark", plugins = { all = false, auto = true, mini_files = false } })
+local _, auto_groups, auto = lig.load({ style = "dark", plugins = { all = false, auto = true, mini_files = false } })
 assert(auto.gitsigns and auto.mini_cursorword and auto.mini_tabline and not auto.mini_files and not auto.telescope)
 assert(auto_groups.GitSignsAdd and auto_groups.MiniTablineCurrent and not auto_groups.MiniFilesNormal)
 package.loaded.lazy = nil
 package.loaded["lazy.core.config"] = nil
 
 -- Statusline exports consume tokens, without changing the active editor theme.
-preview.load({ style = "dark" })
+lig.load({ style = "dark" })
 local before = vim.api.nvim_get_hl(0, { name = "Normal" })
-local statusline = require("lig_preview.statusline")
+local statusline = require("lig.statusline")
 for _, variant in ipairs({ "dark", "light", "dark-paper", "light-paper" }) do
-  local lualine = require("lualine.themes.lig-preview-" .. variant)
-  local tokens = preview.get_tokens(variant)
+  local lualine = require("lualine.themes.lig-" .. variant)
+  local tokens = lig.get_tokens(variant)
   assert(lualine.normal.a.bg == tokens["mode.normal"])
   assert(lualine.insert.a.bg == tokens["mode.insert"])
   assert(lualine.visual.a.bg == tokens["mode.visual"])
   for _, sections in pairs(lualine) do
     for _, section in pairs(sections) do assert(section.fg:match("^#%x%x%x%x%x%x$") and section.bg:match("^#%x%x%x%x%x%x$")) end
   end
-  local lightline = require("lightline.colorscheme.lig_preview_" .. variant:gsub("-", "_"))
+  local lightline = require("lightline.colorscheme.lig_" .. variant:gsub("-", "_"))
   assert(lightline.normal.left[1][2] == tokens["mode.normal"])
   assert(lightline.normal.error[1][1] == tokens["diagnostic.error"])
   assert(lightline.tabline.tabsel[1][2] == tokens["surface.inverse"])
 end
 assert(vim.deep_equal(vim.api.nvim_get_hl(0, { name = "Normal" }), before))
-assert(vim.g.colors_name == "lig-preview-dark" and vim.o.background == "dark")
-preview.setup({ lualine_bold = true })
+assert(vim.g.colors_name == "lig-dark" and vim.o.background == "dark")
+lig.setup({ lualine_bold = true })
 assert(statusline.lualine().normal.a.gui == "bold")
 
 -- Native Lua parser/query data confirms the language exception addresses table braces.
@@ -97,19 +101,19 @@ for id, node in query:iter_captures(parser:parse()[1]:root(), source) do
 end
 assert(braces and boolean and call)
 
-preview.load({ style = "light", transparent = true })
+lig.load({ style = "light", transparent = true })
 assert(vim.api.nvim_get_hl(0, { name = "Normal" }).bg == nil)
 assert(vim.api.nvim_get_hl(0, { name = "CursorLine" }).bg ~= nil)
-preview.load({ style = "dark", styles = { comments = { italic = true } } })
+lig.load({ style = "dark", styles = { comments = { italic = true } } })
 assert(vim.api.nvim_get_hl(0, { name = "@comment" }).italic)
 assert(vim.api.nvim_get_hl(0, { name = "Comment" }).italic)
 assert(vim.api.nvim_get_hl(0, { name = "@lsp.type.comment" }).italic)
-local patched = preview.load({ style = "dark", on_tokens = function(tokens) tokens["text.strong"] = "#abcdef" end })
+local patched = lig.load({ style = "dark", on_tokens = function(tokens) tokens["text.strong"] = "#abcdef" end })
 assert(patched["syntax.variable"] == "#abcdef")
 assert(vim.api.nvim_get_hl(0, { name = "@variable" }).fg == 0xabcdef)
-preview.setup({ style = "light-paper" })
-vim.cmd.colorscheme("lig-preview")
-assert(vim.g.colors_name == "lig-preview-light-paper")
-vim.cmd.colorscheme("lig-preview-dark")
-assert(vim.g.colors_name == "lig-preview-dark")
-print("LiG Preview native API contracts passed: " .. vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch)
+lig.setup({ style = "light-paper" })
+vim.cmd.colorscheme("lig")
+assert(vim.g.colors_name == "lig-light-paper")
+vim.cmd.colorscheme("lig-dark")
+assert(vim.g.colors_name == "lig-dark")
+print("LiG native API contracts passed: " .. vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch)

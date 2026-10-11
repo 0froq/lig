@@ -44,6 +44,8 @@ export const STYLES: Record<string, TextStyle> = {
   'markup.quote': { foreground: 'text.primary', italic: true },
   'markup.link': { foreground: 'syntax.constant', underline: true },
   'markup.raw': { foreground: 'text.primary' },
+  'markup.strikethrough': { strikethrough: true },
+  'markup.underline': { underline: true },
   'modifier.defaultLibrary': { italic: true },
   'modifier.deprecated': { strikethrough: true },
 }

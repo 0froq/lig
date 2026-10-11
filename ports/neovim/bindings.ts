@@ -1,5 +1,5 @@
 import type { HighlightBinding } from '../types'
-import { SYNTAX_CAPTURES } from '../../core/syntax'
+import { SYNTAX_CAPTURES, SYNTAX_DECORATIONS } from '../../core/syntax'
 import { STYLES } from '../styles'
 
 export const BASE: Record<string, HighlightBinding> = {
@@ -106,6 +106,7 @@ export const CAPTURE_ROLES: Record<string, string> = {
   'tag.delimiter': 'punctuation',
   'type': 'type.reference',
   'type.definition': 'type.definition',
+  'type.builtin': 'type.reference',
   'constructor': 'constructor',
   'constructor.lua': 'punctuation',
   'constant': 'constant',
@@ -116,6 +117,8 @@ export const CAPTURE_ROLES: Record<string, string> = {
   'boolean': 'constant',
   'function': 'function.definition',
   'function.call': 'function.call',
+  'function.builtin': 'function.definition',
+  'function.macro': 'function.definition',
   'function.method': 'method.definition',
   'function.method.call': 'method.call',
   'keyword': 'keyword',
@@ -140,31 +143,30 @@ export const CAPTURE_ROLES: Record<string, string> = {
   'comment.error': 'comment.error',
   'comment.warning': 'comment.warning',
   'comment.todo': 'comment.todo',
+  'comment.note': 'comment.note',
+  'markup': 'text',
+  'markup.heading': 'markup.heading',
+  'markup.strong': 'markup.strong',
+  'markup.italic': 'markup.italic',
+  'markup.quote': 'markup.quote',
+  'markup.link': 'markup.link',
+  'markup.link.url': 'markup.link',
+  'markup.link.label': 'text',
+  'markup.raw': 'markup.raw',
+  'markup.strikethrough': 'markup.strikethrough',
+  'markup.underline': 'markup.underline',
 }
 
 export const CAPTURES: Record<string, HighlightBinding> = Object.fromEntries(
-  Object.entries(SYNTAX_CAPTURES).map(([capture, token]) => {
+  [...new Set([...Object.keys(SYNTAX_CAPTURES), ...Object.keys(SYNTAX_DECORATIONS)])].map((capture) => {
     const role = CAPTURE_ROLES[capture]
-    if (!role || STYLES[role]?.foreground !== token)
-      throw new Error(`Capture has no matching shared style: ${capture} -> ${token}`)
+    const style = role ? STYLES[role] : undefined
+    if (!style || style.foreground !== SYNTAX_CAPTURES[capture])
+      throw new Error(`Capture has no matching shared style: ${capture}`)
+    for (const key of ['bold', 'italic', 'underline', 'strikethrough'] as const) {
+      if (style[key] !== SYNTAX_DECORATIONS[capture]?.[key])
+        throw new Error(`Capture decoration differs from shared style: ${capture}/${key}`)
+    }
     return [`@${capture}`, { role }]
   }),
 )
-
-Object.assign(CAPTURES, {
-  '@function.builtin': { role: 'function.definition' },
-  '@function.macro': { role: 'function.definition' },
-  '@type.builtin': { role: 'type.reference' },
-  '@comment.note': { role: 'comment.note' },
-  '@markup': { role: 'text' },
-  '@markup.heading': { role: 'markup.heading' },
-  '@markup.strong': { role: 'markup.strong' },
-  '@markup.italic': { role: 'markup.italic' },
-  '@markup.quote': { role: 'markup.quote' },
-  '@markup.link': { role: 'markup.link' },
-  '@markup.link.url': { role: 'markup.link' },
-  '@markup.link.label': { role: 'text' },
-  '@markup.raw': { role: 'markup.raw' },
-  '@markup.strikethrough': { strikethrough: true },
-  '@markup.underline': { underline: true },
-})
