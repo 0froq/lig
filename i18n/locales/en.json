@@ -70,7 +70,7 @@
       "nvimNote": "Neovim theme distribution; editor packages are released separately.",
       "vscode": "vscode-theme-LiG",
       "vscodeNote": "VS Code theme distribution; editor packages are released separately.",
-      "zedNote": "Editor UI, syntax and terminal colors. Four variants, ready to install as local Zed themes.",
+      "zedNote": "Independent Zed theme repository. Four variants covering editor UI, syntax and terminal colors.",
       "lightweight": "Lightweight ports",
       "lightweightNote": "Four variants from the same tokens. The current theme is highlighted; download a single variant or all four for each port.",
       "install": "Installation notes",
@@ -80,7 +80,7 @@
       "agentCopy": "Copy instruction",
       "agentCopyError": "Copy failed · retry",
       "agentCopyPending": "Copying…",
-      "agentInstruction": "Configure LiG ({variant}) for my installed tools, using {page}, {manifest} and {notes}. First perform read-only detection of my OS and installed stack ({tools}); report detected versions, active configuration paths, available ports and variants, and proposed changes. Check editor variants and installation notes in the downloads and repositories linked from the page, including Zed's local theme files. Ask me to confirm the tools, variant and changes, then wait; do not install, edit configuration or restart applications before confirmation. Apply only the confirmed plan, back up affected files, merge color settings while preserving existing behavior, bindings and layouts, and report validation results and rollback steps. Do not install missing tools or invent unsupported ports.",
+      "agentInstruction": "Configure LiG ({variant}) for my installed tools, using {page}, {manifest} and {notes}. First perform read-only detection of my OS and installed stack ({tools}); report detected versions, active configuration paths, available ports and variants, and proposed changes. Check editor variants and installation notes in the downloads and repositories linked from the page, including Zed's repository extension and optional local theme files. Ask me to confirm the tools, variant and changes, then wait; do not install, edit configuration or restart applications before confirmation. Apply only the confirmed plan, back up affected files, merge color settings while preserving existing behavior, bindings and layouts, and report validation results and rollback steps. Do not install missing tools or invent unsupported ports.",
       "all": "Download all"
     },
     "syntax": {

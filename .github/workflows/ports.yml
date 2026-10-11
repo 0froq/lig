@@ -34,5 +34,5 @@ jobs:
       - uses: actions/upload-artifact@v7.0.2
         with:
           name: lig-zed-port
-          path: dist/ports/zed/
+          path: dist/ports/zed-extension/
           if-no-files-found: error

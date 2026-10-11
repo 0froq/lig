@@ -6,6 +6,7 @@ import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from '../../core/resolve'
 import { compileTheme } from '../styles'
+import { ZED_REPOSITORY, ZED_SOURCE_REF, ZED_VERSION } from './distribution'
 import { zedFamily } from './emit'
 
 describe('Zed editor distribution', () => {
@@ -57,5 +58,23 @@ describe('Zed editor distribution', () => {
     }
     assert.ok(manifest.files['zed/lig-zed-all.zip'])
     assert.ok(manifest.files['zed/README.md'])
+  })
+
+  it('packages a native repository extension with reproducible provenance and matching web themes', () => {
+    const root = fileURLToPath(new URL('../../dist/ports/zed-extension/', import.meta.url))
+    const publicRoot = fileURLToPath(new URL('../../public/ports/zed/', import.meta.url))
+    const manifest = JSON.parse(readFileSync(`${root}lig-build.json`, 'utf8')) as { sourceRef: string, packageVersion: string, files: Record<string, string> }
+    assert.equal(manifest.sourceRef, ZED_SOURCE_REF)
+    assert.equal(manifest.packageVersion, ZED_VERSION)
+    const toml = readFileSync(`${root}extension.toml`, 'utf8')
+    assert.ok(toml.includes(`repository = "${ZED_REPOSITORY}"`))
+    assert.ok(toml.includes(`version = "${ZED_VERSION}"`))
+    assert.ok(toml.includes('schema_version = 1'))
+    assert.equal(Object.keys(manifest.files).length, 7)
+    for (const [path, checksum] of Object.entries(manifest.files))
+      assert.equal(createHash('sha256').update(readFileSync(`${root}${path}`)).digest('hex'), checksum, path)
+    for (const theme of themes)
+      assert.deepEqual(readFileSync(`${root}themes/lig-${theme.variant}.json`), readFileSync(`${publicRoot}lig-${theme.variant}.json`))
+    assert.ok(readFileSync(`${root}LICENSE`, 'utf8').includes('Apache License'))
   })
 })

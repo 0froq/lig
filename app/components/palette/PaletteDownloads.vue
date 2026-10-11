@@ -61,7 +61,11 @@ const links = [
           loading="lazy"
           decoding="async"
         >
-        <span>Zed</span>
+        <a
+          href="https://github.com/0froq/zed-theme-LiG"
+          target="_blank"
+          rel="noopener noreferrer"
+        >zed-theme-LiG (Zed) ↗</a>
       </h3>
       <p class="lig-port-note">
         {{ $t('palette.downloads.zedNote') }}
@@ -91,7 +95,7 @@ const links = [
       </div>
       <a
         class="lig-port-install"
-        href="/ports/zed/README.md"
+        href="https://github.com/0froq/zed-theme-LiG#install"
         target="_blank"
         rel="noopener noreferrer"
       >
