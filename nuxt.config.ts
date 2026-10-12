@@ -80,6 +80,12 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    // Workers Builds sets WORKERS_CI=1, which makes Nitro pick a Cloudflare
+    // preset, emit `/* /404.html 404` in `_redirects`, and 404 the home page.
+    preset: 'static',
+    output: {
+      publicDir: 'dist',
+    },
     prerender: {
       crawlLinks: true,
       routes: ['/', '/zh', '/lab', '/zh/lab'],
