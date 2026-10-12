@@ -9,6 +9,7 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
+    "deploy": "pnpm generate && wrangler build --experimental-new-config --x-cf-build-output && cf deploy --prebuilt",
     "preview": "nuxt preview",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --cache --fix",
@@ -45,13 +46,15 @@
     "@antfu/eslint-config": "catalog:dev",
     "@nuxt/eslint": "catalog:dev",
     "@types/node": "catalog:dev",
+    "cf": "catalog:dev",
     "eslint": "catalog:dev",
     "eslint-plugin-format": "catalog:dev",
     "jiti": "catalog:",
     "lint-staged": "catalog:dev",
     "simple-git-hooks": "catalog:dev",
     "typescript": "catalog:dev",
-    "vue-tsc": "catalog:dev"
+    "vue-tsc": "catalog:dev",
+    "wrangler": "catalog:dev"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx lint-staged"
