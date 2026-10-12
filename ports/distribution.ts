@@ -5,6 +5,7 @@ export function distributionTools(): Record<string, string> {
   return {
     'scripts/verify.py': readFileSync(new URL('./distribution/verify.py', import.meta.url), 'utf8'),
     'scripts/sync.py': readFileSync(new URL('./distribution/sync.py', import.meta.url), 'utf8'),
+    'scripts/release.py': readFileSync(new URL('./distribution/release.py', import.meta.url), 'utf8'),
     '.github/workflows/verify.yml': `name: Generated distribution
 on:
   push:
@@ -22,26 +23,9 @@ jobs:
   }
 }
 
-export function vscodePackageWorkflow(): string {
-  return `name: Package VSIX
-on:
-  workflow_dispatch:
-permissions:
-  contents: read
-jobs:
-  package:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: actions/setup-node@v7.0.0
-        with:
-          node-version: 22
-      - run: python3 scripts/verify.py
-      - run: npx --yes @vscode/vsce@3.6.2 package --no-dependencies
-      - uses: actions/upload-artifact@v7.0.2
-        with:
-          name: lig-vsix
-          path: '*.vsix'
-          if-no-files-found: error
-`
+export function storeFiles(port: 'vscode' | 'zed'): Record<string, string> {
+  return {
+    '.github/workflows/release.yml': readFileSync(new URL(`./distribution/${port}-release.yml`, import.meta.url), 'utf8'),
+    'PUBLISHING.md': readFileSync(new URL(`./distribution/${port}-publishing.md`, import.meta.url), 'utf8'),
+  }
 }
