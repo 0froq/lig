@@ -61,6 +61,11 @@ function png(colors: string[], size: number): Buffer {
   ])
 }
 
+/** The same transparent pixel L used by the website and editor distribution. */
+export function brandPng(variant: typeof VARIANTS[number] = 'light', size = 512): Buffer {
+  return png(colorsFor(variant), size)
+}
+
 export function generateIcons(check: boolean): void {
   const output = (name: string, content: string | Uint8Array) => writeArtifact(fileURLToPath(new URL(`../../public/${name}`, import.meta.url)), content, check)
   for (const variant of VARIANTS) {

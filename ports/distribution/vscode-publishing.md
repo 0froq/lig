@@ -43,7 +43,7 @@ Environment 的 **Deployment branches and tags** 选择 Selected branches and ta
 
 ## 4. 查出 Marketplace 使用的身份 ID
 
-先合并包含 hook 的 PR。然后打开 [Actions → Publish Marketplace](https://github.com/0froq/vscode-theme-LiG/actions/workflows/release.yml)，点 **Run workflow**：
+先合并包含 hook 的 PR。然后打开 [Actions → Publish extension stores](https://github.com/0froq/vscode-theme-LiG/actions/workflows/release.yml)，点 **Run workflow**：
 
 - 分支：`main`
 - `tag`：已有正式 Release，例如 `v0.2.0`
@@ -64,6 +64,42 @@ Environment 的 **Deployment branches and tags** 选择 Selected branches and ta
 成功后，运行 `mode: publish`，发布指定 GitHub Release 中已经校验的 VSIX。以后发布稳定 GitHub Release 会自动执行；draft 和 prerelease 不自动发布。版本必须与 tag 对应，例如 `package.json` 的 `0.2.1` 对应 `v0.2.1`。不要手动覆盖已经发布的 tag 或 VSIX；修复应增加版本号。
 
 `check-package` 可在尚未配置 Azure 时运行，只校验/打包并上传 Actions artifact。`identify` 和 `verify-access` 都不上传到商店。发布成功还要以 [Marketplace 页面](https://marketplace.visualstudio.com/items?itemName=froQ.theme-lig) 的版本为准；同版本重跑会跳过已存在版本。
+
+## Cursor / Open VSX：首次发布与 OIDC
+
+Cursor 使用 Open VSX，Marketplace 的发布不会自动同步过去。两边保留同一身份 **`froQ.theme-lig`**，上传同一份已校验的 GitHub Release VSIX；不维护另一套主题。
+
+### 首次发布（本人完成协议）
+
+1. 注册 [Eclipse 账号](https://accounts.eclipse.org/user/register)，GitHub Username 填 `0froq`。
+2. 在 [Open VSX](https://open-vsx.org/) 用 `0froq` 登录，进入头像 → Settings → Profile，选择 **Log in with Eclipse**，关联刚才的账号。
+3. 打开 **Show Publisher Agreement**，本人阅读并接受。这不是 Eclipse Contributor Agreement。
+4. 在 Settings → Access Tokens 创建临时发布 token。到 [GitHub Environments](https://github.com/0froq/vscode-theme-LiG/settings/environments) 创建 **`open-vsx`**，把 token 存入它的 secret **`OVSX_PAT`**，不要发到聊天里。
+5. Environment 的 Deployment branches and tags 仅允许 `main` 和 `v*`。合并本 workflow 后，运行 `release.yml`，分支 `main`、tag 为已有稳定 Release（例如 `v0.2.1`）、mode 选 **`bootstrap-openvsx`**。
+6. 该模式在命名空间不存在时创建 **`froQ`**，再发布已校验 VSIX；不会再次发布 Marketplace。以 [Open VSX 扩展页](https://open-vsx.org/extension/froQ/theme-lig) 为准，发布后可能还需要等待 Cursor 索引更新。
+
+### 后续使用 OIDC
+
+Open VSX 要求 namespace owner、已签 Publisher Agreement，且扩展至少有一个活跃版本。首次发布不能使用 OIDC。创建 namespace 不会自动得到 verified owner；按 [Namespace Access](https://github.com/eclipse-openvsx/openvsx/wiki/Namespace-Access) 申请 `froQ` ownership，获批后继续：
+
+1. Open VSX Settings → **Trusted Publishers**，为 `froQ.theme-lig` 添加 GitHub Actions：
+
+| 字段                      | 值                 |
+| ------------------------- | ------------------ |
+| Organization or User name | `0froq`            |
+| Repository name           | `vscode-theme-LiG` |
+| Workflow filename         | `release.yml`      |
+| Environment name          | `open-vsx`         |
+
+2. 在 Open VSX 删除临时 token，并从 GitHub `open-vsx` environment 删除 `OVSX_PAT`。
+3. 运行 `mode: publish-openvsx`，使用下一次尚未发布的稳定 Release 验证 OIDC。首次发布后的同版本重跑只用于确认身份交换可用，已存在版本会跳过，不代表完成了新版本上传。
+4. 验证成功后，在仓库 Settings → Secrets and variables → Actions → **Variables** 添加 **`OPEN_VSX_ENABLED` = `true`**。以后稳定 GitHub Release 的 `publish` 模式会同时触发 Marketplace 与 Open VSX 两个独立 job。
+
+未启用该变量时，原有 Marketplace 自动发布照常工作。`identify`、`verify-access` 和 `check-package` 不触发 Open VSX；`publish-openvsx` 不触发 Marketplace。Open VSX job 固定使用 `ovsx@1.2.0` 和 `--trusted-publishing`，不从 Azure 获取凭据，也不会悄悄退回长期 token。
+
+首次发布前，也可在 Cursor 使用 **Extensions: Install from VSIX...** 安装 GitHub Release 中同一个 VSIX。Cursor 的扩展兼容性仍受其 VS Code 内核版本影响。
+
+参考：[Cursor 扩展来源](https://prod.cursor.com/help/customization/extensions)、[Open VSX 发布](https://github.com/eclipse-openvsx/openvsx/wiki/Publishing-Extensions)、[Trusted Publishing](https://github.com/eclipse-openvsx/openvsx/wiki/Trusted-Publishing)。
 
 ## 常见问题
 
