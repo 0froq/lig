@@ -15,6 +15,7 @@
 @import './components/overlay/overlay.css';
 @import './components/radio/radio-group.css';
 @import './components/select/combobox.css';
+@import './components/select/select.css';
 @import './components/toggle/toggle-group.css';
 
 /* Choice: the accent full stop sits after the chosen word and travels to the next one. */

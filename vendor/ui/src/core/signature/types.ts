@@ -1,4 +1,20 @@
-export type Point = [number, number]
+import type { Point } from '../pen'
+
+export type { Point } from '../pen'
+
+/** A caller-owned color mixer. Weight is the proportion of the first color. */
+export type MixColors = (first: string, weight: number, second: string) => string
+
+export interface PenAnchors {
+  rule?: Element | null
+  hand?: HTMLElement | null
+  /** Text without layout placeholders; defaults to hand.textContent. */
+  handText?: string
+  sections?: { element: Element, label: Element, price?: Element | null }[]
+  finalMark?: HTMLElement | null
+  finalSection?: Element | null
+  margin?: Element | null
+}
 
 export interface LayerColors {
   paper: string
@@ -37,10 +53,13 @@ export interface PaperLayer {
 }
 
 export interface PenOptions {
-  /** Page root; the route is read from `[data-anchor]` descendants. */
+  /** Positioned page root; the pen canvas shares its stacking context. */
   root: HTMLElement
-  /** Handwrite this element's text. Null or empty text skips the hand. */
-  hand?: HTMLElement | null
+  /** Re-read anchors when the actual content layout changes. */
+  anchors: () => PenAnchors
+  mixColors: MixColors
+  /** Runs synchronously before measuring; hide/position the typeset fallback here. */
+  onReady?: (hand: boolean) => void
   colors: LayerColors
   /** Wash coverage at a document point. Covered ink is dyed. */
   wet?: (x: number, y: number) => number

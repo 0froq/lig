@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { LigVariant } from '../../../core'
 import type { SyntaxDocument } from '../../../syntax/types'
+import { Select } from '@froq/ui'
 import { resolveVariant } from '../../../core'
 import { captureRole, syntaxFamily } from '../../../core/syntax'
 import { ancestry, segmentSource, sourceRange } from '../../../syntax/model'
@@ -19,10 +20,20 @@ const selectedText = computed(() => node.value ? sourceRange(props.document, nod
 const role = computed(() => segment.value?.token ?? 'text.primary')
 const color = computed(() => resolved.value.tokens[role.value]!)
 const coordinates = computed(() => resolved.value.oklch[role.value]!)
-const choices = computed(() => props.document.nodes.map(item => ({
-  id: item.id,
-  label: `${'· '.repeat(ancestry(props.document, item.id).length - 1)}${item.type} · ${item.range[0] + 1}:${item.range[1] + 1}`,
-})))
+const choices = computed(() => [
+  { value: '', label: t('palette.inspect.choose'), disabled: true },
+  ...props.document.nodes.map(item => ({
+    value: String(item.id),
+    label: `${'· '.repeat(ancestry(props.document, item.id).length - 1)}${item.type} · ${item.range[0] + 1}:${item.range[1] + 1}`,
+  })),
+])
+const selectedNode = computed({
+  get: () => inspected.value === null ? '' : String(inspected.value),
+  set: (value: string) => {
+    if (value !== '')
+      selectNode(Number(value))
+  },
+})
 const style = computed(() => ({
   '--pv-bg': resolved.value.tokens['surface.canvas'],
   '--pv-fg': resolved.value.tokens['text.primary'],
@@ -48,10 +59,6 @@ function selectNode(id: number): void {
   pinned.value = true
   const inside = segments.value.filter(item => item.startByte >= selected.startByte && item.endByte <= selected.endByte)
   active.value = (inside.find(item => item.text.trim()) ?? inside[0])?.id ?? null
-}
-
-function changeNode(event: Event): void {
-  selectNode(Number((event.target as HTMLSelectElement).value))
 }
 
 function navigate(event: KeyboardEvent): void {
@@ -217,32 +224,13 @@ function inSelection(start: number, end: number): boolean {
           >
             {{ t('palette.inspect.empty') }}
           </p>
-          <label class="lig-tree-select">
-            <span>{{ t('palette.inspect.tree') }}</span>
-            <span class="lig-tree-select-control">
-              <select
-                :value="inspected ?? ''"
-                @change="changeNode"
-              >
-                <option
-                  disabled
-                  value=""
-                >{{ t('palette.inspect.choose') }}</option>
-                <option
-                  v-for="choice in choices"
-                  :key="choice.id"
-                  :value="choice.id"
-                >{{ choice.label }}</option>
-              </select>
-              <svg
-                viewBox="0 0 12 8"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path d="m1 1 5 5 5-5" />
-              </svg>
-            </span>
-          </label>
+          <Select
+            v-model="selectedNode"
+            class="lig-tree-select ui"
+            :label="t('palette.inspect.tree')"
+            :options="choices"
+            framed
+          />
           <p class="lig-node-footnote">
             {{ t('palette.inspect.provenance', { version: neovim }) }}
           </p>

@@ -7,6 +7,10 @@ model:
   required: true
   description: 当前选项的值。
 props:
+  - name: framed
+    type: boolean
+    default: "false"
+    description: Full outline and token background; inherits the host font.
   - name: label
     type: string
     required: true
@@ -43,3 +47,7 @@ const tone = ref('plain')
   </div>
 </template>
 ```
+
+## 外观
+
+原生选择框共用一个距右侧 12 px 的箭头，右侧 34 px padding 为箭头留位。箭头忽略指针事件，鼠标、键盘、触摸和辅助技术交互仍由原生 select 处理。可选 `framed`（boolean，默认 false）显示完整边框和 token 背景，并继承宿主字体；默认样式保留下划线。两种外观只读取现有 UI token。
