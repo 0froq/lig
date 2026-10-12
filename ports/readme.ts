@@ -18,7 +18,7 @@ code --install-extension theme-lig-${PACKAGE_VERSION}.vsix
 \`\`\`
 
 Or use **Extensions: Install from VSIX...** in VS Code, then **Preferences: Color Theme**.
-The extension keeps its original ID \`froQ.theme-lig\`. GitHub releases and editor stores have separate publishing schedules: the VSIX is the version described here. Minimum VS Code version: 1.107.0.
+The extension keeps its original ID \`froQ.theme-lig\`. Stable GitHub Releases trigger the Marketplace workflow after the one-time [OIDC setup](https://github.com/0froq/vscode-theme-LiG/blob/main/PUBLISHING.md); check the workflow result before assuming the store has updated. Minimum VS Code version: 1.107.0.
 
 ### Migrate from Soft or Preview
 

@@ -30,7 +30,7 @@ if port == 'vscode':
         assert theme['semanticTokenColors']['string']['foreground'] != theme['colors']['editor.foreground']
 else:
     package = tomllib.loads((root / 'extension.toml').read_text())
-    assert package['id'] == 'lig' and package['version'] == manifest['packageVersion']
+    assert package['id'] == 'lig-theme' and package['version'] == manifest['packageVersion']
     assert package['repository'] == manifest['distributionRepository']
     for variant in manifest['variants']:
         family = json.loads((root / f'themes/lig-{variant}.json').read_text())

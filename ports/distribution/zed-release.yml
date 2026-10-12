@@ -1,0 +1,111 @@
+name: Sync Zed registry
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing stable GitHub release tag (lig-theme identity required)
+        required: true
+        type: string
+      dry_run:
+        description: Validate and prepare registration material without opening a PR
+        required: true
+        default: true
+        type: boolean
+permissions:
+  contents: read
+concurrency:
+  group: zed-registry-release
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.event_name == 'workflow_dispatch' || !github.event.release.prerelease
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      status: ${{ steps.registry.outputs.status }}
+      tag: ${{ steps.prepare.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.tag || github.event.release.tag_name }}
+          path: release
+          fetch-depth: 0
+      - id: prepare
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name }}
+          DRY_RUN: ${{ inputs.dry_run || false }}
+        run: |
+          args=()
+          if [ "$DRY_RUN" = true ]; then args+=(--dry-run); fi
+          python3 scripts/release.py prepare --root release --tag "$RELEASE_TAG" --output "$RUNNER_TEMP/zed" "${args[@]}"
+      - name: Read the official registry
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/zed-industries/extensions/contents/extensions.toml --jq .content | base64 --decode > "$RUNNER_TEMP/zed/extensions.toml"
+          python3 -c 'import sys,tomllib; sys.exit(0 if "lig-theme" in tomllib.load(open(sys.argv[1], "rb")) else 1)' "$RUNNER_TEMP/zed/extensions.toml" && registered=true || registered=false
+          if [ "$registered" = true ]; then
+            gh api repos/zed-industries/extensions/contents/extensions/lig-theme > "$RUNNER_TEMP/zed/submodule.json"
+          else
+            echo '{}' > "$RUNNER_TEMP/zed/submodule.json"
+          fi
+      - id: registry
+        env:
+          VERSION: ${{ steps.prepare.outputs.version }}
+          COMMIT: ${{ steps.prepare.outputs.commit }}
+        run: python3 scripts/release.py registry --index "$RUNNER_TEMP/zed/extensions.toml" --submodule "$RUNNER_TEMP/zed/submodule.json" --version "$VERSION" --commit "$COMMIT"
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: lig-zed-registration
+          path: |
+            ${{ runner.temp }}/zed/registry-entry.toml
+            ${{ runner.temp }}/zed/release.json
+          if-no-files-found: error
+      - name: Explain first submission
+        if: steps.registry.outputs.status == 'unregistered'
+        env:
+          DRY_RUN: ${{ inputs.dry_run || false }}
+        run: |
+          echo 'First registration is pending. Download lig-zed-registration, manually test this exact commit in Zed, and submit the first registry PR yourself. See PUBLISHING.md.' >> "$GITHUB_STEP_SUMMARY"
+          if [ "$DRY_RUN" != true ]; then
+            echo '::error::LiG is not registered in the Zed store yet. First submission requires human testing and a human-written PR.'
+            exit 1
+          fi
+  update:
+    needs: prepare
+    if: needs.prepare.outputs.status == 'update' && !inputs.dry_run
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: zed-registry
+    steps:
+      - name: Require the registry credential
+        env:
+          REGISTRY_TOKEN: ${{ secrets.ZED_REGISTRY_TOKEN }}
+        run: |
+          if [ -z "$REGISTRY_TOKEN" ]; then
+            echo '::error::Configure ZED_REGISTRY_TOKEN in the zed-registry environment; see PUBLISHING.md.'
+            exit 1
+          fi
+      - name: Avoid a duplicate or competing update PR
+        id: pending
+        env:
+          GH_TOKEN: ${{ secrets.ZED_REGISTRY_TOKEN }}
+        run: |
+          url=$(gh pr list --repo zed-industries/extensions --state open --search 'lig-theme in:title' --json url --jq '.[0].url // empty')
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          if [ -n "$url" ]; then echo "Existing LiG registry PR: $url. Merge or close it before retrying this release." >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Propose the exact release tag
+        if: steps.pending.outputs.url == ''
+        uses: huacnlee/zed-extension-action@8cd592a0d24e1e41157740f1a529aeabddc88a1b # v2.0.0
+        with:
+          extension-name: lig-theme
+          extension-path: extensions/lig-theme
+          tag: ${{ needs.prepare.outputs.tag }}
+          push-to: ${{ vars.ZED_REGISTRY_FORK || '0froq/extensions' }}
+          create-pullrequest: true
+        env:
+          COMMITTER_TOKEN: ${{ secrets.ZED_REGISTRY_TOKEN }}

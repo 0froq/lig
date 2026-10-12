@@ -10,7 +10,7 @@ import { spec, VARIANTS } from '../core/resolve'
 import { pruneArtifacts } from './artifacts'
 import { LIGHTWEIGHT_PORTS, lightweightArchivePath, lightweightPath } from './catalog'
 import { COMPILER_VERSION, NEOVIM_SOURCE_REF, NEOVIM_VERSION, PACKAGE_VERSION, SOURCE_REF, VARIANT_LABELS } from './constants'
-import { distributionTools, vscodePackageWorkflow } from './distribution'
+import { distributionTools, storeFiles } from './distribution'
 import { lightweightArtifacts } from './lightweight'
 import { neovimData } from './neovim/emit'
 import { INTEGRATIONS } from './neovim/integrations'
@@ -107,9 +107,8 @@ for (const theme of themes)
   artifacts[`vscode/themes/lig-${theme.variant}.json`] = json(vscodeTheme(theme, VARIANT_LABELS[theme.variant]))
 artifacts['vscode/LICENSE.md'] = readFileSync(join(root, 'ports/licenses/MIT-vscode.txt'), 'utf8')
 artifacts['vscode/README.md'] = portReadme('vscode', metadata)
-artifacts['vscode/.vscodeignore'] = '.git/**\n.github/**\nscripts/**\nassets/**\n.vscode/**\nlig-build.json\n'
-artifacts['vscode/.github/workflows/release.yml'] = vscodePackageWorkflow()
-for (const [path, content] of Object.entries(distributionTools()))
+artifacts['vscode/.vscodeignore'] = '.git/**\n.github/**\nscripts/**\nassets/**\n.vscode/**\nlig-build.json\nPUBLISHING.md\n'
+for (const [path, content] of Object.entries({ ...distributionTools(), ...storeFiles('vscode') }))
   artifacts[`vscode/${path}`] = content
 for (const port of ['neovim', 'vscode']) {
   artifacts[`${port}/lig-build.json`] = json({
