@@ -1,6 +1,6 @@
 import type { LigVariant } from '../core/types'
 
-export const COMPILER_VERSION = '0.7.2'
+export const COMPILER_VERSION = '0.7.3'
 export const PACKAGE_VERSION = '0.2.2'
 export const SOURCE_REF = 'codex/mono-muted-parity'
 export const VARIANT_LABELS: Record<LigVariant, string> = {

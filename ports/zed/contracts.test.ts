@@ -5,12 +5,37 @@ import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from '../../core/resolve'
-import { compileTheme } from '../styles'
+import { CAPTURE_ROLES } from '../neovim/bindings'
+import { compileTheme, requireStyle, requireToken } from '../styles'
 import { ZED_REPOSITORY, ZED_SOURCE_REF, ZED_VERSION } from './distribution'
-import { zedFamily } from './emit'
+import { ZED_SYNTAX, zedFamily } from './emit'
+import parity from './fixtures/capture-parity.json'
 
 describe('Zed editor distribution', () => {
   const themes = VARIANTS.map(compileTheme)
+
+  it('preserves Neovim semantic intent for audited native query captures', () => {
+    for (const example of parity.cases) {
+      const source = parity.sources[example.language as keyof typeof parity.sources]
+      assert.ok(source.captures.includes(example.capture), `${example.language}: absent query capture`)
+      // Zed resolves dotted captures using the longest dot-delimited theme prefix.
+      let capture = example.capture
+      while (!ZED_SYNTAX[capture] && capture.includes('.'))
+        capture = capture.slice(0, capture.lastIndexOf('.'))
+      const role = ZED_SYNTAX[capture]
+      const expectedRole = CAPTURE_ROLES[example.neovimCapture]
+      const label = `${example.language}/${example.meaning}: @${example.capture}`
+      assert.ok(role, `${label}: no theme fallback`)
+      assert.equal(role, expectedRole, label)
+      const expected = requireStyle(expectedRole!)
+      for (const theme of themes) {
+        const syntax = zedFamily([theme]).themes[0]!.style.syntax[capture]!
+        assert.equal(syntax.color, requireToken(theme, expected.foreground ?? 'text.primary'), label)
+        assert.equal(syntax.font_style, expected.italic ? 'italic' : 'normal', label)
+        assert.equal(syntax.font_weight, expected.bold ? 700 : null, label)
+      }
+    }
+  })
 
   it('ships four distinct names with correct native appearance and shared color provenance', () => {
     const family = zedFamily(themes)
