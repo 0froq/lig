@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { VARIANTS } from '../core/resolve'
 import { documentationThemes } from '../shared/documentation-themes'
 import { pruneArtifacts } from './artifacts'
-import { VARIANT_LABELS } from './constants'
+import { PACKAGE_VERSION, VARIANT_LABELS } from './constants'
 import { neovimGroups } from './neovim/emit'
 import { INTEGRATIONS } from './neovim/integrations'
 import coverage from './neovim/integrations/coverage.json'
@@ -88,7 +88,7 @@ describe('shared theme and native adapter contracts', () => {
     const packageJson = JSON.parse(readFileSync(`${root}vscode/package.json`, 'utf8'))
     assert.equal(packageJson.name, 'theme-lig')
     assert.equal(packageJson.publisher, 'froQ')
-    assert.equal(packageJson.version, '0.2.1')
+    assert.equal(packageJson.version, PACKAGE_VERSION)
     assert.equal(packageJson.contributes.themes.length, 4)
     const docs = documentationThemes()
     for (const variant of VARIANTS) {

@@ -92,6 +92,16 @@ class ReleaseTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             release.validate_vsix(self.root, self.vsix(duplicate=True))
 
+    def test_declared_icon_must_be_present_and_identical(self):
+        self.package['icon'] = 'icon.png'
+        (self.root / 'icon.png').write_bytes(b'canonical-png')
+        self.save()
+        with self.assertRaises(KeyError):
+            release.validate_vsix(self.root, self.vsix())
+        with self.assertRaises(ValueError):
+            release.validate_vsix(self.root, self.vsix({'icon.png': b'tampered-png'}))
+        release.validate_vsix(self.root, self.vsix({'icon.png': b'canonical-png'}))
+
     def test_extra_executable_metadata_refused(self):
         other = dict(self.package, main='malicious.js')
         with self.assertRaises(ValueError):

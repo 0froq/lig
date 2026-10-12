@@ -1,4 +1,4 @@
-name: Publish Marketplace
+name: Publish extension stores
 on:
   release:
     types: [published]
@@ -9,11 +9,11 @@ on:
         required: true
         type: string
       mode:
-        description: Package check, identity lookup, access check, or real publication
+        description: Package check, Marketplace access/publication, or Open VSX publication
         required: true
         default: check-package
         type: choice
-        options: [check-package, identify, verify-access, publish]
+        options: [check-package, identify, verify-access, publish, bootstrap-openvsx, publish-openvsx]
 permissions:
   contents: read
 concurrency:
@@ -51,7 +51,10 @@ jobs:
           MODE: ${{ steps.mode.outputs.value }}
         run: |
           args=()
-          if [ "$MODE" != publish ]; then args+=(--dry-run); fi
+          case "$MODE" in
+            publish|bootstrap-openvsx|publish-openvsx) ;;
+            *) args+=(--dry-run) ;;
+          esac
           python3 scripts/release.py prepare --root release --tag "$RELEASE_TAG" --output "$RUNNER_TEMP/vsix" "${args[@]}"
       - uses: actions/upload-artifact@v7.0.2
         with:
@@ -60,7 +63,7 @@ jobs:
           if-no-files-found: error
   marketplace:
     needs: prepare
-    if: needs.prepare.outputs.mode != 'check-package'
+    if: contains(fromJSON('["identify", "verify-access", "publish"]'), needs.prepare.outputs.mode)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: marketplace
@@ -107,3 +110,42 @@ jobs:
         env:
           VSIX_FILENAME: ${{ needs.prepare.outputs.filename }}
         run: npx --yes @vscode/vsce@3.6.2 publish --packagePath "vsix/$VSIX_FILENAME" --azure-credential --skip-duplicate
+  openvsx:
+    needs: prepare
+    if: needs.prepare.outputs.mode == 'bootstrap-openvsx' || needs.prepare.outputs.mode == 'publish-openvsx' || (needs.prepare.outputs.mode == 'publish' && vars.OPEN_VSX_ENABLED == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: open-vsx
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: lig-marketplace-vsix
+          path: vsix
+      - name: First Open VSX publication
+        if: needs.prepare.outputs.mode == 'bootstrap-openvsx'
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+          VSIX_FILENAME: ${{ needs.prepare.outputs.filename }}
+        run: |
+          if [ -z "$OVSX_PAT" ]; then
+            echo '::error::Complete the Open VSX publisher agreement and set OVSX_PAT in the open-vsx environment. See PUBLISHING.md.'
+            exit 1
+          fi
+          status=$(curl --silent --show-error --output "$RUNNER_TEMP/openvsx-namespace.json" --write-out '%{http_code}' https://open-vsx.org/api/froQ)
+          case "$status" in
+            404) npx --yes ovsx@1.2.0 create-namespace froQ ;;
+            200) ;;
+            *) echo "::error::Open VSX namespace lookup failed (HTTP $status)."; exit 1 ;;
+          esac
+          npx --yes ovsx@1.2.0 publish "vsix/$VSIX_FILENAME" --skip-duplicate
+      - name: Publish to Open VSX with OIDC
+        if: needs.prepare.outputs.mode != 'bootstrap-openvsx'
+        env:
+          VSIX_FILENAME: ${{ needs.prepare.outputs.filename }}
+        run: npx --yes ovsx@1.2.0 publish "vsix/$VSIX_FILENAME" --trusted-publishing --skip-duplicate

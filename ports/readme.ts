@@ -20,6 +20,10 @@ code --install-extension theme-lig-${PACKAGE_VERSION}.vsix
 Or use **Extensions: Install from VSIX...** in VS Code, then **Preferences: Color Theme**.
 The extension keeps its original ID \`froQ.theme-lig\`. Stable GitHub Releases trigger the Marketplace workflow after the one-time [OIDC setup](https://github.com/0froq/vscode-theme-LiG/blob/main/PUBLISHING.md); check the workflow result before assuming the store has updated. Minimum VS Code version: 1.107.0.
 
+### Cursor
+
+Cursor uses Open VSX, a separate registry. Publishing to Marketplace alone does not make the extension searchable in Cursor. The [Open VSX setup](https://github.com/0froq/vscode-theme-LiG/blob/main/PUBLISHING.md#cursor--open-vsx首次发布与-oidc) describes first publication and ongoing OIDC synchronization of the same verified VSIX. Until that setup is complete and Cursor has indexed the extension, use **Extensions: Install from VSIX...** with the GitHub Release package. No separate theme or extension ID is needed.
+
 ### Migrate from Soft or Preview
 
 Version 0.2.0 replaces the old independently authored palettes. Select **LiG Light Paper** / **LiG Dark Paper** in place of Soft and update any \`workbench.colorTheme\` or preferred-theme settings. Soft is no longer contributed as a separate theme. The older \`froQ.theme-lig-preview\` extension is independent; disable or uninstall that extension to avoid selecting an old preview.

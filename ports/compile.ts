@@ -7,6 +7,7 @@ import { dirname, join, relative } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { spec, VARIANTS } from '../core/resolve'
+import { brandPng } from '../core/scripts/icons'
 import { pruneArtifacts } from './artifacts'
 import { LIGHTWEIGHT_PORTS, lightweightArchivePath, lightweightPath } from './catalog'
 import { COMPILER_VERSION, NEOVIM_SOURCE_REF, NEOVIM_VERSION, PACKAGE_VERSION, SOURCE_REF, VARIANT_LABELS } from './constants'
@@ -38,7 +39,7 @@ function hash(content: string | Buffer): string {
   return createHash('sha256').update(content).digest('hex')
 }
 
-const inputs = [...files(join(root, 'ports')), join(root, 'shared/crc32.ts'), ...['color.ts', 'resolve.ts', 'spec.json', 'syntax.ts', 'types.ts'].map(path => join(root, 'core', path))].sort()
+const inputs = [...files(join(root, 'ports')), join(root, 'shared/crc32.ts'), ...['color.ts', 'resolve.ts', 'spec.json', 'syntax.ts', 'types.ts', 'scripts/icons.ts'].map(path => join(root, 'core', path))].sort()
 const digest = createHash('sha256')
 for (const path of inputs) {
   digest.update(`${relative(root, path)}\0`)
@@ -98,11 +99,13 @@ artifacts['vscode/package.json'] = json({
   version: PACKAGE_VERSION,
   description: 'LiG: a quiet theme with four variants from one palette',
   license: 'MIT',
+  icon: 'icon.png',
   engines: { vscode: '^1.107.0' },
   categories: ['Themes'],
   repository: { type: 'git', url: 'https://github.com/0froq/vscode-theme-LiG' },
   contributes: { themes: themes.map(theme => ({ label: VARIANT_LABELS[theme.variant], uiTheme: theme.mode === 'dark' ? 'vs-dark' : 'vs', path: `./themes/lig-${theme.variant}.json` })) },
 })
+artifacts['vscode/icon.png'] = brandPng()
 for (const theme of themes)
   artifacts[`vscode/themes/lig-${theme.variant}.json`] = json(vscodeTheme(theme, VARIANT_LABELS[theme.variant]))
 artifacts['vscode/LICENSE.md'] = readFileSync(join(root, 'ports/licenses/MIT-vscode.txt'), 'utf8')

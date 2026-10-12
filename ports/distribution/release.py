@@ -55,6 +55,9 @@ def validate_vsix(root, path, digest=None):
         identity = ET.fromstring(archive.read('extension.vsixmanifest')).find('.//{http://schemas.microsoft.com/developer/vsx-schema/2011}Identity')
         require(identity is not None, 'VSIX XML identity missing')
         require((identity.get('Publisher'), identity.get('Id'), identity.get('Version')) == (package['publisher'], package['name'], package['version']), 'VSIX XML identity mismatch')
+        if icon := package.get('icon'):
+            name = icon.removeprefix('./')
+            require(archive.read('extension/' + name) == (root / name).read_bytes(), f'VSIX icon mismatch: {name}')
         for entry in package['contributes']['themes']:
             name = entry['path'].removeprefix('./')
             require(archive.read('extension/' + name) == (root / name).read_bytes(), f'VSIX theme mismatch: {name}')
