@@ -26,11 +26,11 @@ pnpm build
 
 推到 `main` 后，由 Workers Builds（GitHub 连接，仓库不存放 API token）构建并发布。网页里新建的是 Worker `lig`，不是 Pages。静态文件在 `dist`。Worker 配置在 `cloudflare.config.ts`，资源目录在 `wrangler.config.ts`。本地一次发布用 `pnpm deploy`。
 
-Workers Builds：`NODE_VERSION=22`。构建 `pnpm generate && pnpm exec wrangler build --experimental-new-config --x-cf-build-output`；生产部署 `pnpm exec cf deploy --prebuilt`；非生产预览 `pnpm exec cf previews deploy --prebuilt`。不要单独跑裸的 `pnpm exec cf deploy`，否则会误走 Nuxt autoconfig。Nitro 固定 `preset: 'static'`，避免 `WORKERS_CI=1` 时被选成 Cloudflare 预设。
+Workers Builds：`NODE_VERSION=22`。构建 `pnpm generate`；生产部署 `pnpm exec cf deploy`；非生产预览 `pnpm exec cf previews deploy`。Nitro 固定 `preset: 'static'`，避免 `WORKERS_CI=1` 时被选成 Cloudflare 预设。
 
 ```bash
 pnpm generate   # 静态站点，输出到 dist
-pnpm deploy     # 生成、wrangler 打 Build Output，再 cf deploy --prebuilt
+pnpm deploy     # 生成并 cf deploy
 ```
 
 ## Icon
