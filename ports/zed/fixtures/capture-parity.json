@@ -1,0 +1,535 @@
+{
+  "sources": {
+    "javascript": {
+      "url": "https://github.com/zed-industries/zed/blob/c66312b200d113694fca08c1d468669028a09a0e/crates/grammars/src/javascript/highlights.scm",
+      "sha256": "523dec8164e6d80190231665f5872d2f13d2d9ebdf196b7843e591c87c5506fb",
+      "captures": [
+        "attribute.jsx",
+        "boolean",
+        "comment",
+        "constant",
+        "constant.builtin",
+        "constructor",
+        "embedded",
+        "function",
+        "function.method",
+        "keyword",
+        "keyword.control",
+        "keyword.declaration",
+        "keyword.import",
+        "keyword.operator.regex",
+        "number",
+        "operator",
+        "property",
+        "punctuation.bracket",
+        "punctuation.bracket.jsx",
+        "punctuation.delimiter",
+        "punctuation.delimiter.jsx",
+        "punctuation.special",
+        "string",
+        "string.escape",
+        "string.regex",
+        "string.special",
+        "tag.component.jsx",
+        "tag.jsx",
+        "text.jsx",
+        "type",
+        "type.builtin",
+        "type.class",
+        "variable",
+        "variable.parameter",
+        "variable.special"
+      ]
+    },
+    "typescript": {
+      "url": "https://github.com/zed-industries/zed/blob/c66312b200d113694fca08c1d468669028a09a0e/crates/grammars/src/typescript/highlights.scm",
+      "sha256": "fc24c7ed012bdf4d392a2ef37cb5e882621fd4e186ad8821625e73f8b1dcfd8c",
+      "captures": [
+        "boolean",
+        "comment",
+        "constant",
+        "constant.builtin",
+        "constructor",
+        "embedded",
+        "function",
+        "function.method",
+        "keyword",
+        "keyword.control",
+        "keyword.declaration",
+        "keyword.import",
+        "keyword.operator.regex",
+        "nested",
+        "number",
+        "operator",
+        "property",
+        "property.name",
+        "punctuation.bracket",
+        "punctuation.delimiter",
+        "punctuation.special",
+        "string",
+        "string.escape",
+        "string.regex",
+        "type",
+        "type.builtin",
+        "type.class",
+        "type.name",
+        "variable",
+        "variable.parameter",
+        "variable.special"
+      ]
+    },
+    "tsx": {
+      "url": "https://github.com/zed-industries/zed/blob/c66312b200d113694fca08c1d468669028a09a0e/crates/grammars/src/tsx/highlights.scm",
+      "sha256": "64f861fd1aadd4e4aa89279320dc22ac447038a6633232d2ca80af36cc9b3dff",
+      "captures": [
+        "attribute.jsx",
+        "boolean",
+        "comment",
+        "constant",
+        "constant.builtin",
+        "constructor",
+        "embedded",
+        "function",
+        "function.method",
+        "keyword",
+        "keyword.control",
+        "keyword.declaration",
+        "keyword.import",
+        "keyword.operator.regex",
+        "number",
+        "operator",
+        "property",
+        "punctuation.bracket",
+        "punctuation.bracket.jsx",
+        "punctuation.delimiter",
+        "punctuation.delimiter.jsx",
+        "punctuation.special",
+        "string",
+        "string.escape",
+        "string.regex",
+        "string.special",
+        "tag.component.jsx",
+        "tag.jsx",
+        "text.jsx",
+        "type",
+        "type.builtin",
+        "type.class",
+        "variable",
+        "variable.parameter",
+        "variable.special"
+      ]
+    },
+    "python": {
+      "url": "https://github.com/zed-industries/zed/blob/c66312b200d113694fca08c1d468669028a09a0e/crates/grammars/src/python/highlights.scm",
+      "sha256": "dd94dac901892c189c1a9f05a01fe16d2e74b740fdc4fec3928b1e6ed1e6168d",
+      "captures": [
+        "attribute.builtin",
+        "attribute.special",
+        "boolean",
+        "comment",
+        "constant",
+        "constant.builtin",
+        "embedded",
+        "function.builtin",
+        "function.call",
+        "function.decorator",
+        "function.decorator.call",
+        "function.definition",
+        "function.kwargs",
+        "function.method.call",
+        "function.method.constructor",
+        "keyword",
+        "keyword.definition",
+        "keyword.operator",
+        "number",
+        "operator",
+        "property",
+        "punctuation.bracket",
+        "punctuation.delimiter",
+        "punctuation.special",
+        "string",
+        "string.doc",
+        "string.escape",
+        "type",
+        "type.builtin",
+        "type.class",
+        "type.class.builtin",
+        "type.class.call",
+        "type.class.definition",
+        "type.class.inheritance",
+        "variable",
+        "variable.parameter",
+        "variable.special"
+      ]
+    },
+    "rust": {
+      "url": "https://github.com/zed-industries/zed/blob/c66312b200d113694fca08c1d468669028a09a0e/crates/grammars/src/rust/highlights.scm",
+      "sha256": "69ac36e6e391a6d1e2923775fc93a37389cc8e9d7bcdbbe6808f172610f41e7d",
+      "captures": [
+        "attribute",
+        "boolean",
+        "comment",
+        "comment.doc",
+        "constant",
+        "function",
+        "function.definition",
+        "function.method",
+        "function.special",
+        "function.special.definition",
+        "keyword",
+        "keyword.control",
+        "lifetime",
+        "none",
+        "number",
+        "operator",
+        "property",
+        "punctuation.bracket",
+        "punctuation.delimiter",
+        "punctuation.special",
+        "string",
+        "string.escape",
+        "type",
+        "type.builtin",
+        "type.interface",
+        "variable",
+        "variable.parameter",
+        "variable.special"
+      ]
+    },
+    "json": {
+      "url": "https://github.com/zed-industries/zed/blob/c66312b200d113694fca08c1d468669028a09a0e/crates/grammars/src/json/highlights.scm",
+      "sha256": "abc45defd437b647af5abdee8e56f7950ad1bfc2eca13ca435168fa730148a30",
+      "captures": [
+        "boolean",
+        "comment",
+        "constant.builtin",
+        "number",
+        "property.json_key",
+        "punctuation.bracket",
+        "punctuation.delimiter",
+        "string",
+        "string.escape"
+      ]
+    },
+    "markdown": {
+      "url": "https://github.com/zed-industries/zed/blob/c66312b200d113694fca08c1d468669028a09a0e/crates/grammars/src/markdown/highlights.scm",
+      "sha256": "3bdbc8cc2ae50b540d470ba016b2a17654e8503c49a114757a0ea41ae24d4dfb",
+      "captures": [
+        "link_text.markup",
+        "link_uri.markup",
+        "punctuation.embedded.markup",
+        "punctuation.list_marker.markup",
+        "punctuation.markup",
+        "text",
+        "title.markup"
+      ]
+    },
+    "html": {
+      "url": "https://github.com/zed-industries/zed/blob/c66312b200d113694fca08c1d468669028a09a0e/extensions/html/languages/html/highlights.scm",
+      "sha256": "0782d4b73bf967e7245c85e1c585db81f4bd67b0f4c32bf4617ff0f094098b13",
+      "captures": [
+        "attribute",
+        "comment",
+        "punctuation.bracket.html",
+        "punctuation.delimiter.html",
+        "string",
+        "string.special",
+        "tag",
+        "tag.doctype"
+      ]
+    },
+    "vue": {
+      "url": "https://github.com/zed-extensions/vue/blob/cfef310256a8f9a588a826a11a94abef48382813/languages/vue/highlights.scm",
+      "sha256": "34224ae10df49334c464717c5478ec789e220a5e95dca9a74050331509111d54",
+      "captures": [
+        "attribute",
+        "comment",
+        "embedded",
+        "keyword.directive",
+        "property",
+        "punctuation.bracket",
+        "punctuation.delimiter",
+        "punctuation.special",
+        "string",
+        "tag",
+        "tag.component.type.constructor"
+      ]
+    },
+    "lua": {
+      "url": "https://github.com/zed-extensions/lua/blob/c35f93cc37893c34ce0568b373833ef11ceadaef/languages/lua/highlights.scm",
+      "sha256": "338ab8a8b6364fc98b55fac375e2dabad2145c7ddce353a3a59a742f0d2755dd",
+      "captures": [
+        "attribute",
+        "boolean",
+        "comment",
+        "constant",
+        "constant.builtin",
+        "constructor",
+        "function",
+        "function.builtin",
+        "function.definition",
+        "function.method",
+        "keyword",
+        "keyword.control",
+        "keyword.operator",
+        "number",
+        "operator",
+        "parameter",
+        "preproc",
+        "property",
+        "punctuation.bracket",
+        "punctuation.delimiter",
+        "string",
+        "string.escape",
+        "variable",
+        "variable.special"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "language": "vue",
+      "capture": "tag",
+      "neovimCapture": "tag",
+      "meaning": "component tag"
+    },
+    {
+      "language": "vue",
+      "capture": "attribute",
+      "neovimCapture": "tag.attribute",
+      "meaning": "template attribute"
+    },
+    {
+      "language": "vue",
+      "capture": "property",
+      "neovimCapture": "property",
+      "meaning": "directive attribute"
+    },
+    {
+      "language": "html",
+      "capture": "attribute",
+      "neovimCapture": "tag.attribute",
+      "meaning": "HTML attribute"
+    },
+    {
+      "language": "html",
+      "capture": "string",
+      "neovimCapture": "string",
+      "meaning": "attribute value"
+    },
+    {
+      "language": "tsx",
+      "capture": "attribute.jsx",
+      "neovimCapture": "tag.attribute",
+      "meaning": "JSX attribute"
+    },
+    {
+      "language": "tsx",
+      "capture": "tag.jsx",
+      "neovimCapture": "tag.builtin",
+      "meaning": "intrinsic JSX tag"
+    },
+    {
+      "language": "tsx",
+      "capture": "tag.component.jsx",
+      "neovimCapture": "tag",
+      "meaning": "JSX component"
+    },
+    {
+      "language": "tsx",
+      "capture": "text.jsx",
+      "neovimCapture": "none",
+      "meaning": "JSX prose"
+    },
+    {
+      "language": "typescript",
+      "capture": "variable.parameter",
+      "neovimCapture": "variable.parameter",
+      "meaning": "parameter declaration"
+    },
+    {
+      "language": "typescript",
+      "capture": "property",
+      "neovimCapture": "property",
+      "meaning": "member access"
+    },
+    {
+      "language": "typescript",
+      "capture": "string",
+      "neovimCapture": "string",
+      "meaning": "string literal"
+    },
+    {
+      "language": "typescript",
+      "capture": "constant.builtin",
+      "neovimCapture": "constant.builtin",
+      "meaning": "undefined"
+    },
+    {
+      "language": "typescript",
+      "capture": "type.builtin",
+      "neovimCapture": "type.builtin",
+      "meaning": "builtin type"
+    },
+    {
+      "language": "javascript",
+      "capture": "function",
+      "neovimCapture": "function.call",
+      "meaning": "function call"
+    },
+    {
+      "language": "python",
+      "capture": "function.decorator",
+      "neovimCapture": "attribute",
+      "meaning": "decorator"
+    },
+    {
+      "language": "python",
+      "capture": "function.decorator.call",
+      "neovimCapture": "attribute",
+      "meaning": "called decorator"
+    },
+    {
+      "language": "python",
+      "capture": "attribute.builtin",
+      "neovimCapture": "attribute",
+      "meaning": "builtin decorator"
+    },
+    {
+      "language": "python",
+      "capture": "attribute.special",
+      "neovimCapture": "property",
+      "meaning": "dunder property"
+    },
+    {
+      "language": "python",
+      "capture": "function.kwargs",
+      "neovimCapture": "variable.parameter",
+      "meaning": "keyword argument"
+    },
+    {
+      "language": "python",
+      "capture": "function.builtin",
+      "neovimCapture": "function.builtin",
+      "meaning": "builtin function"
+    },
+    {
+      "language": "python",
+      "capture": "function.definition",
+      "neovimCapture": "function",
+      "meaning": "function declaration"
+    },
+    {
+      "language": "python",
+      "capture": "function.method.call",
+      "neovimCapture": "function.method.call",
+      "meaning": "method call"
+    },
+    {
+      "language": "python",
+      "capture": "function.method.constructor",
+      "neovimCapture": "constructor",
+      "meaning": "constructor"
+    },
+    {
+      "language": "python",
+      "capture": "keyword.operator",
+      "neovimCapture": "keyword.operator",
+      "meaning": "word operator"
+    },
+    {
+      "language": "python",
+      "capture": "string.doc",
+      "neovimCapture": "string",
+      "meaning": "docstring"
+    },
+    {
+      "language": "lua",
+      "capture": "parameter",
+      "neovimCapture": "variable.parameter",
+      "meaning": "parameter declaration"
+    },
+    {
+      "language": "lua",
+      "capture": "function.builtin",
+      "neovimCapture": "function.builtin",
+      "meaning": "builtin function"
+    },
+    {
+      "language": "lua",
+      "capture": "function.definition",
+      "neovimCapture": "function",
+      "meaning": "function declaration"
+    },
+    {
+      "language": "lua",
+      "capture": "keyword.operator",
+      "neovimCapture": "keyword.operator",
+      "meaning": "word operator"
+    },
+    {
+      "language": "rust",
+      "capture": "lifetime",
+      "neovimCapture": "attribute",
+      "meaning": "lifetime"
+    },
+    {
+      "language": "rust",
+      "capture": "function.special",
+      "neovimCapture": "function.macro",
+      "meaning": "macro invocation"
+    },
+    {
+      "language": "rust",
+      "capture": "function.special.definition",
+      "neovimCapture": "function.macro",
+      "meaning": "macro declaration"
+    },
+    {
+      "language": "rust",
+      "capture": "none",
+      "neovimCapture": "none",
+      "meaning": "unclassified identifier"
+    },
+    {
+      "language": "json",
+      "capture": "property.json_key",
+      "neovimCapture": "property",
+      "meaning": "object key"
+    },
+    {
+      "language": "json",
+      "capture": "string",
+      "neovimCapture": "string",
+      "meaning": "string value"
+    },
+    {
+      "language": "markdown",
+      "capture": "text",
+      "neovimCapture": "none",
+      "meaning": "prose"
+    },
+    {
+      "language": "markdown",
+      "capture": "title.markup",
+      "neovimCapture": "markup.heading",
+      "meaning": "heading"
+    },
+    {
+      "language": "markdown",
+      "capture": "link_uri.markup",
+      "neovimCapture": "markup.link",
+      "meaning": "link destination"
+    },
+    {
+      "language": "typescript",
+      "capture": "keyword.operator.regex",
+      "neovimCapture": "character.special",
+      "meaning": "regular expression flags"
+    }
+  ],
+  "neovimQuerySource": {
+    "repository": "https://github.com/nvim-treesitter/nvim-treesitter",
+    "revision": "cf12346a3414fa1b06af75c79faebe7f76df080a"
+  }
+}
