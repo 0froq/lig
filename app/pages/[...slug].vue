@@ -22,7 +22,11 @@ useHead(() => ({
   // A filled landing title is the whole document title. An empty one falls through to the site title.
   titleTemplate: page.value?.head || !page.value?.title ? undefined : '%s',
 }))
-useSeoMeta({ description: () => page.value?.description })
+useShareMeta({
+  title: () => page.value?.title,
+  description: () => page.value?.description,
+  bareTitle: () => Boolean(page.value?.title) && !page.value?.head,
+})
 </script>
 
 <template>

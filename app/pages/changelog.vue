@@ -9,6 +9,7 @@ const { data: releases } = await useAsyncData(
 )
 
 useHead({ title: () => t('changelog.label') })
+useShareMeta({ title: () => t('changelog.label') })
 </script>
 
 <template>

@@ -12,6 +12,7 @@ const { data: notes } = await useAsyncData(
 const slug = (path: string): string => path.split('/').pop() ?? ''
 
 useHead({ title: () => t('notes.label') })
+useShareMeta({ title: () => t('notes.label') })
 </script>
 
 <template>
