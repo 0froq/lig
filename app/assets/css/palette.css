@@ -620,7 +620,8 @@
   top: 24px;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  height: min(560px, calc(100svh - 48px));
+  /* Leave sticky travel within both source examples, including the shorter Python block. */
+  height: min(440px, calc(100svh - 48px));
   min-width: 0;
   padding-left: 20px;
   border-left: 1px solid var(--pv-line);
