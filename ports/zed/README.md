@@ -50,6 +50,8 @@ The adapter emits Zed's [v0.2.0 theme format](https://zed.dev/docs/extensions/th
 
 Zed's native capture names are mapped explicitly to LiG's shared roles. Language queries and optional semantic tokens can classify the same code differently from Neovim/VS Code. The theme format cannot express every shared style modifier (for example link underlines); supported foreground, italic and weight intent is preserved. Dim terminal slots reuse the normal ANSI colors; bright slots retain the shared emphasis colors.
 
+Ordinary syntax inherits the editor's `buffer_font_weight`; the theme does not force a regular weight. Only headings (`title`) and strong emphasis (`emphasis.strong`) explicitly use weight 700.
+
 Data checks validate token provenance, all 16 ANSI slots, appearance metadata, artifact checksums and ZIP contents. They do not establish native visual acceptance. Manually check all four variants in Zed: editor text and syntax, selections/cursor, completion menus, panels/tabs, diagnostics/Git colors and ANSI output. Zed settings or theme overrides may take precedence.
 
 ## Store publishing

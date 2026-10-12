@@ -168,7 +168,8 @@ export function zedTheme(theme: ThemeIR) {
     return [capture, {
       color: requireToken(theme, style.foreground ?? 'text.primary'),
       font_style: style.italic ? 'italic' : 'normal',
-      font_weight: style.bold ? 700 : 400,
+      // Leave ordinary syntax at the user's buffer_font_weight.
+      font_weight: style.bold ? 700 : null,
     }]
   }))
   return {

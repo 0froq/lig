@@ -2,14 +2,13 @@ import type { Buffer } from 'node:buffer'
 import type { BuildMetadata, ThemeIR } from '../types'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
-import { SOURCE_REF } from '../constants'
 import { distributionTools, storeFiles } from '../distribution'
 import { zedFamily } from './emit'
 import { zedReadme } from './readme'
 
 export const ZED_REPOSITORY = 'https://github.com/0froq/zed-theme-LiG'
-export const ZED_VERSION = '0.1.2'
-export const ZED_SOURCE_REF = SOURCE_REF
+export const ZED_VERSION = '0.1.3'
+export const ZED_SOURCE_REF = 'codex/zed-inherit-font-weight'
 
 /** Native repository payload; authoring and palette remain in the LiG compiler. */
 export function zedDistribution(themes: ThemeIR[], metadata: BuildMetadata): Record<string, string | Buffer> {
@@ -17,7 +16,7 @@ export function zedDistribution(themes: ThemeIR[], metadata: BuildMetadata): Rec
     ...distributionTools(),
     ...storeFiles('zed'),
     'extension.toml': `id = "lig-theme"\nname = "LiG"\nversion = "${ZED_VERSION}"\nschema_version = 1\nauthors = ["0froq"]\ndescription = "LiG editor themes: Light, Dark, Light Paper and Dark Paper"\nrepository = "${ZED_REPOSITORY}"\n`,
-    'README.md': zedReadme(metadata),
+    'README.md': zedReadme({ ...metadata, sourceRef: ZED_SOURCE_REF }),
     'LICENSE': readFileSync(new URL('../licenses/Apache-2.0.txt', import.meta.url), 'utf8'),
   }
   for (const theme of themes)
