@@ -2,9 +2,9 @@ name: Port contracts
 
 on:
   push:
-    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
+    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, shared/documentation-themes.ts, package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
   pull_request:
-    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
+    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, shared/documentation-themes.ts, package.json, pnpm-lock.yaml, .github/workflows/ports.yml]
 
 permissions:
   contents: read
@@ -26,6 +26,8 @@ jobs:
       - run: pnpm ports:generate
       - run: pnpm ports:test
       - run: pnpm ports:check
+      - run: python3 dist/ports/vscode/scripts/verify.py
+      - run: python3 dist/ports/zed-extension/scripts/verify.py
       - uses: actions/upload-artifact@v7.0.2
         with:
           name: lig-lightweight-ports
@@ -40,4 +42,9 @@ jobs:
         with:
           name: lig-neovim-port
           path: dist/ports/neovim/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: lig-vscode-port
+          path: dist/ports/vscode/
           if-no-files-found: error

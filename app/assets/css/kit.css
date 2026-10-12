@@ -1346,15 +1346,48 @@ button.l-cta {
   background-color: transparent !important;
 }
 
-:root[data-theme='dark'] .shiki,
-:root[data-theme='dark'] .shiki span {
+/* Shiki emits every variant at build time. Keep color and decorations together. */
+.shiki span {
+  color: var(--shiki-default);
+  font-style: var(--shiki-default-font-style, normal);
+  font-weight: var(--shiki-default-font-weight, normal);
+  text-decoration: var(--shiki-default-text-decoration, none);
+}
+
+:root[data-lig-variant='light'] .shiki span {
+  color: var(--shiki-default) !important;
+  font-style: var(--shiki-default-font-style, normal) !important;
+  font-weight: var(--shiki-default-font-weight, normal) !important;
+  text-decoration: var(--shiki-default-text-decoration, none) !important;
+}
+
+:root[data-lig-variant='dark'] .shiki span {
   color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style, normal) !important;
+  font-weight: var(--shiki-dark-font-weight, normal) !important;
+  text-decoration: var(--shiki-dark-text-decoration, none) !important;
+}
+
+:root[data-lig-variant='light-paper'] .shiki span {
+  color: var(--shiki-light-paper) !important;
+  font-style: var(--shiki-light-paper-font-style, normal) !important;
+  font-weight: var(--shiki-light-paper-font-weight, normal) !important;
+  text-decoration: var(--shiki-light-paper-text-decoration, none) !important;
+}
+
+:root[data-lig-variant='dark-paper'] .shiki span {
+  color: var(--shiki-dark-paper) !important;
+  font-style: var(--shiki-dark-paper-font-style, normal) !important;
+  font-weight: var(--shiki-dark-paper-font-weight, normal) !important;
+  text-decoration: var(--shiki-dark-paper-text-decoration, none) !important;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) .shiki,
-  :root:not([data-theme]) .shiki span {
+  :root:not([data-lig-variant]) .shiki span {
     color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style, normal) !important;
+    font-weight: var(--shiki-dark-font-weight, normal) !important;
+    text-decoration: var(--shiki-dark-text-decoration, none) !important;
   }
 }
 
