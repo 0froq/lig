@@ -2,7 +2,10 @@
 const { t } = useI18n()
 
 useHead({ title: t('palette.meta.title') })
-useSeoMeta({ description: () => t('palette.meta.description') })
+useShareMeta({
+  title: () => t('palette.meta.title'),
+  description: () => t('palette.meta.description'),
+})
 </script>
 
 <template>
