@@ -58,7 +58,9 @@ pnpm build
 
 paper 画布使用独立的暖灰阶，彩色变体使用按色相校准的 OKLCH 坐标，黄色单独校准。详见 [core 契约](core/README.md)。初始映射来自 `0froq/lig.nvim` 和 `0froq/vscode-theme-LiG`，之后这里是维护源，旧 port 是迁移输入。
 
-`pnpm ports:generate` 生成 Neovim 正式分发包、VS Code preview 分发包及七种轻量 port，各含四个变体。网站为每个轻量 port 提供四个单文件链接和四变体 ZIP，当前主题只影响高亮状态；ZIP 与单文件一同受 manifest 的 SHA-256 校验。轻量文件集中在主仓库，通过网站下载与 CI 的 `lig-lightweight-ports` artifact 分发，无需独立仓库。`pnpm build` / `pnpm generate` 会先生成下载文件。安装说明见 [lightweight README](ports/lightweight/README.md)。本机配置不会被生成器修改，Neovim 正式产物发布至 `0froq/lig.nvim`，VS Code preview 仍独立发布。
+`pnpm ports:generate` 生成 Neovim、VS Code、Zed 正式仓库的分发包及七种轻量 port，各含四个变体。网站为每个轻量 port 提供四个单文件链接和四变体 ZIP，当前主题只影响高亮状态；ZIP 与单文件一同受 manifest 的 SHA-256 校验。轻量文件集中在主仓库，通过网站下载与 CI 的 `lig-lightweight-ports` artifact 分发，无需独立仓库。`pnpm build` / `pnpm generate` 会先生成下载文件。安装说明见 [lightweight README](ports/lightweight/README.md)。本机配置不会被生成器修改。
+
+正式编辑器分发分别位于 [lig.nvim](https://github.com/0froq/lig.nvim)、[vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG)、[zed-theme-LiG](https://github.com/0froq/zed-theme-LiG)。Neovim 可固定正式 release tag；VS Code 使用 GitHub Release 的 VSIX，Zed 使用仓库扩展或本地 JSON。GitHub Release 与编辑器商店独立发布，不能把仓库已更新等同于商店已更新。
 
 ## 手动验收
 
@@ -72,4 +74,4 @@ agent 指令随当前语言和主题生成，包含当前站点的下载来源�
 
 ## 许可
 
-手写字体见 `app/kit/hand-font.ts`（SIL OFL 1.1）。
+手写字体见 `vendor/ui/src/core/signature/hand-font.ts`（SIL OFL 1.1），完整许可和来源见同目录的 `OFL.txt` 与 `NOTICE.md`。
