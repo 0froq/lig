@@ -16,6 +16,11 @@
   white-space: nowrap;
 }
 
+/* Shift the homepage sections one column left, retaining the nine-column body. */
+.lig-hero ~ .l-section {
+  --span-margin: 2;
+}
+
 .lig-section-quiet {
   padding-top: clamp(64px, 8svh, 96px);
 }
