@@ -3,7 +3,9 @@ import type { BuildMetadata, ThemeIR } from '../types'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { SOURCE_REF } from '../constants'
+import { distributionTools } from '../distribution'
 import { zedFamily } from './emit'
+import { zedReadme } from './readme'
 
 export const ZED_REPOSITORY = 'https://github.com/0froq/zed-theme-LiG'
 export const ZED_VERSION = '0.1.1'
@@ -12,8 +14,9 @@ export const ZED_SOURCE_REF = SOURCE_REF
 /** Native repository payload; authoring and palette remain in the LiG compiler. */
 export function zedDistribution(themes: ThemeIR[], metadata: BuildMetadata): Record<string, string | Buffer> {
   const files: Record<string, string | Buffer> = {
+    ...distributionTools(),
     'extension.toml': `id = "lig"\nname = "LiG"\nversion = "${ZED_VERSION}"\nschema_version = 1\nauthors = ["0froq"]\ndescription = "LiG editor themes: Light, Dark, Light Paper and Dark Paper"\nrepository = "${ZED_REPOSITORY}"\n`,
-    'README.md': readFileSync(new URL('./README.md', import.meta.url), 'utf8'),
+    'README.md': zedReadme(metadata),
     'LICENSE': readFileSync(new URL('../licenses/Apache-2.0.txt', import.meta.url), 'utf8'),
   }
   for (const theme of themes)

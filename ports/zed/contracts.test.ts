@@ -70,7 +70,7 @@ describe('Zed editor distribution', () => {
     assert.ok(toml.includes(`repository = "${ZED_REPOSITORY}"`))
     assert.ok(toml.includes(`version = "${ZED_VERSION}"`))
     assert.ok(toml.includes('schema_version = 1'))
-    assert.equal(Object.keys(manifest.files).length, 7)
+    assert.equal(Object.keys(manifest.files).length, 10)
     for (const [path, checksum] of Object.entries(manifest.files))
       assert.equal(createHash('sha256').update(readFileSync(`${root}${path}`)).digest('hex'), checksum, path)
     for (const theme of themes)

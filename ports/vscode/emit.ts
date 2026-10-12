@@ -9,7 +9,7 @@ export function vscodeStyle(theme: ThemeIR, role: string): VscodeStyle {
   return foreground ? { foreground: requireToken(theme, foreground), ...attributes } : attributes
 }
 
-export function vscodeTheme(theme: ThemeIR, name: string): object {
+export function vscodeTheme(theme: ThemeIR, name: string) {
   const semanticTokenColors: Record<string, VscodeStyle> = {}
   for (const [type, role] of Object.entries(SEMANTIC_TYPES))
     semanticTokenColors[type] = vscodeStyle(theme, role)

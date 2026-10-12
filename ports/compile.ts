@@ -10,6 +10,7 @@ import { spec, VARIANTS } from '../core/resolve'
 import { pruneArtifacts } from './artifacts'
 import { LIGHTWEIGHT_PORTS, lightweightArchivePath, lightweightPath } from './catalog'
 import { COMPILER_VERSION, NEOVIM_SOURCE_REF, NEOVIM_VERSION, PACKAGE_VERSION, SOURCE_REF, VARIANT_LABELS } from './constants'
+import { distributionTools, vscodePackageWorkflow } from './distribution'
 import { lightweightArtifacts } from './lightweight'
 import { neovimData } from './neovim/emit'
 import { INTEGRATIONS } from './neovim/integrations'
@@ -19,6 +20,7 @@ import { compileTheme } from './styles'
 import { vscodeTheme } from './vscode/emit'
 import { zedDistribution } from './zed/distribution'
 import { zedFamily } from './zed/emit'
+import { zedReadme } from './zed/readme'
 import { zip } from './zip'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
@@ -59,7 +61,7 @@ const json = (value: unknown): string => `${JSON.stringify(value, null, 2)}\n`
 
 const zed: Record<string, string | Buffer> = Object.fromEntries(themes.map(theme => [`zed/lig-${theme.variant}.json`, json(zedFamily([theme]))]))
 zed['zed/lig-zed-all.zip'] = zip(zed)
-zed['zed/README.md'] = readFileSync(join(root, 'ports/zed/README.md'), 'utf8')
+zed['zed/README.md'] = zedReadme(metadata)
 Object.assign(artifacts, zed)
 const zedExtension = zedDistribution(themes, metadata)
 for (const [path, content] of Object.entries(zedExtension))
@@ -90,28 +92,32 @@ for (const mode of ['light', 'dark']) {
 }
 
 artifacts['vscode/package.json'] = json({
-  name: 'theme-lig-preview',
-  displayName: 'LiG Preview',
+  name: 'theme-lig',
+  displayName: 'LiG Theme for Code',
   publisher: 'froQ',
   version: PACKAGE_VERSION,
-  description: 'Preview of the unified OKLCH LiG theme ports',
+  description: 'LiG: a quiet theme with four variants from one palette',
   license: 'MIT',
   engines: { vscode: '^1.107.0' },
   categories: ['Themes'],
-  repository: { type: 'git', url: 'https://github.com/0froq/vscode-theme-LiG-preview' },
+  repository: { type: 'git', url: 'https://github.com/0froq/vscode-theme-LiG' },
   contributes: { themes: themes.map(theme => ({ label: VARIANT_LABELS[theme.variant], uiTheme: theme.mode === 'dark' ? 'vs-dark' : 'vs', path: `./themes/lig-${theme.variant}.json` })) },
 })
 for (const theme of themes)
   artifacts[`vscode/themes/lig-${theme.variant}.json`] = json(vscodeTheme(theme, VARIANT_LABELS[theme.variant]))
 artifacts['vscode/LICENSE.md'] = readFileSync(join(root, 'ports/licenses/MIT-vscode.txt'), 'utf8')
 artifacts['vscode/README.md'] = portReadme('vscode', metadata)
-artifacts['vscode/.vscodeignore'] = '.git/**\n.github/**\n'
+artifacts['vscode/.vscodeignore'] = '.git/**\n.github/**\nscripts/**\nassets/**\n.vscode/**\nlig-build.json\n'
+artifacts['vscode/.github/workflows/release.yml'] = vscodePackageWorkflow()
+for (const [path, content] of Object.entries(distributionTools()))
+  artifacts[`vscode/${path}`] = content
 for (const port of ['neovim', 'vscode']) {
   artifacts[`${port}/lig-build.json`] = json({
     ...metadata,
     port,
     packageVersion: port === 'neovim' ? NEOVIM_VERSION : PACKAGE_VERSION,
-    ...(port === 'neovim' ? { sourceRef: NEOVIM_SOURCE_REF, distributionRepository: 'https://github.com/0froq/lig.nvim' } : {}),
+    distributionRepository: port === 'neovim' ? 'https://github.com/0froq/lig.nvim' : 'https://github.com/0froq/vscode-theme-LiG',
+    ...(port === 'neovim' ? { sourceRef: NEOVIM_SOURCE_REF } : {}),
     files: Object.fromEntries(Object.entries(artifacts).filter(([path]) => path.startsWith(`${port}/`)).map(([path, content]) => [path.slice(port.length + 1), hash(content)])),
     coverage: port === 'neovim' ? { integrations: Object.fromEntries(Object.entries(INTEGRATIONS).map(([name, integration]) => [name, { plugin: integration.plugin, groupCount: Object.keys(integration.groups).length }])), statuslines: ['lualine', 'lightline'], runtime: 'native Lua', syntax: ['classic', 'Tree-sitter', 'LSP'] } : { syntax: ['TextMate', 'semantic tokens'], runtime: 'declarative JSON' },
   })

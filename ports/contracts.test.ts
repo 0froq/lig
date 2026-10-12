@@ -7,7 +7,9 @@ import { join } from 'node:path'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from '../core/resolve'
+import { documentationThemes } from '../shared/documentation-themes'
 import { pruneArtifacts } from './artifacts'
+import { VARIANT_LABELS } from './constants'
 import { neovimGroups } from './neovim/emit'
 import { INTEGRATIONS } from './neovim/integrations'
 import coverage from './neovim/integrations/coverage.json'
@@ -81,6 +83,23 @@ describe('shared theme and native adapter contracts', () => {
       }
     })
   }
+
+  it('ships the stable VS Code identity and identical documentation TextMate rules for every variant', () => {
+    const packageJson = JSON.parse(readFileSync(`${root}vscode/package.json`, 'utf8'))
+    assert.equal(packageJson.name, 'theme-lig')
+    assert.equal(packageJson.publisher, 'froQ')
+    assert.equal(packageJson.version, '0.2.0')
+    assert.equal(packageJson.contributes.themes.length, 4)
+    const docs = documentationThemes()
+    for (const variant of VARIANTS) {
+      const native = JSON.parse(readFileSync(`${root}vscode/themes/lig-${variant}.json`, 'utf8'))
+      const markdown = docs[variant === 'light' ? 'default' : variant]
+      assert.equal(native.name, VARIANT_LABELS[variant])
+      assert.deepEqual(markdown.settings, native.tokenColors)
+      assert.deepEqual(markdown.colors, native.colors)
+      assert.equal(markdown.type, native.type)
+    }
+  })
 
   it('every managed artifact matches its published manifest checksum', () => {
     const manifest = JSON.parse(readFileSync(`${root}manifest.json`, 'utf8')) as { files: Record<string, string> }
