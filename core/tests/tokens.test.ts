@@ -48,9 +48,11 @@ it('foreground hierarchy preserves calibrated contrast and quieter muted ink', (
     const lightnesses = foregrounds.map(role => oklch[role]!.l)
     for (let i = 1; i < lightnesses.length; i++)
       assert.ok(mode === 'dark' ? lightnesses[i - 1]! > lightnesses[i]! : lightnesses[i - 1]! < lightnesses[i]!, `${variant}: foreground hierarchy`)
-    assert.equal(tokens['syntax.comment'], tokens['text.subtle'])
-    assert.equal(tokens['syntax.punctuation'], tokens['text.subtle'])
+    assert.equal(tokens['syntax.comment'], tokens['family.mono.muted'])
+    assert.equal(tokens['syntax.punctuation'], tokens['family.mono.muted'])
     assert.equal(tokens['syntax.string'], tokens['family.mono.muted'])
+    assert.ok(Math.abs(oklch['family.mono.base']!.l - oklch['family.mono.muted']!.l) >= 0.24 - 1e-12, `${variant}: muted/base separation`)
+    assert.ok(contrast(tokens['family.mono.muted']!, tokens['surface.canvas']!) < contrast(tokens['text.subtle']!, tokens['surface.canvas']!), `${variant}: quieter syntax without changing UI ink`)
     assert.equal(tokens['syntax.operator'], tokens['text.secondary'])
     for (const [role, hex] of Object.entries(tokens)) {
       const family = syntaxFamily(role, variant)
@@ -395,7 +397,7 @@ it('syntax roles preserve the mono/struct/ref/action family contract', () => {
   }
 })
 
-it('mono tiers select existing neutral steps in the mode emphasis direction', () => {
+it('mono tiers derive from neutral steps with quieter muted syntax ink', () => {
   const selections = {
     'light': ['soft_800', 'soft_600', 'soft_400'],
     'dark': ['soft_50', 'soft_300', 'soft_500'],
@@ -407,7 +409,8 @@ it('mono tiers select existing neutral steps in the mode emphasis direction', ()
     const tiers = ['highlight', 'base', 'muted']
     for (const [i, tier] of tiers.entries()) {
       const name = selections[variant][i]!
-      const neutral = (spec.palette.neutrals[name] ?? spec.palette.paper[name])!
+      const selected = (spec.palette.neutrals[name] ?? spec.palette.paper[name])!
+      const neutral = tier === 'muted' ? offsetOklch(selected, mode === 'light' ? 0.04 : -0.04, 0) : selected
       assert.deepEqual(oklch[`family.mono.${tier}`], neutral)
       assert.equal(tokens[`family.mono.${tier}`], oklchToHex(neutral))
     }

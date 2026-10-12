@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.14",
+  "version": "0.2.15",
   "colorSpace": "oklch",
   "palette": {
     "accents": {
@@ -667,6 +667,11 @@
           "text.primary"
         ],
         "weight": 0.9
+      },
+      "family.mono.muted": {
+        "offset": "text.subtle",
+        "lightness": 0.04,
+        "chroma": 0
       }
     },
     "dark": {
@@ -680,7 +685,12 @@
       "text.dim": "palette.neutrals.soft_800",
       "text.inverse": "palette.neutrals.soft_900",
       "text.strong": "palette.neutrals.soft_50",
-      "border.default": "palette.neutrals.soft_800"
+      "border.default": "palette.neutrals.soft_800",
+      "family.mono.muted": {
+        "offset": "text.subtle",
+        "lightness": -0.04,
+        "chroma": 0
+      }
     }
   },
   "variants": {

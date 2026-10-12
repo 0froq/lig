@@ -34,6 +34,9 @@ describe('Zed editor distribution', () => {
       assert.equal(native.style.syntax.keyword!.color, theme.tokens['syntax.keyword'])
       assert.equal(native.style.syntax.function!.color, theme.tokens['syntax.function.call'])
       assert.equal(native.style.syntax.type!.color, theme.tokens['syntax.type'])
+      assert.equal(native.style.syntax.attribute!.color, theme.tokens['syntax.property'])
+      assert.equal(native.style.syntax.tag!.color, theme.tokens['syntax.tag'])
+      assert.notEqual(native.style.syntax.attribute!.color, native.style.syntax.tag!.color)
       assert.equal(native.style.syntax.title!.font_weight, 700)
       assert.equal(native.style.syntax['emphasis.strong']!.font_weight, 700)
       for (const [capture, style] of Object.entries(native.style.syntax)) {

@@ -92,7 +92,8 @@ const UI: Record<string, string> = {
 
 // Zed's capture vocabulary differs from Neovim/TextMate; bind intent explicitly.
 export const ZED_SYNTAX: Record<string, string> = {
-  'attribute': 'attribute',
+  // Native HTML/Vue @attribute captures are properties, not decorators.
+  'attribute': 'property',
   'boolean': 'constant',
   'comment': 'comment',
   'comment.doc': 'comment',

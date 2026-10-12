@@ -8,7 +8,7 @@ import { zedReadme } from './readme'
 
 export const ZED_REPOSITORY = 'https://github.com/0froq/zed-theme-LiG'
 export const ZED_VERSION = '0.1.3'
-export const ZED_SOURCE_REF = 'codex/zed-inherit-font-weight'
+export const ZED_SOURCE_REF = 'codex/mono-muted-parity'
 
 /** Native repository payload; authoring and palette remain in the LiG compiler. */
 export function zedDistribution(themes: ThemeIR[], metadata: BuildMetadata): Record<string, string | Buffer> {

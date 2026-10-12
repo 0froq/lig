@@ -35,8 +35,8 @@
   --lig-light-accent1: #38964d;
   --lig-light-accent2: #cc7200;
   --lig-light-keyword: #5d5d5d;
-  --lig-light-string: #989898;
-  --lig-light-comment: #989898;
+  --lig-light-string: #a4a4a4;
+  --lig-light-comment: #a4a4a4;
   --lig-light-type: #7b8bf0;
   --lig-light-constant: #6875d8;
   --lig-light-number: #6875d8;
@@ -102,7 +102,7 @@
   --lig-light-family-mono-highlight: #2e2e2e;
   --lig-light-family-mono-base: #5d5d5d;
   --lig-light-family-mono-secondary: #696969;
-  --lig-light-family-mono-muted: #989898;
+  --lig-light-family-mono-muted: #a4a4a4;
   --lig-light-accent-yellow-fill: #dbb800;
   --lig-light-text-on-yellow: #181818;
   --lig-dark-black: #000000;
@@ -141,8 +141,8 @@
   --lig-dark-accent1: #73c07f;
   --lig-dark-accent2: #e6964f;
   --lig-dark-keyword: #b7b7b7;
-  --lig-dark-string: #7a7a7a;
-  --lig-dark-comment: #7a7a7a;
+  --lig-dark-string: #6f6f6f;
+  --lig-dark-comment: #6f6f6f;
   --lig-dark-type: #8390d3;
   --lig-dark-constant: #95a4f6;
   --lig-dark-number: #95a4f6;
@@ -208,7 +208,7 @@
   --lig-dark-family-mono-highlight: #f2f2f2;
   --lig-dark-family-mono-base: #b7b7b7;
   --lig-dark-family-mono-secondary: #989898;
-  --lig-dark-family-mono-muted: #7a7a7a;
+  --lig-dark-family-mono-muted: #6f6f6f;
   --lig-dark-accent-yellow-fill: #dbb800;
   --lig-dark-text-on-yellow: #181818;
   --lig-light_paper-black: #000000;
@@ -247,8 +247,8 @@
   --lig-light_paper-accent1: #38964d;
   --lig-light_paper-accent2: #cc7200;
   --lig-light_paper-keyword: #5f5d59;
-  --lig-light_paper-string: #9a9893;
-  --lig-light_paper-comment: #9a9893;
+  --lig-light_paper-string: #a6a49f;
+  --lig-light_paper-comment: #a6a49f;
   --lig-light_paper-type: #7b8bf0;
   --lig-light_paper-constant: #6875d8;
   --lig-light_paper-number: #6875d8;
@@ -328,7 +328,7 @@
   --lig-light_paper-family-mono-highlight: #2f2e2a;
   --lig-light_paper-family-mono-base: #5f5d59;
   --lig-light_paper-family-mono-secondary: #6a6964;
-  --lig-light_paper-family-mono-muted: #9a9893;
+  --lig-light_paper-family-mono-muted: #a6a49f;
   --lig-light_paper-accent-yellow-fill: #dbb800;
   --lig-light_paper-text-on-yellow: #181818;
   --lig-dark_paper-black: #000000;
@@ -367,8 +367,8 @@
   --lig-dark_paper-accent1: #73c07f;
   --lig-dark_paper-accent2: #e6964f;
   --lig-dark_paper-keyword: #b9b7b2;
-  --lig-dark_paper-string: #7c7a75;
-  --lig-dark_paper-comment: #7c7a75;
+  --lig-dark_paper-string: #706f69;
+  --lig-dark_paper-comment: #706f69;
   --lig-dark_paper-type: #8390d3;
   --lig-dark_paper-constant: #95a4f6;
   --lig-dark_paper-number: #95a4f6;
@@ -448,7 +448,7 @@
   --lig-dark_paper-family-mono-highlight: #f4f2ec;
   --lig-dark_paper-family-mono-base: #b9b7b2;
   --lig-dark_paper-family-mono-secondary: #9a9893;
-  --lig-dark_paper-family-mono-muted: #7c7a75;
+  --lig-dark_paper-family-mono-muted: #706f69;
   --lig-dark_paper-accent-yellow-fill: #dbb800;
   --lig-dark_paper-text-on-yellow: #181818;
 }
