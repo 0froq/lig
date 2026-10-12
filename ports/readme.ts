@@ -5,44 +5,54 @@ import { neovimReadme } from './neovim/readme'
 export function portReadme(port: 'neovim' | 'vscode', metadata: BuildMetadata): string {
   if (port === 'neovim')
     return neovimReadme(metadata)
-  const installation = `
-## 打包并安装本快照（VS Code）
+  return `# LiG Theme for VS Code
+
+Less is Great. Four variants from the canonical [LiG palette](https://github.com/0froq/lig): **LiG Light**, **LiG Dark**, **LiG Light Paper**, **LiG Dark Paper**.
+
+## Install
+
+Download \`theme-lig-${PACKAGE_VERSION}.vsix\` from [GitHub Releases](https://github.com/0froq/vscode-theme-LiG/releases/tag/v${PACKAGE_VERSION}), then:
 
 \`\`\`sh
-cd dist/ports/vscode
-npx @vscode/vsce package --no-dependencies
-code --install-extension theme-lig-preview-${PACKAGE_VERSION}.vsix
+code --install-extension theme-lig-${PACKAGE_VERSION}.vsix
 \`\`\`
 
-从上面的 source snapshot 在 LiG 源码仓库运行 \`pnpm install\` 和 \`pnpm ports:generate\` 后再打包。这份生成目录不代表旧 Preview release 已被更新；旧 tag 中的 VSIX 不等于当前快照。
+Or use **Extensions: Install from VSIX...** in VS Code, then **Preferences: Color Theme**.
+The extension keeps its original ID \`froQ.theme-lig\`. GitHub releases and editor stores have separate publishing schedules: the VSIX is the version described here. Minimum VS Code version: 1.107.0.
 
-若终端没有 \`code\`，在 VS Code 命令面板使用 \`Extensions: Install from VSIX...\` 选择下载文件。
-随后 \`Preferences: Color Theme\` 选择 LiG Preview Dark / Light / Dark Paper / Light Paper。
+### Migrate from Soft or Preview
 
-Extension ID 是 \`froQ.theme-lig-preview\`，与现有 \`froQ.theme-lig\` 独立。最低 VS Code 版本沿用 1.107.0。
-`
-  return `# LiG VS Code Preview
+Version 0.2.0 replaces the old independently authored palettes. Select **LiG Light Paper** / **LiG Dark Paper** in place of Soft and update any \`workbench.colorTheme\` or preferred-theme settings. Soft is no longer contributed as a separate theme. The older \`froQ.theme-lig-preview\` extension is independent; disable or uninstall that extension to avoid selecting an old preview.
 
-这是一套供人工试用的生成产物，未替换正式 LiG 主题。四套 variant（light / dark / light-paper / dark-paper）来自同一个 OKLCH core 与 shared styles。
+Optional system appearance switching (merge into your existing settings):
 
-${installation}
-## 覆盖与测试重点
+\`\`\`json
+{
+  "window.autoDetectColorScheme": true,
+  "workbench.preferredLightColorTheme": "LiG Light Paper",
+  "workbench.preferredDarkColorTheme": "LiG Dark Paper"
+}
+\`\`\`
 
-- 基础编辑界面、诊断、选区、terminal 16 色。
-- 191 个 Workbench keys、TextMate 与 semantic tokens；是否收到 semantic tokens 取决于语言扩展。
-- 对比 TS/Python 中的 variable / keyword、类型定义 / 引用、函数定义 / 调用、字符串 / 注释。
-- 试用四套主题、选区/搜索/诊断。比较 semantic highlighting 开启与关闭时的分类。
-- Paper 变体使用微染色的面板与灰阶；彩色 token 沿用对应 light/dark。
-- 字体与最终视觉效果由用户在实际编辑器手动确认；构建检查不等于视觉验收。
+To roll back, install an older release VSIX and restore its theme name in settings.
 
-## 单一事实源
+## Source and reproducibility
 
-请在 [LiG source snapshot](https://github.com/0froq/lig/tree/${metadata.sourceRef}) 修改 design/core/compiler；不要手改这里的 generated 文件。
+This repository distributes static native JSON, with no executable extension code or installation-time token downloads. Change colors and bindings in [the LiG source snapshot](https://github.com/0froq/lig/tree/${metadata.sourceRef}); run \`pnpm ports:generate\` there. Import the generated payload with \`python3 scripts/sync.py /path/to/lig/dist/ports/vscode\`, then \`python3 scripts/verify.py\` (Python 3.11+).
 
-Design version: ${metadata.designVersion}
-Compiler version: ${metadata.compilerVersion}
+Package a local VSIX with \`npx @vscode/vsce package --no-dependencies\`. No palette build is performed here. \`lig-build.json\` records every generated file checksum.
+
+Design: ${metadata.designVersion} · Compiler: ${metadata.compilerVersion}
 Input SHA-256: \`${metadata.inputHash}\`
 
-\`lig-build.json\` 包含该 repo 的每个文件 checksum。Preview 是静态 native 产物，安装时无需 Node，也不会从网络加载 tokens。
+## Scope and manual checks
+
+The adapter covers 191 Workbench keys, TextMate scopes, semantic tokens and the same 16 terminal slots as the other LiG ports. Language grammars and language servers may classify source differently. Semantic token availability depends on the language extension and user settings.
+
+Data and package checks do not establish visual acceptance. Check all four themes in VS Code: UI and panels, syntax with semantic highlighting on/off, strings/comments, diagnostics/selections and terminal ANSI colors. Existing user color customizations can override the theme.
+
+## Credits and license
+
+MIT. The original distribution was based on [Vitesse Theme](https://github.com/antfu/vscode-theme-vitesse) by Anthony Fu. Original Primer and Anthony Fu copyright notices are retained in LICENSE.md.
 `
 }

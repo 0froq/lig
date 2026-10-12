@@ -31,3 +31,7 @@ Verification:
 - Existing token (21), port (18) and parser/model (5) contracts pass; native Neovim 0.10.4 and 0.12.4 API/checksum checks pass.
 - App/core/ports/syntax type checks and generated artifact drift checks pass. Static generation succeeds for 26 routes with independent worktree dependencies. A first attempt using another checkout’s symlinked dependencies failed due to shared Nuxt cache resolution; no source change was needed to resolve it.
 - Manual acceptance remains: switch all four themes, inspect string/note/markup samples and overlapping decorations, verify hover/pin/keyboard/select behavior, and compare installed editor plugins with the intended repository/version. No UI tests or browser checks were run.
+
+## Follow-up
+
+The user authorized the remaining migrations. See [editor port migration](2026-10-12-editor-port-migration.md) for the VS Code/Zed canonical distributions, LiG Markdown integration and host Neovim switch. The independent-repository and host boundaries above describe the pre-migration audit, not the current outcome.

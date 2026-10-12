@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from './core/resolve'
+import { documentationThemes } from './shared/documentation-themes'
 import { keepEmptyTitle } from './shared/empty-title'
 import { markFinalStop } from './shared/final-mark'
 import { themePreferenceScript } from './shared/theme-preference'
@@ -61,7 +62,7 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          theme: { default: 'vitesse-light', dark: 'vitesse-dark' },
+          theme: documentationThemes(),
           langs: ['ts', 'js', 'vue', 'bash', 'json', 'yaml', 'md'],
         },
       },
