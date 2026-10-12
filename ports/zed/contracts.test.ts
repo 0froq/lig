@@ -35,6 +35,11 @@ describe('Zed editor distribution', () => {
       assert.equal(native.style.syntax.function!.color, theme.tokens['syntax.function.call'])
       assert.equal(native.style.syntax.type!.color, theme.tokens['syntax.type'])
       assert.equal(native.style.syntax.title!.font_weight, 700)
+      assert.equal(native.style.syntax['emphasis.strong']!.font_weight, 700)
+      for (const [capture, style] of Object.entries(native.style.syntax)) {
+        if (!['title', 'emphasis.strong'].includes(capture))
+          assert.equal(style.font_weight, null, `${theme.variant}: ${capture} must inherit the editor font weight`)
+      }
       assert.equal(native.style.players[0]!.cursor, theme.tokens['text.primary'])
       assert.equal(native.style.players[0]!.selection, theme.tokens['surface.selection'])
       assert.equal(native.style.players[1]!.selection, `${theme.tokens['accent.green.base']}30`)
