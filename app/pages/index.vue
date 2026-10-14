@@ -1,10 +1,19 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-useHead({ title: t('palette.meta.title') })
+const pageTitle = () => t('palette.meta.title')
+
+useHead({ title: pageTitle() })
+defineOgImage('Paper', {
+  title: pageTitle,
+  words: 0,
+}, {
+  alt: pageTitle,
+})
 useShareMeta({
-  title: () => t('palette.meta.title'),
+  title: pageTitle,
   description: () => t('palette.meta.description'),
+  image: false,
 })
 </script>
 

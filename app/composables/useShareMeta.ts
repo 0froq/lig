@@ -1,75 +1,81 @@
 import type { MaybeRefOrGetter } from 'vue'
+import { absoluteImageUrl, canonicalUrl, OG_IMAGE_HEIGHT, OG_IMAGE_PATH, OG_IMAGE_WIDTH } from '~/utils/site'
 
-/** Production origin for canonical and Open Graph URLs. Worker config has no custom domain. */
-export const SITE_ORIGIN = 'https://lig.froq.me'
-export const OG_IMAGE_URL = `${SITE_ORIGIN}/og.png`
+export type ShareType = 'website' | 'article'
 
-type ShareType = 'website' | 'article'
+export interface ShareMetaInput {
+  title?: MaybeRefOrGetter<string | undefined | null>
+  description?: MaybeRefOrGetter<string | undefined | null>
+  type?: MaybeRefOrGetter<ShareType | undefined>
+  /** When true, `og:title` is the page title only (no product suffix). */
+  bareTitle?: MaybeRefOrGetter<boolean | undefined>
+  /**
+   * Share image path or https URL.
+   * `false` when defineOgImage owns `og:image`.
+   * Omitted routes use `/og.png`.
+   */
+  image?: MaybeRefOrGetter<string | false | undefined>
+}
 
-interface SharePayload {
-  title?: string | null
-  description?: string | null
-  type?: ShareType
-  bareTitle?: boolean
+function filled(value: string | undefined | null, fallback: string): string {
+  const text = value?.trim()
+  return text || fallback
 }
 
 /**
- * Site-wide Open Graph / Twitter card tags.
- * `app.vue` calls this with no argument to emit the tags.
- * Pages that already have a title or description pass them as overrides.
+ * Open Graph / Twitter tags for the current route.
+ * `og:url` stays on the site origin. Image URLs use the Worker origin.
  */
-export function useShareMeta(input?: {
-  title?: MaybeRefOrGetter<string | undefined | null>
-  description?: MaybeRefOrGetter<string | undefined | null>
-  type?: MaybeRefOrGetter<ShareType>
-  bareTitle?: MaybeRefOrGetter<boolean>
-}): void {
-  const payload = useState<SharePayload>('share-meta', () => ({}))
-
-  if (input) {
-    watchEffect(() => {
-      payload.value = {
-        title: toValue(input.title),
-        description: toValue(input.description),
-        type: toValue(input.type),
-        bareTitle: toValue(input.bareTitle),
-      }
-    })
-    return
-  }
-
+export function useShareMeta(input: ShareMetaInput = {}): void {
   const route = useRoute()
   const { t, locale } = useI18n()
   const { product } = useAppConfig()
 
   const title = computed(() => {
-    const page = payload.value.title?.trim()
-    if (!page)
-      return t('site.title')
-    if (payload.value.bareTitle)
+    const page = filled(toValue(input.title), t('site.title'))
+    if (toValue(input.bareTitle))
       return page
     const brand = product.name ? `${product.name}${product.mark}` : ''
-    return brand ? `${page} — ${brand}` : page
+    return brand && page !== t('site.title') ? `${page} — ${brand}` : page
   })
-  const description = computed(() => payload.value.description?.trim() || t('palette.meta.description'))
+  const description = computed(() => filled(toValue(input.description), t('palette.meta.description')))
+  const type = computed(() => toValue(input.type) ?? 'website')
+  const url = computed(() => canonicalUrl(route.path))
+  const skipImage = toValue(input.image) === false
+  const image = computed(() => {
+    const value = toValue(input.image)
+    if (value === false || !value)
+      return absoluteImageUrl(OG_IMAGE_PATH)
+    return absoluteImageUrl(value)
+  })
+  const imageAlt = computed(() => `${product.name} — ${t('site.footer')}`)
 
   useSeoMeta({
-    twitterCard: 'summary_large_image',
-    ogType: () => payload.value.type ?? 'website',
-    ogSiteName: () => product.name,
+    description: () => description.value,
     ogTitle: () => title.value,
     ogDescription: () => description.value,
-    description: () => description.value,
-    ogImage: OG_IMAGE_URL,
-    ogImageAlt: () => `${product.name} — ${t('site.footer')}`,
-    ogImageWidth: 1200,
-    ogImageHeight: 630,
-    ogImageType: 'image/png',
-    ogUrl: () => route.path === '/' ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`,
+    ogUrl: () => url.value,
+    ogType: () => type.value,
+    ogSiteName: () => product.name,
     ogLocale: () => locale.value === 'zh' ? 'zh_CN' : 'en_US',
+    twitterCard: 'summary_large_image',
     twitterTitle: () => title.value,
     twitterDescription: () => description.value,
-    twitterImage: OG_IMAGE_URL,
-    twitterImageAlt: () => `${product.name} — ${t('site.footer')}`,
+  })
+
+  if (!skipImage) {
+    useSeoMeta({
+      ogImage: () => image.value,
+      ogImageType: 'image/png',
+      ogImageWidth: OG_IMAGE_WIDTH,
+      ogImageHeight: OG_IMAGE_HEIGHT,
+      ogImageAlt: () => imageAlt.value,
+      twitterImage: () => image.value,
+      twitterImageAlt: () => imageAlt.value,
+    })
+  }
+
+  useHead({
+    link: [{ rel: 'canonical', href: () => url.value }],
   })
 }
