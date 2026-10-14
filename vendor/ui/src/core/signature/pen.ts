@@ -194,8 +194,8 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
     const lift = (to: Point, trigger: Element): Seg | null => pen ? append([pen, to], 0, { speed: 1e6, trigger }) : travel(to, [1, 0])
 
     // 2. The rule under the head of the page, drawn right to left.
-    // If the first label sits in from the left edge, stop above that word.
-    // Running out to the edge and back leaves a sharp point.
+    // Stop to the right of the first label, leaving room for the leftward
+    // tangent to turn down without swinging out to the page edge.
     const foot = anchors.rule
     if (foot) {
       const fr = foot.getBoundingClientRect()
@@ -204,9 +204,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
       const firstLabel = !narrow ? anchors.sections?.find(section => section.label)?.label : undefined
       if (firstLabel) {
         const lr = textRect(firstLabel)
-        const turn = lr.left + lr.width * 0.65
-        if (turn > fr.left + 48)
-          x1 = Math.min(fr.right - 32, turn)
+        x1 = Math.min(fr.right - 32, Math.max(fr.left + 32, lr.right + 32))
       }
       draft.push(travel([fr.right, y], [-0.45, 0.9], connector, { speed: 1100 }))
       draft.push(append(wobble([[fr.right, y], [x1, y]], 1.2, 3), connector * 0.8, { speed: 1800, emphasis: false }))
