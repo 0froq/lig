@@ -2,6 +2,7 @@
 import type { LigVariant } from '../../../core'
 import type { SyntaxDocument } from '../../../syntax/types'
 import { Select } from '@froq/ui'
+import { useScrollHandoff } from '@froq/ui/vue'
 import { resolveVariant } from '../../../core'
 import { captureRole, syntaxFamily } from '../../../core/syntax'
 import { ancestry, segmentSource, sourceRange } from '../../../syntax/model'
@@ -13,6 +14,10 @@ const segments = computed(() => segmentSource(props.document))
 const active = ref<number | null>(null)
 const inspected = ref<number | null>(null)
 const pinned = ref(false)
+const inspector = ref<HTMLElement>()
+useScrollHandoff(inspector, {
+  enabled: () => window.matchMedia('(max-width: 1100px)').matches,
+})
 const segment = computed(() => active.value === null ? null : segments.value[active.value]!)
 const node = computed(() => inspected.value === null ? null : props.document.nodes[inspected.value]!)
 const parents = computed(() => node.value ? ancestry(props.document, node.value.id) : [])
@@ -141,6 +146,7 @@ function inSelection(start: number, end: number): boolean {
           </button>
         </div>
         <div
+          ref="inspector"
           class="lig-inspector-content"
           role="region"
           :aria-label="t('palette.inspect.title')"
