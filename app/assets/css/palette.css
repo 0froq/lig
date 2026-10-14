@@ -16,9 +16,64 @@
   white-space: nowrap;
 }
 
-/* Shift the homepage sections one column left, retaining the nine-column body. */
+/* Label column plus body, centered as one measure. The label sits on the
+   right of its column so a long name grows away from the title.
+   The handwritten tagline uses the same right edge, so the stroke does not
+   run down the side of the page. */
+.lig-hero,
+.lig-hero ~ .l-section {
+  --edge: clamp(80px, 11vw, 220px);
+}
+
+.lig-hero .l-hero-foot,
 .lig-hero ~ .l-section {
   --span-margin: 2;
+  --measure-gap: 48px;
+  box-sizing: border-box;
+  width: min(1080px, calc(100vw - var(--edge) * 2));
+  margin-inline: auto;
+  gap: var(--measure-gap);
+}
+
+.has-hand .lig-hero .l-tagline {
+  right: max(var(--edge), calc((100vw - 1080px) / 2));
+}
+
+.lig-hero ~ .l-section {
+  --span-body: 10;
+  padding-inline: 0;
+}
+
+.lig-hero ~ .l-section .l-label {
+  text-align: end;
+}
+
+/* The lede shares the body rail with the section titles. The kit column
+   leaves it one track in from that edge. */
+.lig-hero .l-hero-foot .l-lede {
+  grid-column: calc(var(--span-margin) + 1) / -1;
+  max-width: 28rem;
+}
+
+@media (max-width: 860px) {
+  .lig-hero .l-hero-foot {
+    width: auto;
+    margin-inline: max(0px, calc(var(--edge) - var(--pad)));
+  }
+
+  .lig-hero ~ .l-section {
+    width: auto;
+    margin-inline: 0;
+    padding-inline: var(--edge);
+  }
+
+  .lig-hero ~ .l-section .l-label {
+    text-align: start;
+  }
+
+  .lig-hero .l-hero-foot .l-lede {
+    grid-column: 1 / -1;
+  }
 }
 
 .lig-section-quiet {
