@@ -1,5 +1,6 @@
 MIT License
 
+Copyright (c) 2024-2026 froQ
 Copyright (c) 2020 Primer
 Copyright (c) 2021 Anthony Fu
 

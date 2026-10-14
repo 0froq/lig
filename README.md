@@ -1,88 +1,132 @@
-# LiG
+# <img src="public/brand/lig.svg" width="24" height="24" alt="LiG"> LiG
 
-<img src="public/brand/lig.svg" width="96" height="96" alt="LiG pixel L: struct, ref, mono, action">
+<p align="center">
+  <img src="https://badgen.net/badge/theme%20family/LiG/333333?labelColor=cccccc" alt="Theme family">
+  <a href="https://github.com/0froq/lig.nvim"><img src="https://badgen.net/badge/Neovim/port/333333?labelColor=cccccc" alt="Neovim"></a>
+  <a href="https://github.com/0froq/vscode-theme-LiG"><img src="https://badgen.net/badge/VS%20Code/port/333333?labelColor=cccccc" alt="VS Code"></a>
+  <a href="https://github.com/0froq/zed-theme-LiG"><img src="https://badgen.net/badge/Zed/port/333333?labelColor=cccccc" alt="Zed"></a>
+  <a href="https://github.com/0froq/lig/stargazers"><img src="https://badgen.net/github/stars/0froq/lig?color=333333&labelColor=cccccc&icon=star" alt="Stars"></a>
+  <a href="LICENSE"><img src="https://badgen.net/badge/license/MIT/333333?labelColor=cccccc" alt="License"></a>
+</p>
 
-froQ 的 LiG：**Less is Great**，用少量颜色做语法高亮。本仓库维护 canonical token spec 和展示网站。
+Less is Great.
+A **theme family** so syntax colors stay put when you switch tools.
 
-基础色、语义角色及四个变体的唯一事实源是 [`core/spec.json`](core/spec.json)。网站从 core 派生；Neovim、VS Code 与轻量工具 port 从同一套 core 生成，用户可以下载生成产物。
+If you highlight everything, you highlighted nothing.
+So with great restraint,
+LiG uses only green, blue, orange, and a neutral scale.
 
-## 开发
+> [!NOTE]
+> Still settling after a refactor. Some rough spots remain.
+
+## Preview
+
+<details>
+<summary>Editor previews (caution: protect your eyes)</summary>
+
+![Neovim, dark](docs/images/neovim.jpg)
+
+![Zed, light](docs/images/zed.jpg)
+
+![VS Code, dark](docs/images/vscode.jpg)
+
+</details>
+
+## Color
+
+Each role has a job:
+
+![mono, struct, ref, and action](docs/images/roles.png)
+
+Four variants:
+`light`, `dark`, `light-paper`, `dark-paper`.
+The only authored source is [`core/spec.json`](core/spec.json).
+All ports are based on it.
+Anyway, they share the idea instead of being exactly the same,
+due to differences in editors.
+Neovim uses Tree-sitter,
+VS Code uses TextMate,
+and the grammars do not classify the same way.
+
+> [!IMPORTANT]
+> LiG is a color theme.
+> Critique the taste if you want.
+> Don't open issues to steer it toward another design.
+> Notes on color, readability, emphasis, and editor UI are welcome.
+
+## Install
+
+Install an editor port from its own repository.
+
+| Port | Where |
+| --- | --- |
+| Neovim | [lig.nvim](https://github.com/0froq/lig.nvim) |
+| VS Code | [vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG) |
+| Zed | [zed-theme-LiG](https://github.com/0froq/zed-theme-LiG) |
+| Ghostty, fzf, Zellij, tmux, Starship, bat, eza | [lightweight ports](ports/lightweight/README.md) |
+
+Editor stores can lag behind GitHub.
+Follow the install notes in each distribution.
+
+## Develop
 
 ```bash
 pnpm install --frozen-lockfile
 pnpm dev
 pnpm tokens:generate
-pnpm tokens:test
-pnpm tokens:typecheck
 pnpm tokens:check
-pnpm typecheck
-pnpm lint
-pnpm build
+pnpm ports:generate
+pnpm ports:check
 ```
 
-`pnpm palette:generate` 保留为 `tokens:generate` 的命令别名。
+Change colors in `core/spec.json`, then regenerate.
+Do not edit `core/generated/` or `palette/generated/` by hand
+unless you know what you're doing.
+`tokens:check` and `ports:check` fail when generated files drift from the spec.
+The color contract is in [`core/README.md`](core/README.md).
+The port compiler is in [`ports/README.md`](ports/README.md).
 
-## 发布
+## Contributing
 
-推到 `main` 后，由 Workers Builds（GitHub 连接，仓库不存放 API token）构建并发布。网页里新建的是 Worker `lig`，不是 Pages。静态文件在 `dist`。Worker 配置在 `cloudflare.config.ts`，资源目录在 `wrangler.config.ts`。本地一次发布用 `pnpm deploy`。
+Open an issue for a color, readability, emphasis, or editor-UI problem,
+and include the variant and the port.
 
-Workers Builds：`NODE_VERSION=22`。构建 `pnpm generate`；生产部署 `pnpm exec cf deploy`；非生产预览 `pnpm exec cf previews deploy`。Nitro 固定 `preset: 'static'`，避免 `WORKERS_CI=1` 时被选成 Cloudflare 预设。
+For a code change:
 
-```bash
-pnpm generate   # 静态站点，输出到 dist
-pnpm deploy     # 生成并 cf deploy
-```
+1. Edit the source here.
+   Distribution repositories are generated output.
+   A fix in `lig.nvim`, `vscode-theme-LiG`, or `zed-theme-LiG` will be overwritten.
+2. Keep one change to one concern.
+3. Run the check that covers what you touched: `pnpm tokens:check` for colors, `pnpm ports:check` for ports.
 
-## Icon
+Issues that ask LiG to become a different theme will be closed.
 
-透明九宫格像素 L：1 = struct.base，4 = ref.base，7 = mono.base，8 = action.base；7 是转角，其余五格透明。图标颜色直接从 core 的语义 token 生成，随 `pnpm tokens:generate` 更新，由 `tokens:check` 检查。
+## Contact
 
-- 仓库 README / gallery：[SVG](public/brand/lig.svg)、[512px PNG](public/brand/lig.png)。SVG 根据系统明暗偏好切换颜色，PNG 固定使用 light 色值。
-- 各主题固定版本：`public/brand/lig-{light,dark,light-paper,dark-paper}.{svg,png}`。
-- Web：主题切换会更新 SVG favicon；提供 32px PNG fallback、180px Apple touch icon、192/512px manifest icon。图标不包含底色，也不提供离线缓存。
-- GitHub 没有仓库独立头像设置；README 使用上述图标。社交预览图是单独的仓库设置。
+Email: [sayhola@froq.me](mailto:sayhola@froq.me)
+GitHub: [@0froq](https://github.com/0froq)
 
-## 目录
+## Acknowledgements
 
-| 路径 | 说明 |
-| --- | --- |
-| `core/spec.json` | 唯一手工维护的基础色、语义引用、混色公式和变体定义 |
-| `core/resolve.ts` | 无全局状态的纯 token 解析器 |
-| `core/generated/tokens.json` | 可供不同语言、不同 port 消费的确定性 JSON |
-| `core/README.md` | token 契约、命名、混色规则和变体决策 |
-| `core/tests/` | 非 UI 的契约与回归检查 |
-| `palette/src/` | 将 core 转为现有网站 palette API 的适配层 |
-| `palette/generated/` | 现有网站格式的 JSON、CSS、SCSS 和 Tailwind 色板 |
-| `app/components/palette/` | 色板与代码预览 UI |
-| `app/pages/index.vue` | 首页 |
-| `ports/` | TypeScript port 编译器、原生映射与契约检查 |
-| `ports/lightweight/` | Ghostty、fzf、Zellij、tmux、Starship、bat、eza 适配及安装说明 |
-| `dist/ports/` | 本地生成的分发文件（不提交） |
-| `public/ports/` | 构建时生成的轻量 port 下载文件（不提交） |
-| `vendor/ui/` | 以 subtree 嵌入的完整 `0froq/ui` 源码；通过 `file:vendor/ui` 编译 |
+- [OKLab and OKLCH](https://bottosson.github.io/posts/oklab/) by Björn Ottosson. Palette coordinates are written in OKLCH and mixed in OKLab.
+- [Vitesse Theme](https://github.com/antfu/vscode-theme-vitesse) by Anthony Fu, itself based on Primer. The VS Code workbench bindings come from there.
+- [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) for the highlight queries used by the syntax demo.
+- [Geist](https://vercel.com/font) by Vercel, and [Instrument Serif](https://fonts.google.com/specimen/Instrument+Serif), for the site. Both are SIL OFL 1.1.
+- [Allura](https://github.com/googlefonts/allura) and EMS Allure for the handwriting strokes. Sheldon B. Michaels made EMS Allure, Windell H. Oskay converted it to SVG, and Rob Leuschke designed Allura. SIL OFL 1.1.
 
-`core/generated/` 和 `palette/generated/` 的 token 产物提交到仓库，不能手工编辑；`tokens:check` 检查它们是否与 spec 一致，且不会写文件。port 分发文件在构建时生成，通过 `ports:check` 检查。
+The site is built with Nuxt and Vue.
 
-## 这一阶段的颜色决策
+## Star History
 
-支持 `light`、`dark`、`light-paper`、`dark-paper` 四个变体。八种 accent、neutral 与 paper 灰阶及语义角色都在 core 中定义，计算不依赖调用顺序。`text.secondary` 与 `surface.status` 分开定义，避免把背景色用于次级文字；较弱的层级保留为 `text.subtle`。
+[![Star History Chart](https://api.star-history.com/chart?repos=0froq/lig&type=date&legend=bottom-right)](https://www.star-history.com/?repos=0froq%2Flig&type=date&legend=bottom-right)
 
-paper 画布使用独立的暖灰阶，彩色变体使用按色相校准的 OKLCH 坐标，黄色单独校准。详见 [core 契约](core/README.md)。初始映射来自 `0froq/lig.nvim` 和 `0froq/vscode-theme-LiG`，之后这里是维护源，旧 port 是迁移输入。
+## License
 
-`pnpm ports:generate` 生成 Neovim、VS Code、Zed 正式仓库的分发包及七种轻量 port，各含四个变体。网站为每个轻量 port 提供四个单文件链接和四变体 ZIP，当前主题只影响高亮状态；ZIP 与单文件一同受 manifest 的 SHA-256 校验。轻量文件集中在主仓库，通过网站下载与 CI 的 `lig-lightweight-ports` artifact 分发，无需独立仓库。`pnpm build` / `pnpm generate` 会先生成下载文件。安装说明见 [lightweight README](ports/lightweight/README.md)。本机配置不会被生成器修改。
+LiG's own code is released under the [MIT License](LICENSE).
 
-正式编辑器分发分别位于 [lig.nvim](https://github.com/0froq/lig.nvim)、[vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG)、[zed-theme-LiG](https://github.com/0froq/zed-theme-LiG)。Neovim 可固定正式 release tag；VS Code 使用 GitHub Release 的 VSIX，Zed 使用仓库扩展或本地 JSON。GitHub Release 与编辑器商店独立发布，不能把仓库已更新等同于商店已更新。
+These parts keep their own licenses:
 
-## 手动验收
-
-站点已接入 `@froq/ui`，Ports 的 agent 指令使用库里的 `CopyButton` 和 `Collapsible`。作用域 `.lig-ui.ui` 将库的十二个主题变量映射到本站的颜色、字体和动效变量；已有页面组件仍保留本地实现。上游同步和抽组件流程见根目录 `AGENTS.md`。库源码随本仓库提交，远端构建不依赖开发机路径。
-
-agent 指令随当前语言和主题生成，包含当前站点的下载来源。指令要求先只读检测已安装技术栈并列出可用 port、变体和配置方案，等待用户确认后再备份、合并配置并验证。本网站不会执行本机扫描或安装。
-
-演示顺序为 TypeScript、Python、ANSI 终端。终端彩底上的文字取当前 `terminal.background`，形成反色，不额外维护黑白标签色。
-
-没有运行 UI 测试或浏览器检查。需要手动验收：agent 指令复制成功／拒绝状态、语言与主题切换后的指令内容、展开区域的间隔、终端窄屏换行和彩字／反色彩底、四个主题切换后的下载高亮与各下载链接、旧 `/lab` 链接跳转、各工具的选中状态与边框、浅色背景黄色文字、tmux 内嵌颜色和 bat 语法高亮。原生配置解析检查不代表视觉验收。
-
-## 许可
-
-手写字体见 `vendor/ui/src/core/signature/hand-font.ts`（SIL OFL 1.1），完整许可和来源见同目录的 `OFL.txt` 与 `NOTICE.md`。
+- Handwriting strokes in [`vendor/ui/src/core/signature/`](vendor/ui/src/core/signature/) are SIL OFL 1.1. Copyright 2010 The Allura Project Authors. The notice is in `NOTICE.md` and `OFL.txt`.
+- Highlight queries in [`syntax/queries/`](syntax/queries/) are unmodified nvim-treesitter snapshots: Apache-2.0, and MIT for the Python query (Copyright 2016 Max Brunsfeld).
+- Generated Neovim, Zed, VS Code, and lightweight ports use this same MIT license. The VS Code package also keeps the Primer (2020) and Anthony Fu (2021) notice in [`ports/licenses/MIT-vscode.txt`](ports/licenses/MIT-vscode.txt). Earlier lig.nvim releases stay Apache-2.0 until they are published again.
+- Geist and Instrument Serif are SIL OFL 1.1 dependencies. They are not part of this MIT grant.

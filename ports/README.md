@@ -1,34 +1,79 @@
-# LiG port compiler
+# Port compiler
 
-Authoring source for the official Neovim, VS Code and Zed repository distributions and the shared lightweight tool ports.
+This directory builds the Neovim, VS Code, and Zed distributions,
+and the shared lightweight ports.
+Colors come from [`core/spec.json`](../core/spec.json).
+No adapter keeps its own palette.
 
-```sh
+```bash
 pnpm ports:generate
 pnpm ports:typecheck
 pnpm ports:test
 pnpm ports:check
+```
+
+Generation needs TypeScript only.
+It does not need Nuxt, a parser, or an installed editor.
+
+Optional native checks:
+
+```bash
 nvim --headless -u NONE -i NONE -l ports/neovim/verify.lua
 python3 ports/lightweight/verify.py
 ```
 
-Generation needs TypeScript/jiti only. It does not need Nuxt preparation, a parser, or an installed editor. The optional native checks require Neovim or Python 3.11+ and the seven lightweight tools, respectively; lightweight validation uses isolated temporary configuration and servers.
+The Neovim check needs Neovim.
+The lightweight check needs Python 3.11+ and the seven tools.
+It uses a temporary config.
+It does not edit the machine's real config.
 
-- `core/spec.json` is the color source, with unchanged existing calibration plus shared terminal/UI aliases.
-- `styles.ts` and `semantics.ts` define editor-independent intent.
-- `neovim/` and `vscode/` bind native vocabularies and serialize data.
-- `zed/` maps editor UI, native captures and terminal slots to the `0froq/zed-theme-LiG` native theme extension and compatible local JSON themes; installation and scope are documented in `zed/README.md`.
-- `dist/ports/` contains installable distributions, manifests and checksums.
-- `constants.ts` and `zed/distribution.ts` pin package versions and immutable source/distribution tags.
-- Neovim emits the stable `0froq/lig.nvim` distribution and `lig` Lua/colorscheme identity. VS Code retains its original `froQ.theme-lig` extension identity in `0froq/vscode-theme-LiG`; Zed ships through `0froq/zed-theme-LiG`. GitHub Releases and editor stores are published separately; follow each distribution's installation instructions.
+## Layout
 
-Neovim includes every implemented plugin module from lig.nvim at `7bb6ca25705baedaae22996eca17c3a8a1745bb2`: sixteen integrations, shared completion kinds and stable lualine/lightline entrypoints. `neovim/integrations/coverage.json` records upstream source hashes and exact legacy group names. The TypeScript bindings are now the maintained adapter source; generation does not depend on the legacy checkout. Correct which-key Icon aliases supplement the upstream misspelled lcon names. Plugin selection supports legacy module/plugin identifiers, boolean or `{enabled=...}`, lazy detection and the mini.nvim umbrella.
+| Path                        | Role                                                                                              |
+| --------------------------- | ------------------------------------------------------------------------------------------------- |
+| `styles.ts`, `semantics.ts` | Editor-independent intent                                                                         |
+| `neovim/`                   | Lua colorscheme for [lig.nvim](https://github.com/0froq/lig.nvim)                                 |
+| `vscode/`                   | JSON theme for [vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG), id `froQ.theme-lig` |
+| `zed/`                      | Extension for [zed-theme-LiG](https://github.com/0froq/zed-theme-LiG)                             |
+| `lightweight/`              | Ghostty, fzf, Zellij, tmux, Starship, bat, eza                                                    |
+| `dist/ports/`               | Generated payloads and checksums. Not committed                                                   |
 
-The mono profile and old `on_colors` hook are retired with explicit migration errors; `on_tokens` replaces the flat color hook. The Neovim API uses `on_tokens` and `on_highlights`. The site and native Neovim bindings share capture foregrounds and decorations through `core/syntax.ts`; compilation rejects a capture style that diverges from this contract. The website demo uses Tree-sitter captures only, without LSP or editor plugins. Capture styles are explicit and never inferred from color equality; `@constructor.lua` maps table braces to neutral punctuation while other constructor captures retain the shared action intent.
+`constants.ts` and `zed/distribution.ts` pin package versions and the source ref.
+GitHub Releases and the editor stores are published separately.
+A merged commit is not a store update.
 
-Syntax role decisions are shared, but grammar/LSP classifications can differ. Native rendering and manual appearance are not asserted by data checks. The four supported variants are light, dark, light-paper and dark-paper. Paper changes surfaces and mono inks while retaining its standard mode’s chromatic token coordinates. Retired soft colorscheme/lualine names are compatibility redirects to the new paper variants. Generation prunes obsolete files owned by the previous output manifest, retaining unmanaged files.
+Neovim keeps the sixteen integrations from lig.nvim at `7bb6ca25705baedaae22996eca17c3a8a1745bb2`.
+`neovim/integrations/coverage.json` records the upstream hashes and group names.
+The TypeScript bindings are the maintained source.
 
-Ghostty, fzf, Zellij, tmux, Starship, bat and eza ship together under `dist/ports/lightweight`, without separate repositories. `lightweight/` contains format adapters and installation notes; `catalog.ts` shares download paths with the site. bat reuses the existing TextMate bindings and style intent. All four variants are generated; no adapter maintains literal palette colors.
+`on_tokens` replaces `on_colors`.
+The old hook fails with a migration error.
+Soft colorscheme names redirect to the paper variants.
 
-The standard compiler also copies identical lightweight and Zed bytes to ignored `public/ports/`, with a combined checksum manifest; Nuxt build/generate runs it first. `ports:check` verifies both outputs, while a custom `--out` build stays isolated. CI uploads `lig-lightweight-ports` and the installable `lig-zed-port` extension as downloadable artifacts. `dist/ports/zed-extension` is the independent Zed repository payload, with its native manifest, license, four themes, checksums and extension archive. Download provenance records an immutable source tag and exact input hash. Published editor releases retain their own source snapshot and checksums; documentation-only changes in the compiler can change the input hash without changing theme values. Generating files does not publish or overwrite a release.
+Paper changes surfaces and mono inks.
+It keeps the standard mode's chromatic coordinates.
+The four variants are `light`, `dark`, `light-paper`, and `dark-paper`.
 
-The Workbench bindings are adapted from vscode-theme-LiG (MIT). Native Neovim family/group intent is based on lig.nvim (Apache-2.0). Original distribution licenses are retained under `licenses/`.
+Capture styles are explicit.
+They are not inferred from two tokens happening to share a hex.
+`@constructor.lua` uses neutral punctuation.
+Other constructor captures stay action.
+
+## Output
+
+`pnpm ports:generate` writes `dist/ports/`.
+The same lightweight and Zed download bytes are copied to `public/ports/`, which is gitignored.
+`pnpm build` and `pnpm generate` run the compiler first.
+`ports:check` compares both trees and does not write.
+A custom `--out` directory stays isolated.
+
+CI uploads `lig-lightweight-ports` and `lig-zed-port`.
+Generating files does not publish a release.
+A docs-only compiler change can change the input hash without changing theme colors.
+
+## License
+
+Generated Neovim, Zed, VS Code, and lightweight packages copy the repository [MIT license](../LICENSE).
+The VS Code package also keeps the Primer and Anthony Fu lines in [`licenses/MIT-vscode.txt`](licenses/MIT-vscode.txt).
+[`licenses/Apache-2.0.txt`](licenses/Apache-2.0.txt) is the earlier lig.nvim notice.
+It is not copied into new packages.

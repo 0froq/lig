@@ -109,6 +109,7 @@ describe('Zed editor distribution', () => {
       assert.equal(createHash('sha256').update(readFileSync(`${root}${path}`)).digest('hex'), checksum, path)
     for (const theme of themes)
       assert.deepEqual(readFileSync(`${root}themes/lig-${theme.variant}.json`), readFileSync(`${publicRoot}lig-${theme.variant}.json`))
-    assert.ok(readFileSync(`${root}LICENSE`, 'utf8').includes('Apache License'))
+    assert.ok(readFileSync(`${root}LICENSE`, 'utf8').includes('MIT License'))
+    assert.ok(readFileSync(`${root}LICENSE`, 'utf8').includes('Copyright (c) 2024-2026 froQ'))
   })
 })

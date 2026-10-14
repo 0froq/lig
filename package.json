@@ -5,6 +5,7 @@
   "private": true,
   "packageManager": "pnpm@12.11.2",
   "description": "A quiet product site template: paper, one pen line and a handwritten sentence.",
+  "license": "MIT",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",

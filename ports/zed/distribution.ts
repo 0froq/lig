@@ -17,7 +17,7 @@ export function zedDistribution(themes: ThemeIR[], metadata: BuildMetadata): Rec
     ...storeFiles('zed'),
     'extension.toml': `id = "lig-theme"\nname = "LiG"\nversion = "${ZED_VERSION}"\nschema_version = 1\nauthors = ["0froq"]\ndescription = "LiG editor themes: Light, Dark, Light Paper and Dark Paper"\nrepository = "${ZED_REPOSITORY}"\n`,
     'README.md': zedReadme({ ...metadata, sourceRef: ZED_SOURCE_REF }),
-    'LICENSE': readFileSync(new URL('../licenses/Apache-2.0.txt', import.meta.url), 'utf8'),
+    'LICENSE': readFileSync(new URL('../../LICENSE', import.meta.url), 'utf8'),
   }
   for (const theme of themes)
     files[`themes/lig-${theme.variant}.json`] = `${JSON.stringify(zedFamily([theme]), null, 2)}\n`

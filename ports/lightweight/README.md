@@ -1,106 +1,150 @@
-# LiG lightweight ports
+# Lightweight ports
 
-Seven small ports, four variants: `light`, `dark`, `light-paper`, `dark-paper`. These files are generated together from `core/spec.json`; no separate repositories or palettes. Substitute the variant you want in the examples below. Commands assume you are in this download directory (`dist/ports/lightweight` after local generation).
+Seven tools, four variants: `light`, `dark`, `light-paper`, `dark-paper`.
+All of them are generated from [`core/spec.json`](../../core/spec.json).
+There is no second palette and no separate repository.
 
-Download any of the four variants from the website's **Downloads & ports** section; the current theme is highlighted. Each port also has a **Download all** ZIP containing its four variant files inside the tool's directory. For all tools together, check out the [LiG repository](https://github.com/0froq/lig) on `main` and run `pnpm install --frozen-lockfile` then `pnpm ports:generate`, or download the `lig-lightweight-ports` artifact from its GitHub Actions run. To reproduce a particular download, check out the immutable `sourceRef` recorded in its `manifest.json` instead. The manifest contains SHA-256 checksums for individual files and ZIPs, plus compiler/design versions. Native editor distributions are released separately through [lig.nvim](https://github.com/0froq/lig.nvim), [vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG) and [zed-theme-LiG](https://github.com/0froq/zed-theme-LiG); follow their release-specific installation instructions, since editor stores may lag behind GitHub Releases.
+The examples below use `dark`.
+Swap the variant name for the one you want.
+Commands assume this download directory
+(`dist/ports/lightweight` after a local generate).
+
+Download one variant from the site, or the ZIP of all four.
+To rebuild them, check out [LiG](https://github.com/0froq/lig) and run `pnpm ports:generate`.
+`manifest.json` records the source ref, versions, and SHA-256 checksums.
+Editor ports live in [lig.nvim](https://github.com/0froq/lig.nvim), [vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG), and [zed-theme-LiG](https://github.com/0froq/zed-theme-LiG).
 
 ## Ghostty
 
-Copy the four files from `ghostty/` into `~/.config/ghostty/themes/`, then set:
+Copy `ghostty/` into `~/.config/ghostty/themes/`, then:
 
 ```ini
 theme = lig-dark
 ```
 
-Or follow system appearance with one family:
+Or follow the system appearance:
 
 ```ini
 theme = light:lig-light-paper,dark:lig-dark-paper
 ```
 
-Reload Ghostty's configuration. Explicit `background`, `foreground`, `palette`, `selection-*` or `cursor-*` values in your main config take precedence over a theme; remove conflicting overrides if needed. These themes set colors only: they do not change fonts, keybindings, opacity or window appearance. Your existing `window-theme = dark` setting is separate from color selection.
+Reload Ghostty.
+These files set colors only.
+Fonts, keys, opacity, and window appearance stay yours.
+An explicit `background`, `foreground`, `palette`, `selection-*`, or `cursor-*` in the main config wins over the theme.
 
-[Ghostty theme documentation](https://ghostty.org/docs/features/theme)
+[Ghostty themes](https://ghostty.org/docs/features/theme)
 
 ## fzf
 
-`fzf/lig-dark.fzfrc` contains one `--color` option, with explicit truecolor roles. Add that line **after** the old `--color` lines in your existing options file, or replace just those color lines. Preserve preview commands, dimensions, bindings and layout.
-
-For an isolated trial:
+`fzf/lig-dark.fzfrc` is one `--color` line.
+Put it after the old `--color` lines, or replace those lines.
+Keep preview commands, size, bindings, and layout.
 
 ```sh
 FZF_DEFAULT_OPTS= FZF_DEFAULT_OPTS_FILE="$PWD/fzf/lig-dark.fzfrc" fzf
 ```
 
-The local `.fzfrc` is already a full behavior config, so do not replace it wholesale. Explicit CLI color options still take precedence. [fzf options reference](https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1)
+Do not replace an existing `.fzfrc` with this file.
+A later `--color` on the command line still wins.
+
+[fzf options](https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1)
 
 ## Zellij
 
-Copy `zellij/lig-dark.kdl` to `~/.config/zellij/themes/`, then set this in `config.kdl`:
+Copy `zellij/lig-dark.kdl` to `~/.config/zellij/themes/`, then in `config.kdl`:
 
 ```kdl
 theme "lig-dark"
 ```
 
-The files use the component-based RGB theme format supported by Zellij 0.43.1: selected/unselected text, ribbons, tables, lists, frames, exit codes and ten multiplayer colors. RGB triples avoid the old theme's mixture of literal HEX and ANSI indices. Zellij does not automatically follow Ghostty's theme selection; choose the same variant explicitly.
+The file is the RGB theme format from Zellij 0.43.1.
+Zellij does not follow Ghostty's theme.
+Pick the same variant yourself.
 
-[Zellij theme documentation](https://zellij.dev/documentation/themes)
+[Zellij themes](https://zellij.dev/documentation/themes)
 
 ## tmux
 
-Save `tmux/lig-dark.conf` alongside your tmux configuration. Source it after existing color/style settings:
+Source the fragment after your other color settings:
 
 ```tmux
 source-file ~/.config/tmux/lig-dark.conf
 ```
 
-The fragment sets style options only. It does not change status formats, keys, plugins or sessions. Your current formats contain inline `#[fg=...,bg=...]` segments; these override the corresponding style option. They continue to use Ghostty's ANSI colors, or you can remove inline color segments to use these explicit role colors. `tmux source-file ~/.config/tmux/tmux.conf` reloads the parent configuration.
+It sets style options only.
+It does not change status formats, keys, plugins, or sessions.
+Inline `#[fg=...,bg=...]` segments still override the matching style option.
+Reload with `tmux source-file ~/.config/tmux/tmux.conf`.
 
-[tmux configuration documentation](https://github.com/tmux/tmux/wiki/Getting-Started)
+[tmux](https://github.com/tmux/tmux/wiki/Getting-Started)
 
 ## Starship
 
-`starship/lig-dark.toml` is a **palette fragment**, not a replacement prompt layout. Put its `palette = "lig_dark"` line at the root of your existing file (before the first `[table]`), and append its `[palettes.lig_dark]` table at the end. Switch the root palette name when changing variants.
+`starship/lig-dark.toml` is a palette fragment, not a prompt layout.
+Put `palette = "lig_dark"` at the root of your file, before the first table.
+Append `[palettes.lig_dark]` at the end.
 
-The palette overrides standard names such as `green`, `red`, `blue`, `purple` and `cyan`, so your existing `[>](green)` / `[x](red)` character symbols keep their layout. It also offers `orange`, `azure`, `fg`, `bg`, `muted`, `strong` and bright color names. Literal HEX styles and unlisted numeric colors are unaffected. Starship has no native config-fragment include; do not concatenate the entire fragment after an existing TOML table or replace the full config.
-
-For an isolated default-layout trial:
+Existing `[>](green)` and `[x](red)` symbols keep their layout.
+The palette also defines `orange`, `azure`, `fg`, `bg`, `muted`, `strong`, and the bright names.
+Literal hex styles are left alone.
+Do not paste the whole fragment after an existing table, and do not replace the whole config.
 
 ```sh
 STARSHIP_CONFIG="$PWD/starship/lig-dark.toml" starship prompt
 ```
 
-[Starship palette documentation](https://starship.rs/config/#prompt)
+[Starship palettes](https://starship.rs/config/#prompt)
 
 ## bat
 
-Copy the four `bat/LiG-*.tmTheme` files into `$(bat --config-dir)/themes/`, then run:
+Copy `bat/LiG-*.tmTheme` into `$(bat --config-dir)/themes/`, then:
 
 ```sh
 bat cache --build
 bat --theme=LiG-dark --paging=never path/to/file.ts
 ```
 
-To enable permanently, change only your existing bat `--theme` option to `--theme="LiG-dark"`. bat uses the filename as its theme name. The themes reuse LiG's shared TextMate scope/style mapping, including variable/keyword distinction. bat's grammars can classify code differently from Neovim or VS Code semantic tokens; matching intent does not promise identical highlighting.
+To keep it, set `--theme="LiG-dark"`.
+bat uses the filename as the theme name.
+The scopes follow LiG's TextMate mapping.
+bat's grammars can still classify a file differently from Neovim.
 
-[bat custom-theme documentation](https://github.com/sharkdp/bat#adding-new-themes)
+[bat themes](https://github.com/sharkdp/bat#adding-new-themes)
 
 ## eza
 
-Copy `eza/lig-dark.yml` to `~/.config/eza/theme.yml`, and keep your shell's config location explicit on macOS:
+Copy `eza/lig-dark.yml` to `~/.config/eza/theme.yml`.
 
 ```sh
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 ```
 
-If `theme.yml` already has filename/icon overrides, merge the color sections instead of replacing it. Existing `LS_COLORS` / `EZA_COLORS` settings can take precedence. These files style file kinds, permissions, git states and metadata, without changing icons or file matching.
+If `theme.yml` already has filename or icon overrides, merge the color sections.
+`LS_COLORS` and `EZA_COLORS` can still take over.
+Icons and file matching are unchanged.
 
-[eza theme documentation](https://github.com/eza-community/eza-themes)
+[eza themes](https://github.com/eza-community/eza-themes)
 
-## Mapping and validation
+## Colors
 
-Ghostty consumes exactly `terminal.background`, `terminal.foreground`, cursor/selection roles and `terminal.ansi.0–15`. Other tool adapters map role names to shared `surface.*`, `text.*`, `accent.*`, `git.*` and `diagnostic.*` tokens. bat additionally consumes the editor-independent style definitions and shared TextMate selectors. No adapter authors HEX colors.
+Ghostty uses `terminal.background`, `terminal.foreground`, cursor, selection, and `terminal.ansi.0–15`.
+The other tools map shared `surface`, `text`, `accent`, `git`, and `diagnostic` tokens.
+bat also uses the shared TextMate styles.
+No file in this directory authors a hex by hand.
 
-Black/white remain conventional ANSI slot names; light themes reverse neutral polarity. Bright colors are emphasis tiers. The yellow base is shared `#dbb800`, so light-background yellow text deliberately remains low contrast. Read [the color design note](https://github.com/0froq/lig/blob/main/content/en/notes/color-design.md) for the tradeoff.
+ANSI 0 and 7 keep the names black and white.
+Light themes reverse the neutral polarity.
+Bright slots are emphasis, not a promise of a larger RGB value.
+Yellow base is `#dbb800`, so yellow text on a light background stays low contrast.
+See [the color note](https://github.com/0froq/lig/blob/main/content/en/notes/color-design.md).
 
-Generation and checksum tests verify data contracts. Native config parsers can verify syntax; neither establishes visual acceptance. On your MacBook, check active/selected rows, small yellow text, tmux inline colors, pane borders and syntax scopes. There is no cross-application live theme switcher in this batch.
+Checksums check the files.
+They do not check how a tool looks.
+Look at the active row, small yellow text, tmux colors, pane borders, and syntax in the tool you use.
+
+## License
+
+MIT.
+See `LICENSE` in this directory.
+Each tool ZIP includes the same file.

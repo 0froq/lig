@@ -60,7 +60,9 @@ const themes = VARIANTS.map(compileTheme)
 const artifacts: Record<string, string | Buffer> = {}
 const json = (value: unknown): string => `${JSON.stringify(value, null, 2)}\n`
 
+const mit = readFileSync(join(root, 'LICENSE'), 'utf8')
 const zed: Record<string, string | Buffer> = Object.fromEntries(themes.map(theme => [`zed/lig-${theme.variant}.json`, json(zedFamily([theme]))]))
+zed['zed/LICENSE'] = mit
 zed['zed/lig-zed-all.zip'] = zip(zed)
 zed['zed/README.md'] = zedReadme(metadata)
 Object.assign(artifacts, zed)
@@ -84,7 +86,7 @@ for (const theme of themes) {
   artifacts[`neovim/lua/lightline/colorscheme/lig_${suffix}.lua`] = `return require("lig.statusline").lightline(${lua(theme.variant)})\n`
   artifacts[`neovim/autoload/lightline/colorscheme/lig_${suffix}.vim`] = `let s:palette = v:lua.require("lightline.colorscheme.lig_${suffix}")\nlet g:lightline#colorscheme#lig_${suffix}#palette = lightline#colorscheme#fill(s:palette)\n`
 }
-artifacts['neovim/LICENSE'] = readFileSync(join(root, 'ports/licenses/Apache-2.0.txt'), 'utf8')
+artifacts['neovim/LICENSE'] = mit
 artifacts['neovim/README.md'] = portReadme('neovim', { ...metadata, sourceRef: NEOVIM_SOURCE_REF })
 artifacts['neovim/scripts/verify.lua'] = readFileSync(join(root, 'ports/neovim/verify.lua'), 'utf8')
 for (const mode of ['light', 'dark']) {
@@ -130,8 +132,10 @@ for (const port of LIGHTWEIGHT_PORTS) {
     const path = lightweightPath(port, variant)
     return [path, lightweight[path]!]
   }))
+  entries.LICENSE = mit
   lightweight[lightweightArchivePath(port)] = zip(entries)
 }
+lightweight.LICENSE = mit
 lightweight['README.md'] = readFileSync(join(root, 'ports/lightweight/README.md'), 'utf8')
 lightweight['manifest.json'] = json({
   ...metadata,
