@@ -153,6 +153,7 @@
       "edgePaper": "paper"
     },
     "inspect": {
+      "close": "Close inspector",
       "nodes": "nodes",
       "title": "Node inspector",
       "help": "Hover to inspect · click to pin · keyboard: ← → tokens, ↑ parent, ↓ child, Esc clear",
