@@ -37,11 +37,13 @@
     "@fontsource-variable/geist": "catalog:prod",
     "@fontsource-variable/geist-mono": "catalog:prod",
     "@fontsource/instrument-serif": "catalog:prod",
+    "@froq/og-covers-layer": "catalog:prod",
     "@froq/ui": "file:vendor/ui",
     "@nuxt/content": "catalog:prod",
     "@nuxtjs/i18n": "catalog:prod",
     "nuxt": "catalog:prod",
-    "vue": "catalog:prod"
+    "vue": "catalog:prod",
+    "zod": "catalog:prod"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:dev",
@@ -52,6 +54,7 @@
     "eslint-plugin-format": "catalog:dev",
     "jiti": "catalog:",
     "lint-staged": "catalog:dev",
+    "nuxtseo-devtools-host": "catalog:dev",
     "simple-git-hooks": "catalog:dev",
     "typescript": "catalog:dev",
     "vue-tsc": "catalog:dev",

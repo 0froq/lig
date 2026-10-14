@@ -12,7 +12,24 @@ const { data: notes } = await useAsyncData(
 const slug = (path: string): string => path.split('/').pop() ?? ''
 
 useHead({ title: () => t('notes.label') })
-useShareMeta({ title: () => t('notes.label') })
+const files = useRuntimeConfig().public.publicFiles
+const override = computed(() => explicitContentCover({
+  collection: 'notes',
+  path: contentPath('/notes'),
+}, path => hasShareFile(files, path)))
+if (!override.value) {
+  defineOgImage('Paper', {
+    title: () => t('notes.label'),
+    words: 0,
+  }, {
+    alt: () => t('notes.label'),
+  })
+}
+useShareMeta({
+  title: () => t('notes.label'),
+  description: () => t('notes.lede'),
+  image: () => override.value ?? false,
+})
 </script>
 
 <template>
