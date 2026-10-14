@@ -347,6 +347,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
 
   let last = performance.now()
   let started = 0
+  let revealEdge = window.scrollY + window.innerHeight * 0.8
 
   function triggered(seg: Seg): boolean {
     return !seg.trigger || seg.trigger.getBoundingClientRect().top < window.innerHeight * 0.8
@@ -362,6 +363,11 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
       }
       return
     }
+    // Let the reading boundary trail the scroll, then settle without overshoot.
+    const readingEdge = window.scrollY + window.innerHeight * 0.8
+    revealEdge += (readingEdge - revealEdge) * (1 - Math.exp(-dt / 0.22))
+    if (Math.abs(readingEdge - revealEdge) < 0.5)
+      revealEdge = readingEdge
     let budget = dt
     while (segIndex < segs.length && budget > 0) {
       const seg = segs[segIndex]
@@ -376,7 +382,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
       const rate = (seg.speed / STEP) * (1 + ahead * 0.6)
       let target = Math.min(seg.to, head + rate * budget)
       if (seg.scroll) {
-        const edge = window.scrollY + window.innerHeight * 0.8
+        const edge = revealEdge
         // Stop at the first crossing, including a fractional sample, so bends
         // cannot reveal an unseen stretch just because their endpoint is visible.
         for (let i = Math.floor(head) + 1; i <= Math.ceil(target); i++) {
