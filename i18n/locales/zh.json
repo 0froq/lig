@@ -24,7 +24,6 @@
   },
   "palette": {
     "meta": {
-      "title": "色板",
       "description": "Less is Great。LiG 用少量颜色做语法高亮。"
     },
     "hero": {
@@ -204,6 +203,7 @@
   },
   "notes": {
     "label": "笔记",
+    "description": "关于 LiG 配色设计、语法高亮与共享主题 token 的笔记。",
     "title": "",
     "lede": "",
     "count": "共 {n} 篇",
@@ -215,6 +215,7 @@
   },
   "changelog": {
     "label": "更新日志",
+    "description": "LiG 主题系列的发布记录与变更说明。",
     "title": "",
     "lede": "",
     "count": "共 {n} 次发布",

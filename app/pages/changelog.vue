@@ -9,7 +9,11 @@ const { data: releases } = await useAsyncData(
 )
 
 useHead({ title: () => t('changelog.label') })
-useShareMeta({ title: () => t('changelog.label') })
+useShareMeta({
+  title: () => t('changelog.label'),
+  description: () => t('changelog.description'),
+})
+useSeoMeta({ robots: () => releases.value?.some(release => release.title?.trim()) ? undefined : 'noindex, follow' })
 </script>
 
 <template>

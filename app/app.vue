@@ -25,6 +25,7 @@ function skinStyle(): string {
 useHead({
   htmlAttrs: {
     lang: () => localeHead.value.htmlAttrs?.lang,
+    dir: () => localeHead.value.htmlAttrs?.dir,
     style: () => skinStyle(),
   },
   style: [{ key: 'theme', innerHTML: () => themeStyle(product.theme) }],
@@ -35,6 +36,13 @@ useHead({
     return t('site.title') || 'paper-landing'
   },
 })
+useHead(() => ({
+  // Section anchors do not identify separate documents for search or social cards.
+  link: (localeHead.value.link ?? []).map(link => ({ ...link, href: link.href?.split('#')[0] })),
+  meta: (localeHead.value.meta ?? []).map(meta => meta.property === 'og:url' && typeof meta.content === 'string'
+    ? { ...meta, content: meta.content.split('#')[0] }
+    : meta),
+}))
 useShareMeta()
 </script>
 

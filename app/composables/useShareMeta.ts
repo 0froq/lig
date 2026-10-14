@@ -1,17 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue'
-
-/** Production origin for canonical and Open Graph URLs. Worker config has no custom domain. */
-export const SITE_ORIGIN = 'https://lig.froq.me'
-export const OG_IMAGE_URL = `${SITE_ORIGIN}/og.png`
+import { OG_IMAGE_URL } from '#shared/site'
 
 type ShareType = 'website' | 'article'
-
-interface SharePayload {
-  title?: string | null
-  description?: string | null
-  type?: ShareType
-  bareTitle?: boolean
-}
 
 /**
  * Site-wide Open Graph / Twitter card tags.
@@ -23,39 +13,39 @@ export function useShareMeta(input?: {
   description?: MaybeRefOrGetter<string | undefined | null>
   type?: MaybeRefOrGetter<ShareType>
   bareTitle?: MaybeRefOrGetter<boolean>
+  publishedTime?: MaybeRefOrGetter<string | undefined>
 }): void {
-  const payload = useState<SharePayload>('share-meta', () => ({}))
-
-  if (input) {
-    watchEffect(() => {
-      payload.value = {
-        title: toValue(input.title),
-        description: toValue(input.description),
-        type: toValue(input.type),
-        bareTitle: toValue(input.bareTitle),
-      }
-    })
-    return
-  }
-
-  const route = useRoute()
-  const { t, locale } = useI18n()
+  const { t } = useI18n()
   const { product } = useAppConfig()
 
   const title = computed(() => {
-    const page = payload.value.title?.trim()
+    const page = toValue(input?.title)?.trim()
     if (!page)
       return t('site.title')
-    if (payload.value.bareTitle)
+    if (toValue(input?.bareTitle))
       return page
     const brand = product.name ? `${product.name}${product.mark}` : ''
     return brand ? `${page} — ${brand}` : page
   })
-  const description = computed(() => payload.value.description?.trim() || t('palette.meta.description'))
+  const description = computed(() => toValue(input?.description)?.trim() || t('palette.meta.description'))
+
+  // Page entries are scoped to their component and disposed on navigation.
+  if (input) {
+    useSeoMeta({
+      ogType: () => toValue(input.type) ?? 'website',
+      ogTitle: () => title.value,
+      ogDescription: () => description.value,
+      description: () => description.value,
+      twitterTitle: () => title.value,
+      twitterDescription: () => description.value,
+      articlePublishedTime: () => toValue(input.publishedTime),
+    })
+    return
+  }
 
   useSeoMeta({
     twitterCard: 'summary_large_image',
-    ogType: () => payload.value.type ?? 'website',
+    ogType: 'website',
     ogSiteName: () => product.name,
     ogTitle: () => title.value,
     ogDescription: () => description.value,
@@ -65,8 +55,6 @@ export function useShareMeta(input?: {
     ogImageWidth: 1200,
     ogImageHeight: 630,
     ogImageType: 'image/png',
-    ogUrl: () => route.path === '/' ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`,
-    ogLocale: () => locale.value === 'zh' ? 'zh_CN' : 'en_US',
     twitterTitle: () => title.value,
     twitterDescription: () => description.value,
     twitterImage: OG_IMAGE_URL,

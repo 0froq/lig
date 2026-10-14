@@ -1,9 +1,11 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const title = 'LiG — Less is Great.'
 
-useHead({ title: t('palette.meta.title') })
+useHead({ title, titleTemplate: '%s' })
 useShareMeta({
-  title: () => t('palette.meta.title'),
+  title,
+  bareTitle: true,
   description: () => t('palette.meta.description'),
 })
 </script>

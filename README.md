@@ -116,6 +116,17 @@ GitHub: [@0froq](https://github.com/0froq)
 
 The site is built with Nuxt and Vue.
 
+## Site SEO
+
+`shared/site.ts` defines the production origin for i18n SEO links, social cards,
+and crawler files. Change it when moving the site to another domain.
+
+`pnpm generate` writes `dist/sitemap.xml` and `dist/robots.txt` from the rendered
+pages. The sitemap includes canonical URLs only; redirects, errors, and pages
+marked `noindex` are excluded. Content pages and docs without a title, and a
+changelog without titled releases, remain accessible but are not indexed.
+Adding their content enables indexing on the next build.
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=0froq/lig&type=date&legend=bottom-right)](https://www.star-history.com/?repos=0froq%2Flig&type=date&legend=bottom-right)

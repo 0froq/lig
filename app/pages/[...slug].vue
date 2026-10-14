@@ -27,6 +27,7 @@ useShareMeta({
   description: () => page.value?.description,
   bareTitle: () => Boolean(page.value?.title) && !page.value?.head,
 })
+useSeoMeta({ robots: () => page.value?.title?.trim() ? undefined : 'noindex, follow' })
 </script>
 
 <template>

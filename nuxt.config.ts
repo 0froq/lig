@@ -1,8 +1,11 @@
+import { readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from './core/resolve'
 import { documentationThemes } from './shared/documentation-themes'
 import { keepEmptyTitle } from './shared/empty-title'
 import { markFinalStop } from './shared/final-mark'
+import { SITE_ORIGIN } from './shared/site'
 import { themePreferenceScript } from './shared/theme-preference'
 
 export default defineNuxtConfig({
@@ -70,8 +73,9 @@ export default defineNuxtConfig({
   },
 
   i18n: {
+    baseUrl: SITE_ORIGIN,
     locales: [
-      { code: 'en', language: 'en', name: 'English', file: 'en.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
       { code: 'zh', language: 'zh-CN', name: '中文', file: 'zh.json' },
     ],
     defaultLocale: 'en',
@@ -88,7 +92,33 @@ export default defineNuxtConfig({
     },
     prerender: {
       crawlLinks: true,
-      routes: ['/', '/zh', '/lab', '/zh/lab'],
+      routes: ['/', '/zh', '/notes', '/zh/notes', '/docs', '/zh/docs', '/install', '/zh/install', '/changelog', '/zh/changelog', '/lab', '/zh/lab'],
+    },
+    hooks: {
+      'prerender:generate': function (route) {
+        // Nuxt emits these as client shells, so app/error.vue does not supply their head.
+        if (route.route === '/404.html' || route.route === '/200.html') {
+          route.contents = route.contents?.replace('<html>', '<html lang="en-US" dir="ltr">')
+            .replace('</head>', `<title>${route.route === '/404.html' ? '404 — LiG' : 'LiG'}</title><meta name="robots" content="noindex, follow"></head>`)
+        }
+      },
+      'prerender:done': async function ({ prerenderedRoutes }) {
+        // Use emitted canonical URLs so redirects, errors and noindex pages stay out.
+        const urls = new Set<string>()
+        for (const route of prerenderedRoutes) {
+          if (!route.fileName?.endsWith('.html') || route.error || route.skip)
+            continue
+          const html = await readFile(join('dist', route.fileName), 'utf8')
+          if (/<meta\b[^>]+name="robots"[^>]*content="[^"]*noindex/i.test(html))
+            continue
+          const canonical = html.match(/<link\b[^>]+rel="canonical"[^>]*href="([^"]+)"/i)?.[1]
+          if (canonical === SITE_ORIGIN || canonical?.startsWith(`${SITE_ORIGIN}/`))
+            urls.add(canonical)
+        }
+        const entries = [...urls].sort().map(url => `  <url><loc>${url}</loc></url>`).join('\n')
+        await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`)
+        await writeFile('dist/robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`)
+      },
     },
   },
 
