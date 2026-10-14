@@ -1,15 +1,19 @@
 minimumReleaseAgeExcludePrune: true
+
 trustPolicy: no-downgrade
+trustPolicyExclude:
+  - semver@6.3.1
+
 shellEmulator: true
 
 packages:
   - .
 
-onlyBuiltDependencies:
-  - esbuild
-  - simple-git-hooks
-  - unrs-resolver
-  - workerd
+allowBuilds:
+  esbuild: true
+  simple-git-hooks: true
+  unrs-resolver: true
+  workerd: true
 
 catalog: {jiti: 2.7.0}
 
