@@ -14,6 +14,7 @@ interface Seg {
   to: number
   speed: number
   trigger: Element | null
+  scroll: boolean
 }
 
 interface Dot {
@@ -29,6 +30,8 @@ interface TravelOpts {
   nib?: boolean
   /** Travel connects the intentional marks without competing with them. */
   emphasis?: boolean
+  /** Reveal a connector only as its points enter the reading area. */
+  scroll?: boolean
 }
 
 function smoothstep(a: number, b: number, x: number): number {
@@ -121,7 +124,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
     let dir: Point = [1, 0]
 
     const append = (poly: Point[], w: number, opts: TravelOpts): Seg => {
-      const { speed, trigger = null, taper = false, nib = false, emphasis = true } = opts
+      const { speed, trigger = null, taper = false, nib = false, emphasis = true, scroll = false } = opts
       const joined = pen ? roundJoin(pen, dir, poly) : poly
       const r = resample(joined)
       const from = pts.length
@@ -143,7 +146,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
       })
       pen = r[r.length - 1] ?? pen
       dir = tangent(r, true)
-      return { from, to: pts.length - 1, speed, trigger }
+      return { from, to: pts.length - 1, speed, trigger, scroll }
     }
     // Before anything is drawn the first travel just puts the pen down
     const travel = (to: Point, entry: Point, w?: number, opts?: TravelOpts): Seg | null => {
@@ -153,7 +156,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
         return null
       }
       const d = Math.hypot(to[0] - pen[0], to[1] - pen[1])
-      return append(wobble(cubic(pen, dir, to, entry, Math.max(20, Math.round(d / 6))), Math.min(6, d * 0.012), to[1] * 0.01), w ?? 0, { ...opts, speed: opts?.speed ?? 0, emphasis: false })
+      return append(wobble(cubic(pen, dir, to, entry, Math.max(20, Math.round(d / 6))), Math.min(6, d * 0.012), to[1] * 0.01), w ?? 0, { ...opts, speed: opts?.speed ?? 0, emphasis: false, scroll: !!opts?.trigger })
     }
 
     // 1. The tagline, handwritten into the box of the (hidden) typeset one
@@ -362,7 +365,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
     let budget = dt
     while (segIndex < segs.length && budget > 0) {
       const seg = segs[segIndex]
-      if (!seg || !triggered(seg))
+      if (!seg || (!seg.scroll && !triggered(seg)))
         break
       // If the reader has run ahead, the pen hurries to catch up
       let ahead = 0
@@ -371,17 +374,32 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
           ahead++
       }
       const rate = (seg.speed / STEP) * (1 + ahead * 0.6)
-      const need = (seg.to - head) / rate
-      if (need <= budget) {
-        head = seg.to
-        budget -= need
+      let target = Math.min(seg.to, head + rate * budget)
+      if (seg.scroll) {
+        const edge = window.scrollY + window.innerHeight * 0.8
+        // Stop at the first crossing, including a fractional sample, so bends
+        // cannot reveal an unseen stretch just because their endpoint is visible.
+        for (let i = Math.floor(head) + 1; i <= Math.ceil(target); i++) {
+          const y = Y[i]!
+          if (y <= edge)
+            continue
+          const before = Y[i - 1]!
+          const crossing = before < edge ? i - 1 + (edge - before) / (y - before) : head
+          target = Math.max(head, Math.min(target, crossing))
+          break
+        }
+      }
+      if (target <= head)
+        break
+      budget -= (target - head) / rate
+      head = target
+      dirty = true
+      if (head >= seg.to) {
         segIndex++
       }
       else {
-        head += rate * budget
-        budget = 0
+        break
       }
-      dirty = true
     }
     if (segIndex >= segs.length && dot && !dotBorn)
       arrive(performance.now())
@@ -496,7 +514,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
       ctx.lineWidth = wordWidth * (Wd[upto] ?? 0)
       ctx.stroke()
       const current = segs[segIndex]
-      if (head > 0 && segIndex < segs.length && current && triggered(current)) {
+      if (head > 0 && segIndex < segs.length && current && (current.scroll || triggered(current))) {
         ctx.fillStyle = tipInk
         ctx.beginPath()
         ctx.arc(hx, hy, wordWidth * (Wd[upto] ?? 0) * 0.9, 0, Math.PI * 2)
