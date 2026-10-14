@@ -63,6 +63,16 @@ pnpm deploy     # 生成并 cf deploy
 
 `core/generated/` 和 `palette/generated/` 的 token 产物提交到仓库，不能手工编辑；`tokens:check` 检查它们是否与 spec 一致，且不会写文件。port 分发文件在构建时生成，通过 `ports:check` 检查。
 
+## Site SEO
+
+`shared/site.ts` keeps document URLs on `lig.froq.me` and share images on the Worker host.
+Localized canonical, hreflang and Open Graph locale tags are emitted by `app.vue`.
+
+`pnpm generate` writes `dist/sitemap.xml` and `dist/robots.txt` from rendered canonical
+URLs. Redirects, errors and `noindex` pages are excluded. Untitled content and docs,
+and a changelog without titled releases, remain accessible but are not indexed.
+Adding their content enables indexing on the next build.
+
 ## 这一阶段的颜色决策
 
 支持 `light`、`dark`、`light-paper`、`dark-paper` 四个变体。八种 accent、neutral 与 paper 灰阶及语义角色都在 core 中定义，计算不依赖调用顺序。`text.secondary` 与 `surface.status` 分开定义，避免把背景色用于次级文字；较弱的层级保留为 `text.subtle`。

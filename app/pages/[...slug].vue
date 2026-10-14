@@ -42,6 +42,7 @@ useShareMeta({
   bareTitle: () => Boolean(page.value?.title) && !page.value?.head,
   image: () => override.value === undefined ? false : override.value,
 })
+useSeoMeta({ robots: () => page.value?.title?.trim() ? undefined : 'noindex, follow' })
 </script>
 
 <template>

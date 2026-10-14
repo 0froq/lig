@@ -44,6 +44,7 @@ useShareMeta({
   title: () => note.value?.title,
   description: () => note.value?.description,
   type: 'article',
+  publishedTime: () => note.value?.date,
   image: () => override.value === undefined ? false : override.value,
 })
 </script>

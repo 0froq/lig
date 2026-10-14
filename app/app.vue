@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { canonicalUrl } from '~/utils/site'
+
 const { product } = useAppConfig()
 const { t } = useI18n()
 const localeHead = useLocaleHead()
@@ -25,6 +27,7 @@ function skinStyle(): string {
 useHead({
   htmlAttrs: {
     lang: () => localeHead.value.htmlAttrs?.lang,
+    dir: () => localeHead.value.htmlAttrs?.dir,
     style: () => skinStyle(),
   },
   style: [{ key: 'theme', innerHTML: () => themeStyle(product.theme) }],
@@ -35,6 +38,17 @@ useHead({
     return t('site.title') || 'paper-landing'
   },
 })
+
+// The OG layer uses the image host; localized document links use the public site.
+function documentUrl(value: string): string {
+  return canonicalUrl(new URL(value).pathname)
+}
+useHead(() => ({
+  link: (localeHead.value.link ?? []).map(link => ({ ...link, href: link.href ? documentUrl(link.href) : undefined })),
+  meta: (localeHead.value.meta ?? []).map(meta => meta.property === 'og:url' && typeof meta.content === 'string'
+    ? { ...meta, content: documentUrl(meta.content) }
+    : meta),
+}))
 </script>
 
 <template>

@@ -24,9 +24,10 @@ if (!override.value) {
 }
 useShareMeta({
   title: () => t('changelog.label'),
-  description: () => t('changelog.lede'),
+  description: () => t('changelog.lede').trim() || t('changelog.description'),
   image: () => override.value ?? false,
 })
+useSeoMeta({ robots: () => releases.value?.some(release => release.title?.trim()) ? undefined : 'noindex, follow' })
 </script>
 
 <template>

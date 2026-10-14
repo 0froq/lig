@@ -35,7 +35,7 @@ const index = computed(() => pages.value.findIndex(item => item.path === doc.val
 const prev = computed(() => pages.value[index.value - 1])
 const next = computed(() => pages.value[index.value + 1])
 
-useHead({ title: () => doc.value?.title })
+useHead({ title: () => doc.value?.title?.trim() || t('docs.label') })
 const files = useRuntimeConfig().public.publicFiles
 const override = computed(() => contentOgOverride(doc.value, 'docs', files))
 if (override.value === undefined) {
@@ -51,10 +51,11 @@ if (override.value === undefined) {
   })
 }
 useShareMeta({
-  title: () => doc.value?.title,
+  title: () => doc.value?.title?.trim() || t('docs.label'),
   description: () => doc.value?.description,
   image: () => override.value === undefined ? false : override.value,
 })
+useSeoMeta({ robots: () => doc.value?.title?.trim() ? undefined : 'noindex, follow' })
 </script>
 
 <template>

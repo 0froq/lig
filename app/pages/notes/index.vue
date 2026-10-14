@@ -27,7 +27,7 @@ if (!override.value) {
 }
 useShareMeta({
   title: () => t('notes.label'),
-  description: () => t('notes.lede'),
+  description: () => t('notes.lede').trim() || t('notes.description'),
   image: () => override.value ?? false,
 })
 </script>

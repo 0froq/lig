@@ -1,11 +1,6 @@
-/** Canonical origin (`og:url`). Matches the site URL in README. */
-export const SITE_ORIGIN = 'https://lig.froq.me'
+import { IMAGE_ORIGIN, SITE_ORIGIN } from '#shared/site'
 
-/**
- * Share-image origin. X refuses to fetch froq.me, so `og:image` and
- * `twitter:image` use the Worker URL.
- */
-export const IMAGE_ORIGIN = 'https://lig.sayhola.workers.dev'
+export { IMAGE_ORIGIN, SITE_ORIGIN } from '#shared/site'
 
 export const OG_IMAGE_PATH = '/og.png'
 export const OG_IMAGE_URL = absoluteImageUrl(OG_IMAGE_PATH)

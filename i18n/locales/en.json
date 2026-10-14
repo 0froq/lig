@@ -24,7 +24,6 @@
   },
   "palette": {
     "meta": {
-      "title": "Palette",
       "description": "Less is Great. LiG highlights code with a few colors."
     },
     "hero": {
@@ -203,6 +202,7 @@
   },
   "notes": {
     "label": "Notes",
+    "description": "Notes on LiG's color design, syntax highlighting and shared theme tokens.",
     "title": "",
     "lede": "",
     "count": "{n} notes",
@@ -214,6 +214,7 @@
   },
   "changelog": {
     "label": "Changelog",
+    "description": "Release notes and changes to the LiG theme family.",
     "title": "",
     "lede": "",
     "count": "{n} releases",

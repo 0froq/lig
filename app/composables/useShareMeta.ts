@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue'
-import { absoluteImageUrl, canonicalUrl, OG_IMAGE_HEIGHT, OG_IMAGE_PATH, OG_IMAGE_WIDTH } from '~/utils/site'
+import { absoluteImageUrl, OG_IMAGE_HEIGHT, OG_IMAGE_PATH, OG_IMAGE_WIDTH } from '~/utils/site'
 
 export type ShareType = 'website' | 'article'
 
@@ -15,6 +15,7 @@ export interface ShareMetaInput {
    * Omitted routes use `/og.png`.
    */
   image?: MaybeRefOrGetter<string | false | undefined>
+  publishedTime?: MaybeRefOrGetter<string | undefined>
 }
 
 function filled(value: string | undefined | null, fallback: string): string {
@@ -27,8 +28,7 @@ function filled(value: string | undefined | null, fallback: string): string {
  * `og:url` stays on the site origin. Image URLs use the Worker origin.
  */
 export function useShareMeta(input: ShareMetaInput = {}): void {
-  const route = useRoute()
-  const { t, locale } = useI18n()
+  const { t } = useI18n()
   const { product } = useAppConfig()
 
   const title = computed(() => {
@@ -40,7 +40,6 @@ export function useShareMeta(input: ShareMetaInput = {}): void {
   })
   const description = computed(() => filled(toValue(input.description), t('palette.meta.description')))
   const type = computed(() => toValue(input.type) ?? 'website')
-  const url = computed(() => canonicalUrl(route.path))
   const skipImage = toValue(input.image) === false
   const image = computed(() => {
     const value = toValue(input.image)
@@ -54,11 +53,10 @@ export function useShareMeta(input: ShareMetaInput = {}): void {
     description: () => description.value,
     ogTitle: () => title.value,
     ogDescription: () => description.value,
-    ogUrl: () => url.value,
     ogType: () => type.value,
     ogSiteName: () => product.name,
-    ogLocale: () => locale.value === 'zh' ? 'zh_CN' : 'en_US',
     twitterCard: 'summary_large_image',
+    articlePublishedTime: () => toValue(input.publishedTime),
     twitterTitle: () => title.value,
     twitterDescription: () => description.value,
   })
@@ -74,8 +72,4 @@ export function useShareMeta(input: ShareMetaInput = {}): void {
       twitterImageAlt: () => imageAlt.value,
     })
   }
-
-  useHead({
-    link: [{ rel: 'canonical', href: () => url.value }],
-  })
 }
