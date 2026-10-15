@@ -22,13 +22,17 @@ defineSlots<{ option?: (scope: { option: ChoiceOption }) => unknown }>()
 
 const model = defineModel<string>({ required: true })
 const { wrapperAttrs, controlAttrs } = useControlAttrs()
-const scope = useTemplateRef<HTMLElement>('scope')
+const portal = useTemplateRef<HTMLElement>('portal')
 const id = useId()
+
+function preventRepeatedSelection(event: MouseEvent): void {
+  if (event.detail > 1)
+    event.preventDefault()
+}
 </script>
 
 <template>
   <div
-    ref="scope"
     v-bind="wrapperAttrs()"
     class="ui-field"
     :class="{ 'ui-select-custom': !native }"
@@ -79,12 +83,19 @@ const id = useId()
       :required="required"
       :name="name"
     >
+      <div
+        ref="portal"
+        class="ui-select-portal"
+      />
       <SelectTrigger
         v-bind="controlAttrs()"
         :id="String(controlAttrs().id ?? id)"
         class="ui-select-trigger"
         :class="{ 'is-framed': framed }"
         :aria-label="label"
+        @mousedown.capture="preventRepeatedSelection"
+        @selectstart.prevent
+        @dblclick.prevent.stop
       >
         <SelectValue>{{ options.find(option => option.value === model)?.label }}</SelectValue>
         <SelectIcon as-child>
@@ -98,8 +109,8 @@ const id = useId()
         </SelectIcon>
       </SelectTrigger>
       <SelectPortal
-        :to="scope ?? undefined"
-        :disabled="!scope"
+        :to="portal ?? undefined"
+        :disabled="!portal"
       >
         <SelectContent
           class="ui-select-content"
@@ -108,6 +119,9 @@ const id = useId()
           :side-offset="4"
           :collision-padding="12"
           :body-lock="false"
+          @mousedown.capture="preventRepeatedSelection"
+          @selectstart.prevent
+          @dblclick.prevent.stop
         >
           <SelectViewport>
             <SelectItem

@@ -34,8 +34,19 @@
 }
 
 .ui-select-custom {
+  position: relative;
   font-family: var(--ui-font-meta);
   line-height: 1.3;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.ui-select-portal {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 0;
+  height: 0;
 }
 
 .ui-select-trigger {
@@ -112,6 +123,11 @@
 .ui-select-item[data-highlighted] {
   background: color-mix(in srgb, var(--ui-accent) 18%, var(--ui-bg));
   color: var(--ui-fg);
+}
+
+.ui-select-item:focus-visible,
+.ui-select-content:focus-visible {
+  outline: none;
 }
 
 .ui-select-item[data-state='checked'] {
