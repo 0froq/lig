@@ -28,23 +28,22 @@
     },
     "hero": {
       "tagline": "Less is Great.",
-      "lede": "语法高亮只用少量颜色。其余色板不进代码。"
+      "lede": "只用少量颜色做语法高亮。"
     },
     "variantLabel": "LiG 变体",
-    "variantHint": "页面外壳仍是 paper；下方预览使用所选 LiG 变体。",
     "variants": {
-      "light": "浅色",
-      "dark": "深色",
-      "lightPaper": "浅色纸张",
-      "darkPaper": "深色纸张"
+      "light": "Light",
+      "dark": "Dark",
+      "lightPaper": "Light paper",
+      "darkPaper": "Dark paper"
     },
     "sections": {
       "variantsTitle": "变体切换",
-      "syntaxTitle": "六种。",
-      "swatchesTitle": "色板",
-      "semanticTitle": "语义角色",
-      "previewsTitle": "实时预览",
-      "downloadsTitle": "下载与移植"
+      "syntaxTitle": "更少。",
+      "swatchesTitle": "色盘。",
+      "semanticTitle": "语义职责。",
+      "previewsTitle": "预览。",
+      "downloadsTitle": "下载。"
     },
     "semantic": {
       "role": "角色",
