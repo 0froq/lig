@@ -67,7 +67,10 @@
     scrollbar-color: auto;
   }
 
-  ::-webkit-scrollbar {
+  /* More specific than browser-injected blanket rules that hide scrollbars. */
+  html::-webkit-scrollbar,
+  html ::-webkit-scrollbar {
+    display: block;
     width: 4px;
     height: 4px;
   }
