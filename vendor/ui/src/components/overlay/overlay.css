@@ -127,7 +127,6 @@
 
 .ui-menu-item[data-highlighted] {
   background: var(--ui-faint);
-  box-shadow: inset 2px 0 var(--ui-accent);
 }
 
 .ui-menu-item[data-disabled] {
