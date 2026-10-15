@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import type { LigVariant } from '../../../core'
 import type { SyntaxDocument } from '../../../syntax/types'
-import { Popover, Select } from '@froq/ui'
+import { Popover } from '@froq/ui'
 import { resolveVariant } from '../../../core'
-import { captureRole, syntaxFamily } from '../../../core/syntax'
-import { ancestry, segmentSource, sourceRange } from '../../../syntax/model'
+import { segmentSource } from '../../../syntax/model'
 
-const props = defineProps<{ document: SyntaxDocument, variant: LigVariant, neovim: string }>()
+const props = defineProps<{ document: SyntaxDocument, variant: LigVariant }>()
 const { t } = useI18n()
 const resolved = computed(() => resolveVariant(props.variant))
 const segments = computed(() => segmentSource(props.document))
@@ -14,7 +13,6 @@ const active = ref<number | null>(null)
 const inspected = ref<number | null>(null)
 const pinned = ref(false)
 const code = ref<HTMLElement>()
-const narrow = ref(false)
 const floatingOpen = ref(false)
 const reference = shallowRef<HTMLElement>()
 let hoverTimer: ReturnType<typeof setTimeout> | undefined
@@ -22,25 +20,8 @@ let closeTimer: ReturnType<typeof setTimeout> | undefined
 let detachListeners: (() => void) | undefined
 const segment = computed(() => active.value === null ? null : segments.value[active.value]!)
 const node = computed(() => inspected.value === null ? null : props.document.nodes[inspected.value]!)
-const parents = computed(() => node.value ? ancestry(props.document, node.value.id) : [])
-const selectedText = computed(() => node.value ? sourceRange(props.document, node.value) : '')
 const role = computed(() => segment.value?.token ?? 'text.primary')
 const color = computed(() => resolved.value.tokens[role.value]!)
-const coordinates = computed(() => resolved.value.oklch[role.value]!)
-const choices = computed(() => [
-  { value: '', label: t('palette.inspect.choose'), disabled: true },
-  ...props.document.nodes.map(item => ({
-    value: String(item.id),
-    label: `${'· '.repeat(ancestry(props.document, item.id).length - 1)}${item.type} · ${item.range[0] + 1}:${item.range[1] + 1}`,
-  })),
-])
-const selectedNode = computed({
-  get: () => inspected.value === null ? '' : String(inspected.value),
-  set: (value: string) => {
-    if (value !== '')
-      selectNode(Number(value))
-  },
-})
 const style = computed(() => ({
   '--pv-bg': resolved.value.tokens['surface.canvas'],
   '--pv-fg': resolved.value.tokens['text.primary'],
@@ -48,27 +29,25 @@ const style = computed(() => ({
   '--pv-line': resolved.value.tokens['border.default'],
   '--pv-selection': resolved.value.tokens['surface.selection'],
 }))
-const inspectorAttrs = computed(() => narrow.value
-  ? {
-      modelValue: floatingOpen.value,
-      reference: reference.value,
-      label: t('palette.inspect.title'),
-      closeLabel: t('palette.inspect.close'),
-      portalTo: 'body',
-      side: 'bottom' as const,
-      align: 'start' as const,
-      class: 'lig-node-inspector lig-inspector-floating ui',
-      style: {
-        ...style.value,
-        '--ui-bg': style.value['--pv-bg'],
-        '--ui-fg': style.value['--pv-fg'],
-        '--ui-muted': style.value['--pv-muted'],
-        '--ui-line': style.value['--pv-line'],
-        '--ui-accent': style.value['--pv-fg'],
-        '--ui-font-text': 'var(--font-meta)',
-      },
-    }
-  : { 'class': 'lig-node-inspector', 'aria-label': t('palette.inspect.title') })
+const inspectorAttrs = computed(() => ({
+  modelValue: floatingOpen.value,
+  reference: reference.value,
+  label: t('palette.inspect.title'),
+  closeLabel: t('palette.inspect.close'),
+  portalTo: 'body',
+  side: 'bottom' as const,
+  align: 'start' as const,
+  class: 'lig-node-inspector lig-inspector-floating ui',
+  style: {
+    ...style.value,
+    '--ui-bg': style.value['--pv-bg'],
+    '--ui-fg': style.value['--pv-fg'],
+    '--ui-muted': style.value['--pv-muted'],
+    '--ui-line': style.value['--pv-line'],
+    '--ui-accent': style.value['--pv-fg'],
+    '--ui-font-text': 'var(--font-meta)',
+  },
+}))
 
 function keepInfo(): void {
   clearTimeout(closeTimer)
@@ -85,7 +64,7 @@ function closeInfo(): void {
 
 function leaveInfo(): void {
   clearTimeout(hoverTimer)
-  if (narrow.value && !pinned.value)
+  if (!pinned.value)
     closeTimer = setTimeout(closeInfo, 180)
 }
 
@@ -96,22 +75,15 @@ function showInfo(id: number, element?: HTMLElement): void {
 }
 
 onMounted(() => {
-  const media = window.matchMedia('(max-width: 1100px)')
-  function resize(): void {
-    narrow.value = media.matches
-    closeInfo()
-  }
   function scroll(event: Event): void {
     if (event.target instanceof HTMLElement && event.target.closest('.lig-inspector-floating'))
       return
-    if (narrow.value)
-      closeInfo()
+    closeInfo()
   }
-  resize()
-  media.addEventListener('change', resize)
+  window.addEventListener('resize', closeInfo)
   window.addEventListener('scroll', scroll, { capture: true, passive: true })
   detachListeners = () => {
-    media.removeEventListener('change', resize)
+    window.removeEventListener('resize', closeInfo)
     window.removeEventListener('scroll', scroll, true)
   }
 })
@@ -125,11 +97,9 @@ function selectSegment(id: number, pin = false): void {
   active.value = id
   inspected.value = segments.value[id]!.node
   pinned.value = pin
-  if (narrow.value) {
-    clearTimeout(hoverTimer)
-    keepInfo()
-    showInfo(id)
-  }
+  clearTimeout(hoverTimer)
+  keepInfo()
+  showInfo(id)
 }
 
 function hover(id: number, event: PointerEvent): void {
@@ -137,10 +107,6 @@ function hover(id: number, event: PointerEvent): void {
   clearTimeout(hoverTimer)
   if (pinned.value || event.pointerType === 'touch')
     return
-  if (!narrow.value) {
-    selectSegment(id)
-    return
-  }
   if (!segments.value[id]!.text.trim())
     return
   const element = event.currentTarget as HTMLElement
@@ -156,7 +122,7 @@ function selectNode(id: number): void {
   pinned.value = true
   const inside = segments.value.filter(item => item.startByte >= selected.startByte && item.endByte <= selected.endByte)
   active.value = (inside.find(item => item.text.trim()) ?? inside[0])?.id ?? null
-  if (narrow.value && active.value !== null)
+  if (active.value !== null)
     showInfo(active.value)
 }
 
@@ -229,9 +195,8 @@ function inSelection(start: number, end: number): boolean {
         @pointerenter="hover(item.id, $event)"
         @click="selectSegment(item.id, true)"
       >{{ item.text }}</span></code></pre>
-      <component
-        :is="narrow ? Popover : 'aside'"
-        v-if="!narrow || floatingOpen"
+      <Popover
+        v-if="floatingOpen"
         v-bind="inspectorAttrs"
         @update:model-value="closeInfo"
         @open-auto-focus.prevent
@@ -241,14 +206,7 @@ function inSelection(start: number, end: number): boolean {
       >
         <div class="lig-inspector-panel">
           <div class="lig-inspector-heading">
-            <span>{{ t('palette.inspect.title') }}</span>
-            <button
-              v-if="pinned"
-              type="button"
-              @click="pinned = false"
-            >
-              {{ t('palette.inspect.unpin') }}
-            </button>
+            <span>{{ node?.type ?? t('palette.inspect.title') }}</span>
           </div>
           <div
             class="lig-inspector-content"
@@ -257,76 +215,17 @@ function inSelection(start: number, end: number): boolean {
             tabindex="0"
           >
             <template v-if="node">
-              <p class="lig-node-type">
-                {{ node.type }}
-              </p>
-              <p class="lig-node-meta">
-                {{ node.named ? t('palette.inspect.named') : t('palette.inspect.anonymous') }}
-                <span v-if="node.field"> · {{ node.field }}</span>
-                <span v-if="node.error"> · ERROR</span>
-                <span v-if="node.missing"> · MISSING</span>
-              </p>
               <p class="lig-node-meta">
                 {{ node.range[0] + 1 }}:{{ node.range[1] + 1 }} → {{ node.range[2] + 1 }}:{{ node.range[3] + 1 }}
-                <br>{{ t('palette.inspect.bytes') }} {{ node.startByte }}–{{ node.endByte }}
               </p>
-              <nav
-                class="lig-node-ancestors"
-                :aria-label="t('palette.inspect.ancestors')"
-              >
-                <button
-                  v-for="parent in parents"
-                  :key="parent.id"
-                  type="button"
-                  :aria-current="parent.id === node.id ? 'true' : undefined"
-                  @click="selectNode(parent.id)"
-                >
-                  {{ parent.type }}
-                </button>
-              </nav>
-              <p class="lig-inspector-label">
-                {{ t('palette.inspect.position') }}
-              </p>
-              <div
+              <p
                 v-if="segment"
-                class="lig-capture-list"
+                class="lig-node-color"
               >
-                <div
-                  v-for="capture in segment.captures"
-                  :key="capture.order"
-                  :class="{ 'is-winning': capture === segment.winner }"
-                >
-                  <span>@{{ capture.name }}</span>
-                  <small>{{ capture.priority }} · {{ capture === segment.winner ? t('palette.inspect.winner') : captureRole(capture.name) ? t('palette.inspect.overlap') : t('palette.inspect.metadata') }}</small>
-                </div>
-                <p
-                  v-if="!segment.winner"
-                  class="lig-node-meta"
-                >
-                  {{ t('palette.inspect.fallback') }}
-                </p>
-              </div>
-              <template v-if="segment">
-                <p
-                  v-if="syntaxFamily(role, variant)"
-                  class="lig-inspector-label"
-                >
-                  {{ t('palette.inspect.family') }} · {{ syntaxFamily(role, variant) }}
-                </p>
-                <p class="lig-node-role">
-                  {{ role }}
-                </p>
-                <p class="lig-node-color">
-                  <i :style="{ background: color }" />{{ color }}
-                </p>
-                <p class="lig-node-meta">
-                  L {{ coordinates.l.toFixed(3) }} · C {{ coordinates.c.toFixed(3) }} · H {{ coordinates.h?.toFixed(1) ?? '—' }}
-                </p>
-              </template>
-              <details class="lig-node-source">
-                <summary>{{ t('palette.inspect.source') }}</summary>
-                <pre>{{ selectedText }}</pre>
-              </details>
+                <i :style="{ background: color }" />
+                <span>{{ role }}</span>
+                <span class="lig-node-hex">{{ color }}</span>
+              </p>
             </template>
             <p
               v-else
@@ -334,19 +233,9 @@ function inSelection(start: number, end: number): boolean {
             >
               {{ t('palette.inspect.empty') }}
             </p>
-            <Select
-              v-model="selectedNode"
-              class="lig-tree-select ui"
-              :label="t('palette.inspect.tree')"
-              :options="choices"
-              framed
-            />
-            <p class="lig-node-footnote">
-              {{ t('palette.inspect.provenance', { version: neovim }) }}
-            </p>
           </div>
         </div>
-      </component>
+      </Popover>
     </div>
   </section>
 </template>

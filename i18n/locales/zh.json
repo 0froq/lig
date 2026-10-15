@@ -153,26 +153,11 @@
     },
     "inspect": {
       "close": "关闭节点信息",
-      "nodes": "个节点",
       "title": "节点检查",
       "help": "悬停检查 · 点击固定 · 键盘：← → 切换片段，↑ 父节点，↓ 子节点，Esc 清除",
       "codeLabel": "检查 {file} 的语法节点",
       "unpin": "恢复悬停",
-      "named": "具名节点",
-      "anonymous": "匿名节点",
-      "bytes": "UTF-8 字节",
-      "ancestors": "祖先节点",
-      "position": "所选位置的 captures",
-      "winner": "生效",
-      "overlap": "重叠",
-      "metadata": "元数据",
-      "fallback": "没有着色 capture，使用正文前景色。",
-      "source": "所选节点源码",
-      "empty": "悬停在代码任意位置，或在下方选择节点。",
-      "tree": "完整语法树",
-      "choose": "选择节点",
-      "provenance": "由 Neovim {version} 解析。行列从 1 开始，列为字节位置，结束位置不包含在范围内。仅 Tree-sitter，不含 LSP。",
-      "family": "语义分组"
+      "empty": "悬停或点击代码，查看节点信息。"
     },
     "terminal": {
       "title": "终端 16 色",

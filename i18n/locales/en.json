@@ -153,26 +153,11 @@
     },
     "inspect": {
       "close": "Close inspector",
-      "nodes": "nodes",
       "title": "Node inspector",
       "help": "Hover to inspect · click to pin · keyboard: ← → tokens, ↑ parent, ↓ child, Esc clear",
       "codeLabel": "Inspect syntax in {file}",
       "unpin": "Resume hover",
-      "named": "Named node",
-      "anonymous": "Anonymous node",
-      "bytes": "UTF-8 bytes",
-      "ancestors": "Ancestor nodes",
-      "position": "Captures at selected position",
-      "winner": "active",
-      "overlap": "overlap",
-      "metadata": "metadata",
-      "fallback": "No color capture; uses the primary foreground.",
-      "source": "Selected node source",
-      "empty": "Hover any part of the code, or choose a node below.",
-      "tree": "Full syntax tree",
-      "choose": "Choose a node",
-      "provenance": "Parsed by Neovim {version}. Positions are 1-based byte columns; end is exclusive. Tree-sitter only; no LSP.",
-      "family": "Semantic family"
+      "empty": "Hover or click the code to inspect it."
     },
     "terminal": {
       "title": "Terminal 16 colors",

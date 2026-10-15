@@ -14,7 +14,6 @@ const documents = examples.documents as SyntaxDocument[]
       :key="document.language"
       :document="document"
       :variant="variant"
-      :neovim="examples.neovim"
     />
     <PaletteTerminal :variant="variant" />
     <slot name="foot" />
