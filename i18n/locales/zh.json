@@ -167,6 +167,7 @@
     },
     "uiRoles": "界面角色",
     "tiers": {
+      "tier": "层级",
       "color": "颜色",
       "highlight": "强调",
       "base": "基色",

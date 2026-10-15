@@ -167,6 +167,7 @@
     },
     "uiRoles": "UI roles",
     "tiers": {
+      "tier": "Tier",
       "color": "Color",
       "highlight": "Highlight",
       "base": "Base",

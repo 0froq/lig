@@ -8,26 +8,44 @@ const route = useRoute()
 const link = useKitLink()
 const resolved = computed(() => resolveVariant(props.variant))
 const banks = computed(() => terminalColors(resolved.value.tokens))
+const open = ref(false)
+const { copied, copyValue } = usePaletteClipboard()
+
+onMounted(() => {
+  watch(() => route.hash, (hash) => {
+    if (hash === '#terminal-colors')
+      open.value = true
+  }, { immediate: true })
+})
 </script>
 
 <template>
-  <details
+  <AnimatedDetails
     id="terminal-colors"
+    v-model="open"
     class="lig-more lig-terminal-reference"
-    :open="route.hash === '#terminal-colors'"
+    :label="t('palette.terminal.reference')"
   >
-    <summary>{{ t('palette.terminal.reference') }}</summary>
     <p class="lig-aside">
       {{ t('palette.terminal.note') }}
-      <code>{{ resolved.tokens['terminal.background'] }}</code>
+      <button
+        type="button"
+        class="lig-color-copy"
+        :style="{ '--copy-color': resolved.tokens['terminal.background'] }"
+        :aria-label="`${t('install.copy')}: ${resolved.tokens['terminal.background']}`"
+        :class="{ 'is-copied': copied === 'terminal.background' }"
+        @click="copyValue(resolved.tokens['terminal.background']!, 'terminal.background')"
+      >
+        {{ copied === 'terminal.background' ? t('install.copied') : resolved.tokens['terminal.background'] }}
+      </button>
     </p>
     <div
-      class="lig-terminal-table-scroll"
+      class="lig-color-table-scroll"
       role="region"
       tabindex="0"
       :aria-label="t('palette.terminal.reference')"
     >
-      <table>
+      <table class="lig-color-table">
         <caption>{{ variant }} / terminal.ansi.0-15</caption>
         <thead>
           <tr>
@@ -62,14 +80,25 @@ const banks = computed(() => terminalColors(resolved.value.tokens))
             <th scope="row">
               {{ color.index }}
             </th>
-            <td>
+            <td :style="{ color: color.hex }">
               <span
-                class="lig-terminal-color-key"
+                class="lig-color-key"
                 :style="{ background: color.hex }"
                 aria-hidden="true"
               />{{ color.name }}
             </td>
-            <td>{{ color.hex }}</td>
+            <td>
+              <button
+                type="button"
+                class="lig-color-copy"
+                :style="{ '--copy-color': color.hex }"
+                :aria-label="`${t('install.copy')}: ${color.hex}`"
+                :class="{ 'is-copied': copied === `terminal.ansi.${color.index}` }"
+                @click="copyValue(color.hex, `terminal.ansi.${color.index}`)"
+              >
+                {{ copied === `terminal.ansi.${color.index}` ? t('install.copied') : color.hex }}
+              </button>
+            </td>
             <td>{{ color.foregroundCode }} / {{ color.backgroundCode }}</td>
             <td>{{ color.wcag }}:1</td>
             <td>{{ color.apca > 0 ? '+' : '' }}{{ color.apca.toFixed(0) }}</td>
@@ -77,6 +106,10 @@ const banks = computed(() => terminalColors(resolved.value.tokens))
         </tbody>
       </table>
     </div>
+    <span
+      class="lig-color-announcement"
+      role="status"
+    >{{ copied ? t('install.copied') : '' }}</span>
     <p class="lig-aside">
       {{ t('palette.terminal.slotNote') }}
       <NuxtLink
@@ -89,58 +122,11 @@ const banks = computed(() => terminalColors(resolved.value.tokens))
     <p class="lig-aside">
       {{ t('palette.terminal.contrastNote') }}
     </p>
-  </details>
+  </AnimatedDetails>
 </template>
 
 <style scoped>
 .lig-terminal-reference {
   scroll-margin-top: 100px;
-}
-
-.lig-terminal-table-scroll {
-  margin-top: 24px;
-  overflow-x: auto;
-}
-
-.lig-terminal-table-scroll:focus-visible {
-  outline: 1px solid var(--accent);
-  outline-offset: 4px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  white-space: nowrap;
-  font: 11px/1.6 var(--font-meta);
-  font-variant-numeric: tabular-nums;
-  text-align: left;
-}
-
-caption {
-  padding-bottom: 12px;
-  text-align: left;
-}
-
-th,
-td {
-  padding: 6px 16px 6px 0;
-  font-weight: 400;
-}
-
-thead {
-  color: var(--muted);
-}
-
-tbody {
-  border-top: 1px solid var(--line);
-}
-
-.lig-terminal-color-key {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin-right: 10px;
-  vertical-align: -2px;
-  box-shadow: inset 0 0 0 1px var(--line);
 }
 </style>
