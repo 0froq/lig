@@ -12,7 +12,7 @@ import { themePreferenceScript } from './shared/theme-preference'
 
 export default defineNuxtConfig({
   extends: [
-    ['github:0froq/og-layer#v0.1.0', { install: true }],
+    ['github:0froq/og-layer#v0.2.0', { install: true }],
   ],
 
   compatibilityDate: '2026-09-19',

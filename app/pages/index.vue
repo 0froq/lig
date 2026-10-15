@@ -7,6 +7,7 @@ const pageTitle = () => title
 useHead({ title, titleTemplate: '%s' })
 defineOgImage('Paper', {
   title: pageTitle,
+  description: () => t('palette.meta.description'),
   words: 0,
 }, {
   alt: pageTitle,
