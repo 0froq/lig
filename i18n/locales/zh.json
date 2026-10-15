@@ -2,6 +2,7 @@
   "site": {
     "title": "LiG",
     "skip": "跳到正文",
+    "language": "语言",
     "footer": "Less is Great."
   },
   "theme": {

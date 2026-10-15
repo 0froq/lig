@@ -1,9 +1,7 @@
 <script setup lang="ts">
 const { product } = useAppConfig()
-const { t, locale, locales } = useI18n()
+const { t } = useI18n()
 const link = useKitLink()
-const switchLocalePath = useSwitchLocalePath()
-const others = computed(() => locales.value.filter(l => l.code !== locale.value))
 </script>
 
 <template>
@@ -21,13 +19,5 @@ const others = computed(() => locales.value.filter(l => l.code !== locale.value)
         {{ t(item.label) }}
       </NuxtLink>
     </nav>
-    <span class="l-controls">
-      <NuxtLink
-        v-for="l in others"
-        :key="l.code"
-        :to="switchLocalePath(l.code)"
-        :lang="l.language"
-      >{{ l.name }}</NuxtLink>
-    </span>
   </footer>
 </template>
