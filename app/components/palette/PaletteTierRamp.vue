@@ -51,7 +51,7 @@ const { format, copied, copyValue, textFor } = usePaletteClipboard()
   position: relative;
   width: 100%;
   max-width: 120px;
-  aspect-ratio: 15 / 8;
+  aspect-ratio: 12 / 8;
   --half-gap: 1.5px;
 }
 
@@ -66,20 +66,20 @@ const { format, copied, copyValue, textFor } = usePaletteClipboard()
 }
 
 .lig-tier-shape.is-highlight {
-  clip-path: polygon(0 0, calc(33.333333% - var(--half-gap)) 0, calc(0px - var(--half-gap)) 100%);
+  clip-path: polygon(0 0, calc(40% - var(--half-gap)) 0, calc(0px - var(--half-gap)) 100%);
 }
 
 .lig-tier-shape.is-base {
   clip-path: polygon(
-    calc(33.333333% + var(--half-gap)) 0,
+    calc(40% + var(--half-gap)) 0,
     calc(100% - var(--half-gap)) 0,
-    calc(66.666667% - var(--half-gap)) 100%,
+    calc(60% - var(--half-gap)) 100%,
     var(--half-gap) 100%
   );
 }
 
 .lig-tier-shape.is-muted {
-  clip-path: polygon(calc(100% + var(--half-gap)) 0, 100% 0, 100% 100%, calc(66.666667% + var(--half-gap)) 100%);
+  clip-path: polygon(calc(100% + var(--half-gap)) 0, 100% 0, 100% 100%, calc(60% + var(--half-gap)) 100%);
 }
 
 .lig-tier-shapes:has(:focus-visible) {
