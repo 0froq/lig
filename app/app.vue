@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { canonicalUrl } from '~/utils/site'
+
 const { product } = useAppConfig()
 const { t } = useI18n()
 const localeHead = useLocaleHead()
@@ -36,14 +38,17 @@ useHead({
     return t('site.title') || 'paper-landing'
   },
 })
+
+// The OG layer uses the image host; localized document links use the public site.
+function documentUrl(value: string): string {
+  return canonicalUrl(new URL(value).pathname)
+}
 useHead(() => ({
-  // Section anchors do not identify separate documents for search or social cards.
-  link: (localeHead.value.link ?? []).map(link => ({ ...link, href: link.href?.split('#')[0] })),
+  link: (localeHead.value.link ?? []).map(link => ({ ...link, href: link.href ? documentUrl(link.href) : undefined })),
   meta: (localeHead.value.meta ?? []).map(meta => meta.property === 'og:url' && typeof meta.content === 'string'
-    ? { ...meta, content: meta.content.split('#')[0] }
+    ? { ...meta, content: documentUrl(meta.content) }
     : meta),
 }))
-useShareMeta()
 </script>
 
 <template>

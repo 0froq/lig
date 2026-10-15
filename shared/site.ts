@@ -1,3 +1,3 @@
-/** Public origin shared by localized SEO, social cards and crawler files. */
+/** Public document and share-image origins; keep images on the Worker host. */
 export const SITE_ORIGIN = 'https://lig.froq.me'
-export const OG_IMAGE_URL = `${SITE_ORIGIN}/og.png`
+export const IMAGE_ORIGIN = 'https://lig.sayhola.workers.dev'

@@ -9,9 +9,23 @@ const { data: releases } = await useAsyncData(
 )
 
 useHead({ title: () => t('changelog.label') })
+const files = useRuntimeConfig().public.publicFiles
+const override = computed(() => explicitContentCover({
+  collection: 'changelog',
+  path: contentPath('/changelog'),
+}, path => hasShareFile(files, path)))
+if (!override.value) {
+  defineOgImage('Paper', {
+    title: () => t('changelog.label'),
+    words: 0,
+  }, {
+    alt: () => t('changelog.label'),
+  })
+}
 useShareMeta({
   title: () => t('changelog.label'),
-  description: () => t('changelog.description'),
+  description: () => t('changelog.lede').trim() || t('changelog.description'),
+  image: () => override.value ?? false,
 })
 useSeoMeta({ robots: () => releases.value?.some(release => release.title?.trim()) ? undefined : 'noindex, follow' })
 </script>

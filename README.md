@@ -118,13 +118,12 @@ The site is built with Nuxt and Vue.
 
 ## Site SEO
 
-`shared/site.ts` defines the production origin for i18n SEO links, social cards,
-and crawler files. Change it when moving the site to another domain.
+`shared/site.ts` keeps document URLs on `lig.froq.me` and share images on the Worker host.
+Localized canonical, hreflang and Open Graph locale tags are emitted by `app.vue`.
 
-`pnpm generate` writes `dist/sitemap.xml` and `dist/robots.txt` from the rendered
-pages. The sitemap includes canonical URLs only; redirects, errors, and pages
-marked `noindex` are excluded. Content pages and docs without a title, and a
-changelog without titled releases, remain accessible but are not indexed.
+`pnpm generate` writes `dist/sitemap.xml` and `dist/robots.txt` from rendered canonical
+URLs. Redirects, errors and `noindex` pages are excluded. Untitled content and docs,
+and a changelog without titled releases, remain accessible but are not indexed.
 Adding their content enables indexing on the next build.
 
 ## Star History

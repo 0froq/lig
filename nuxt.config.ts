@@ -3,16 +3,22 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { countCardWords } from '@froq/og-covers-layer/card-words'
 import { VARIANTS } from './core/resolve'
 import { documentationThemes } from './shared/documentation-themes'
 import { keepEmptyTitle } from './shared/empty-title'
 import { markFinalStop } from './shared/final-mark'
-import { SITE_ORIGIN } from './shared/site'
+import { listPublicShareImages } from './shared/public-files'
+import { IMAGE_ORIGIN, SITE_ORIGIN } from './shared/site'
 import { themePreferenceScript } from './shared/theme-preference'
 
 const requireUI = createRequire(realpathSync(fileURLToPath(new URL('./node_modules/@froq/ui/package.json', import.meta.url))))
 
 export default defineNuxtConfig({
+  extends: [
+    '@froq/og-covers-layer',
+  ],
+
   compatibilityDate: '2026-09-19',
 
   alias: {
@@ -33,9 +39,27 @@ export default defineNuxtConfig({
     // An explicit `title: ''` must stay empty: Content otherwise names the page after the file.
     'content:file:afterParse': ({ file, content, collection }) => {
       keepEmptyTitle(content, file.body)
+      if (typeof file.body === 'string')
+        (content as { words?: number }).words = countCardWords(file.body)
       if (collection.name === 'notes' || collection.name === 'docs')
         markFinalStop(content.body)
     },
+  },
+
+  runtimeConfig: {
+    public: {
+      publicFiles: listPublicShareImages(),
+    },
+  },
+
+  // DevTools hosts the OG Image tab (template hot reload). The host package is not a module.
+  devtools: { enabled: true },
+
+  // `og:image` is absolute on this origin. `og:url` stays on lig.froq.me via useShareMeta.
+  // X does not fetch images from froq.me.
+  site: {
+    url: IMAGE_ORIGIN,
+    name: 'lig',
   },
 
   modules: [
@@ -86,7 +110,6 @@ export default defineNuxtConfig({
   },
 
   i18n: {
-    baseUrl: SITE_ORIGIN,
     locales: [
       { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
       { code: 'zh', language: 'zh-CN', name: '中文', file: 'zh.json' },
@@ -94,6 +117,8 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     strategy: 'prefix_except_default',
     detectBrowserLanguage: false,
+    // Image generation uses the Worker origin; app.vue normalizes document SEO URLs.
+    baseUrl: IMAGE_ORIGIN,
   },
 
   nitro: {

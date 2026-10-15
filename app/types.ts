@@ -57,11 +57,11 @@ export interface ProductConfig {
   nav: NavLink[]
 }
 
-declare module 'nuxt/schema' {
+declare module '@nuxt/schema' {
   interface AppConfigInput {
     product?: Partial<ProductConfig>
   }
-  interface AppConfig {
+  interface CustomAppConfig {
     product: ProductConfig
   }
 }

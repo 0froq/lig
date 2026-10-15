@@ -2,11 +2,20 @@
 const { t } = useI18n()
 const title = 'LiG — Less is Great.'
 
+const pageTitle = () => title
+
 useHead({ title, titleTemplate: '%s' })
+defineOgImage('Paper', {
+  title: pageTitle,
+  words: 0,
+}, {
+  alt: pageTitle,
+})
 useShareMeta({
-  title,
+  title: pageTitle,
   bareTitle: true,
   description: () => t('palette.meta.description'),
+  image: false,
 })
 </script>
 
