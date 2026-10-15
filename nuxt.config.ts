@@ -1,5 +1,7 @@
+import { realpathSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { createRequire } from 'node:module'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from './core/resolve'
 import { documentationThemes } from './shared/documentation-themes'
@@ -8,11 +10,22 @@ import { markFinalStop } from './shared/final-mark'
 import { SITE_ORIGIN } from './shared/site'
 import { themePreferenceScript } from './shared/theme-preference'
 
+const requireUI = createRequire(realpathSync(fileURLToPath(new URL('./node_modules/@froq/ui/package.json', import.meta.url))))
+
 export default defineNuxtConfig({
   compatibilityDate: '2026-09-19',
 
   alias: {
     '#palette': fileURLToPath(new URL('./palette/src', import.meta.url)),
+    // The vendored library is editable source, not an immutable node_modules dependency.
+    '@froq/ui/core': fileURLToPath(new URL('./vendor/ui/src/core/index.ts', import.meta.url)),
+    '@froq/ui/vue': fileURLToPath(new URL('./vendor/ui/src/vue/index.ts', import.meta.url)),
+    '@froq/ui/style.css': fileURLToPath(new URL('./vendor/ui/src/style.css', import.meta.url)),
+    '@froq/ui/tokens.css': fileURLToPath(new URL('./vendor/ui/src/tokens.css', import.meta.url)),
+    '@froq/ui': fileURLToPath(new URL('./vendor/ui/src/index.ts', import.meta.url)),
+    // Resolve the library's own dependencies from its installed package under pnpm.
+    'reka-ui': dirname(dirname(requireUI.resolve('reka-ui'))),
+    '@internationalized/date': dirname(dirname(requireUI.resolve('@internationalized/date'))),
   },
 
   hooks: {
