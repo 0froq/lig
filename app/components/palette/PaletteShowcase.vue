@@ -97,7 +97,7 @@ const accentBases = computed(() =>
       class="l-label"
       data-anchor="label"
     >
-      {{ t('palette.sections.syntax') }}
+      Syntax
     </p>
     <div class="l-body">
       <h2 class="l-title">
@@ -115,7 +115,7 @@ const accentBases = computed(() =>
       class="l-label"
       data-anchor="label"
     >
-      {{ t('palette.sections.swatches') }}
+      Source
     </p>
     <div class="l-body">
       <h2 class="lig-quiet-title">
@@ -210,7 +210,7 @@ const accentBases = computed(() =>
       class="l-label"
       data-anchor="label"
     >
-      {{ t('palette.sections.downloads') }}
+      Ports
     </p>
     <div class="l-body">
       <h2 class="lig-quiet-title">

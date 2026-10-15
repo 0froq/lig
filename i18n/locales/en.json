@@ -39,17 +39,11 @@
       "darkPaper": "Dark paper"
     },
     "sections": {
-      "variants": "Flavor",
       "variantsTitle": "Variant",
-      "syntax": "Syntax",
       "syntaxTitle": "Six.",
-      "swatches": "Source",
       "swatchesTitle": "Palette",
-      "semantic": "Roles",
       "semanticTitle": "Semantic roles",
-      "previews": "Live",
       "previewsTitle": "Live previews",
-      "downloads": "Ports",
       "downloadsTitle": "Downloads & ports"
     },
     "semantic": {

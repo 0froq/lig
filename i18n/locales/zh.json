@@ -39,17 +39,11 @@
       "darkPaper": "深色纸张"
     },
     "sections": {
-      "variants": "变体",
       "variantsTitle": "变体切换",
-      "syntax": "语法",
       "syntaxTitle": "六种。",
-      "swatches": "色源",
       "swatchesTitle": "色板",
-      "semantic": "语义",
       "semanticTitle": "语义角色",
-      "previews": "预览",
       "previewsTitle": "实时预览",
-      "downloads": "移植",
       "downloadsTitle": "下载与移植"
     },
     "semantic": {
