@@ -654,8 +654,14 @@
 .lig-parsed-code .is-inspected {
   background: var(--pv-selection);
   text-decoration: underline;
+  text-decoration-style: dotted;
   text-decoration-color: var(--pv-muted);
   text-underline-offset: 4px;
+}
+
+.lig-parsed-code.is-pinned .is-inspected {
+  text-decoration-style: solid;
+  text-decoration-color: var(--pv-fg);
 }
 
 .lig-parsed-code:focus-visible,
@@ -725,6 +731,25 @@
   width: min(20rem, calc(100vw - 24px));
   max-height: calc(100dvh - 24px);
   padding: 12px 40px 12px 12px;
+}
+
+.lig-inspector-floating.is-pinned {
+  border-color: var(--pv-muted);
+}
+
+/* Reka positions the outer wrapper; animating the card itself would not move its anchor. */
+@media (prefers-reduced-motion: no-preference) {
+  .lig-parsed-code .is-inspected {
+    transition: text-decoration-color 180ms ease;
+  }
+
+  .lig-inspector-floating {
+    transition: border-color 180ms ease;
+  }
+
+  [data-reka-popper-content-wrapper]:has(> .lig-inspector-floating.is-moving) {
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
 }
 
 @media (max-width: 600px) {

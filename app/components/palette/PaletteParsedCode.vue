@@ -14,8 +14,8 @@ const inspected = ref<number | null>(null)
 const pinned = ref(false)
 const code = ref<HTMLElement>()
 const floatingOpen = ref(false)
+const floatingMoving = ref(false)
 const reference = shallowRef<HTMLElement>()
-let hoverTimer: ReturnType<typeof setTimeout> | undefined
 let closeTimer: ReturnType<typeof setTimeout> | undefined
 let detachListeners: (() => void) | undefined
 const segment = computed(() => active.value === null ? null : segments.value[active.value]!)
@@ -37,7 +37,7 @@ const inspectorAttrs = computed(() => ({
   portalTo: 'body',
   side: 'bottom' as const,
   align: 'start' as const,
-  class: 'lig-node-inspector lig-inspector-floating ui',
+  class: ['lig-node-inspector lig-inspector-floating ui', { 'is-moving': floatingMoving.value, 'is-pinned': pinned.value }],
   style: {
     ...style.value,
     '--ui-bg': style.value['--pv-bg'],
@@ -53,23 +53,50 @@ function keepInfo(): void {
   clearTimeout(closeTimer)
 }
 
+function interactOutside(event: Event): void {
+  const target = event.target
+  if (!(target instanceof HTMLElement) || !code.value?.contains(target))
+    return
+  const segment = target.closest<HTMLElement>('[data-segment]')
+  // Retarget real tokens, but let blank areas dismiss the card. Clicking a token
+  // also focuses the surrounding pre, which must not dismiss it either.
+  const isCodeFocus = event instanceof CustomEvent && event.detail.originalEvent.type === 'focusin'
+  if (segment?.textContent?.trim() || isCodeFocus) {
+    event.preventDefault()
+    keepInfo()
+  }
+}
+
+function clickCode(event: MouseEvent): void {
+  const target = event.target instanceof HTMLElement ? event.target.closest<HTMLElement>('[data-segment]') : null
+  if (target?.textContent?.trim())
+    selectSegment(Number(target.dataset.segment), true)
+  else
+    closeInfo()
+}
+
 function closeInfo(): void {
-  clearTimeout(hoverTimer)
   clearTimeout(closeTimer)
   floatingOpen.value = false
+  floatingMoving.value = false
   pinned.value = false
+  active.value = null
+  inspected.value = null
   if (document.activeElement instanceof HTMLElement && document.activeElement.closest('.lig-inspector-floating'))
     code.value?.focus({ preventScroll: true })
 }
 
 function leaveInfo(): void {
-  clearTimeout(hoverTimer)
   if (!pinned.value)
     closeTimer = setTimeout(closeInfo, 180)
 }
 
 function showInfo(id: number, element?: HTMLElement): void {
-  reference.value = element ?? code.value?.querySelector<HTMLElement>(`[data-segment="${id}"]`) ?? code.value
+  const nextReference = element ?? code.value?.querySelector<HTMLElement>(`[data-segment="${id}"]`) ?? code.value
+  // Enable motion only when retargeting an already positioned card, not on first open.
+  if (floatingOpen.value && reference.value !== nextReference)
+    floatingMoving.value = true
+  reference.value = nextReference
   if (reference.value)
     floatingOpen.value = true
 }
@@ -89,7 +116,6 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   detachListeners?.()
-  clearTimeout(hoverTimer)
   clearTimeout(closeTimer)
 })
 
@@ -97,23 +123,17 @@ function selectSegment(id: number, pin = false): void {
   active.value = id
   inspected.value = segments.value[id]!.node
   pinned.value = pin
-  clearTimeout(hoverTimer)
   keepInfo()
   showInfo(id)
 }
 
 function hover(id: number, event: PointerEvent): void {
   keepInfo()
-  clearTimeout(hoverTimer)
   if (pinned.value || event.pointerType === 'touch')
     return
   if (!segments.value[id]!.text.trim())
     return
-  const element = event.currentTarget as HTMLElement
-  hoverTimer = setTimeout(() => {
-    selectSegment(id)
-    showInfo(id, element)
-  }, 240)
+  selectSegment(id)
 }
 
 function selectNode(id: number): void {
@@ -176,10 +196,12 @@ function inSelection(start: number, end: number): boolean {
       <pre
         ref="code"
         class="lig-code lig-parsed-code"
+        :class="{ 'is-pinned': pinned }"
         tabindex="0"
         :aria-label="t('palette.inspect.codeLabel', { file: document.filename })"
         :aria-describedby="`syntax-help-${document.language}`"
         @keydown="navigate"
+        @click="clickCode"
         @pointerleave="leaveInfo"
       ><code><span
         v-for="item in segments"
@@ -191,9 +213,8 @@ function inSelection(start: number, end: number): boolean {
           fontStyle: item.decorations.italic ? 'italic' : undefined,
           textDecoration: [item.decorations.underline ? 'underline' : '', item.decorations.strikethrough ? 'line-through' : ''].filter(Boolean).join(' ') || undefined,
         }"
-        :class="{ 'is-inspected': inSelection(item.startByte, item.endByte) }"
+        :class="{ 'is-inspected': floatingOpen && inSelection(item.startByte, item.endByte) }"
         @pointerenter="hover(item.id, $event)"
-        @click="selectSegment(item.id, true)"
       >{{ item.text }}</span></code></pre>
       <Popover
         v-if="floatingOpen"
@@ -201,6 +222,7 @@ function inSelection(start: number, end: number): boolean {
         @update:model-value="closeInfo"
         @open-auto-focus.prevent
         @close-auto-focus.prevent
+        @interact-outside="interactOutside"
         @pointerenter="keepInfo"
         @pointerleave="leaveInfo"
       >
