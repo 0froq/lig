@@ -215,8 +215,8 @@ catalogs:
       specifier: ^5.3.0
       version: 5.3.0
     '@froq/og-covers-layer':
-      specifier: github:0froq/og-layer#v0.1.0
-      version: https://codeload.github.com/0froq/og-layer/tar.gz/661bbc2ed11eaf965993113bd115ab95e2f11971
+      specifier: github:0froq/og-layer#v0.2.1
+      version: https://codeload.github.com/0froq/og-layer/tar.gz/af1587b2d1876d2b8d289a3a2a49ac0414a776d7
     '@nuxt/content':
       specifier: ^3.16.1
       version: 3.16.2
@@ -251,7 +251,7 @@ importers:
         version: 5.3.0
       '@froq/og-covers-layer':
         specifier: catalog:prod
-        version: https://codeload.github.com/0froq/og-layer/tar.gz/661bbc2ed11eaf965993113bd115ab95e2f11971(bbd39f9cf8153b2c95907a98b27bad76)
+        version: https://codeload.github.com/0froq/og-layer/tar.gz/af1587b2d1876d2b8d289a3a2a49ac0414a776d7(bbd39f9cf8153b2c95907a98b27bad76)
       '@froq/ui':
         specifier: file:vendor/ui
         version: file:vendor/ui(vue@3.5.44(typescript@5.9.3))
@@ -1335,8 +1335,8 @@ packages:
   '@fontsource/noto-serif-sc@5.3.1':
     resolution: {integrity: sha512-nIK2HyNGcUi2TGwIfrk2MItkh0O3Y5+TI8iPfPSzoNY6uyXYfQ9qqch8czk3aa1VhV4EU52uwCYCe1UDKJELpg==}
 
-  '@froq/og-covers-layer@https://codeload.github.com/0froq/og-layer/tar.gz/661bbc2ed11eaf965993113bd115ab95e2f11971':
-    resolution: {gitHosted: true, integrity: sha512-U6j3aHpw1ttmPVpA/gb1i21BtEJ7czh5dOH60mmp9Vd5tKy4BLIwMNRPdbGNsQX3DRC+oEKUsDpN0WhatXyymg==, tarball: https://codeload.github.com/0froq/og-layer/tar.gz/661bbc2ed11eaf965993113bd115ab95e2f11971}
+  '@froq/og-covers-layer@https://codeload.github.com/0froq/og-layer/tar.gz/af1587b2d1876d2b8d289a3a2a49ac0414a776d7':
+    resolution: {gitHosted: true, integrity: sha512-GE3U9o4EI27M8Sf2RKcpzJ4yx/Nyi17BrBAU2XoR2wME5DZjeQnGSWiJTgUuryasmF0GMdYwnhL+4na31bmCrw==, tarball: https://codeload.github.com/0froq/og-layer/tar.gz/af1587b2d1876d2b8d289a3a2a49ac0414a776d7}
     version: 0.1.0
     peerDependencies:
       nuxt: ^4.6.0
@@ -9323,7 +9323,7 @@ snapshots:
 
   '@fontsource/noto-serif-sc@5.3.1': {}
 
-  '@froq/og-covers-layer@https://codeload.github.com/0froq/og-layer/tar.gz/661bbc2ed11eaf965993113bd115ab95e2f11971(bbd39f9cf8153b2c95907a98b27bad76)':
+  '@froq/og-covers-layer@https://codeload.github.com/0froq/og-layer/tar.gz/af1587b2d1876d2b8d289a3a2a49ac0414a776d7(bbd39f9cf8153b2c95907a98b27bad76)':
     dependencies:
       '@fontsource/eb-garamond': 5.3.0
       '@fontsource/geist-mono': 5.2.7
