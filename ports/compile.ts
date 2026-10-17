@@ -127,16 +127,20 @@ for (const port of ['neovim', 'vscode']) {
   })
 }
 const lightweight: Record<string, string | Buffer> = lightweightArtifacts(themes)
+const lightweightReadme = readFileSync(join(root, 'ports/lightweight/README.md'), 'utf8')
 for (const port of LIGHTWEIGHT_PORTS) {
   const entries = Object.fromEntries(VARIANTS.map((variant) => {
     const path = lightweightPath(port, variant)
     return [path, lightweight[path]!]
   }))
   entries.LICENSE = mit
+  // Hatoba needs source integration, so keep those instructions with its download.
+  if (port.id === 'hatoba')
+    entries['README.md'] = lightweightReadme
   lightweight[lightweightArchivePath(port)] = zip(entries)
 }
 lightweight.LICENSE = mit
-lightweight['README.md'] = readFileSync(join(root, 'ports/lightweight/README.md'), 'utf8')
+lightweight['README.md'] = lightweightReadme
 lightweight['manifest.json'] = json({
   ...metadata,
   sourceRef: SOURCE_REF,

@@ -64,6 +64,7 @@ Install an editor port from its own repository.
 | VS Code | [vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG) |
 | Zed | [zed-theme-LiG](https://github.com/0froq/zed-theme-LiG) |
 | Ghostty, fzf, Zellij, tmux, Starship, bat, eza | [lightweight ports](ports/lightweight/README.md) |
+| Hatoba (source build) | [Hatoba integration](ports/lightweight/README.md#hatoba) |
 
 Editor stores can lag behind GitHub.
 Follow the install notes in each distribution.

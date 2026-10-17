@@ -6,8 +6,9 @@ import { join } from 'node:path'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from '../../core/resolve'
-import { LIGHTWEIGHT_PORTS, lightweightPath } from '../catalog'
+import { LIGHTWEIGHT_PORTS, lightweightArchivePath, lightweightPath } from '../catalog'
 import { compileTheme } from '../styles'
+import { zip } from '../zip'
 import { rgb } from './common'
 import { lightweightArtifacts } from './index'
 
@@ -17,7 +18,7 @@ describe('lightweight tool distributions', () => {
   const outputs = lightweightArtifacts(VARIANTS.map(compileTheme))
 
   it('ships each tool and variant once, without authoring another palette', () => {
-    assert.deepEqual(LIGHTWEIGHT_PORTS.map(port => port.id), ['ghostty', 'fzf', 'zellij', 'tmux', 'starship', 'bat', 'eza'])
+    assert.deepEqual(LIGHTWEIGHT_PORTS.map(port => port.id), ['ghostty', 'hatoba', 'fzf', 'zellij', 'tmux', 'starship', 'bat', 'eza'])
     assert.equal(Object.keys(outputs).length, LIGHTWEIGHT_PORTS.length * VARIANTS.length)
     for (const variant of VARIANTS) {
       const theme = compileTheme(variant)
@@ -44,6 +45,25 @@ describe('lightweight tool distributions', () => {
       for (const key of ['background', 'foreground'])
         assert.ok(ghostty.includes(`${key} = ${theme.tokens[`terminal.${key}`]}\n`))
       assert.doesNotMatch(ghostty, /^(?:font|keybind|window|command|theme|config-file)/m)
+      const hatoba = JSON.parse(outputs[`hatoba/lig-${variant}.json`]!) as { id: string, name: string, mode: string, contrast: number, colors: Record<string, string> }
+      assert.deepEqual(Object.keys(hatoba).sort(), ['colors', 'contrast', 'id', 'mode', 'name'])
+      assert.equal(hatoba.id, `lig-${variant}`)
+      assert.match(hatoba.id, /^[a-z0-9-]{1,64}$/) // Hatoba's settings backend accepts these IDs.
+      assert.equal(hatoba.name, `LiG ${variant.split('-').map(word => word[0]!.toUpperCase() + word.slice(1)).join(' ')}`)
+      assert.equal(hatoba.mode, theme.mode)
+      assert.equal(hatoba.contrast, theme.mode === 'dark' ? 1 : 3)
+      // SchemeColors' 20 required xterm keys, plus the optional cursorAccent.
+      const ansiKeys = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'brightBlack', 'brightRed', 'brightGreen', 'brightYellow', 'brightBlue', 'brightMagenta', 'brightCyan', 'brightWhite']
+      assert.deepEqual(Object.keys(hatoba.colors).sort(), [...ansiKeys, 'background', 'foreground', 'cursor', 'cursorAccent', 'selectionBackground'].sort())
+      for (const [index, key] of ansiKeys.entries())
+        assert.equal(hatoba.colors[key], theme.tokens[`terminal.ansi.${index}`])
+      for (const key of ['background', 'foreground', 'cursor'])
+        assert.equal(hatoba.colors[key], theme.tokens[`terminal.${key}`])
+      assert.equal(hatoba.colors.cursorAccent, theme.tokens['terminal.background'])
+      assert.equal(hatoba.colors.selectionBackground, theme.tokens['terminal.selection'])
+      for (const value of Object.values(hatoba.colors))
+        assert.match(value, /^#[a-f0-9]{6}$/)
+      assert.ok(!('search' in hatoba), 'Hatoba derives search highlights from the palette')
       const fzf = outputs[`fzf/lig-${variant}.fzfrc`]!
       assert.match(fzf, new RegExp(`^--color=${theme.mode},`))
       assert.equal(fzf.trim().split('\n').length, 1)
@@ -67,6 +87,16 @@ describe('lightweight tool distributions', () => {
       assert.ok(bat.includes('<key>scope</key>'))
     })
   }
+
+  it('bundles all Hatoba variants, the license, and source-build instructions', () => {
+    const port = LIGHTWEIGHT_PORTS.find(port => port.id === 'hatoba')!
+    const entries = Object.fromEntries(VARIANTS.map(variant => [lightweightPath(port, variant), outputs[lightweightPath(port, variant)]!]))
+    entries.LICENSE = readFileSync(new URL('../../LICENSE', import.meta.url), 'utf8')
+    entries['README.md'] = readFileSync(new URL('./README.md', import.meta.url), 'utf8')
+    assert.deepEqual(readFileSync(join(root, lightweightArchivePath(port))), zip(entries))
+    assert.ok(entries['README.md'].includes('Source-build integration only'))
+    assert.ok(entries['README.md'].includes('apps/desktop/src/features/terminal/schemes.ts'))
+  })
 
   it('serves exactly the checksummed distribution bytes', () => {
     const manifest = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8')) as { files: Record<string, string> }
