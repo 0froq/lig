@@ -32,7 +32,7 @@ export function joinVariant(tone: Tone, edge: Edge): LigVariant {
 }
 
 /** Arrow keys move a radio group's selection and focus with it. */
-export function radioKey(event: KeyboardEvent, ids: LigVariant[], current: LigVariant, set: (next: LigVariant) => void): void {
+export function radioKey<T extends string>(event: KeyboardEvent, ids: readonly T[], current: T, set: (next: T) => void): void {
   const step = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 0
   if (!step)
     return

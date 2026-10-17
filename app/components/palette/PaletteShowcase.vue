@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { radioKey } from '~/utils/lig-variant'
 import { spec } from '../../../core'
 
 const { t } = useI18n()
@@ -106,21 +107,28 @@ const neutrals = computed(() => {
       <p class="lig-aside">
         {{ t('palette.paletteNote') }}
       </p>
-      <div
-        class="lig-copy-bar"
-        role="group"
-        :aria-label="t('palette.copyAs')"
-      >
-        <span>{{ t('palette.copyAs') }}</span>
-        <button
-          v-for="item in formats"
-          :key="item"
-          type="button"
-          :class="{ 'is-active': format === item }"
-          @click="format = item"
+      <div class="lig-copy-bar">
+        <span class="lig-copy-label">{{ t('palette.copyAs') }}</span>
+        <SlidingUnderline
+          class="lig-copy-formats"
+          role="radiogroup"
+          :active="format"
+          :aria-label="t('palette.copyAs')"
         >
-          {{ labelFor(item) }}
-        </button>
+          <button
+            v-for="item in formats"
+            :key="item"
+            type="button"
+            role="radio"
+            :class="{ 'is-active': format === item }"
+            :aria-checked="format === item"
+            :tabindex="format === item ? 0 : -1"
+            @click="format = item"
+            @keydown="radioKey($event, formats, format, next => (format = next))"
+          >
+            <span :data-slide="item">{{ labelFor(item) }}</span>
+          </button>
+        </SlidingUnderline>
       </div>
       <div class="lig-source-palette">
         <section class="lig-palette-column">

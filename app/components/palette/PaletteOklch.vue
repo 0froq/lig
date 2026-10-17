@@ -42,6 +42,89 @@ const points = computed(() => colors.value.map((color) => {
 }))
 const activePoint = computed(() => points.value.find(point => point.name === active.value.name)!)
 const activeIndex = computed(() => colors.value.findIndex(color => color.name === active.value.name))
+
+function pointScale(index: number): number {
+  return index === activeIndex.value ? 1 : 0.64
+}
+
+const activeRadius = computed(() => 14 * pointScale(activeIndex.value))
+const lightnessRadius = computed(() => 9 * pointScale(activeIndex.value))
+const lightnessAxis = 90
+const lightnessFade = 96
+const lightnessMask = `${useId().replace(/\W/g, '')}-lightness`
+const hueSvg = useTemplateRef<SVGSVGElement>('hue')
+const lightnessSvg = useTemplateRef<SVGSVGElement>('lightness')
+const hueNudge = reactive({ x: 0, y: 0 })
+const lightnessNudge = reactive({ x: 0, y: 0 })
+const pointer = ref<{ chart: 'hue' | 'lightness', x: number, y: number } | null>(null)
+let nudgeFrame = 0
+
+function localPoint(event: PointerEvent, svg: SVGSVGElement): { x: number, y: number } | null {
+  const ctm = svg.getScreenCTM()
+  if (!ctm)
+    return null
+  const point = svg.createSVGPoint()
+  point.x = event.clientX
+  point.y = event.clientY
+  const local = point.matrixTransform(ctm.inverse())
+  return { x: local.x, y: local.y }
+}
+
+function aimedNudge(chart: 'hue' | 'lightness'): { x: number, y: number } {
+  if (pointer.value?.chart !== chart)
+    return { x: 0, y: 0 }
+  const origin = chart === 'hue'
+    ? { x: activePoint.value.x, y: activePoint.value.y }
+    : { x: lightnessAxis + active.value.l * 200, y: 40 + activeIndex.value * 24 }
+  const cap = chart === 'hue' ? 20 : 12
+  const dx = pointer.value.x - origin.x
+  const dy = pointer.value.y - origin.y
+  if (Math.hypot(dx, dy) > cap)
+    return { x: 0, y: 0 }
+  return { x: dx * 0.18, y: dy * 0.18 }
+}
+
+function pullNudge(): void {
+  cancelAnimationFrame(nudgeFrame)
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const step = () => {
+    let moving = false
+    for (const [nudge, next] of [[hueNudge, aimedNudge('hue')], [lightnessNudge, aimedNudge('lightness')]] as const) {
+      const dx = next.x - nudge.x
+      const dy = next.y - nudge.y
+      if (reduced || Math.hypot(dx, dy) < 0.15) {
+        nudge.x = next.x
+        nudge.y = next.y
+      }
+      else {
+        nudge.x += dx * 0.05
+        nudge.y += dy * 0.05
+        moving = true
+      }
+    }
+    if (moving)
+      nudgeFrame = requestAnimationFrame(step)
+  }
+  nudgeFrame = requestAnimationFrame(step)
+}
+
+function onPoint(event: PointerEvent, chart: 'hue' | 'lightness', name: string): void {
+  activeName.value = name
+  const svg = chart === 'hue' ? hueSvg.value : lightnessSvg.value
+  const local = svg ? localPoint(event, svg) : null
+  if (!local)
+    return
+  pointer.value = { chart, ...local }
+  pullNudge()
+}
+
+function onPointLeave(chart: 'hue' | 'lightness'): void {
+  if (pointer.value?.chart === chart)
+    pointer.value = null
+  pullNudge()
+}
+
+onBeforeUnmount(() => cancelAnimationFrame(nudgeFrame))
 </script>
 
 <template>
@@ -62,6 +145,7 @@ const activeIndex = computed(() => colors.value.findIndex(color => color.name ==
     </figcaption>
     <div class="lig-oklch-layout">
       <svg
+        ref="hue"
         class="lig-oklch-plot"
         viewBox="0 0 360 360"
         role="group"
@@ -103,7 +187,7 @@ const activeIndex = computed(() => colors.value.findIndex(color => color.name ==
           >{{ extent.toFixed(2) }}</text>
         </g>
         <g
-          v-for="point in points"
+          v-for="(point, index) in points"
           :key="point.name"
           class="lig-oklch-point"
           :class="{ 'is-current': activeName === point.name }"
@@ -111,7 +195,9 @@ const activeIndex = computed(() => colors.value.findIndex(color => color.name ==
           role="button"
           tabindex="0"
           :aria-label="`${point.name}: ${textFor(point.hex, format)}`"
-          @pointerenter="activeName = point.name"
+          @pointerenter="onPoint($event, 'hue', point.name)"
+          @pointermove="onPoint($event, 'hue', point.name)"
+          @pointerleave="onPointLeave('hue')"
           @focus="activeName = point.name"
           @click="copyColor(point)"
           @keydown.enter.prevent="copyColor(point)"
@@ -127,7 +213,7 @@ const activeIndex = computed(() => colors.value.findIndex(color => color.name ==
           <circle
             :cx="point.x"
             :cy="point.y"
-            r="11"
+            :r="14 * pointScale(index)"
             :fill="point.hex"
           />
           <text
@@ -137,20 +223,59 @@ const activeIndex = computed(() => colors.value.findIndex(color => color.name ==
           >{{ point.name }}</text>
         </g>
         <MotionOutline
-          :x="activePoint.x - 17"
-          :y="activePoint.y - 17"
-          :width="34"
-          :height="34"
-          :radius="17"
+          :x="activePoint.x - activeRadius - 6"
+          :y="activePoint.y - activeRadius - 6"
+          :width="(activeRadius + 6) * 2"
+          :height="(activeRadius + 6) * 2"
+          :radius="activeRadius + 6"
           :color="active.hex"
+          :nudge-x="hueNudge.x"
+          :nudge-y="hueNudge.y"
         />
       </svg>
       <svg
+        ref="lightness"
         class="lig-oklch-plot lig-oklch-lightness"
         viewBox="0 0 320 238"
         role="group"
         :aria-label="t('palette.oklch.lightnessTitle')"
       >
+        <defs>
+          <linearGradient
+            :id="`${lightnessMask}-fade`"
+            gradientUnits="userSpaceOnUse"
+            :x1="lightnessAxis"
+            y1="0"
+            :x2="lightnessAxis + lightnessFade"
+            y2="0"
+          >
+            <stop
+              offset="0"
+              stop-color="#fff"
+              stop-opacity="0"
+            />
+            <stop
+              offset="1"
+              stop-color="#fff"
+            />
+          </linearGradient>
+          <mask
+            :id="lightnessMask"
+            maskUnits="userSpaceOnUse"
+            x="0"
+            y="0"
+            width="320"
+            height="238"
+          >
+            <rect
+              x="0"
+              y="0"
+              width="320"
+              height="238"
+              :fill="`url(#${lightnessMask}-fade)`"
+            />
+          </mask>
+        </defs>
         <g class="lig-oklch-grid">
           <path d="M 90 30 V 218 M 190 30 V 218 M 290 30 V 218" />
         </g>
@@ -184,7 +309,9 @@ const activeIndex = computed(() => colors.value.findIndex(color => color.name ==
           role="button"
           tabindex="0"
           :aria-label="`${color.name}: ${textFor(color.hex, format)}`"
-          @pointerenter="activeName = color.name"
+          @pointerenter="onPoint($event, 'lightness', color.name)"
+          @pointermove="onPoint($event, 'lightness', color.name)"
+          @pointerleave="onPointLeave('lightness')"
           @focus="activeName = color.name"
           @click="copyColor(color)"
           @keydown.enter.prevent="copyColor(color)"
@@ -208,21 +335,24 @@ const activeIndex = computed(() => colors.value.findIndex(color => color.name ==
             :x2="90 + color.l * 200"
             :y2="40 + index * 24"
             :stroke="color.hex"
+            :mask="`url(#${lightnessMask})`"
           />
           <circle
             :cx="90 + color.l * 200"
             :cy="40 + index * 24"
-            r="8"
+            :r="9 * pointScale(index)"
             :fill="color.hex"
           />
         </g>
         <MotionOutline
-          :x="90 + active.l * 200 - 12"
-          :y="40 + activeIndex * 24 - 12"
-          :width="24"
-          :height="24"
-          :radius="12"
+          :x="90 + active.l * 200 - lightnessRadius - 4"
+          :y="40 + activeIndex * 24 - lightnessRadius - 4"
+          :width="(lightnessRadius + 4) * 2"
+          :height="(lightnessRadius + 4) * 2"
+          :radius="lightnessRadius + 4"
           :color="active.hex"
+          :nudge-x="lightnessNudge.x"
+          :nudge-y="lightnessNudge.y"
         />
       </svg>
     </div>

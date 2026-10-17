@@ -15,9 +15,10 @@ function select(next: LigVariant): void {
 </script>
 
 <template>
-  <div
+  <SlidingUnderline
     class="lig-theme-switch"
     role="radiogroup"
+    :active="selected"
     :aria-label="t('palette.variantLabel')"
   >
     <button
@@ -31,7 +32,7 @@ function select(next: LigVariant): void {
       @click="select(option.id)"
       @keydown="radioKey($event, ids, selected, select)"
     >
-      {{ t(option.label) }}
+      <span :data-slide="option.id">{{ t(option.label) }}</span>
     </button>
-  </div>
+  </SlidingUnderline>
 </template>

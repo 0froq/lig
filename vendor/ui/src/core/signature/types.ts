@@ -7,6 +7,8 @@ export type MixColors = (first: string, weight: number, second: string) => strin
 
 export interface PenAnchors {
   rule?: Element | null
+  /** The head rule spans this text instead of running the width of `rule`. */
+  ruleEnd?: Element | null
   hand?: HTMLElement | null
   /** Text without layout placeholders; defaults to hand.textContent. */
   handText?: string

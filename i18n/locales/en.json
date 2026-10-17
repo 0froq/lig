@@ -3,7 +3,9 @@
     "title": "LiG",
     "skip": "Skip to content",
     "language": "Language",
-    "footer": "Less is Great."
+    "footer": "Less is Great.",
+    "license": "MIT",
+    "source": "Source"
   },
   "theme": {
     "dark": "Dark",
@@ -86,7 +88,7 @@
         "action": "Functions, constructors, calls, async and exceptions"
       }
     },
-    "paletteNote": "The full source palette. Open it for a hex. Reading code does not need it.",
+    "paletteNote": "The full source palette.",
     "more": "Accent tiers",
     "oklch": {
       "title": "Where the colors sit",

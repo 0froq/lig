@@ -24,6 +24,7 @@ onMounted(() => {
     id="terminal-colors"
     v-model="open"
     class="lig-more lig-terminal-reference"
+    rule="dash"
     :label="t('palette.terminal.reference')"
   >
     <p class="lig-aside">

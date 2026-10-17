@@ -3,7 +3,9 @@
     "title": "LiG",
     "skip": "跳到正文",
     "language": "语言",
-    "footer": "Less is Great."
+    "footer": "Less is Great.",
+    "license": "MIT",
+    "source": "源码"
   },
   "theme": {
     "dark": "深色",
@@ -86,7 +88,7 @@
         "action": "函数、构造、调用、异步与异常"
       }
     },
-    "paletteNote": "完整色源。要 hex 时再看，读代码用不到。",
+    "paletteNote": "完整色源。",
     "more": "彩色层级",
     "oklch": {
       "title": "颜色的位置",

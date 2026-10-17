@@ -203,14 +203,22 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
     if (foot) {
       const fr = foot.getBoundingClientRect()
       const y = fr.top + window.scrollY
+      const end = anchors.ruleEnd ? textRect(anchors.ruleEnd) : null
+      let x0 = fr.right
       let x1 = fr.left
-      const firstLabel = !narrow ? anchors.sections?.find(section => section.label)?.label : undefined
-      if (firstLabel) {
-        const lr = textRect(firstLabel)
-        x1 = Math.min(fr.right - 32, Math.max(fr.left + 32, lr.right + 32))
+      if (end) {
+        x0 = end.right
+        x1 = end.left
       }
-      draft.push(travel([fr.right, y], [-0.45, 0.9], connector, { speed: 1100 }))
-      draft.push(append(wobble([[fr.right, y], [x1, y]], 1.2, 3), connector * 0.8, { speed: 1800, emphasis: false }))
+      else {
+        const firstLabel = !narrow ? anchors.sections?.find(section => section.label)?.label : undefined
+        if (firstLabel) {
+          const lr = textRect(firstLabel)
+          x1 = Math.min(fr.right - 32, Math.max(fr.left + 32, lr.right + 32))
+        }
+      }
+      draft.push(travel([x0, y], [-0.45, 0.9], connector, { speed: 1100 }))
+      draft.push(append(wobble([[x0, y], [x1, y]], 1.2, 3), connector * 0.8, { speed: 1800, emphasis: false }))
     }
 
     // 3. Circle each section name with about one and a half loose turns; prices get their own mark.

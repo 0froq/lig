@@ -70,14 +70,16 @@ const links = [
       <p class="lig-port-note">
         {{ $t('palette.downloads.zedNote') }}
       </p>
-      <div
+      <SlidingUnderline
         class="lig-port-variants"
         role="group"
+        :active="variant"
         aria-labelledby="port-zed"
       >
         <DownloadLink
           v-for="option in VARIANT_OPTIONS"
           :key="option.id"
+          :data-slide="option.id"
           :href="`/ports/zed/lig-${option.id}.json`"
           :download="`lig-${option.id}.json`"
           :class="{ 'is-current': variant === option.id }"
@@ -92,9 +94,9 @@ const links = [
         >
           {{ $t('palette.downloads.all') }}
         </DownloadLink>
-      </div>
+      </SlidingUnderline>
       <a
-        class="lig-port-install"
+        class="lig-install-link"
         href="https://github.com/0froq/zed-theme-LiG#install"
         target="_blank"
         rel="noopener noreferrer"
@@ -108,13 +110,13 @@ const links = [
   </p>
   <p class="lig-aside">
     {{ $t('palette.downloads.lightweightNote') }}
-    <a
-      href="/ports/README.md"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="lig-oklch-note-link"
-    >{{ $t('palette.downloads.install') }} ↗</a>
   </p>
+  <a
+    class="lig-install-link"
+    href="/ports/README.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >{{ $t('palette.downloads.install') }} ↗</a>
   <ul class="lig-port-downloads">
     <li
       v-for="port in LIGHTWEIGHT_PORTS"
@@ -123,14 +125,16 @@ const links = [
       <h3 :id="`port-${port.id}`">
         {{ port.title }}
       </h3>
-      <div
+      <SlidingUnderline
         class="lig-port-variants"
         role="group"
+        :active="variant"
         :aria-labelledby="`port-${port.id}`"
       >
         <DownloadLink
           v-for="option in VARIANT_OPTIONS"
           :key="option.id"
+          :data-slide="option.id"
           :href="`/ports/${lightweightPath(port, option.id)}`"
           :download="lightweightPath(port, option.id).split('/').pop()"
           :title="lightweightPath(port, option.id).split('/').pop()"
@@ -146,7 +150,7 @@ const links = [
         >
           {{ $t('palette.downloads.all') }}
         </DownloadLink>
-      </div>
+      </SlidingUnderline>
     </li>
   </ul>
   <p class="lig-port-manifest">

@@ -19,7 +19,19 @@ const { format, copied, copyValue, textFor } = usePaletteClipboard()
 const stage = useTemplateRef<HTMLElement>('stage')
 const ribbon = useTemplateRef<HTMLElement>('ribbon')
 const outline = shallowRef<{ x: number, y: number, width: number, height: number }>()
+const tracking = ref(false)
+const nudging = ref(false)
+const pointerX = ref<number | null>(null)
+const nudge = ref(0)
 let observer: ResizeObserver | undefined
+let follow = 0
+let nudgeFrame = 0
+
+function swatchScale(index: number): number {
+  const reach = 2
+  const distance = Math.min(Math.abs(index - active.value), reach) / reach
+  return 1 - 0.36 * distance
+}
 
 function updateOutline(): void {
   const buttons = ribbon.value?.children
@@ -32,14 +44,77 @@ function updateOutline(): void {
   const target = button.getBoundingClientRect()
   const outset = 6
   outline.value = {
-    x: target.left - bounds.left - outset,
+    x: target.left - bounds.left - outset + nudge.value,
     y: target.top - bounds.top - outset,
     width: target.width + outset * 2,
     height: target.height + outset * 2,
   }
 }
 
-watch(active, updateOutline, { flush: 'post' })
+function aimedNudge(): number {
+  const button = ribbon.value?.children.item(active.value)
+  if (!button || pointerX.value == null)
+    return 0
+  const target = button.getBoundingClientRect()
+  if (target.width === 0)
+    return 0
+  const ratio = Math.min(1, Math.max(0, (pointerX.value - target.left) / target.width))
+  return (ratio - 0.5) * target.width * 0.18
+}
+
+function pullNudge(): void {
+  cancelAnimationFrame(nudgeFrame)
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const step = () => {
+    const next = aimedNudge()
+    const delta = next - nudge.value
+    if (reduced || Math.abs(delta) < 0.15) {
+      nudge.value = next
+      nudging.value = false
+      updateOutline()
+      return
+    }
+    nudging.value = true
+    nudge.value += delta * 0.05
+    updateOutline()
+    nudgeFrame = requestAnimationFrame(step)
+  }
+  nudgeFrame = requestAnimationFrame(step)
+}
+
+function onPointer(event: PointerEvent, index: number): void {
+  pointerX.value = event.clientX
+  active.value = index
+  pullNudge()
+}
+
+function onLeave(): void {
+  pointerX.value = null
+  pullNudge()
+  followOutline()
+}
+
+function followOutline(): void {
+  cancelAnimationFrame(follow)
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduced) {
+    tracking.value = false
+    updateOutline()
+    return
+  }
+  tracking.value = true
+  const started = performance.now()
+  const step = (now: number) => {
+    updateOutline()
+    if (now - started < 300)
+      follow = requestAnimationFrame(step)
+    else
+      tracking.value = false
+  }
+  follow = requestAnimationFrame(step)
+}
+
+watch(active, followOutline, { flush: 'post' })
 onMounted(() => {
   observer = new ResizeObserver(updateOutline)
   watch([stage, ribbon, () => props.colors], () => {
@@ -51,7 +126,11 @@ onMounted(() => {
     updateOutline()
   }, { immediate: true, flush: 'post' })
 })
-onBeforeUnmount(() => observer?.disconnect())
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  cancelAnimationFrame(follow)
+  cancelAnimationFrame(nudgeFrame)
+})
 </script>
 
 <template>
@@ -63,21 +142,24 @@ onBeforeUnmount(() => observer?.disconnect())
       <div
         ref="ribbon"
         class="lig-neutral-ribbon"
+        @pointerleave="onLeave"
         @scroll.passive="updateOutline"
       >
         <button
           v-for="(color, index) in colors"
           :key="color.name"
           type="button"
-          :style="{ background: color.hex }"
+          :style="{ background: color.hex, height: `${swatchScale(index) * 100}%` }"
           :aria-label="`${color.name}: ${textFor(color.hex, format)}`"
-          @pointerenter="active = index"
+          @pointerenter="onPointer($event, index)"
+          @pointermove="onPointer($event, index)"
           @focus="active = index"
           @click="active = index; copyValue(textFor(color.hex, format), color.name)"
         />
       </div>
       <svg
         class="lig-neutral-outline"
+        :class="{ 'is-tracking': tracking, 'is-nudging': nudging }"
         aria-hidden="true"
       >
         <MotionOutline
@@ -127,9 +209,9 @@ onBeforeUnmount(() => observer?.disconnect())
 
 .lig-neutral-ribbon {
   display: flex;
+  align-items: center;
   height: clamp(80px, 10vw, 128px);
   overflow-x: auto;
-  border: 1px solid var(--line);
 }
 
 .lig-neutral-ribbon button {
@@ -138,7 +220,18 @@ onBeforeUnmount(() => observer?.disconnect())
   padding: 0;
   border: 0;
   cursor: pointer;
-  transition: flex-grow 200ms var(--ease);
+  transition:
+    flex-grow 260ms var(--ease),
+    height 260ms var(--ease);
+}
+
+.lig-neutral-outline.is-nudging :deep(.motion-outline) {
+  transition: color 260ms var(--ease);
+}
+
+.lig-neutral-outline.is-tracking :deep(.motion-outline),
+.lig-neutral-outline.is-tracking :deep(.motion-outline rect) {
+  transition: none;
 }
 
 .lig-neutral-ribbon button:hover,
@@ -172,7 +265,9 @@ onBeforeUnmount(() => observer?.disconnect())
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lig-neutral-ribbon button {
+  .lig-neutral-ribbon button,
+  .lig-neutral-outline.is-tracking :deep(.motion-outline),
+  .lig-neutral-outline.is-tracking :deep(.motion-outline rect) {
     transition: none;
   }
 }

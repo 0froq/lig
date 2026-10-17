@@ -40,9 +40,11 @@ export function useSignature(root: Ref<HTMLElement | undefined>, options: Signat
       const copy = hand?.cloneNode(true) as HTMLElement | undefined
       copy?.querySelectorAll('.l-fill').forEach(node => node.remove())
       const finalMark = find('final-mark')
+      const narrow = window.innerWidth < 860
       return {
         mark: find('mark'),
         rule: find('rule'),
+        ruleEnd: narrow ? hand : null,
         hand,
         handText: copy?.textContent ?? '',
         finalMark,

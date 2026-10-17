@@ -9,6 +9,8 @@ defineProps<{
   color?: string
   contrastColor?: string
   strokeWidth?: number
+  nudgeX?: number
+  nudgeY?: number
 }>()
 </script>
 
@@ -18,15 +20,17 @@ defineProps<{
     :style="{ transform: `translate(${x}px, ${y}px)`, color }"
     aria-hidden="true"
   >
-    <rect
-      v-if="contrastColor"
-      :stroke-width="(strokeWidth ?? 1) + 2"
-      :style="{ width: `${width}px`, height: `${height}px`, rx: `${radius ?? 0}px`, stroke: contrastColor }"
-    />
-    <rect
-      :stroke-width="strokeWidth ?? 1"
-      :style="{ width: `${width}px`, height: `${height}px`, rx: `${radius ?? 0}px` }"
-    />
+    <g :style="{ transform: `translate(${nudgeX ?? 0}px, ${nudgeY ?? 0}px)` }">
+      <rect
+        v-if="contrastColor"
+        :stroke-width="(strokeWidth ?? 1) + 2"
+        :style="{ width: `${width}px`, height: `${height}px`, rx: `${radius ?? 0}px`, stroke: contrastColor }"
+      />
+      <rect
+        :stroke-width="strokeWidth ?? 1"
+        :style="{ width: `${width}px`, height: `${height}px`, rx: `${radius ?? 0}px` }"
+      />
+    </g>
   </g>
 </template>
 
