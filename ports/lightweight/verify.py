@@ -15,6 +15,33 @@ import tomllib
 REPO = Path(__file__).resolve().parents[2]
 ROOT = REPO / "dist/ports/lightweight"
 VARIANTS = ["light", "dark", "light-paper", "dark-paper"]
+WT_ANSI = [
+    "black", "red", "green", "yellow", "blue", "purple", "cyan", "white",
+    "brightBlack", "brightRed", "brightGreen", "brightYellow", "brightBlue",
+    "brightPurple", "brightCyan", "brightWhite",
+]
+ITERM_KEYS = [f"Ansi {index} Color" for index in range(16)] + [
+    "Background Color", "Foreground Color", "Cursor Color", "Cursor Text Color",
+    "Selection Color", "Selected Text Color", "Bold Color", "Link Color",
+]
+
+
+def validate_terminal_schemes():
+    for variant in VARIANTS:
+        iterm_path = ROOT / f"iterm2/lig-{variant}.itermcolors"
+        with iterm_path.open("rb") as file:
+            iterm = plistlib.load(file)
+        for key in ITERM_KEYS:
+            entry = iterm[key]
+            assert entry["Color Space"] == "sRGB"
+            for channel in ("Red Component", "Green Component", "Blue Component", "Alpha Component"):
+                value = entry[channel]
+                assert isinstance(value, (int, float)) and 0 <= value <= 1
+        wt_path = ROOT / f"windows-terminal/lig-{variant}.json"
+        wt = json.loads(wt_path.read_text())
+        for key in WT_ANSI:
+            assert wt[key].startswith("#")
+    print("terminal schemes: plist + JSON validation passed for all variants")
 
 
 def run(args, env=None, input=None):
@@ -25,6 +52,7 @@ def run(args, env=None, input=None):
 
 
 def main():
+    validate_terminal_schemes()
     ghostty = shutil.which("ghostty") or "/Applications/Ghostty.app/Contents/MacOS/ghostty"
     tools = {name: shutil.which(name) for name in ["fzf", "zellij", "tmux", "starship", "bat", "eza"]}
     missing = [name for name, path in tools.items() if not path]

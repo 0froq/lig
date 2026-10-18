@@ -1,6 +1,6 @@
 # Lightweight ports
 
-Eight tools, four variants: `light`, `dark`, `light-paper`, `dark-paper`.
+Nine tools, four variants: `light`, `dark`, `light-paper`, `dark-paper`.
 All of them are generated from [`core/spec.json`](../../core/spec.json).
 There is no second palette and no separate repository.
 
@@ -35,75 +35,37 @@ An explicit `background`, `foreground`, `palette`, `selection-*`, or `cursor-*` 
 
 [Ghostty themes](https://ghostty.org/docs/features/theme)
 
-## Hatoba
+## iTerm2
 
-**Source-build integration only.** The Hatoba checkout reviewed at
-[`fa38f4f9a9ac3ca91e5b2cfb60ea975126004157`](https://github.com/scarletkc/Hatoba/tree/fa38f4f9a9ac3ca91e5b2cfb60ea975126004157)
-has built-in schemes, not a theme-file importer or a user theme directory.
-Copying JSON into Hatoba's config directory does not install a scheme.
+Import `iterm2/lig-dark.itermcolors` (or another variant) in **iTerm2 → Settings → Profiles → Colors → Color Presets → Import**.
 
-`hatoba/lig-dark.json` is one JSON object matching `TermScheme` in
-[`apps/desktop/src/features/terminal/schemes.ts`](https://github.com/scarletkc/Hatoba/blob/fa38f4f9a9ac3ca91e5b2cfb60ea975126004157/apps/desktop/src/features/terminal/schemes.ts).
-It contains `id`, `name`, `mode`, `contrast`, and `colors`.
-`colors` uses xterm's camelCase keys: `background`, `foreground`, `cursor`,
-`cursorAccent`, `selectionBackground`, the eight ANSI names, and `brightBlack`
-through `brightWhite`. All 16 ANSI slots keep LiG's shared terminal mapping.
+The preset is Apple plist XML with `Ansi 0 Color` through `Ansi 15 Color`,
+`Background Color`, `Foreground Color`, `Cursor Color`, `Cursor Text Color`,
+`Selection Color`, `Selected Text Color`, `Bold Color`, and `Link Color`.
+Each entry uses the `sRGB` color space with `Red`, `Green`, `Blue`, and `Alpha`
+components from LiG's `terminal.*` and `text.primary` tokens.
 
-To use it in your own writable Hatoba checkout:
+[iTerm2 colors](https://iterm2.com/documentation-colors.html)
 
-1. Download the variants you want (or `hatoba/lig-hatoba-all.zip`).
-2. Open `apps/desktop/src/features/terminal/schemes.ts` and paste each complete
-   JSON object as an entry inside `SCHEMES: readonly TermScheme[]`, adding a comma
-   between entries. JSON object syntax is valid TypeScript here. Do not replace
-   the array or the default Hatoba entries.
-3. Follow Hatoba's [development guide](https://github.com/scarletkc/Hatoba/blob/main/docs/development.md)
-   for the Rust/Tauri prerequisites, then run `pnpm install` and `pnpm typecheck`
-   from that checkout. For an unsigned local build on Windows/Linux, use
-   `pnpm tauri build --no-sign`. On macOS, keep the ad-hoc signature and use
-   `pnpm tauri build --config '{"bundle":{"createUpdaterArtifacts":false}}'`
-   instead, as Hatoba's README describes. Install and launch that build.
-4. In **Settings → Appearance → Terminal Colors**, pick **LiG Dark** (or
-   **LiG Dark Paper**) for dark and **LiG Light** (or **LiG Light Paper**) for light.
-   Choose **Match Appearance** to follow the app, or force light/dark terminal mode.
+## Windows Terminal
 
-Hatoba saves only the selected IDs in `terminal.dark_scheme` and
-`terminal.light_scheme`. Unknown IDs fall back to the mode's default, so all
-synced devices need a build containing these entries. There is no vault or
-settings-file edit to perform. This port changes terminal colors, not the app UI,
-fonts, cursor shape, or key bindings.
+Import `windows-terminal/lig-dark.json` through **Settings → Open JSON settings**,
+or add the object to the `schemes` array in your profile settings file.
 
-`contrast` is xterm's `minimumContrastRatio`: 1 for dark, 3 for light, matching
-Hatoba's third-party scheme convention. xterm may adjust rendered light ANSI text
-for readability; the exported colors remain exactly LiG's tokens.
-Hatoba derives search highlights from the palette when `search` is omitted.
-`cursorAccent` uses the terminal background for text inside the block cursor.
+Each file is one scheme object: `name`, `background`, `foreground`, `cursorColor`,
+`selectionBackground`, the eight ANSI names (`purple` for magenta), and
+`brightBlack` through `brightWhite`. All 16 ANSI slots use LiG's shared terminal
+mapping from `core/spec.json`.
 
-### Upstream contributions
+[Windows Terminal color schemes](https://learn.microsoft.com/en-us/windows/terminal/customize-settings#color-schemes)
 
-Hatoba maintains the built-in palettes in `SCHEMES`, not in a `themes/` directory
-or an external theme registry. Adding entries upstream is how a scheme becomes
-available in official builds; a local source build is the alternative today.
-There is no documented theme-specific submission process or promise of acceptance.
-Follow Hatoba's [CONTRIBUTING.md](https://github.com/scarletkc/Hatoba/blob/main/CONTRIBUTING.md):
-agree on an issue with a maintainer before a nontrivial change, keep one PR to one
-issue, use Conventional Branch/Commit names, and leave the app version unchanged.
-Docs must be English and contributions are MIT licensed. UI-changing PRs require
-light/dark screenshots with sample data and visual review, in addition to checks.
-This LiG port does not submit or modify Hatoba upstream.
+### Hatoba
 
-### Validation
-
-Optional read-only source check, run from the LiG repository after generation:
-
-```sh
-pnpm exec jiti ports/lightweight/verify-hatoba.ts /path/to/Hatoba
-```
-
-This checks the generated keys against Hatoba's source declarations and runs its
-actual registry lookup and search-highlight helpers without starting the UI.
-For manual acceptance in your Hatoba build, switch among the four schemes,
-check the 16 ANSI slots, selection and block cursor, try terminal search, and
-check both forced modes and **Match Appearance** after changing app appearance.
+[Hatoba](https://github.com/scarletkc/Hatoba) can load these standard formats via
+its custom-scheme import ([upstream PR #98](https://github.com/scarletkc/Hatoba/pull/98)):
+use the Windows Terminal JSON on every platform, or the iTerm2 preset on macOS.
+Pick **LiG Dark** / **LiG Light** (or the paper variants) in **Settings →
+Appearance → Terminal Colors**.
 
 ## fzf
 
@@ -198,7 +160,7 @@ Icons and file matching are unchanged.
 
 ## Colors
 
-Ghostty and Hatoba use `terminal.background`, `terminal.foreground`, cursor, selection, and `terminal.ansi.0–15`.
+Ghostty, iTerm2, and Windows Terminal use `terminal.background`, `terminal.foreground`, cursor, selection, and `terminal.ansi.0–15`.
 The other tools map shared `surface`, `text`, `accent`, `git`, and `diagnostic` tokens.
 bat also uses the shared TextMate styles.
 No file in this directory authors a hex by hand.

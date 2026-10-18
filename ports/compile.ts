@@ -134,9 +134,6 @@ for (const port of LIGHTWEIGHT_PORTS) {
     return [path, lightweight[path]!]
   }))
   entries.LICENSE = mit
-  // Hatoba needs source integration, so keep those instructions with its download.
-  if (port.id === 'hatoba')
-    entries['README.md'] = lightweightReadme
   lightweight[lightweightArchivePath(port)] = zip(entries)
 }
 lightweight.LICENSE = mit
