@@ -159,20 +159,31 @@ Concepts and components are.
 ## Commands
 
 ```bash
-pnpm dev          # docs at http://localhost:3000
-pnpm generate     # static files in dist/
-pnpm check        # lint, types, token contract
+pnpm dev             # docs at http://localhost:3000
+pnpm generate        # static files in dist/
+pnpm deploy          # generate, then cf deploy
+pnpm preview:deploy  # generate, then cf previews deploy
+pnpm check           # lint, types, token contract
 ```
 
 ## Docs site
 
-https://ui-a09.pages.dev
+https://ui.froq.me
 
 `docs/` is Nuxt Content.
-Production is a static Worker-style Pages setup: branch `main`, `pnpm generate`, output `dist`, `NODE_VERSION=22`.
-Nitro is pinned to `cloudflare-pages-static` so local and remote both write `dist/`.
+The static output is `dist/` at the repo root.
+It deploys to the Cloudflare Worker `ui`.
+The Worker config is `cloudflare.config.ts`; the assets directory is in `wrangler.config.ts`.
+
+Workers Builds (GitHub connection, no API token in the repo): `NODE_VERSION=22`, build `pnpm generate`, production `pnpm exec cf deploy`, preview `pnpm exec cf previews deploy`.
+
+The docs live in the `docs/` subpackage, so root `cf deploy` does not run generate on its own.
+That is why `deploy` is `pnpm generate && cf deploy`.
+`docs` keeps `nuxt` in peerDependencies so root `cf deploy` bundles `dist/` instead of running `pnpm nuxt build`.
+
 Queries run in the browser from the bundled WASM SQLite and SQL dump.
-A D1 warning from the Cloudflare preset does not mean this static site needs a database.
+Do not use the `cloudflare_pages` Nitro preset.
+A passing local generate is not a verified deploy.
 See [the release audit](docs/release-audit.md).
 CI installs from the lockfile.
 

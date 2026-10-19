@@ -43,6 +43,9 @@ The framework-free `@froq/ui/core` entry also exports `createInkWash`, `createPe
 - `colors()`: resolved six-digit HEX `{ paper, ink, accent, dark }`; derive these from the host's token palette. The core engine takes resolved data, not CSS variables.
 - `mixColors(first, weight, second)`: the host's existing mixer; weight is the first color's share. LiG passes its OKLab mixer so extraction does not change ink tones.
 - `settings()`: optional `paper`, `bloom`, `line`, `hand` (default true), `dwellAfter` (seconds, default 0), and `click` (default false). Settings are read once after layout settles. Remount to change them.
+- `animate` (default true) draws the ink over time. Off paints the finished stroke. Reduced motion also paints it finished.
+- `marks()` returns free-standing Latin marks (`text`, plus an `element` or a document `box`). The pen lifts before each one, so a mark is not part of the page route. Letters outside the hand font advance by a space and leave no stroke. Omit `marks` and the route is unchanged.
+- `tremor`, `roundJoins`, and `fadeRoute` default to true. `continuePastHand` defaults to true; off leaves a tagline as its own ink. `labels` is `ring` or `line` (default `ring`).
 
 It returns readonly `state` (`paper`, `bloom`, `stroke`, `hand`) and `setColors(colors?)`. Apply layout-changing state synchronously (for example, an imperative `watch(signature.state, applyFallbackClasses, { flush: 'sync' })`) before pen measurement; a deferred template class update can move handwriting after measurement. Hide typeset handwriting, rules and punctuation only when the corresponding state is active; text remains in the DOM for accessibility and fallback. Call `setColors()` after the host theme updates. A failed WebGL2 context keeps the wash inactive; a failed 2D context keeps the pen inactive. Reduced motion draws the completed route and settles washes without continuous growth.
 

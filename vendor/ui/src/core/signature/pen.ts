@@ -4,7 +4,7 @@
 // A narrow page has no margin, so a written tagline is the whole sentence.
 // The caller supplies semantic anchor elements; content determines the route.
 
-import type { LayerColors, PenLayer, PenOptions, Point } from './types'
+import type { InkMark, LayerColors, PenLayer, PenOptions, Point } from './types'
 import { prefersReducedMotion } from '../motion'
 import { createCanvasViewport } from './canvas-viewport'
 import { layoutText } from './hand-font'
@@ -48,7 +48,8 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
   const raw = (initialAnchors.handText ?? textEl?.textContent ?? '').trim()
   const hand = raw.length > 0 ? textEl : null
   const text = hand ? raw.replace(/[.!?]$/, '') : ''
-  const reduced = prefersReducedMotion()
+  const reduced = prefersReducedMotion() || options.animate === false
+  const labels = options.labels ?? 'ring'
   const canvas = document.createElement('canvas')
   canvas.className = 'ui-pen-layer'
   canvas.setAttribute('aria-hidden', 'true')
@@ -124,10 +125,12 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
     let pen: Point | null = null
     let dir: Point = [1, 0]
     dot = null
+    let sized = false
+    const tremble = (pts: Point[], amp: number, seed: number): Point[] => options.tremor === false ? pts : wobble(pts, amp, seed)
 
     const append = (poly: Point[], w: number, opts: TravelOpts): Seg => {
       const { speed, trigger = null, taper = false, nib = false, emphasis = true, scroll = false } = opts
-      const joined = pen ? roundJoin(pen, dir, poly) : poly
+      const joined = pen ? (options.roundJoins === false ? poly : roundJoin(pen, dir, poly)) : poly
       const r = resample(joined)
       const from = pts.length
       r.forEach((p, i) => {
@@ -158,48 +161,78 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
         return null
       }
       const d = Math.hypot(to[0] - pen[0], to[1] - pen[1])
-      return append(wobble(cubic(pen, dir, to, entry, Math.max(20, Math.round(d / 6))), Math.min(6, d * 0.012), to[1] * 0.01), w ?? 0, { ...opts, speed: opts?.speed ?? 0, emphasis: false, scroll: !!opts?.trigger })
+      return append(tremble(cubic(pen, dir, to, entry, Math.max(20, Math.round(d / 6))), Math.min(6, d * 0.012), to[1] * 0.01), w ?? 0, { ...opts, speed: opts?.speed ?? 0, emphasis: false, scroll: !!opts?.trigger })
+    }
+
+    // Latin ink fitted to a box. `lifted` starts a new mark instead of joining the route.
+    const writeLatin = (source: string, left: number, baselineY: number, fitWidth: number, trigger: Element | null, lifted: boolean): void => {
+      const probeSize = 100
+      const sample = layoutText(source, { size: probeSize })
+      if (sample.width <= 0 || fitWidth <= 0)
+        return
+      const size = probeSize * fitWidth / sample.width
+      const ww = Math.max(1.4, Math.min(3.4, size * 0.028))
+      if (!sized) {
+        wordWidth = ww
+        sized = true
+      }
+      const scale = ww / wordWidth
+      if (lifted)
+        pen = null
+      const glyphs = layoutText(source, { size }).strokes.map(s => smooth(simplify(s.map(([x, y]): Point => [x + left, y + baselineY]), size * 0.006)))
+      glyphs.forEach((g, k) => {
+        const start = g[0]
+        if (!start)
+          return
+        let len = 0
+        for (let i = 1; i < g.length; i++) {
+          const prev = g[i - 1]!
+          const next = g[i]!
+          len += Math.hypot(next[0] - prev[0], next[1] - prev[1])
+        }
+        const isDot = len < size * 0.1
+        // Between strokes the pen stays on the paper but barely touches it; it heads
+        // straight for a dot rather than looping into the dot's own direction
+        if (k > 0 && pen) {
+          const dx = start[0] - pen[0]
+          const dy = start[1] - pen[1]
+          const l = Math.hypot(dx, dy) || 1
+          draft.push(append(cubic(pen, dir, start, isDot ? [dx / l, dy / l] : tangent(g, false), 40), 0.07 * scale, { speed: size * 9, emphasis: false, trigger }))
+        }
+        draft.push(append(g, (isDot ? 1.5 : 1) * scale, { speed: size * (isDot ? 2 : 6), nib: !isDot, trigger }))
+      })
+    }
+
+    const placeMark = (mark: InkMark): void => {
+      const raw = mark.stripStop ? mark.text.replace(/[.!?]$/, '') : mark.text
+      const source = raw.trim()
+      if (!source)
+        return
+      const el = mark.element
+      if (el) {
+        const rect = textRect(el)
+        writeLatin(source, rect.left, baseline(el), rect.width, el, true)
+        return
+      }
+      const box = mark.box
+      if (!box)
+        return
+      writeLatin(source, box.x, box.baseline, box.width, null, true)
     }
 
     // 1. The tagline, handwritten into the box of the (hidden) typeset one
-    const glyphs: Point[][] = []
-    let size = 0
     if (hand) {
       const rect = textRect(hand)
-      const probeSize = 100
-      size = probeSize * rect.width / layoutText(text, { size: probeSize }).width
-      wordWidth = Math.max(1.4, Math.min(3.4, size * 0.028))
-      for (const s of layoutText(text, { size }).strokes)
-        glyphs.push(smooth(simplify(s.map(([x, y]): Point => [x + rect.left, y + baseline(hand)]), size * 0.006)))
+      writeLatin(text, rect.left, baseline(hand), rect.width, null, false)
     }
-    glyphs.forEach((g, k) => {
-      const start = g[0]
-      if (!start)
-        return
-      let len = 0
-      for (let i = 1; i < g.length; i++) {
-        const prev = g[i - 1]!
-        const next = g[i]!
-        len += Math.hypot(next[0] - prev[0], next[1] - prev[1])
-      }
-      const isDot = len < size * 0.1
-      // Between strokes the pen stays on the paper but barely touches it; it heads
-      // straight for a dot rather than looping into the dot's own direction
-      if (k > 0 && pen) {
-        const dx = start[0] - pen[0]
-        const dy = start[1] - pen[1]
-        const l = Math.hypot(dx, dy) || 1
-        draft.push(append(cubic(pen, dir, start, isDot ? [dx / l, dy / l] : tangent(g, false), 40), 0.07, { speed: size * 9, emphasis: false }))
-      }
-      draft.push(append(g, isDot ? 1.5 : 1, { speed: size * (isDot ? 2 : 6), nib: !isDot }))
-    })
     const connector = 1.2 / wordWidth
     // Single-column layouts have no margin to run in. A written tagline ends the stroke;
     // otherwise the pen still lifts between sections.
     const narrow = window.innerWidth < 860
     const lift = (to: Point, trigger: Element): Seg | null => pen ? append([pen, to], 0, { speed: 1e6, trigger }) : travel(to, [1, 0])
 
-    if (!(narrow && hand)) {
+    // A tagline can be the whole stroke. The route below is the rest of the page.
+    if (!(narrow && hand) && (options.continuePastHand !== false || !hand)) {
       // 2. The rule under the head of the page, drawn right to left.
       // Stop to the right of the first label, leaving room for the leftward
       // tangent to turn down without swinging out to the page edge.
@@ -222,23 +255,39 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
           }
         }
         draft.push(travel([x0, y], [-0.45, 0.9], connector, { speed: 1100 }))
-        draft.push(append(wobble([[x0, y], [x1, y]], 1.2, 3), connector * 0.8, { speed: 1800, emphasis: false }))
+        draft.push(append(tremble([[x0, y], [x1, y]], 1.2, 3), connector * 0.8, { speed: 1800, emphasis: false }))
       }
 
-      // 3. Circle each section name with about one and a half loose turns; prices get their own mark.
+      // 3. Mark each section name; prices get their own ring.
       anchors.sections?.forEach(({ label, price }) => {
         if (!label)
           return
         const lr = textRect(label)
-        const labelCx = lr.left + lr.width / 2
-        const labelCy = lr.top + window.scrollY + lr.height / 2
-        // Grow across the turns so they read as pen passes rather than one thick outline.
-        const labelRing = looseEllipse(labelCx, labelCy, lr.width / 2 + 12, lr.height / 2 + 10, -2, Math.PI * 2.5, 0.3)
-        const labelStart = labelRing[0]
-        if (!labelStart)
-          return
-        draft.push(narrow ? lift(labelStart, label) : travel(labelStart, tangent(labelRing, false), connector, { speed: 1600, trigger: label }))
-        draft.push(append(labelRing, connector * 1.05, { speed: 700, trigger: label }))
+        switch (labels) {
+          case 'ring': {
+            const labelCx = lr.left + lr.width / 2
+            const labelCy = lr.top + window.scrollY + lr.height / 2
+            // Grow across the turns so they read as pen passes rather than one thick outline.
+            const labelRing = looseEllipse(labelCx, labelCy, lr.width / 2 + 12, lr.height / 2 + 10, -2, Math.PI * 2.5, 0.3)
+            const labelStart = labelRing[0]
+            if (!labelStart)
+              return
+            draft.push(narrow ? lift(labelStart, label) : travel(labelStart, tangent(labelRing, false), connector, { speed: 1600, trigger: label }))
+            draft.push(append(labelRing, connector * 1.05, { speed: 700, trigger: label }))
+            break
+          }
+          case 'line': {
+            const y = lr.bottom + window.scrollY + 5
+            const start: Point = [lr.left - 2, y]
+            draft.push(narrow ? lift(start, label) : travel(start, [0.25, 0.97], connector, { speed: 1600, trigger: label }))
+            draft.push(append(tremble([start, [lr.right + 18, y - 1.5]], 0.8, y), connector * 1.15, { speed: 700, trigger: label }))
+            break
+          }
+          default: {
+            const _labels: never = labels
+            void _labels
+          }
+        }
 
         if (!price)
           return
@@ -314,6 +363,11 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
       }
     }
 
+    if (pts.length)
+      sized = true
+    for (const mark of options.marks?.() ?? [])
+      placeMark(mark)
+
     segs = draft.filter((seg): seg is Seg => seg !== null)
     total = pts.length
     X = new Float32Array(total)
@@ -331,24 +385,26 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
     for (let i = 1; i < total; i++)
       distance[i] = distance[i - 1]! + Math.hypot(X[i]! - X[i - 1]!, Y[i]! - Y[i - 1]!)
     // Fade on the connecting route, leaving the intentional marks at full strength.
-    for (let start = 0; start < total;) {
-      if (emphases[start]) {
-        start++
-        continue
+    if (options.fadeRoute !== false) {
+      for (let start = 0; start < total;) {
+        if (emphases[start]) {
+          start++
+          continue
+        }
+        let end = start + 1
+        while (end < total && !emphases[end])
+          end++
+        const enters = start > 0 && widths[start - 1]! > 0
+        const leaves = end < total ? widths[end]! > 0 : !!dot
+        const from = distance[Math.max(0, start - 1)]!
+        const to = distance[Math.min(total - 1, end)]!
+        for (let i = start; i < end; i++) {
+          const entry = enters ? 1 - smoothstep(0, ROUTE_FADE, distance[i]! - from) : 0
+          const exit = leaves ? 1 - smoothstep(0, ROUTE_FADE, to - distance[i]!) : 0
+          Tone[i] = ROUTE_WEIGHT + (1 - ROUTE_WEIGHT) * Math.max(entry, exit)
+        }
+        start = end
       }
-      let end = start + 1
-      while (end < total && !emphases[end])
-        end++
-      const enters = start > 0 && widths[start - 1]! > 0
-      const leaves = end < total ? widths[end]! > 0 : !!dot
-      const from = distance[Math.max(0, start - 1)]!
-      const to = distance[Math.min(total - 1, end)]!
-      for (let i = start; i < end; i++) {
-        const entry = enters ? 1 - smoothstep(0, ROUTE_FADE, distance[i]! - from) : 0
-        const exit = leaves ? 1 - smoothstep(0, ROUTE_FADE, to - distance[i]!) : 0
-        Tone[i] = ROUTE_WEIGHT + (1 - ROUTE_WEIGHT) * Math.max(entry, exit)
-      }
-      start = end
     }
     recolor()
   }

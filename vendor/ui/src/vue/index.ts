@@ -1,3 +1,4 @@
+export type { InkMark } from '../core/signature/types'
 export type { BreadcrumbLinkProps, ChoiceOption, CodeSpan, CollapsibleTriggerProps, FieldControlProps, MenuItem, NavigationItem, NavigationLinkProps, PaginationControlProps, SidebarGroup, SidebarItem, SidebarLinkProps, TableColumn } from './types'
 export { useAutoDismiss } from './useAutoDismiss'
 export { useChoice } from './useChoice'

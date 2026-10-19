@@ -56,6 +56,21 @@ export interface PaperLayer {
   destroy: () => void
 }
 
+/**
+ * A free-standing Latin mark. The pen lifts before it, so it is not a continuation
+ * of the page route. The hand font covers digits, A–Z, a–z, and
+ * `.,'!?-:$():/`. Any other character advances by a space and leaves no stroke.
+ */
+export interface InkMark {
+  text: string
+  /** Fit the writing to this element's own text box. */
+  element?: HTMLElement | null
+  /** Document box when there is no element. `baseline` is the writing line. */
+  box?: { x: number, baseline: number, width: number }
+  /** Drop one trailing `.` `!` or `?`. The page tagline still does this on its own. */
+  stripStop?: boolean
+}
+
 export interface PenOptions {
   /** Positioned page root; the pen canvas shares its stacking context. */
   root: HTMLElement
@@ -71,6 +86,29 @@ export interface PenOptions {
   flowing?: () => boolean
   /** Called when the pen reaches the final mark. Without it the pen dots the stop itself. */
   onArrive?: () => void
+  /**
+   * Draw the ink over time. Off paints the finished stroke.
+   * Reduced motion also paints it finished. Default true.
+   */
+  animate?: boolean
+  /** Tremor on rules and travel. Default true. */
+  tremor?: boolean
+  /** Curve a sharp join. Default true. */
+  roundJoins?: boolean
+  /** Fade the connecting route toward the paper. Default true. */
+  fadeRoute?: boolean
+  /**
+   * After a handwritten tagline, keep ruling and marking the page.
+   * Off leaves that tagline as its own ink. Default true.
+   */
+  continuePastHand?: boolean
+  /** Section names. `ring` circles them. `line` underlines them. Default `ring`. */
+  labels?: 'ring' | 'line'
+  /**
+   * Latin marks drawn apart from the page route. Re-read on layout.
+   * Omit them and the route is unchanged.
+   */
+  marks?: () => InkMark[]
 }
 
 export interface PenLayer {

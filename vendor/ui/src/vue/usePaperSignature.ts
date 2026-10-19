@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { LayerColors, MixColors, PaperLayer, PenAnchors, PenLayer } from '../core/signature/types'
+import type { InkMark, LayerColors, MixColors, PaperLayer, PenAnchors, PenLayer, PenOptions } from '../core/signature/types'
 import { onBeforeUnmount, onMounted, readonly, shallowReactive } from 'vue'
 import { createInkWash } from '../core/signature/paper'
 import { createPenStroke } from '../core/signature/pen'
@@ -21,6 +21,20 @@ export interface PaperSignatureOptions {
   /** Six-digit HEX paper, ink and accent colors. */
   colors: () => LayerColors
   mixColors: MixColors
+  /** Draw over time. Off paints the finished ink. Reduced motion also finishes it. Default true. */
+  animate?: boolean
+  /** Tremor on rules and travel. Default true. */
+  tremor?: boolean
+  /** Curve a sharp join. Default true. */
+  roundJoins?: boolean
+  /** Fade the connecting route toward the paper. Default true. */
+  fadeRoute?: boolean
+  /** After a tagline, keep the page route. Off leaves the tagline as its own ink. Default true. */
+  continuePastHand?: boolean
+  /** Section names. Default `ring`. */
+  labels?: PenOptions['labels']
+  /** Latin marks drawn apart from the page route. */
+  marks?: () => InkMark[]
 }
 
 export interface PaperSignatureState {
@@ -85,6 +99,13 @@ export function usePaperSignature(root: Ref<HTMLElement | undefined>, options: P
           wet: (x, y) => paper?.wet(x, y) ?? 0,
           flowing: () => paper?.flowing() ?? false,
           onArrive: state.bloom && finalMark ? () => paper?.soak(finalMark) : undefined,
+          animate: options.animate,
+          tremor: options.tremor,
+          roundJoins: options.roundJoins,
+          fadeRoute: options.fadeRoute,
+          continuePastHand: options.continuePastHand,
+          labels: options.labels,
+          marks: options.marks,
         })
         state.stroke = !!pen
       }, 900))

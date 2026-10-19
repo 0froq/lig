@@ -43,6 +43,9 @@ import { Paper } from '@froq/ui'
 - `colors()`：宿主 token 解析后的六位 HEX `{ paper, ink, accent, dark }`。引擎接收已解析的数据，不读项目 CSS 变量。
 - `mixColors(first, weight, second)`：宿主调色函数，weight 是第一种颜色的比例。LiG 继续传原有 OKLab 混色函数，保持原来的墨色。
 - `settings()`：`paper`、`bloom`、`line`、`hand` 默认 true；`dwellAfter` 为秒，默认 0；`click` 默认 false。布局稳定后读取一次，修改设置需重新挂载。
+- `animate` 默认 true，按时间把墨迹画出。关掉则直接画完。系统开启减少动态效果时也同样直接画完。
+- `marks()` 返回独立的西文墨迹（`text`，再加 `element` 或文档坐标 `box`）。每一笔之前抬笔，所以它不属于页面路线。手写字体没有的字符按空格前进，不留笔画。不传 `marks` 时路线与原来一样。
+- `tremor`、`roundJoins`、`fadeRoute` 默认 true。`continuePastHand` 默认 true，关掉后标语就是它自己的墨迹。`labels` 为 `ring` 或 `line`，默认 `ring`。
 
 返回只读 `state`（`paper`、`bloom`、`stroke`、`hand`）及 `setColors(colors?)`。改变布局的状态需在笔迹测量前同步应用，例如 `watch(signature.state, applyFallbackClasses, { flush: 'sync' })`；延迟到模板更新后再改变手写文字的位置会造成测量错位。仅在对应状态成功启用后隐藏原排版的文字、分隔线或标点，DOM 文本继续作为无障碍内容和失败回退。宿主主题更新后调用 `setColors()`。WebGL2 不可用时保留原标点，2D context 不可用时保留原文字和分隔线；减少动态效果时直接完成笔迹及墨点。
 
