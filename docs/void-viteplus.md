@@ -92,7 +92,9 @@ Keep the deployed `lig.froq.me` custom-domain route, workers.dev and version-pre
 
 Keep the existing Cloudflare GitHub connection for both production and branch previews. GitHub Actions only runs source, formatting, test and type checks. There is no GitHub deployment workflow, deployment secret or feature flag to enable.
 
-Cloudflare manages the Workers Builds API token. Before switching production, verify that Void recognizes this credential in a fresh build runner. A temporary `pnpm exec void cloudflare status` prefix on this PR's preview trigger performs a read-only authentication check. It reports identity and credential source, never the token value. Restore the normal preview command after the check. Authentication success alone does not prove every deploy permission; the first production deployment must also verify readiness, version and domain operations.
+Cloudflare manages the Workers Builds API token. A fresh preview runner verified that `CLOUDFLARE_API_TOKEN` is present, cf reports it authenticated and valid, and a read-only request for the existing `lig` Worker succeeds. The probe printed only credential-presence booleans and ordinary identity/Worker metadata, never a credential value. Normal preview deployment was restored and completed successfully afterward.
+
+Void 1.1.12's `cloudflare status` command still reported "Not signed in" in that runner. This is not evidence that the managed token is absent. Source inspection confirms that direct deployment accepts an injected API token when the account is already pinned, but the complete Void readiness/upload/activation path still needs a controlled production deployment. Do not patch dependencies or export a local OAuth session to bypass this diagnostic discrepancy. No new manually managed token is required by the evidence collected so far.
 
 | Setting        | Production target                                        | Branch previews                |
 | -------------- | -------------------------------------------------------- | ------------------------------ |
@@ -103,7 +105,7 @@ Cloudflare manages the Workers Builds API token. Before switching production, ve
 The automatic production command remains `pnpm exec cf deploy` before cutover. The production target uses `--dir dist` because Workers Builds has already generated the site. Do not use `pnpm deploy` in that split build/deploy flow; that command asks Void to build again.
 
 1. Completed: Workers Builds production and preview `NODE_VERSION=24.21.0`, including a patch request for existing previews. Keep both automatic builds and previews enabled.
-2. Verify Void authentication with the managed build credential on the migration PR, without publishing production or exporting credentials. If it fails, inspect the managed token's permissions in Cloudflare instead of copying a local OAuth credential into CI.
+2. Completed for credential availability and read-only access: the migration PR runner has a valid managed API token and can read the production Worker. Void's identity-status diagnostic remains inconclusive. Verify actual Void deployment permissions during the controlled production cutover, without copying local OAuth credentials into CI.
 3. Confirm the PR's branch preview serves the homepage, localized/nested pages and downloads, and returns 404 for a missing path.
 4. Obtain explicit approval to merge the migration PR to `main`. Passing checks alone does not authorize landing.
 5. Let any existing production build finish, then change only its deploy command to the target above. Keep its build command, repository connection, production trigger and branch-preview settings.
@@ -128,7 +130,7 @@ Validated with Node 24.21.0:
 
 Static generation reports a PostCSS warning for the homepage's nested `calc`/`clamp` font-size expression. It is outside this tooling migration. OG image compatibility warnings also appear during type preparation.
 
-No browser UI tests are used. PR #20 has passed GitHub checks and native preview deployment. HTTP checks verified its homepage, localized/nested pages, downloads and missing-page status. Managed-credential verification and the automatic production cutover remain separate steps. Manually check page navigation, locale switching, generated downloads, OG images, collapsibles and changelog anchors.
+No browser UI tests are used. PR #20 has passed GitHub checks and native preview deployment. HTTP checks verified its homepage, localized/nested pages, downloads and missing-page status. Managed credentials and read-only Worker access were verified in a fresh build runner. Full Void automatic production deployment remains unverified until cutover. Manually check page navigation, locale switching, generated downloads, OG images, collapsibles and changelog anchors.
 
 ## References
 
