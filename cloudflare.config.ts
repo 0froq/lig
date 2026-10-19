@@ -1,17 +1,16 @@
 import { defineConfig } from 'cf/config'
-import voidConfig from './void.config.ts'
-
-// Native branch previews and the production fallback until Void cutover is accepted.
-const { cloudflare } = voidConfig
 
 export default defineConfig({
   worker: {
-    name: cloudflare.name,
-    compatibilityDate: cloudflare.compatibility_date,
-    observability: cloudflare.observability,
+    name: 'lig',
+    compatibilityDate: '2026-10-12',
+    observability: {
+      enabled: true,
+      traces: { enabled: true },
+    },
     assets: {
-      htmlHandling: cloudflare.assets.html_handling,
-      notFoundHandling: cloudflare.assets.not_found_handling,
+      htmlHandling: 'drop-trailing-slash',
+      notFoundHandling: '404-page',
     },
   },
 })

@@ -6,10 +6,11 @@
 
 ## Deployment and tooling
 
-- LiG 生产部署用 Void。`void.config.ts` 是部署参数事实源，`pnpm deploy` 由 Void 调用静态生成，不再手动串一次 build。
-- 分支预览必须保留。当前通过 Workers Builds 的 `cf previews deploy` 发布，`cloudflare.config.ts` 只作为预览适配器，从 Void 配置取值。不要把它恢复为独立的生产配置。
-- 自动部署保留 Cloudflare Workers Builds 的 GitHub connection。GitHub Actions 只做代码检查，不另建生产发布链路。按 `docs/void-viteplus.md` 先验证托管凭据，再把生产部署命令切到 Void；切换前保留现有生产 trigger，始终保留分支预览。
-- 使用 `.node-version` / `mise.toml` 中的 Node 24.21.0。Node 22 不能运行当前 Void。
+- LiG 生产部署用 cf。`cloudflare.config.ts` 是 Worker 配置事实源，`pnpm deploy` 先静态生成，再调用 `cf deploy`。
+- 分支预览必须保留，通过 Workers Builds 的 `cf previews deploy` 发布。生产和预览都使用 `drop-trailing-slash`，保持与 Nuxt 路由及 canonical URL 一致。
+- 自动部署保留 Cloudflare Workers Builds 的 GitHub connection。构建命令 `pnpm generate`，生产部署命令 `pnpm exec cf deploy`，预览部署命令 `pnpm exec cf previews deploy`。GitHub Actions 只做代码检查，不另建生产发布链路。详见 `docs/viteplus.md`。
+- 保留 `wrangler` 构建依赖和 `wrangler.config.ts` 的资源目录配置。当前 cf 静态构建会调用它，不直接运行 wrangler 命令。
+- 使用 `.node-version` / `mise.toml` 中的 Node 24.21.0。
 - Vite+ 测试配置在 `tooling/vite.config.ts`。使用 `vp run <script>`，测试使用 `vp run test`。不要为工具另加 Nuxt 不读取的根目录 Vite 配置。
 - 本项目不再使用 ESLint。Oxlint 和 Oxfmt 分别使用根目录 `.oxlintrc.json`、`.oxfmtrc.json`。脚本显式传入配置路径，不依赖 Vite+ 自动发现。Vue 类型检查仍使用 `nuxt typecheck`。
 - `vendor/ui`、MDC 内容和生成文件不进入本项目的格式基线。库保留自己的上游规范，不要用项目格式化命令改库源码。

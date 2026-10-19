@@ -15,7 +15,6 @@
     "docs/plans/**",
     "AGENTS.md",
     "pnpm-lock.yaml",
-    "void.lock.json",
     "skills-lock.json"
   ]
 }

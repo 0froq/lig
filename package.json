@@ -9,7 +9,7 @@
     "dev": "nuxt dev",
     "build": "vp run ports:generate && nuxt build",
     "generate": "vp run ports:generate && nuxt generate",
-    "deploy": "void deploy --platform cloudflare",
+    "deploy": "pnpm generate && cf deploy",
     "preview": "nuxt preview",
     "preview:deploy": "pnpm generate && cf previews deploy",
     "lint": "vp lint --config .oxlintrc.json .",
@@ -60,7 +60,6 @@
     "simple-git-hooks": "catalog:dev",
     "typescript": "catalog:dev",
     "vite-plus": "catalog:dev",
-    "void": "catalog:dev",
     "vue-tsc": "catalog:dev",
     "wrangler": "catalog:dev"
   },
