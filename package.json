@@ -58,6 +58,7 @@
     "cf": "catalog:dev",
     "eslint": "catalog:dev",
     "eslint-plugin-format": "catalog:dev",
+    "into-the-void": "catalog:",
     "jiti": "catalog:",
     "lint-staged": "catalog:dev",
     "nuxtseo-devtools-host": "catalog:dev",

@@ -164,6 +164,9 @@ settings:
 
 catalogs:
   default:
+    into-the-void:
+      specifier: ^0.1.0
+      version: 0.1.0
     jiti:
       specifier: 2.7.0
       version: 2.7.0
@@ -246,9 +249,9 @@ catalogs:
       version: 4.6.7
 
 overrides:
+  '@nuxt/vite-builder@4.6.1>cssnano': 8.0.10
   vite@*: npm:@voidzero-dev/vite-plus-core@1.3.0
   vitest@*: 5.0.5
-  '@nuxt/vite-builder@4.6.1>cssnano': 8.0.10
 
 importers:
 
@@ -309,6 +312,9 @@ importers:
       eslint-plugin-format:
         specifier: catalog:dev
         version: 2.0.1(eslint@9.39.5(jiti@2.7.0)(supports-color@10.2.2))
+      into-the-void:
+        specifier: 'catalog:'
+        version: 0.1.0
       jiti:
         specifier: 'catalog:'
         version: 2.7.0
@@ -6881,6 +6887,11 @@ packages:
   ini@4.1.1:
     resolution: {integrity: sha512-QQnnxNyfvmHFIsj7gkPcYymR8Jdw/o7mp5ZFihxn6h8Ci6fh3Dx4E1gPjpQEpIuPo9XVNY/ZUwh4BPMjGyL01g==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+
+  into-the-void@0.1.0:
+    resolution: {integrity: sha512-tZgI3ZggkRc1lvfY5hdlcgmTuCpGaP2Aj+HYGK/e10MAXt9S4DEj7DVh8y1YjuUFynFoaeXLE2/Xi/TL2HYroQ==}
+    engines: {node: '>=22'}
+    hasBin: true
 
   ioredis@5.11.1:
     resolution: {integrity: sha512-ehuGcf94bQXhfagULNXrJdfnWO38v070jxSx/qE87Kjzmu2fU7ro5EFAb+OPituLqgfyuQaym5DlrNydW2sJ9A==}
@@ -16687,6 +16698,8 @@ snapshots:
   inherits@2.0.4: {}
 
   ini@4.1.1: {}
+
+  into-the-void@0.1.0: {}
 
   ioredis@5.11.1(supports-color@10.2.2):
     dependencies:
