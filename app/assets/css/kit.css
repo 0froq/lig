@@ -114,6 +114,8 @@ html {
 body {
   position: relative;
   margin: 0;
+  /* Clip on a non-root box too, so anchor navigation cannot pan the viewport sideways. */
+  overflow-x: clip;
 }
 
 a {
