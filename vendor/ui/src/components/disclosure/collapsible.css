@@ -141,6 +141,7 @@
 
 .ui-collapsible-body {
   padding-block: 20px 8px;
+  padding-inline-start: 20px;
 }
 
 @media (prefers-reduced-motion: reduce) {
