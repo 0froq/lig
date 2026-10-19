@@ -1,7 +1,7 @@
 import { defineConfig } from 'cf/config'
 import voidConfig from './void.config.ts'
 
-// Only used by native branch previews. Production is deployed by Void.
+// Native branch previews and the production fallback until Void cutover is accepted.
 const { cloudflare } = voidConfig
 
 export default defineConfig({

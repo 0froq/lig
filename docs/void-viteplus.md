@@ -6,10 +6,18 @@ The pre-migration workspace is archived on `origin/main` at `1dcb041`.
 
 - Nuxt uses Vite+ 1.3.0's Vite core through the workspace override. Its bundled Vite is 8.3.4, matching the previous Vite version.
 - Vite+'s task runner runs existing scripts. Nuxt still owns rendering and static generation.
-- Local `deploy` uses Void 1.1.12. Its configuration selects a static `dist` deployment, not Nuxt's SSR adapter. The user verified a real deployment before this final consolidation. Automatic production deployment still uses the old cf command until the Workers Builds credential check and cutover are complete.
+- Local `deploy` uses Void 1.1.12. Its configuration selects a static `dist` deployment, not Nuxt's SSR adapter. The first Workers Builds Void deployment uploaded, passed readiness and activated with the managed token, but was rolled back after a trailing-slash policy mismatch. Automatic production remains on `pnpm exec cf deploy` pending preview acceptance.
 - `void.config.ts` is the canonical deployment configuration. The cf configuration derives only the settings needed by native branch previews.
 - Vite+ now runs all 48 existing non-UI tests through its bundled Vitest and provides the source correctness linter.
 - The application now uses Oxlint for correctness and supported Vue rules, and Oxfmt for formatting. The ESLint config, direct dependencies and Nuxt module are removed. TypeScript, Python distribution checks and the existing hook mechanism remain in place.
+
+### Static asset policy preview
+
+Void 1.1.12's static deploy overwrites an authored `drop-trailing-slash` policy with `auto-trailing-slash`. The user requested a branch preview of that behavior before production cutover. `void.config.ts` now explicitly selects `auto-trailing-slash`, and native cf previews derive the same policy. No dependency patch or redirect shim is used.
+
+For generated directory-index pages, `auto-trailing-slash` serves the trailing-slash URL directly and redirects the slashless URL to it. The previous policy redirected in the opposite direction. Check direct entry, nested navigation, locale switching, relative links and downloads manually. HTTP checks do not establish client-side navigation correctness.
+
+This preview uses cf, not the full Void upload path. Production and its trigger stay unchanged until the preview is accepted. The cutover checklist below describes the target flow, not the current production state.
 
 The full `vp migrate` setup was deliberately not applied. It also changes linting, hooks, editor and agent configuration. This migration instead applies the documented aligned core override and pinned tool versions while retaining those project contracts. The vendored UI is not a workspace package and is not migrated.
 

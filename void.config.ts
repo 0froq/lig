@@ -18,7 +18,7 @@ export default defineConfig({
       traces: { enabled: true },
     },
     assets: {
-      html_handling: 'drop-trailing-slash',
+      html_handling: 'auto-trailing-slash',
       not_found_handling: '404-page',
     },
   },
