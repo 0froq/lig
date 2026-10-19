@@ -32,16 +32,12 @@ allowBuilds:
   vue-demi: true
   workerd: true
 
-catalog: {into-the-void: ^0.1.0, jiti: 2.7.0}
+catalog: { into-the-void: ^0.1.0, jiti: 2.7.0 }
 
 catalogs:
   dev:
-    '@antfu/eslint-config': ^9.5.1
-    '@nuxt/eslint': ^1.17.0
     '@types/node': 26.6.2
     cf: 1.0.0-beta.12
-    eslint: ^9.39.0
-    eslint-plugin-format: ^2.0.1
     lint-staged: ^16.1.6
     nuxtseo-devtools-host: ^1
     simple-git-hooks: ^2.14.0

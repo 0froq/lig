@@ -17,8 +17,10 @@ jobs:
         with:
           node-version-file: .node-version
       - uses: pnpm/action-setup@v6.1.0
-      # Core verification needs no Nuxt preparation or application build.
+      # Source and core verification need no Nuxt preparation or application build.
       - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm exec vp run lint
+      - run: pnpm exec vp run fmt:check
       - run: pnpm exec vp run tokens:typecheck
       - run: pnpm exec vp run tokens:test
       - run: pnpm exec vp run tokens:check

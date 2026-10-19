@@ -9,7 +9,7 @@ The pre-migration workspace is archived on `origin/main` at `1dcb041`.
 - Production `deploy` uses Void 1.1.12. Its configuration selects a static `dist` deployment, not Nuxt's SSR adapter. The user verified a real deployment before this final consolidation.
 - `void.config.ts` is the canonical deployment configuration. The cf configuration derives only the settings needed by native branch previews.
 - Vite+ now runs all 48 existing non-UI tests through its bundled Vitest and provides the source correctness linter.
-- ESLint retains Vue, Nuxt, formatting and package-policy checks. TypeScript, Python distribution checks and Git hooks remain in place.
+- The application now uses Oxlint for correctness and supported Vue rules, and Oxfmt for formatting. The ESLint config, direct dependencies and Nuxt module are removed. TypeScript, Python distribution checks and the existing hook mechanism remain in place.
 
 The full `vp migrate` setup was deliberately not applied. It also changes linting, hooks, editor and agent configuration. This migration instead applies the documented aligned core override and pinned tool versions while retaining those project contracts. The vendored UI is not a workspace package and is not migrated.
 
@@ -34,21 +34,33 @@ The exact-version `minimumReleaseAgeExclude` entries were added by pnpm for Void
 pnpm exec vp run dev
 pnpm exec vp run typecheck
 pnpm exec vp run lint
+pnpm exec vp run fmt:check
+pnpm exec vp run fmt
 pnpm exec vp run check:core
 pnpm exec vp run ports:generate
 pnpm exec vp run test
 pnpm exec vp run generate
 ```
 
-Use `vp run`, not the built-in `vp dev`, `vp build` or `vp check`. The built-in commands do not run this project's Nuxt and ESLint scripts. Tool configuration lives in `tooling/vite.config.ts`, passed explicitly to Vite+. Nuxt continues to own the application's Vite configuration.
+Use `vp run`, not the built-in `vp dev`, `vp build` or `vp check`. The built-in commands do not run this project's Nuxt scripts or its combined checks. Tests use `tooling/vite.config.ts`. Oxlint and Oxfmt use native root `.oxlintrc.json` and `.oxfmtrc.json` configurations, passed explicitly in the scripts so ignore patterns are rooted correctly and Vite+ does not fall back to defaults. Nuxt continues to own the application's Vite configuration.
 
 The test transformer explicitly uses `core/tsconfig.json`. Core and port CI can therefore install with `--ignore-scripts` and run without `.nuxt`; they do not inherit the root application's generated TypeScript references. This was verified in an archived checkout with no `.nuxt` directory.
 
 `test` generates port artifacts, then runs the token, syntax and port suites once. The ports aggregator imports its lightweight and Zed suites, which are deliberately not discovered a second time. Generate ports before running the standalone `ports:test` command. Native syntax tests and `syntax:check` need the exact Neovim and parser revisions from `syntax/manifest.json`; see `syntax/README.md`. Production CI type-checks syntax but does not pretend a generic Ubuntu runner has that native installation.
 
-`lint` runs Oxlint source correctness checks followed by ESLint's existing framework, style, formatting and package-policy rules. Oxfmt was tested against an existing token test file with compatible quote/semicolon settings: its output still violated 32 existing Antfu rules. Formatting remains with ESLint rather than disabling those rules or reformatting the repository.
+`lint` runs Oxlint with its native TypeScript, Unicorn, Oxc and Vue plugins. `fmt` and `fmt:check` use Oxfmt. Formatting now follows Oxfmt instead of the previous Antfu style. The initial maintained-source baseline is formatted accordingly, with single quotes, no semicolons and one Vue attribute per line.
 
-`vp staged` currently reads staged configuration from a root Vite config and exposes no explicit config option. Retain `lint-staged` and the existing hook instead of adding a root Vite config that Nuxt ignores. These are deliberate compatibility boundaries.
+Rule coverage changes with this migration. ESLint-only Nuxt rules, Vue template rules not implemented by Oxlint, package catalog lint enforcement and Antfu style checks are no longer run. Keep `nuxt typecheck`, native Oxlint Vue checks, tests and build verification. Do not reintroduce ESLint to emulate the old style.
+
+Vendored UI, MDC content, public/generated artifacts, fixtures, historical plans, agent instructions and generated locks are excluded from Oxfmt. They must not be rewritten by application-wide formatting. The vendored library still contains its upstream ESLint metadata, which this migration does not modify.
+
+Vue templates use strict whitespace handling. Three local `prettier-ignore` comments preserve two whitespace-sensitive SVG plots and one multi-statement inline event handler. Oxfmt officially supports these comments for Vue templates. Without them, the installed formatter adds spaces to SVG labels and removes a statement separator required by Vue's event parser. All other maintained source follows Oxfmt. Source review verified equivalent TypeScript ASTs and compiled production template ASTs before and after formatting.
+
+VS Code recommends `oxc.oxc-vscode` and selects it as the formatter. The root native configs are also usable by that extension without creating a root Vite config.
+
+The application no longer has an ESLint executable or direct lint dependency. Some third-party packages still have transitive ESLint peer dependencies (the Nuxt builder's checker and Vue i18n tooling). Their presence in the lockfile does not enable an ESLint check in this project.
+
+`vp staged` currently reads staged configuration from a root Vite config and exposes no explicit config option. Retain `lint-staged` and the existing hook instead of adding a root Vite config that Nuxt ignores. Staged checks now invoke Oxlint and Oxfmt with explicit native configuration paths, and honor the same excluded directories.
 
 `build` and `generate` explicitly run `ports:generate` before Nuxt. They no longer depend on package-manager lifecycle hooks, which are not a portable assumption when using another task runner.
 

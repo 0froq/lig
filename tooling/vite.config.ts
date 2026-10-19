@@ -8,8 +8,4 @@ export default defineConfig({
     environment: 'node',
     include: ['core/tests/**/*.test.ts', 'syntax/tests/**/*.test.ts', 'ports/contracts.test.ts'],
   },
-  lint: {
-    categories: { correctness: 'error' },
-    ignorePatterns: ['vendor/**', 'content/**', '**/generated/**', '.agents/**'],
-  },
 })
