@@ -42,6 +42,8 @@ pnpm exec vp run generate
 
 Use `vp run`, not the built-in `vp dev`, `vp build` or `vp check`. The built-in commands do not run this project's Nuxt and ESLint scripts. Tool configuration lives in `tooling/vite.config.ts`, passed explicitly to Vite+. Nuxt continues to own the application's Vite configuration.
 
+The test transformer explicitly uses `core/tsconfig.json`. Core and port CI can therefore install with `--ignore-scripts` and run without `.nuxt`; they do not inherit the root application's generated TypeScript references. This was verified in an archived checkout with no `.nuxt` directory.
+
 `test` generates port artifacts, then runs the token, syntax and port suites once. The ports aggregator imports its lightweight and Zed suites, which are deliberately not discovered a second time. Generate ports before running the standalone `ports:test` command. Native syntax tests and `syntax:check` need the exact Neovim and parser revisions from `syntax/manifest.json`; see `syntax/README.md`. Production CI type-checks syntax but does not pretend a generic Ubuntu runner has that native installation.
 
 `lint` runs Oxlint source correctness checks followed by ESLint's existing framework, style, formatting and package-policy rules. Oxfmt was tested against an existing token test file with compatible quote/semicolon settings: its output still violated 32 existing Antfu rules. Formatting remains with ESLint rather than disabling those rules or reformatting the repository.
