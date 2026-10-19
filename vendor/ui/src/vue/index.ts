@@ -1,4 +1,4 @@
-export type { BreadcrumbLinkProps, ChoiceOption, CollapsibleTriggerProps, FieldControlProps, MenuItem, NavigationItem, NavigationLinkProps, PaginationControlProps, SidebarGroup, SidebarItem, SidebarLinkProps, TableColumn } from './types'
+export type { BreadcrumbLinkProps, ChoiceOption, CodeSpan, CollapsibleTriggerProps, FieldControlProps, MenuItem, NavigationItem, NavigationLinkProps, PaginationControlProps, SidebarGroup, SidebarItem, SidebarLinkProps, TableColumn } from './types'
 export { useAutoDismiss } from './useAutoDismiss'
 export { useChoice } from './useChoice'
 export type { ClipboardResult, ClipboardStatus } from './useClipboard'

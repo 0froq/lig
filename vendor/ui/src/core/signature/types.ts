@@ -15,6 +15,8 @@ export interface PenAnchors {
   sections?: { element: Element, label: Element, price?: Element | null }[]
   finalMark?: HTMLElement | null
   finalSection?: Element | null
+  /** An empty horizontal band level with `finalMark`'s section, spanning its text column. The pen crosses it instead of descending the margin, so a stop inside a text-filled block is reached without crossing words. */
+  finalBand?: Element | null
   margin?: Element | null
 }
 

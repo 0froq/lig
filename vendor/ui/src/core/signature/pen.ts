@@ -1,6 +1,7 @@
 // Stroke: the whole page is one sentence written with a single pen line.
 // It handwrites the tagline (if the page has one), rules off the page head, threads through
 // the empty label column, circles the price and ends on the final full stop.
+// A narrow page has no margin, so a written tagline is the whole sentence.
 // The caller supplies semantic anchor elements; content determines the route.
 
 import type { LayerColors, PenLayer, PenOptions, Point } from './types'
@@ -122,6 +123,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
     const draft: (Seg | null)[] = []
     let pen: Point | null = null
     let dir: Point = [1, 0]
+    dot = null
 
     const append = (poly: Point[], w: number, opts: TravelOpts): Seg => {
       const { speed, trigger = null, taper = false, nib = false, emphasis = true, scroll = false } = opts
@@ -192,95 +194,124 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
       draft.push(append(g, isDot ? 1.5 : 1, { speed: size * (isDot ? 2 : 6), nib: !isDot }))
     })
     const connector = 1.2 / wordWidth
-    // Single-column layouts have no margin to run in, so the pen lifts between sections
+    // Single-column layouts have no margin to run in. A written tagline ends the stroke;
+    // otherwise the pen still lifts between sections.
     const narrow = window.innerWidth < 860
     const lift = (to: Point, trigger: Element): Seg | null => pen ? append([pen, to], 0, { speed: 1e6, trigger }) : travel(to, [1, 0])
 
-    // 2. The rule under the head of the page, drawn right to left.
-    // Stop to the right of the first label, leaving room for the leftward
-    // tangent to turn down without swinging out to the page edge.
-    const foot = anchors.rule
-    if (foot) {
-      const fr = foot.getBoundingClientRect()
-      const y = fr.top + window.scrollY
-      const end = anchors.ruleEnd ? textRect(anchors.ruleEnd) : null
-      let x0 = fr.right
-      let x1 = fr.left
-      if (end) {
-        x0 = end.right
-        x1 = end.left
-      }
-      else {
-        const firstLabel = !narrow ? anchors.sections?.find(section => section.label)?.label : undefined
-        if (firstLabel) {
-          const lr = textRect(firstLabel)
-          x1 = Math.min(fr.right - 32, Math.max(fr.left + 32, lr.right + 32))
+    if (!(narrow && hand)) {
+      // 2. The rule under the head of the page, drawn right to left.
+      // Stop to the right of the first label, leaving room for the leftward
+      // tangent to turn down without swinging out to the page edge.
+      const foot = anchors.rule
+      if (foot) {
+        const fr = foot.getBoundingClientRect()
+        const y = fr.top + window.scrollY
+        const end = anchors.ruleEnd ? textRect(anchors.ruleEnd) : null
+        let x0 = fr.right
+        let x1 = fr.left
+        if (end) {
+          x0 = end.right
+          x1 = end.left
         }
+        else {
+          const firstLabel = !narrow ? anchors.sections?.find(section => section.label)?.label : undefined
+          if (firstLabel) {
+            const lr = textRect(firstLabel)
+            x1 = Math.min(fr.right - 32, Math.max(fr.left + 32, lr.right + 32))
+          }
+        }
+        draft.push(travel([x0, y], [-0.45, 0.9], connector, { speed: 1100 }))
+        draft.push(append(wobble([[x0, y], [x1, y]], 1.2, 3), connector * 0.8, { speed: 1800, emphasis: false }))
       }
-      draft.push(travel([x0, y], [-0.45, 0.9], connector, { speed: 1100 }))
-      draft.push(append(wobble([[x0, y], [x1, y]], 1.2, 3), connector * 0.8, { speed: 1800, emphasis: false }))
-    }
 
-    // 3. Circle each section name with about one and a half loose turns; prices get their own mark.
-    anchors.sections?.forEach(({ label, price }) => {
-      if (!label)
-        return
-      const lr = textRect(label)
-      const labelCx = lr.left + lr.width / 2
-      const labelCy = lr.top + window.scrollY + lr.height / 2
-      // Grow across the turns so they read as pen passes rather than one thick outline.
-      const labelRing = looseEllipse(labelCx, labelCy, lr.width / 2 + 12, lr.height / 2 + 10, -2, Math.PI * 2.5, 0.3)
-      const labelStart = labelRing[0]
-      if (!labelStart)
-        return
-      draft.push(narrow ? lift(labelStart, label) : travel(labelStart, tangent(labelRing, false), connector, { speed: 1600, trigger: label }))
-      draft.push(append(labelRing, connector * 1.05, { speed: 700, trigger: label }))
+      // 3. Circle each section name with about one and a half loose turns; prices get their own mark.
+      anchors.sections?.forEach(({ label, price }) => {
+        if (!label)
+          return
+        const lr = textRect(label)
+        const labelCx = lr.left + lr.width / 2
+        const labelCy = lr.top + window.scrollY + lr.height / 2
+        // Grow across the turns so they read as pen passes rather than one thick outline.
+        const labelRing = looseEllipse(labelCx, labelCy, lr.width / 2 + 12, lr.height / 2 + 10, -2, Math.PI * 2.5, 0.3)
+        const labelStart = labelRing[0]
+        if (!labelStart)
+          return
+        draft.push(narrow ? lift(labelStart, label) : travel(labelStart, tangent(labelRing, false), connector, { speed: 1600, trigger: label }))
+        draft.push(append(labelRing, connector * 1.05, { speed: 700, trigger: label }))
 
-      if (!price)
-        return
-      const pr = textRect(price)
-      const cx = pr.left + pr.width / 2
-      const cy = pr.top + window.scrollY + pr.height * 0.55
-      const ring = looseEllipse(cx, cy, pr.width * 0.62, pr.height * 0.5)
-      const ringStart = ring[0]
-      if (!ringStart)
-        return
-      draft.push(narrow ? lift(ringStart, price) : travel(ringStart, tangent(ring, false), connector, { speed: 1600, trigger: price }))
-      draft.push(append(ring, connector * 1.25, { speed: 1100, trigger: price }))
-    })
+        if (!price)
+          return
+        const pr = textRect(price)
+        const cx = pr.left + pr.width / 2
+        const cy = pr.top + window.scrollY + pr.height * 0.55
+        const ring = looseEllipse(cx, cy, pr.width * 0.62, pr.height * 0.5)
+        const ringStart = ring[0]
+        if (!ringStart)
+          return
+        draft.push(narrow ? lift(ringStart, price) : travel(ringStart, tangent(ring, false), connector, { speed: 1600, trigger: price }))
+        draft.push(append(ring, connector * 1.25, { speed: 1100, trigger: price }))
+      })
 
-    // 4. The full stop
-    const mark = anchors.finalMark
-    const section = anchors.finalSection ?? null
-    const parent = mark?.parentElement ?? null
-    const measure = mark ? document.createElement('canvas').getContext('2d') : null
-    const glyphText = mark?.firstChild?.textContent
-    if (mark && section && parent && measure && glyphText != null) {
-      const style = getComputedStyle(mark)
-      measure.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
-      const t = measure.measureText(glyphText)
-      const mr = mark.getBoundingClientRect()
-      const b = baseline(mark)
-      const c: Point = [mr.left + (t.actualBoundingBoxRight - t.actualBoundingBoxLeft) / 2, b + (t.actualBoundingBoxDescent - t.actualBoundingBoxAscent) / 2]
-      const r = Math.max(t.actualBoundingBoxRight + t.actualBoundingBoxLeft, t.actualBoundingBoxAscent + t.actualBoundingBoxDescent) / 2
-      // Down the margin, across the empty band above the last section, then into the stop
-      // from the upper right so the line never crosses text
-      const prev = section.previousElementSibling?.getBoundingClientRect()
-      const top = section.getBoundingClientRect().top
-      const bandY = (prev ? (prev.bottom + top) / 2 : top) + window.scrollY
-      const title = textRect(parent)
-      const left = anchors.margin?.getBoundingClientRect().left ?? 40
-      const over: Point = [Math.min(window.innerWidth - 40, c[0] + title.height * 1.1), title.top + window.scrollY - title.height * 0.9]
-      if (narrow) {
-        draft.push(lift(over, section))
-        dir = [0.86, 0.5]
+      // 4. The full stop
+      const mark = anchors.finalMark
+      const section = anchors.finalSection ?? null
+      const parent = mark?.parentElement ?? null
+      const measure = mark ? document.createElement('canvas').getContext('2d') : null
+      const glyphText = mark?.firstChild?.textContent
+      if (mark && section && parent && measure && glyphText != null) {
+        const style = getComputedStyle(mark)
+        measure.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
+        const t = measure.measureText(glyphText)
+        const mr = mark.getBoundingClientRect()
+        const b = baseline(mark)
+        const c: Point = [mr.left + (t.actualBoundingBoxRight - t.actualBoundingBoxLeft) / 2, b + (t.actualBoundingBoxDescent - t.actualBoundingBoxAscent) / 2]
+        const r = Math.max(t.actualBoundingBoxRight + t.actualBoundingBoxLeft, t.actualBoundingBoxAscent + t.actualBoundingBoxDescent) / 2
+        // Down the margin, across the empty band above the last section, then into the stop
+        // from the upper right so the line never crosses text
+        const prev = section.previousElementSibling?.getBoundingClientRect()
+        const top = section.getBoundingClientRect().top
+        const bandY = (prev ? (prev.bottom + top) / 2 : top) + window.scrollY
+        const title = textRect(parent)
+        const left = anchors.margin?.getBoundingClientRect().left ?? 40
+        // A caller-owned empty band beside the stop: run down the gutter outside the text,
+        // cross the band, and drop onto the stop from its right.
+        const band = anchors.finalBand?.getBoundingClientRect()
+        const over: Point = band
+          ? [Math.min(window.innerWidth - 24, c[0] + title.height * 0.3), band.top + band.height / 2 + window.scrollY]
+          : [Math.min(window.innerWidth - 40, c[0] + title.height * 1.1), title.top + window.scrollY - title.height * 0.9]
+        if (band) {
+          // Right along the band, straight down past the stop, then left into it:
+          // three square-ish turns with a radius no larger than the stop's gap to the edge.
+          const gap = Math.max(12, Math.min(over[0] - c[0], (c[1] - over[1]) / 2.5))
+          const turn: Point = [over[0] - gap, over[1]]
+          if (narrow) {
+            draft.push(lift(turn, section))
+            dir = [1, 0]
+          }
+          else {
+            const laneX = Math.max(12, band.left - 28)
+            draft.push(travel([laneX, top + window.scrollY + 24], [0, 1], connector, { speed: 1500, trigger: section }))
+            draft.push(travel([laneX, over[1]], [0.2, 0.98], connector, { speed: 1500, trigger: section }))
+            draft.push(travel(turn, [1, 0], connector, { speed: 1500, trigger: section }))
+          }
+          draft.push(travel([over[0], over[1] + gap], [0, 1], connector, { speed: 1100, trigger: mark }))
+          draft.push(travel([over[0], c[1] - gap], [0, 1], connector, { speed: 1500, trigger: mark }))
+          draft.push(travel(c, [-1, 0], connector, { speed: 1100, trigger: mark }))
+        }
+        else {
+          if (narrow) {
+            draft.push(lift(over, section))
+            dir = [0.86, 0.5]
+          }
+          else {
+            draft.push(travel([left + 24, bandY], [0.2, 0.98], connector, { speed: 1500, trigger: section }))
+            draft.push(travel(over, [0.86, 0.5], connector, { speed: 1500, trigger: section }))
+          }
+          draft.push(travel(c, [-0.42, 0.91], connector, { speed: 1100, trigger: mark }))
+        }
+        dot = { x: c[0], y: c[1], r }
       }
-      else {
-        draft.push(travel([left + 24, bandY], [0.2, 0.98], connector, { speed: 1500, trigger: section }))
-        draft.push(travel(over, [0.86, 0.5], connector, { speed: 1500, trigger: section }))
-      }
-      draft.push(travel(c, [-0.42, 0.91], connector, { speed: 1100, trigger: mark }))
-      dot = { x: c[0], y: c[1], r }
     }
 
     segs = draft.filter((seg): seg is Seg => seg !== null)
@@ -372,7 +403,9 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
       return
     }
     // Let the reading boundary trail the scroll, then settle without overshoot.
-    const readingEdge = window.scrollY + window.innerHeight * 0.8
+    // At the very bottom nothing more can scroll into view, so the whole viewport counts as read.
+    const atBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY < 2
+    const readingEdge = window.scrollY + window.innerHeight * (atBottom ? 1 : 0.8)
     revealEdge += (readingEdge - revealEdge) * (1 - Math.exp(-dt / 0.22))
     if (Math.abs(readingEdge - revealEdge) < 0.5)
       revealEdge = readingEdge
