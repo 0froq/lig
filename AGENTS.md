@@ -8,7 +8,7 @@
 
 - LiG 生产部署用 Void。`void.config.ts` 是部署参数事实源，`pnpm deploy` 由 Void 调用静态生成，不再手动串一次 build。
 - 分支预览必须保留。当前通过 Workers Builds 的 `cf previews deploy` 发布，`cloudflare.config.ts` 只作为预览适配器，从 Void 配置取值。不要把它恢复为独立的生产配置。
-- GitHub Actions 生产发布由 `VOID_DEPLOY_ENABLED` 开关控制。没有完成 `docs/void-viteplus.md` 的切换清单前，不开启，不关闭旧自动部署，不删除预览配置。
+- 自动部署保留 Cloudflare Workers Builds 的 GitHub connection。GitHub Actions 只做代码检查，不另建生产发布链路。按 `docs/void-viteplus.md` 先验证托管凭据，再把生产部署命令切到 Void；切换前保留现有生产 trigger，始终保留分支预览。
 - 使用 `.node-version` / `mise.toml` 中的 Node 24.21.0。Node 22 不能运行当前 Void。
 - Vite+ 测试配置在 `tooling/vite.config.ts`。使用 `vp run <script>`，测试使用 `vp run test`。不要为工具另加 Nuxt 不读取的根目录 Vite 配置。
 - 本项目不再使用 ESLint。Oxlint 和 Oxfmt 分别使用根目录 `.oxlintrc.json`、`.oxfmtrc.json`。脚本显式传入配置路径，不依赖 Vite+ 自动发现。Vue 类型检查仍使用 `nuxt typecheck`。
