@@ -114,7 +114,7 @@ export default defineNuxtConfig({
       markdown: {
         highlight: {
           theme: documentationThemes(),
-          langs: ['ts', 'js', 'vue', 'bash', 'json', 'yaml', 'md'],
+          langs: ['ts', 'js', 'vue', 'bash', 'json', 'yaml', 'md', 'lua', 'ini'],
         },
       },
     },
