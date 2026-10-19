@@ -1,4 +1,11 @@
 minimumReleaseAgeExcludePrune: true
+minimumReleaseAgeExclude:
+  - '@void/deploy-cloudflare@1.1.12'
+  - '@void/deploy-core@1.1.12'
+  - '@void/edge@1.1.12'
+  - '@void/isr@1.1.12'
+  - '@void/platform@1.1.12'
+  - void@1.1.12
 
 trustPolicy: no-downgrade
 trustPolicyExclude:
@@ -13,6 +20,8 @@ overrides:
   # cssnano 9 dropped the staged-publish evidence required by trustPolicy.
   # Keep Nuxt 4.6.1 while retaining the previously trusted CSS minifier.
   '@nuxt/vite-builder@4.6.1>cssnano': 8.0.10
+  vite@*: npm:@voidzero-dev/vite-plus-core@1.3.0
+  vitest@*: 5.0.5
 
 allowBuilds:
   '@takumi-rs/core': true
@@ -36,6 +45,8 @@ catalogs:
     nuxtseo-devtools-host: ^1
     simple-git-hooks: ^2.14.0
     typescript: ~5.9.3
+    vite-plus: 1.3.0
+    void: 1.1.12
     vue-tsc: ^3.3.11
     wrangler: ^4.136.0
   prod:

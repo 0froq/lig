@@ -6,11 +6,15 @@
   "packageManager": "pnpm@12.11.2",
   "description": "A quiet product site template: paper, one pen line and a handwritten sentence.",
   "license": "MIT",
+  "engines": {
+    "node": "^24.21.0 || >=26.0.0"
+  },
   "scripts": {
     "dev": "nuxt dev",
-    "build": "nuxt build",
-    "generate": "nuxt generate",
+    "build": "vp run ports:generate && nuxt build",
+    "generate": "vp run ports:generate && nuxt generate",
     "deploy": "pnpm generate && cf deploy",
+    "deploy:void": "vp run generate && void deploy --platform cloudflare --dir dist",
     "preview": "nuxt preview",
     "preview:deploy": "pnpm generate && cf previews deploy",
     "lint": "eslint . --cache",
@@ -31,8 +35,7 @@
     "ports:check": "jiti ports/compile.ts --check",
     "ports:typecheck": "tsc --project ports/tsconfig.json",
     "ports:test": "jiti ports/contracts.test.ts",
-    "prebuild": "pnpm ports:generate",
-    "pregenerate": "pnpm ports:generate"
+    "check:core": "vp run tokens:typecheck && vp run tokens:test && vp run tokens:check && vp run syntax:typecheck && vp run syntax:test && vp run syntax:check"
   },
   "dependencies": {
     "@fontsource-variable/geist": "catalog:prod",
@@ -60,6 +63,8 @@
     "nuxtseo-devtools-host": "catalog:dev",
     "simple-git-hooks": "catalog:dev",
     "typescript": "catalog:dev",
+    "vite-plus": "catalog:dev",
+    "void": "catalog:dev",
     "vue-tsc": "catalog:dev",
     "wrangler": "catalog:dev"
   },

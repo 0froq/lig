@@ -13,6 +13,9 @@
 .turbo
 .wrangler
 .cloudflare
+.void
+.void-wrangler.jsonc
+.vite
 cache
 coverage
 dist
