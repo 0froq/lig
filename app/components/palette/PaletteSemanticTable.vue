@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  rows: { role: string, hex: string, baseRef: string }[]
+  rows: { role: string; hex: string; baseRef: string }[]
 }>()
 </script>
 

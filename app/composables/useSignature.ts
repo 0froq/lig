@@ -12,7 +12,12 @@ function readColors(): LayerColors {
   const html = document.documentElement
   const css = getComputedStyle(html)
   const get = (name: string): string => css.getPropertyValue(name).trim()
-  return { paper: get('--bg'), ink: get('--fg'), accent: get('--accent'), dark: html.dataset.theme === 'dark' }
+  return {
+    paper: get('--bg'),
+    ink: get('--fg'),
+    accent: get('--accent'),
+    dark: html.dataset.theme === 'dark',
+  }
 }
 
 /** LiG's content and visibility adapter; drawing and lifetime belong to @froq/ui. */
@@ -35,13 +40,17 @@ export function useSignature(root: Ref<HTMLElement | undefined>, options: Signat
     },
     anchors: (): PenAnchors & { mark: HTMLElement | null } => {
       const el = root.value
-      const find = (anchor: string): HTMLElement | null => el?.querySelector<HTMLElement>(`[data-anchor="${anchor}"]`) ?? null
+      const find = (anchor: string): HTMLElement | null =>
+        el?.querySelector<HTMLElement>(`[data-anchor="${anchor}"]`) ?? null
       const hand = find('tagline')
       const copy = hand?.cloneNode(true) as HTMLElement | undefined
       copy?.querySelectorAll('.l-fill').forEach(node => node.remove())
       // A page that ends in its own closing block keeps that stop. Every other pen page ends on the footer's.
       const pageMark = find('final-mark')
-      const footMark = options.line && !pageMark ? document.querySelector<HTMLElement>('[data-anchor="foot-mark"]') : null
+      const footMark =
+        options.line && !pageMark
+          ? document.querySelector<HTMLElement>('[data-anchor="foot-mark"]')
+          : null
       const finalMark = pageMark ?? footMark
       const narrow = window.innerWidth < 860
       return {
@@ -54,21 +63,26 @@ export function useSignature(root: Ref<HTMLElement | undefined>, options: Signat
         finalSection: pageMark ? pageMark.closest('section') : footMark?.closest('footer'),
         finalBand: footMark ? document.querySelector('[data-anchor="foot-band"]') : null,
         margin: find('label'),
-        sections: Array.from(el?.querySelectorAll('.l-section') ?? []).flatMap((element) => {
+        sections: Array.from(el?.querySelectorAll('.l-section') ?? []).flatMap(element => {
           const label = element.querySelector('[data-anchor="label"]')
-          return label ? [{ element, label, price: element.querySelector('[data-anchor="price"]') }] : []
+          return label
+            ? [{ element, label, price: element.querySelector('[data-anchor="price"]') }]
+            : []
         }),
       }
     },
   })
 
   // These classes only control LiG's original type/layout fallback.
-  watch(signature.state, (state) => {
-    if (!import.meta.client)
-      return
-    for (const [key, active] of Object.entries(state))
-      document.documentElement.classList.toggle(`has-${key}`, active)
-  }, { flush: 'sync' })
+  watch(
+    signature.state,
+    state => {
+      if (!import.meta.client) return
+      for (const [key, active] of Object.entries(state))
+        document.documentElement.classList.toggle(`has-${key}`, active)
+    },
+    { flush: 'sync' },
+  )
 
   watch(theme, async () => {
     await nextTick()

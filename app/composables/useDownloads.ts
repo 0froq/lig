@@ -9,21 +9,18 @@ export function useDownloads() {
   }
 
   function reset(href: string): void {
-    if (statusFor(href) !== 'pending')
-      delete states.value[href]
+    if (statusFor(href) !== 'pending') delete states.value[href]
   }
 
   async function start(href: string, filename: string): Promise<void> {
-    if (!import.meta.client || statusFor(href) === 'pending')
-      return
+    if (!import.meta.client || statusFor(href) === 'pending') return
 
     states.value[href] = 'pending'
     let objectUrl: string | undefined
     let link: HTMLAnchorElement | undefined
     try {
       const response = await fetch(href)
-      if (!response.ok)
-        throw new Error(`Download request failed: ${response.status}`)
+      if (!response.ok) throw new Error(`Download request failed: ${response.status}`)
       objectUrl = URL.createObjectURL(await response.blob())
       link = document.createElement('a')
       link.href = objectUrl
@@ -33,11 +30,9 @@ export function useDownloads() {
       link.click()
       // Native downloads expose no disk-save completion event to the page.
       states.value[href] = 'started'
-    }
-    catch {
+    } catch {
       states.value[href] = 'error'
-    }
-    finally {
+    } finally {
       link?.remove()
       if (objectUrl) {
         const url = objectUrl

@@ -8,24 +8,28 @@ useHead({ title: () => doc.value?.title?.trim() || t('docs.label') })
 const files = useRuntimeConfig().public.publicFiles
 const override = computed(() => contentOgOverride(doc.value, 'docs', files))
 if (override.value === undefined) {
-  defineOgImage(ogComponentName(doc.value), {
-    title: () => paperFields(doc.value).title,
-    description: () => paperFields(doc.value, t('palette.meta.description')).description,
-    evergreen: () => paperFields(doc.value).evergreen,
-    created: () => paperFields(doc.value).created,
-    updated: () => paperFields(doc.value).updated,
-    words: () => paperFields(doc.value).words,
-    ...ogExtraProps(doc.value),
-  }, {
-    alt: () => paperFields(doc.value).title,
-  })
+  defineOgImage(
+    ogComponentName(doc.value),
+    {
+      title: () => paperFields(doc.value).title,
+      description: () => paperFields(doc.value, t('palette.meta.description')).description,
+      evergreen: () => paperFields(doc.value).evergreen,
+      created: () => paperFields(doc.value).created,
+      updated: () => paperFields(doc.value).updated,
+      words: () => paperFields(doc.value).words,
+      ...ogExtraProps(doc.value),
+    },
+    {
+      alt: () => paperFields(doc.value).title,
+    },
+  )
 }
 useShareMeta({
   title: () => doc.value?.title?.trim() || t('docs.label'),
   description: () => doc.value?.description,
-  image: () => override.value === undefined ? false : override.value,
+  image: () => (override.value === undefined ? false : override.value),
 })
-useSeoMeta({ robots: () => doc.value?.title?.trim() ? undefined : 'noindex, follow' })
+useSeoMeta({ robots: () => (doc.value?.title?.trim() ? undefined : 'noindex, follow') })
 </script>
 
 <template>
@@ -64,7 +68,8 @@ useSeoMeta({ robots: () => doc.value?.title?.trim() ? undefined : 'noindex, foll
           v-if="prev"
           :to="link(prev.to)"
         >
-          ← <Fill
+          ←
+          <Fill
             :value="prev.title"
             name="doc.title"
             :size="10"

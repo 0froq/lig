@@ -21,7 +21,9 @@ function skinStyle(): string {
     ['--span-margin', skin?.margin],
     ['--span-body', skin?.body],
   ]
-  return vars.flatMap(([name, value]) => value == null || value === '' ? [] : [`${name}: ${value}`]).join('; ')
+  return vars
+    .flatMap(([name, value]) => (value == null || value === '' ? [] : [`${name}: ${value}`]))
+    .join('; ')
 }
 
 useHead({
@@ -31,10 +33,9 @@ useHead({
     style: () => skinStyle(),
   },
   style: [{ key: 'theme', innerHTML: () => themeStyle(product.theme) }],
-  titleTemplate: (title) => {
+  titleTemplate: title => {
     const brand = product.name ? `${product.name}${product.mark}` : ''
-    if (title)
-      return brand ? `${title} — ${brand}` : title
+    if (title) return brand ? `${title} — ${brand}` : title
     return t('site.title') || 'paper-landing'
   },
 })
@@ -44,10 +45,15 @@ function documentUrl(value: string): string {
   return canonicalUrl(new URL(value).pathname)
 }
 useHead(() => ({
-  link: (localeHead.value.link ?? []).map(link => ({ ...link, href: link.href ? documentUrl(link.href) : undefined })),
-  meta: (localeHead.value.meta ?? []).map(meta => meta.property === 'og:url' && typeof meta.content === 'string'
-    ? { ...meta, content: documentUrl(meta.content) }
-    : meta),
+  link: (localeHead.value.link ?? []).map(link => ({
+    ...link,
+    href: link.href ? documentUrl(link.href) : undefined,
+  })),
+  meta: (localeHead.value.meta ?? []).map(meta =>
+    meta.property === 'og:url' && typeof meta.content === 'string'
+      ? { ...meta, content: documentUrl(meta.content) }
+      : meta,
+  ),
 }))
 </script>
 

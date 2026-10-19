@@ -13,8 +13,12 @@ export function windowsTerminal(theme: ThemeIR): string {
     foreground: color(theme, 'terminal.foreground'),
     cursorColor: color(theme, 'terminal.cursor'),
     selectionBackground: color(theme, 'terminal.selection'),
-    ...Object.fromEntries(WT_ANSI.map((name, index) => [name, color(theme, `terminal.ansi.${index}`)])),
-    ...Object.fromEntries(WT_BRIGHT.map((name, index) => [name, color(theme, `terminal.ansi.${index + 8}`)])),
+    ...Object.fromEntries(
+      WT_ANSI.map((name, index) => [name, color(theme, `terminal.ansi.${index}`)]),
+    ),
+    ...Object.fromEntries(
+      WT_BRIGHT.map((name, index) => [name, color(theme, `terminal.ansi.${index + 8}`)]),
+    ),
   }
   return `${JSON.stringify(scheme, null, 2)}\n`
 }

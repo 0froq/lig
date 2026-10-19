@@ -26,5 +26,7 @@ export const FZF_BINDINGS: Record<string, string> = {
 
 // An options-file fragment, not shell code. Preserve the user's preview/bind/layout.
 export function fzf(theme: ThemeIR): string {
-  return `--color=${theme.mode},${Object.entries(FZF_BINDINGS).map(([key, token]) => `${key}:${color(theme, token)}`).join(',')}\n`
+  return `--color=${theme.mode},${Object.entries(FZF_BINDINGS)
+    .map(([key, token]) => `${key}:${color(theme, token)}`)
+    .join(',')}\n`
 }

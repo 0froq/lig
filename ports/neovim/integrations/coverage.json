@@ -69,10 +69,7 @@
       "plugin": "fzf-lua",
       "source": "lua/lig/groups/fzf.lua",
       "sha256": "b99c5fbaf582f2ae7e59cae198ff76e900c4e5452effdbd2b07197ca84e6ce66",
-      "groups": [
-        "FzfLuaBackdrop",
-        "FzfLuaBorder"
-      ]
+      "groups": ["FzfLuaBackdrop", "FzfLuaBorder"]
     },
     "gitsigns": {
       "plugin": "gitsigns.nvim",
@@ -161,10 +158,7 @@
       "plugin": "mini.cursorword",
       "source": "lua/lig/groups/mini_cursorword.lua",
       "sha256": "b714a368d06a3dcc631e0f23022f53c9fea978ced79d2cc3de2400e3ed80b5df",
-      "groups": [
-        "MiniCursorword",
-        "MiniCursorwordCurrent"
-      ]
+      "groups": ["MiniCursorword", "MiniCursorwordCurrent"]
     },
     "mini_diff": {
       "plugin": "mini.diff",
@@ -201,20 +195,13 @@
       "plugin": "mini.indentscope",
       "source": "lua/lig/groups/mini_indentscope.lua",
       "sha256": "490392fe92ccb2f101514b354e1e06491dde72be087b4531881d4272efe3fc50",
-      "groups": [
-        "MiniIndentscopeSymbol"
-      ]
+      "groups": ["MiniIndentscopeSymbol"]
     },
     "mini_jump2d": {
       "plugin": "mini.jump2d",
       "source": "lua/lig/groups/mini_jump2d.lua",
       "sha256": "152e32a8cccb56dd49807117bab55669c34ea60119e37d8f57757cfc2a413bf6",
-      "groups": [
-        "MiniJump2dDim",
-        "MiniJump2dSpot",
-        "MiniJump2dSpotAhead",
-        "MiniJump2dSpotUnique"
-      ]
+      "groups": ["MiniJump2dDim", "MiniJump2dSpot", "MiniJump2dSpotAhead", "MiniJump2dSpotUnique"]
     },
     "mini_statusline": {
       "plugin": "mini.statusline",

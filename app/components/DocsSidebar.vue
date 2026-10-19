@@ -3,13 +3,16 @@ import type { SidebarItem, SidebarLinkProps } from '@froq/ui'
 import type { NavGroup, NavItem } from '~/utils/navigation'
 import { Sidebar as UiSidebar } from '@froq/ui'
 
-const props = withDefaults(defineProps<{
-  groups: NavGroup[]
-  foldable?: boolean
-}>(), { foldable: false })
+const props = withDefaults(
+  defineProps<{
+    groups: NavGroup[]
+    foldable?: boolean
+  }>(),
+  { foldable: false },
+)
 const route = useRoute()
 const link = useKitLink()
-const target = (to: string) => to.startsWith('#') ? to : link(to)
+const target = (to: string) => (to.startsWith('#') ? to : link(to))
 
 function items(entries: NavItem[]): SidebarItem[] {
   return entries.map(item => ({
@@ -19,25 +22,25 @@ function items(entries: NavItem[]): SidebarItem[] {
     children: item.children ? items(item.children) : undefined,
   }))
 }
-const groups = computed(() => props.groups.map(group => ({
-  label: group.label,
-  items: items(group.items),
-})))
+const groups = computed(() =>
+  props.groups.map(group => ({
+    label: group.label,
+    items: items(group.items),
+  })),
+)
 
 function current(entries: NavItem[]): string | undefined {
   for (const item of entries) {
     if (item.to.startsWith('#') ? route.hash === item.to : route.path === target(item.to))
       return item.to
     const child = item.children && current(item.children)
-    if (child)
-      return child
+    if (child) return child
   }
 }
 const active = computed(() => {
   for (const group of props.groups) {
     const value = current(group.items)
-    if (value)
-      return value
+    if (value) return value
   }
   return ''
 })
@@ -59,7 +62,9 @@ function routerLinkProps({ href: _href, onClick: _onClick, ...attrs }: SidebarLi
       <NuxtLink
         v-bind="routerLinkProps(linkProps)"
         :to="item.href!"
-        :aria-current="linkProps['aria-current'] ? item.value.startsWith('#') ? 'location' : 'page' : undefined"
+        :aria-current="
+          linkProps['aria-current'] ? (item.value.startsWith('#') ? 'location' : 'page') : undefined
+        "
       >
         {{ item.label }}
       </NuxtLink>

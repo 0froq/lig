@@ -58,12 +58,12 @@ and the grammars do not classify the same way.
 
 Install an editor port from its own repository.
 
-| Port | Where |
-| --- | --- |
-| Neovim | [lig.nvim](https://github.com/0froq/lig.nvim) |
-| VS Code | [vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG) |
-| Zed | [zed-theme-LiG](https://github.com/0froq/zed-theme-LiG) |
-| Ghostty, iTerm2, Windows Terminal, fzf, Zellij, tmux, Starship, bat, eza | [lightweight ports](ports/lightweight/README.md) |
+| Port                                                                     | Where                                                         |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| Neovim                                                                   | [lig.nvim](https://github.com/0froq/lig.nvim)                 |
+| VS Code                                                                  | [vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG) |
+| Zed                                                                      | [zed-theme-LiG](https://github.com/0froq/zed-theme-LiG)       |
+| Ghostty, iTerm2, Windows Terminal, fzf, Zellij, tmux, Starship, bat, eza | [lightweight ports](ports/lightweight/README.md)              |
 
 Editor stores can lag behind GitHub.
 Follow the install notes in each distribution.

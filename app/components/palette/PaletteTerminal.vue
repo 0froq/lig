@@ -57,7 +57,8 @@ const banks = computed(() => terminalColors(tokens.value))
             <code
               class="lig-ansi-background"
               :style="{ background: color.hex, color: color.label }"
-            >{{ color.name }}</code>
+              >{{ color.name }}</code
+            >
           </div>
         </div>
       </div>

@@ -33,18 +33,18 @@ export function useShareMeta(input: ShareMetaInput = {}): void {
 
   const title = computed(() => {
     const page = filled(toValue(input.title), t('site.title'))
-    if (toValue(input.bareTitle))
-      return page
+    if (toValue(input.bareTitle)) return page
     const brand = product.name ? `${product.name}${product.mark}` : ''
     return brand && page !== t('site.title') ? `${page} — ${brand}` : page
   })
-  const description = computed(() => filled(toValue(input.description), t('palette.meta.description')))
+  const description = computed(() =>
+    filled(toValue(input.description), t('palette.meta.description')),
+  )
   const type = computed(() => toValue(input.type) ?? 'website')
   const skipImage = toValue(input.image) === false
   const image = computed(() => {
     const value = toValue(input.image)
-    if (value === false || !value)
-      return absoluteImageUrl(OG_IMAGE_PATH)
+    if (value === false || !value) return absoluteImageUrl(OG_IMAGE_PATH)
     return absoluteImageUrl(value)
   })
   const imageAlt = computed(() => `${product.name} — ${t('site.footer')}`)

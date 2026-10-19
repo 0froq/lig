@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Anchors on one page, not pages: a rail of releases whose marker follows the reading position
 const props = defineProps<{
-  items: { id: string, version: string, date: string }[]
+  items: { id: string; version: string; date: string }[]
   label: string
 }>()
 
@@ -15,15 +15,13 @@ function measure(): void {
   let index = 0
   props.items.forEach((item, i) => {
     const top = document.getElementById(item.id)?.getBoundingClientRect().top
-    if (top != null && top <= line)
-      index = i
+    if (top != null && top <= line) index = i
   })
   active.value = index
 }
 
 function schedule(): void {
-  if (!frame)
-    frame = requestAnimationFrame(measure)
+  if (!frame) frame = requestAnimationFrame(measure)
 }
 
 onMounted(() => {

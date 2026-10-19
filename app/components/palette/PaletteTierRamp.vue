@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   family: string
-  levels: { tier: string, hex: string, token: string }[]
+  levels: { tier: string; hex: string; token: string }[]
 }>()
 
 const { format, copied, copyValue, textFor } = usePaletteClipboard()
@@ -79,7 +79,12 @@ const { format, copied, copyValue, textFor } = usePaletteClipboard()
 }
 
 .lig-tier-shape.is-muted {
-  clip-path: polygon(calc(100% + var(--half-gap)) 0, 100% 0, 100% 100%, calc(60% + var(--half-gap)) 100%);
+  clip-path: polygon(
+    calc(100% + var(--half-gap)) 0,
+    100% 0,
+    100% 100%,
+    calc(60% + var(--half-gap)) 100%
+  );
 }
 
 .lig-tier-shapes:has(:focus-visible) {
@@ -109,7 +114,9 @@ const { format, copied, copyValue, textFor } = usePaletteClipboard()
   text-align: right;
 }
 
-.lig-tier-ramp:has(.is-highlight:hover, .is-highlight:focus-visible) .lig-tier-captions span:first-child,
+.lig-tier-ramp:has(.is-highlight:hover, .is-highlight:focus-visible)
+  .lig-tier-captions
+  span:first-child,
 .lig-tier-ramp:has(.is-base:hover, .is-base:focus-visible) .lig-tier-captions span:nth-child(2),
 .lig-tier-ramp:has(.is-muted:hover, .is-muted:focus-visible) .lig-tier-captions span:last-child {
   color: var(--fg);

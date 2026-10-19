@@ -17,8 +17,7 @@ const ring = looseEllipse(50, 20, 47, 17)
 
 function place(): void {
   const word = words[ids.indexOf(variant.value)]
-  if (!word)
-    return
+  if (!word) return
   box.x = word.offsetLeft - 14
   box.y = word.offsetTop - 9
   box.w = word.offsetWidth + 28
@@ -26,8 +25,7 @@ function place(): void {
 }
 
 function choose(next: LigVariant): void {
-  if (next === variant.value)
-    return
+  if (next === variant.value) return
   variant.value = next
   drawn.value++
 }
@@ -53,7 +51,11 @@ onBeforeUnmount(() => removeEventListener('resize', place))
     <button
       v-for="(option, index) in VARIANT_OPTIONS"
       :key="option.id"
-      :ref="el => { if (el) words[index] = el as HTMLElement }"
+      :ref="
+        el => {
+          if (el) words[index] = el as HTMLElement
+        }
+      "
       type="button"
       role="radio"
       class="lig-circle-word"

@@ -7,18 +7,20 @@ const { t } = useI18n()
 const families = ['mono', 'struct', 'ref', 'action'] as const
 const resolved = computed(() => resolveVariant(variant.value))
 
-const inks = computed(() => families.map((family) => {
-  const levels = (['highlight', 'base', 'muted'] as const).map((tier) => {
-    const token = `family.${family}.${tier}`
-    const hex = resolved.value.tokens[token]!
-    return {
-      tier,
-      hex,
-      token,
-    }
-  })
-  return { family, levels }
-}))
+const inks = computed(() =>
+  families.map(family => {
+    const levels = (['highlight', 'base', 'muted'] as const).map(tier => {
+      const token = `family.${family}.${tier}`
+      const hex = resolved.value.tokens[token]!
+      return {
+        tier,
+        hex,
+        token,
+      }
+    })
+    return { family, levels }
+  }),
+)
 </script>
 
 <template>
@@ -40,9 +42,7 @@ const inks = computed(() => families.map((family) => {
       </p>
     </section>
   </div>
-  <PaletteStage
-    :variant="variant"
-  />
+  <PaletteStage :variant="variant" />
 </template>
 
 <style scoped>

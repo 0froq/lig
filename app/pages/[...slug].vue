@@ -14,8 +14,7 @@ const { data: page } = await useAsyncData(
   () => `page-${locale.value}-${rest.value}`,
   () => queryCollection('pages').path(contentPath(rest.value)).first(),
 )
-if (!page.value)
-  throw createError({ statusCode: 404, statusMessage: 'Not found', fatal: true })
+if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Not found', fatal: true })
 
 useHead(() => ({
   title: page.value?.title || undefined,
@@ -25,25 +24,29 @@ useHead(() => ({
 const files = useRuntimeConfig().public.publicFiles
 const override = computed(() => contentOgOverride(page.value, 'pages', files))
 if (override.value === undefined) {
-  defineOgImage(ogComponentName(page.value), {
-    title: () => paperFields(page.value).title,
-    description: () => paperFields(page.value, t('palette.meta.description')).description,
-    evergreen: () => paperFields(page.value).evergreen,
-    created: () => paperFields(page.value).created,
-    updated: () => paperFields(page.value).updated,
-    words: () => paperFields(page.value).words,
-    ...ogExtraProps(page.value),
-  }, {
-    alt: () => paperFields(page.value).title,
-  })
+  defineOgImage(
+    ogComponentName(page.value),
+    {
+      title: () => paperFields(page.value).title,
+      description: () => paperFields(page.value, t('palette.meta.description')).description,
+      evergreen: () => paperFields(page.value).evergreen,
+      created: () => paperFields(page.value).created,
+      updated: () => paperFields(page.value).updated,
+      words: () => paperFields(page.value).words,
+      ...ogExtraProps(page.value),
+    },
+    {
+      alt: () => paperFields(page.value).title,
+    },
+  )
 }
 useShareMeta({
   title: () => page.value?.title,
   description: () => page.value?.description,
   bareTitle: () => Boolean(page.value?.title) && !page.value?.head,
-  image: () => override.value === undefined ? false : override.value,
+  image: () => (override.value === undefined ? false : override.value),
 })
-useSeoMeta({ robots: () => page.value?.title?.trim() ? undefined : 'noindex, follow' })
+useSeoMeta({ robots: () => (page.value?.title?.trim() ? undefined : 'noindex, follow') })
 </script>
 
 <template>

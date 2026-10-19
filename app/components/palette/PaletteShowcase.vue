@@ -27,11 +27,17 @@ const neutralOrder = [
 ]
 
 const neutrals = computed(() => {
-  const byName = new Map(swatches.value.filter(sw => sw.role === 'neutral').map(sw => [sw.name, sw]))
-  const names = variant.value.endsWith('paper') ? neutralOrder.map(name => name.replace('soft_', 'paper_')) : neutralOrder
-  return names.flatMap((name) => {
+  const byName = new Map(
+    swatches.value.filter(sw => sw.role === 'neutral').map(sw => [sw.name, sw]),
+  )
+  const names = variant.value.endsWith('paper')
+    ? neutralOrder.map(name => name.replace('soft_', 'paper_'))
+    : neutralOrder
+  return names.flatMap(name => {
     const sw = byName.get(name)
-    return sw ? [{ ...sw, lightness: (spec.palette.paper[name] ?? spec.palette.neutrals[name])!.l }] : []
+    return sw
+      ? [{ ...sw, lightness: (spec.palette.paper[name] ?? spec.palette.neutrals[name])!.l }]
+      : []
   })
 })
 </script>
@@ -49,12 +55,14 @@ const neutrals = computed(() => {
         alt=""
         width="96"
         height="96"
-      >
+      />
       <span class="lig-hero-name">
-        <span data-anchor="word">LiG</span><span
+        <span data-anchor="word">LiG</span
+        ><span
           class="l-mark"
           data-anchor="mark"
-        >.</span>
+          >.</span
+        >
       </span>
     </h1>
     <div

@@ -13,7 +13,7 @@ const pixels = [
   { x: 1, y: 2, family: 'action' },
 ] as const
 
-function colorsFor(variant: typeof VARIANTS[number]) {
+function colorsFor(variant: (typeof VARIANTS)[number]) {
   const { tokens } = resolveVariant(variant)
   return pixels.map(pixel => tokens[`family.${pixel.family}.base`]!)
 }
@@ -38,12 +38,15 @@ function chunk(type: string, data: Buffer): Buffer {
 function png(colors: string[], size: number): Buffer {
   const stride = 1 + size * 4
   const scanlines = Buffer.alloc(stride * size)
-  const rgb = colors.map(hex => [1, 3, 5].map(start => Number.parseInt(hex.slice(start, start + 2), 16)))
+  const rgb = colors.map(hex =>
+    [1, 3, 5].map(start => Number.parseInt(hex.slice(start, start + 2), 16)),
+  )
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      const cell = pixels.findIndex(pixel => pixel.x === Math.floor(x * 3 / size) && pixel.y === Math.floor(y * 3 / size))
-      if (cell < 0)
-        continue
+      const cell = pixels.findIndex(
+        pixel => pixel.x === Math.floor((x * 3) / size) && pixel.y === Math.floor((y * 3) / size),
+      )
+      if (cell < 0) continue
       const offset = y * stride + 1 + x * 4
       scanlines.set([...rgb[cell]!, 255], offset)
     }
@@ -62,12 +65,13 @@ function png(colors: string[], size: number): Buffer {
 }
 
 /** The same transparent pixel L used by the website and editor distribution. */
-export function brandPng(variant: typeof VARIANTS[number] = 'light', size = 512): Buffer {
+export function brandPng(variant: (typeof VARIANTS)[number] = 'light', size = 512): Buffer {
   return png(colorsFor(variant), size)
 }
 
 export function generateIcons(check: boolean): void {
-  const output = (name: string, content: string | Uint8Array) => writeArtifact(fileURLToPath(new URL(`../../public/${name}`, import.meta.url)), content, check)
+  const output = (name: string, content: string | Uint8Array) =>
+    writeArtifact(fileURLToPath(new URL(`../../public/${name}`, import.meta.url)), content, check)
   for (const variant of VARIANTS) {
     const colors = colorsFor(variant)
     output(`brand/lig-${variant}.svg`, svg(colors))

@@ -19,7 +19,7 @@ export function useLigTheme(): void {
         return savedPosition ?? false
       return scrollBehavior?.(to, from, savedPosition)
     }
-    onBeforeUnmount(() => router.options.scrollBehavior = scrollBehavior)
+    onBeforeUnmount(() => (router.options.scrollBehavior = scrollBehavior))
   }
 
   function sync(next: LigVariant): void {
@@ -27,8 +27,9 @@ export function useLigTheme(): void {
     document.documentElement.dataset.ligVariant = next
     try {
       localStorage.setItem(STORAGE_KEY, next)
+    } catch {
+      /* The selected variant works without storage. */
     }
-    catch { /* The selected variant works without storage. */ }
     if (route.query.variant !== next)
       void router.replace({ query: { ...route.query, variant: next }, hash: route.hash })
   }
@@ -38,21 +39,28 @@ export function useLigTheme(): void {
     let stored: LigVariant | null = null
     try {
       stored = parseVariant(localStorage.getItem(STORAGE_KEY))
+    } catch {
+      /* A valid query must still work when storage is blocked. */
     }
-    catch { /* A valid query must still work when storage is blocked. */ }
-    variant.value = requested ?? stored ?? (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
+    variant.value =
+      requested ?? stored ?? (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
     initialized = true
     sync(variant.value)
   })
 
-  watch(variant, (next) => {
-    if (initialized)
-      sync(next)
-  }, { flush: 'sync' })
+  watch(
+    variant,
+    next => {
+      if (initialized) sync(next)
+    },
+    { flush: 'sync' },
+  )
 
-  watch(() => route.query.variant, (value) => {
-    const requested = parseVariant(typeof value === 'string' ? value : null)
-    if (initialized && requested)
-      variant.value = requested
-  })
+  watch(
+    () => route.query.variant,
+    value => {
+      const requested = parseVariant(typeof value === 'string' ? value : null)
+      if (initialized && requested) variant.value = requested
+    },
+  )
 }

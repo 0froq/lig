@@ -9,8 +9,7 @@ export function usePaletteClipboard() {
   let timer: ReturnType<typeof setTimeout> | undefined
 
   async function copyValue(text: string, token?: string): Promise<void> {
-    if (!import.meta.client)
-      return
+    if (!import.meta.client) return
     await navigator.clipboard?.writeText(text)
     copied.value = token ?? text
     clearTimeout(timer)

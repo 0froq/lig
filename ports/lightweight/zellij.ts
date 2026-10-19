@@ -16,7 +16,11 @@ export function zellij(theme: ThemeIR): string {
     text_unselected: [fg, bg],
     text_selected: [strong, selection],
     ribbon_unselected: [fg, raised],
-    ribbon_selected: [onColor(theme, green), green, [onColor(theme, green), onColor(theme, green), onColor(theme, green), onColor(theme, green)]],
+    ribbon_selected: [
+      onColor(theme, green),
+      green,
+      [onColor(theme, green), onColor(theme, green), onColor(theme, green), onColor(theme, green)],
+    ],
     table_title: [strong, bg],
     table_cell_unselected: [fg, bg],
     table_cell_selected: [strong, selection],
@@ -36,6 +40,10 @@ export function zellij(theme: ThemeIR): string {
   }
   const players = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'orange', 'azure']
   output += '    multiplayer_user_colors {\n'
-  output += Array.from({ length: 10 }, (_, index) => `      player_${index + 1} ${rgb(color(theme, `accent.${players[index % players.length]}.base`))}\n`).join('')
+  output += Array.from(
+    { length: 10 },
+    (_, index) =>
+      `      player_${index + 1} ${rgb(color(theme, `accent.${players[index % players.length]}.base`))}\n`,
+  ).join('')
   return `${output}    }\n  }\n}\n`
 }

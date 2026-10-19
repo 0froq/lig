@@ -27,14 +27,25 @@ export function vscodeTheme(theme: ThemeIR, name: string) {
     type: theme.mode,
     semanticHighlighting: true,
     semanticTokenColors,
-    colors: Object.fromEntries(Object.entries(WORKBENCH).map(([key, binding]) => [key, requireToken(theme, binding.token) + (binding.alpha ?? '')])),
+    colors: Object.fromEntries(
+      Object.entries(WORKBENCH).map(([key, binding]) => [
+        key,
+        requireToken(theme, binding.token) + (binding.alpha ?? ''),
+      ]),
+    ),
     tokenColors: TEXTMATE.map(({ scope, role }) => {
       const style = vscodeStyle(theme, role)
-      const fontStyle = ['bold', 'italic', 'underline', 'strikethrough'].filter(attribute => style[attribute as keyof VscodeStyle] === true).join(' ')
-      return { name: `LiG ${role}`, scope, settings: {
-        ...(style.foreground ? { foreground: style.foreground } : {}),
-        ...(fontStyle ? { fontStyle } : {}),
-      } }
+      const fontStyle = ['bold', 'italic', 'underline', 'strikethrough']
+        .filter(attribute => style[attribute as keyof VscodeStyle] === true)
+        .join(' ')
+      return {
+        name: `LiG ${role}`,
+        scope,
+        settings: {
+          ...(style.foreground ? { foreground: style.foreground } : {}),
+          ...(fontStyle ? { fontStyle } : {}),
+        },
+      }
     }),
   }
 }

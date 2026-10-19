@@ -1,7 +1,8 @@
 import type { ThemeIR } from '../types'
 import { color } from './common'
 
-const escape = (value: string): string => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+const escape = (value: string): string =>
+  value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 
 function real(value: number): string {
   return `<real>${value}</real>`
@@ -17,7 +18,11 @@ function srgbColor(hex: string): string {
 /** iTerm2 color preset (Apple plist XML). */
 export function iterm2(theme: ThemeIR): string {
   const entries: [string, string][] = [
-    ...Array.from({ length: 16 }, (_, index) => [`Ansi ${index} Color`, color(theme, `terminal.ansi.${index}`)] as [string, string]),
+    ...Array.from(
+      { length: 16 },
+      (_, index) =>
+        [`Ansi ${index} Color`, color(theme, `terminal.ansi.${index}`)] as [string, string],
+    ),
     ['Background Color', color(theme, 'terminal.background')],
     ['Foreground Color', color(theme, 'terminal.foreground')],
     ['Cursor Color', color(theme, 'terminal.cursor')],

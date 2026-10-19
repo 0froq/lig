@@ -11,36 +11,44 @@ const { format, copied, copyValue, textFor } = usePaletteClipboard()
 
 const colors = computed(() => {
   const { tokens, oklch } = resolveVariant(props.variant)
-  return Object.keys(spec.palette.accents).map((name) => {
-    const token = `accent.${name}.base`
-    return { name, hex: tokens[token]!, ...oklch[token]! }
-  }).sort((a, b) => (a.h ?? 0) - (b.h ?? 0))
+  return Object.keys(spec.palette.accents)
+    .map(name => {
+      const token = `accent.${name}.base`
+      return { name, hex: tokens[token]!, ...oklch[token]! }
+    })
+    .sort((a, b) => (a.h ?? 0) - (b.h ?? 0))
 })
-const active = computed(() => colors.value.find(color => color.name === activeName.value) ?? colors.value[0]!)
+const active = computed(
+  () => colors.value.find(color => color.name === activeName.value) ?? colors.value[0]!,
+)
 
-function copyColor(color: { name: string, hex: string }): void {
+function copyColor(color: { name: string; hex: string }): void {
   activeName.value = color.name
   void copyValue(textFor(color.hex, format.value), color.name)
 }
 
 // Project the authored H/C coordinates; L is shown separately, not held constant.
 const extent = computed(() => Math.max(0.2, ...colors.value.map(color => color.c)))
-const points = computed(() => colors.value.map((color) => {
-  const angle = (color.h ?? 0) * Math.PI / 180
-  const r = color.c / extent.value * radius
-  const dx = Math.cos(angle)
-  const dy = -Math.sin(angle)
-  return {
-    ...color,
-    x: center + dx * r,
-    y: center + dy * r,
-    labelX: center + dx * (r + 26),
-    labelY: center + dy * (r + 26) + 4,
-    anchor: Math.abs(dx) < 0.2 ? 'middle' : dx > 0 ? 'start' : 'end',
-  }
-}))
+const points = computed(() =>
+  colors.value.map(color => {
+    const angle = ((color.h ?? 0) * Math.PI) / 180
+    const r = (color.c / extent.value) * radius
+    const dx = Math.cos(angle)
+    const dy = -Math.sin(angle)
+    return {
+      ...color,
+      x: center + dx * r,
+      y: center + dy * r,
+      labelX: center + dx * (r + 26),
+      labelY: center + dy * (r + 26) + 4,
+      anchor: Math.abs(dx) < 0.2 ? 'middle' : dx > 0 ? 'start' : 'end',
+    }
+  }),
+)
 const activePoint = computed(() => points.value.find(point => point.name === active.value.name)!)
-const activeIndex = computed(() => colors.value.findIndex(color => color.name === active.value.name))
+const activeIndex = computed(() =>
+  colors.value.findIndex(color => color.name === active.value.name),
+)
 
 function pointScale(index: number): number {
   return index === activeIndex.value ? 1 : 0.64
@@ -55,13 +63,12 @@ const hueSvg = useTemplateRef<SVGSVGElement>('hue')
 const lightnessSvg = useTemplateRef<SVGSVGElement>('lightness')
 const hueNudge = reactive({ x: 0, y: 0 })
 const lightnessNudge = reactive({ x: 0, y: 0 })
-const pointer = ref<{ chart: 'hue' | 'lightness', x: number, y: number } | null>(null)
+const pointer = ref<{ chart: 'hue' | 'lightness'; x: number; y: number } | null>(null)
 let nudgeFrame = 0
 
-function localPoint(event: PointerEvent, svg: SVGSVGElement): { x: number, y: number } | null {
+function localPoint(event: PointerEvent, svg: SVGSVGElement): { x: number; y: number } | null {
   const ctm = svg.getScreenCTM()
-  if (!ctm)
-    return null
+  if (!ctm) return null
   const point = svg.createSVGPoint()
   point.x = event.clientX
   point.y = event.clientY
@@ -69,17 +76,16 @@ function localPoint(event: PointerEvent, svg: SVGSVGElement): { x: number, y: nu
   return { x: local.x, y: local.y }
 }
 
-function aimedNudge(chart: 'hue' | 'lightness'): { x: number, y: number } {
-  if (pointer.value?.chart !== chart)
-    return { x: 0, y: 0 }
-  const origin = chart === 'hue'
-    ? { x: activePoint.value.x, y: activePoint.value.y }
-    : { x: lightnessAxis + active.value.l * 200, y: 40 + activeIndex.value * 24 }
+function aimedNudge(chart: 'hue' | 'lightness'): { x: number; y: number } {
+  if (pointer.value?.chart !== chart) return { x: 0, y: 0 }
+  const origin =
+    chart === 'hue'
+      ? { x: activePoint.value.x, y: activePoint.value.y }
+      : { x: lightnessAxis + active.value.l * 200, y: 40 + activeIndex.value * 24 }
   const cap = chart === 'hue' ? 20 : 12
   const dx = pointer.value.x - origin.x
   const dy = pointer.value.y - origin.y
-  if (Math.hypot(dx, dy) > cap)
-    return { x: 0, y: 0 }
+  if (Math.hypot(dx, dy) > cap) return { x: 0, y: 0 }
   return { x: dx * 0.18, y: dy * 0.18 }
 }
 
@@ -88,21 +94,22 @@ function pullNudge(): void {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
   const step = () => {
     let moving = false
-    for (const [nudge, next] of [[hueNudge, aimedNudge('hue')], [lightnessNudge, aimedNudge('lightness')]] as const) {
+    for (const [nudge, next] of [
+      [hueNudge, aimedNudge('hue')],
+      [lightnessNudge, aimedNudge('lightness')],
+    ] as const) {
       const dx = next.x - nudge.x
       const dy = next.y - nudge.y
       if (reduced || Math.hypot(dx, dy) < 0.15) {
         nudge.x = next.x
         nudge.y = next.y
-      }
-      else {
+      } else {
         nudge.x += dx * 0.05
         nudge.y += dy * 0.05
         moving = true
       }
     }
-    if (moving)
-      nudgeFrame = requestAnimationFrame(step)
+    if (moving) nudgeFrame = requestAnimationFrame(step)
   }
   nudgeFrame = requestAnimationFrame(step)
 }
@@ -111,15 +118,13 @@ function onPoint(event: PointerEvent, chart: 'hue' | 'lightness', name: string):
   activeName.value = name
   const svg = chart === 'hue' ? hueSvg.value : lightnessSvg.value
   const local = svg ? localPoint(event, svg) : null
-  if (!local)
-    return
+  if (!local) return
   pointer.value = { chart, ...local }
   pullNudge()
 }
 
 function onPointLeave(chart: 'hue' | 'lightness'): void {
-  if (pointer.value?.chart === chart)
-    pointer.value = null
+  if (pointer.value?.chart === chart) pointer.value = null
   pullNudge()
 }
 
@@ -129,6 +134,7 @@ onBeforeUnmount(() => cancelAnimationFrame(nudgeFrame))
 <template>
   <figure class="lig-oklch">
     <div class="lig-oklch-layout">
+      <!-- prettier-ignore -->
       <svg
         ref="hue"
         class="lig-oklch-plot"
@@ -218,6 +224,7 @@ onBeforeUnmount(() => cancelAnimationFrame(nudgeFrame))
           :nudge-y="hueNudge.y"
         />
       </svg>
+      <!-- prettier-ignore -->
       <svg
         ref="lightness"
         class="lig-oklch-plot lig-oklch-lightness"
@@ -347,7 +354,8 @@ onBeforeUnmount(() => cancelAnimationFrame(nudgeFrame))
     >
       <span class="lig-oklch-current">{{ active.name }}</span>
       <span class="lig-oklch-coordinates">
-        L {{ active.l.toFixed(3) }} · C {{ active.c.toFixed(3) }} · H {{ active.h?.toFixed(1) ?? '—' }}°
+        L {{ active.l.toFixed(3) }} · C {{ active.c.toFixed(3) }} · H
+        {{ active.h?.toFixed(1) ?? '—' }}°
       </span>
       <button
         type="button"
@@ -359,7 +367,8 @@ onBeforeUnmount(() => cancelAnimationFrame(nudgeFrame))
       <span
         class="lig-oklch-announcement"
         role="status"
-      >{{ copied ? $t('install.copied') : '' }}</span>
+        >{{ copied ? $t('install.copied') : '' }}</span
+      >
     </div>
   </figure>
 </template>

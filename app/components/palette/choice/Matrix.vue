@@ -32,7 +32,8 @@ function label(id: LigVariant): string {
         :key="edge"
         class="lig-matrix-axis"
         :class="{ 'is-lit': lit.edge === edge }"
-      >{{ t(`palette.choice.edge${edge[0]!.toUpperCase()}${edge.slice(1)}`) }}</span>
+        >{{ t(`palette.choice.edge${edge[0]!.toUpperCase()}${edge.slice(1)}`) }}</span
+      >
       <template
         v-for="tone in tones"
         :key="tone"
@@ -40,7 +41,8 @@ function label(id: LigVariant): string {
         <span
           class="lig-matrix-axis"
           :class="{ 'is-lit': lit.tone === tone }"
-        >{{ t(tone === 'light' ? 'palette.choice.toneLight' : 'palette.choice.toneDark') }}</span>
+          >{{ t(tone === 'light' ? 'palette.choice.toneLight' : 'palette.choice.toneDark') }}</span
+        >
         <button
           v-for="edge in edges"
           :key="edge"

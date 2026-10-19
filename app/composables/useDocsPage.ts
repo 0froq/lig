@@ -12,11 +12,13 @@ export async function useDocsPage() {
 
   const { data: page } = await useAsyncData(
     () => `docs-${locale.value}-${rest.value}`,
-    () => queryCollection('docs').path(`${contentPath('/docs')}${rest.value}`).first(),
+    () =>
+      queryCollection('docs')
+        .path(`${contentPath('/docs')}${rest.value}`)
+        .first(),
   )
 
-  if (!page.value)
-    throw createError({ statusCode: 404, statusMessage: 'Not found', fatal: true })
+  if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Not found', fatal: true })
 
   const doc = computed(() => page.value!)
 

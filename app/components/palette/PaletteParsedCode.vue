@@ -5,7 +5,7 @@ import { Popover } from '@froq/ui'
 import { resolveVariant } from '../../../core'
 import { segmentSource } from '../../../syntax/model'
 
-const props = defineProps<{ document: SyntaxDocument, variant: LigVariant }>()
+const props = defineProps<{ document: SyntaxDocument; variant: LigVariant }>()
 const { t } = useI18n()
 const resolved = computed(() => resolveVariant(props.variant))
 const segments = computed(() => segmentSource(props.document))
@@ -18,8 +18,10 @@ const floatingMoving = ref(false)
 const reference = shallowRef<HTMLElement>()
 let closeTimer: ReturnType<typeof setTimeout> | undefined
 let detachListeners: (() => void) | undefined
-const segment = computed(() => active.value === null ? null : segments.value[active.value]!)
-const node = computed(() => inspected.value === null ? null : props.document.nodes[inspected.value]!)
+const segment = computed(() => (active.value === null ? null : segments.value[active.value]!))
+const node = computed(() =>
+  inspected.value === null ? null : props.document.nodes[inspected.value]!,
+)
 const role = computed(() => segment.value?.token ?? 'text.primary')
 const color = computed(() => resolved.value.tokens[role.value]!)
 const style = computed(() => ({
@@ -37,7 +39,10 @@ const inspectorAttrs = computed(() => ({
   portalTo: 'body',
   side: 'bottom' as const,
   align: 'start' as const,
-  class: ['lig-node-inspector lig-inspector-floating ui', { 'is-moving': floatingMoving.value, 'is-pinned': pinned.value }],
+  class: [
+    'lig-node-inspector lig-inspector-floating ui',
+    { 'is-moving': floatingMoving.value, 'is-pinned': pinned.value },
+  ],
   style: {
     ...style.value,
     '--ui-bg': style.value['--pv-bg'],
@@ -55,8 +60,7 @@ function keepInfo(): void {
 
 function interactOutside(event: Event): void {
   const target = event.target
-  if (!(target instanceof HTMLElement) || !code.value?.contains(target))
-    return
+  if (!(target instanceof HTMLElement) || !code.value?.contains(target)) return
   const segment = target.closest<HTMLElement>('[data-segment]')
   // Retarget real tokens, but let blank areas dismiss the card. Clicking a token
   // also focuses the surrounding pre, which must not dismiss it either.
@@ -68,11 +72,10 @@ function interactOutside(event: Event): void {
 }
 
 function clickCode(event: MouseEvent): void {
-  const target = event.target instanceof HTMLElement ? event.target.closest<HTMLElement>('[data-segment]') : null
-  if (target?.textContent?.trim())
-    selectSegment(Number(target.dataset.segment), true)
-  else
-    closeInfo()
+  const target =
+    event.target instanceof HTMLElement ? event.target.closest<HTMLElement>('[data-segment]') : null
+  if (target?.textContent?.trim()) selectSegment(Number(target.dataset.segment), true)
+  else closeInfo()
 }
 
 function closeInfo(): void {
@@ -82,23 +85,24 @@ function closeInfo(): void {
   pinned.value = false
   active.value = null
   inspected.value = null
-  if (document.activeElement instanceof HTMLElement && document.activeElement.closest('.lig-inspector-floating'))
+  if (
+    document.activeElement instanceof HTMLElement &&
+    document.activeElement.closest('.lig-inspector-floating')
+  )
     code.value?.focus({ preventScroll: true })
 }
 
 function leaveInfo(): void {
-  if (!pinned.value)
-    closeTimer = setTimeout(closeInfo, 180)
+  if (!pinned.value) closeTimer = setTimeout(closeInfo, 180)
 }
 
 function showInfo(id: number, element?: HTMLElement): void {
-  const nextReference = element ?? code.value?.querySelector<HTMLElement>(`[data-segment="${id}"]`) ?? code.value
+  const nextReference =
+    element ?? code.value?.querySelector<HTMLElement>(`[data-segment="${id}"]`) ?? code.value
   // Enable motion only when retargeting an already positioned card, not on first open.
-  if (floatingOpen.value && reference.value !== nextReference)
-    floatingMoving.value = true
+  if (floatingOpen.value && reference.value !== nextReference) floatingMoving.value = true
   reference.value = nextReference
-  if (reference.value)
-    floatingOpen.value = true
+  if (reference.value) floatingOpen.value = true
 }
 
 onMounted(() => {
@@ -129,10 +133,8 @@ function selectSegment(id: number, pin = false): void {
 
 function hover(id: number, event: PointerEvent): void {
   keepInfo()
-  if (pinned.value || event.pointerType === 'touch')
-    return
-  if (!segments.value[id]!.text.trim())
-    return
+  if (pinned.value || event.pointerType === 'touch') return
+  if (!segments.value[id]!.text.trim()) return
   selectSegment(id)
 }
 
@@ -140,10 +142,11 @@ function selectNode(id: number): void {
   const selected = props.document.nodes[id]!
   inspected.value = id
   pinned.value = true
-  const inside = segments.value.filter(item => item.startByte >= selected.startByte && item.endByte <= selected.endByte)
+  const inside = segments.value.filter(
+    item => item.startByte >= selected.startByte && item.endByte <= selected.endByte,
+  )
   active.value = (inside.find(item => item.text.trim()) ?? inside[0])?.id ?? null
-  if (active.value !== null)
-    showInfo(active.value)
+  if (active.value !== null) showInfo(active.value)
 }
 
 function navigate(event: KeyboardEvent): void {
@@ -152,21 +155,23 @@ function navigate(event: KeyboardEvent): void {
     inspected.value = null
     pinned.value = false
     closeInfo()
-  }
-  else if (event.key === 'ArrowUp' && node.value?.parent !== null && node.value?.parent !== undefined) {
+  } else if (
+    event.key === 'ArrowUp' &&
+    node.value?.parent !== null &&
+    node.value?.parent !== undefined
+  ) {
     selectNode(node.value.parent)
-  }
-  else if (event.key === 'ArrowDown' && node.value?.children.length) {
+  } else if (event.key === 'ArrowDown' && node.value?.children.length) {
     selectNode(node.value.children[0]!)
-  }
-  else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+  } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
     const items = segments.value.filter(item => item.text.trim())
     const index = items.findIndex(item => item.id === active.value)
-    const next = index < 0 ? 0 : Math.max(0, Math.min(items.length - 1, index + (event.key === 'ArrowRight' ? 1 : -1)))
-    if (items[next])
-      selectSegment(items[next].id, true)
-  }
-  else {
+    const next =
+      index < 0
+        ? 0
+        : Math.max(0, Math.min(items.length - 1, index + (event.key === 'ArrowRight' ? 1 : -1)))
+    if (items[next]) selectSegment(items[next].id, true)
+  } else {
     return
   }
   event.preventDefault()
@@ -238,7 +243,9 @@ function inSelection(start: number, end: number): boolean {
           >
             <template v-if="node">
               <p class="lig-node-meta">
-                {{ node.range[0] + 1 }}:{{ node.range[1] + 1 }} → {{ node.range[2] + 1 }}:{{ node.range[3] + 1 }}
+                {{ node.range[0] + 1 }}:{{ node.range[1] + 1 }} → {{ node.range[2] + 1 }}:{{
+                  node.range[3] + 1
+                }}
               </p>
               <p
                 v-if="segment"

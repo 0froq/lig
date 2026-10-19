@@ -15,7 +15,7 @@ const families = computed(() => {
   return Object.keys(spec.palette.accents).map(name => ({
     name,
     hex: tokens[`accent.${name}.base`]!,
-    levels: tiers.map((tier) => {
+    levels: tiers.map(tier => {
       const token = `accent.${name}.${tier.key}`
       return { token, label: tier.label, hex: tokens[token]!, ...oklch[token]! }
     }),
@@ -49,18 +49,10 @@ const families = computed(() => {
           >
             {{ t('palette.tiers.tier') }}
           </th>
-          <th scope="col">
-            HEX
-          </th>
-          <th scope="col">
-            L
-          </th>
-          <th scope="col">
-            C
-          </th>
-          <th scope="col">
-            H
-          </th>
+          <th scope="col"> HEX </th>
+          <th scope="col"> L </th>
+          <th scope="col"> C </th>
+          <th scope="col"> H </th>
         </tr>
       </thead>
       <tbody
@@ -113,6 +105,7 @@ const families = computed(() => {
     <span
       class="lig-color-announcement"
       role="status"
-    >{{ copied ? t('install.copied') : '' }}</span>
+      >{{ copied ? t('install.copied') : '' }}</span
+    >
   </div>
 </template>

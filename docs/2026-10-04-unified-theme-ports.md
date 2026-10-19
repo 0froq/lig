@@ -207,7 +207,7 @@ const binding = {
   style: 'type.reference',
   neovim: ['@type', '@type.builtin'],
   vscodeSemantic: ['type', 'class', 'interface', 'struct', 'typeParameter'],
-  vscodeTextmate: ['entity.name.type', 'support.type']
+  vscodeTextmate: ['entity.name.type', 'support.type'],
 }
 ```
 

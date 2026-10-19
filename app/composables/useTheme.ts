@@ -4,7 +4,11 @@ import type { Theme } from '~/types'
 const KEY = 'kit-theme'
 
 /** Theme on `html[data-theme]`; the head script picks it before paint, this keeps it in sync. */
-export function useTheme(): { theme: Ref<Theme>, ready: Ref<boolean>, setTheme: (next: Theme) => void } {
+export function useTheme(): {
+  theme: Ref<Theme>
+  ready: Ref<boolean>
+  setTheme: (next: Theme) => void
+} {
   const theme = useState<Theme>('theme', () => 'light')
   const ready = useState('theme-ready', () => false)
   const initializing = useState('theme-initializing', () => false)
@@ -22,8 +26,9 @@ export function useTheme(): { theme: Ref<Theme>, ready: Ref<boolean>, setTheme: 
     theme.value = next
     try {
       localStorage.setItem(KEY, next)
+    } catch {
+      /* Storage may be unavailable; the current theme still applies. */
     }
-    catch { /* Storage may be unavailable; the current theme still applies. */ }
   }
 
   return { theme, ready, setTheme }

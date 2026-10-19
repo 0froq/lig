@@ -158,15 +158,17 @@ export const CAPTURE_ROLES: Record<string, string> = {
 }
 
 export const CAPTURES: Record<string, HighlightBinding> = Object.fromEntries(
-  [...new Set([...Object.keys(SYNTAX_CAPTURES), ...Object.keys(SYNTAX_DECORATIONS)])].map((capture) => {
-    const role = CAPTURE_ROLES[capture]
-    const style = role ? STYLES[role] : undefined
-    if (!style || style.foreground !== SYNTAX_CAPTURES[capture])
-      throw new Error(`Capture has no matching shared style: ${capture}`)
-    for (const key of ['bold', 'italic', 'underline', 'strikethrough'] as const) {
-      if (style[key] !== SYNTAX_DECORATIONS[capture]?.[key])
-        throw new Error(`Capture decoration differs from shared style: ${capture}/${key}`)
-    }
-    return [`@${capture}`, { role }]
-  }),
+  [...new Set([...Object.keys(SYNTAX_CAPTURES), ...Object.keys(SYNTAX_DECORATIONS)])].map(
+    capture => {
+      const role = CAPTURE_ROLES[capture]
+      const style = role ? STYLES[role] : undefined
+      if (!style || style.foreground !== SYNTAX_CAPTURES[capture])
+        throw new Error(`Capture has no matching shared style: ${capture}`)
+      for (const key of ['bold', 'italic', 'underline', 'strikethrough'] as const) {
+        if (style[key] !== SYNTAX_DECORATIONS[capture]?.[key])
+          throw new Error(`Capture decoration differs from shared style: ${capture}/${key}`)
+      }
+      return [`@${capture}`, { role }]
+    },
+  ),
 )

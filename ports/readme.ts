@@ -3,8 +3,7 @@ import { PACKAGE_VERSION } from './constants'
 import { neovimReadme } from './neovim/readme'
 
 export function portReadme(port: 'neovim' | 'vscode', metadata: BuildMetadata): string {
-  if (port === 'neovim')
-    return neovimReadme(metadata)
+  if (port === 'neovim') return neovimReadme(metadata)
   return `# LiG for VS Code
 
 Less is Great.

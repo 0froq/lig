@@ -5,34 +5,54 @@ const contentPath = useContentPath()
 
 const { data: releases } = await useAsyncData(
   () => `changelog-${locale.value}`,
-  () => queryCollection('changelog').where('path', 'LIKE', `${contentPath('/changelog')}/%`).order('date', 'DESC').order('version', 'DESC').all(),
+  () =>
+    queryCollection('changelog')
+      .where('path', 'LIKE', `${contentPath('/changelog')}/%`)
+      .order('date', 'DESC')
+      .order('version', 'DESC')
+      .all(),
 )
 
-const timeline = computed(() => (releases.value ?? [])
-  .filter(release => isFilled(release.version))
-  .map(release => ({ id: release.version, version: release.version, date: release.date })))
+const timeline = computed(() =>
+  (releases.value ?? [])
+    .filter(release => isFilled(release.version))
+    .map(release => ({ id: release.version, version: release.version, date: release.date })),
+)
 
 useHead({ title: () => t('changelog.label') })
 const files = useRuntimeConfig().public.publicFiles
-const override = computed(() => explicitContentCover({
-  collection: 'changelog',
-  path: contentPath('/changelog'),
-}, path => hasShareFile(files, path)))
+const override = computed(() =>
+  explicitContentCover(
+    {
+      collection: 'changelog',
+      path: contentPath('/changelog'),
+    },
+    path => hasShareFile(files, path),
+  ),
+)
 if (!override.value) {
-  defineOgImage('Paper', {
-    title: () => t('changelog.label'),
-    description: () => t('changelog.lede').trim() || t('changelog.description') || t('palette.meta.description'),
-    words: 0,
-  }, {
-    alt: () => t('changelog.label'),
-  })
+  defineOgImage(
+    'Paper',
+    {
+      title: () => t('changelog.label'),
+      description: () =>
+        t('changelog.lede').trim() || t('changelog.description') || t('palette.meta.description'),
+      words: 0,
+    },
+    {
+      alt: () => t('changelog.label'),
+    },
+  )
 }
 useShareMeta({
   title: () => t('changelog.label'),
   description: () => t('changelog.lede').trim() || t('changelog.description'),
   image: () => override.value ?? false,
 })
-useSeoMeta({ robots: () => releases.value?.some(release => release.title?.trim()) ? undefined : 'noindex, follow' })
+useSeoMeta({
+  robots: () =>
+    releases.value?.some(release => release.title?.trim()) ? undefined : 'noindex, follow',
+})
 </script>
 
 <template>
@@ -71,9 +91,7 @@ useSeoMeta({ robots: () => releases.value?.some(release => release.title?.trim()
             :value="release.date"
             name="changelog.date"
             :size="10"
-          /><template v-if="index === 0">
-            · {{ t('changelog.latest') }}
-          </template>
+          /><template v-if="index === 0"> · {{ t('changelog.latest') }} </template>
         </p>
         <h2 class="l-entry-title">
           <Fill

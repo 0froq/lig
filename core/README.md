@@ -20,7 +20,7 @@ They do not keep a second palette or a second set of mix formulas.
 Green, for example:
 
 ```json
-{ "l": 0.74, "c": 0.120, "h": 148 }
+{ "l": 0.74, "c": 0.12, "h": 148 }
 ```
 
 `tokens` holds shared roles and derived colors.

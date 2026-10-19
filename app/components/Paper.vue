@@ -2,15 +2,18 @@
 import { createPaperPaint } from '@froq/ui/core'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-const props = withDefaults(defineProps<{
-  /** Fibre while the page is light. */
-  light?: boolean
-  /** Specks while the page is dark. */
-  dark?: boolean
-}>(), {
-  light: true,
-  dark: true,
-})
+const props = withDefaults(
+  defineProps<{
+    /** Fibre while the page is light. */
+    light?: boolean
+    /** Specks while the page is dark. */
+    dark?: boolean
+  }>(),
+  {
+    light: true,
+    dark: true,
+  },
+)
 
 const root = ref<HTMLElement>()
 const canvas = ref<HTMLCanvasElement>()
@@ -27,23 +30,20 @@ function darkNow(): boolean {
 }
 
 function mode(): 'light' | 'dark' | 'off' {
-  if (darkNow())
-    return props.dark ? 'dark' : 'off'
+  if (darkNow()) return props.dark ? 'dark' : 'off'
   return props.light ? 'light' : 'off'
 }
 
 function readPaper(): [number, number, number] {
   const bits = getComputedStyle(document.documentElement).backgroundColor.match(/[\d.]+/g)
-  if (!bits || bits.length < 3)
-    return [244, 242, 236]
+  if (!bits || bits.length < 3) return [244, 242, 236]
   return [Number(bits[0]), Number(bits[1]), Number(bits[2])]
 }
 
 function draw(): void {
   const el = root.value
   const node = canvas.value
-  if (!el || !node)
-    return
+  if (!el || !node) return
   const rect = el.getBoundingClientRect()
   const left = Math.max(rect.left, 0)
   const top = Math.max(rect.top, 0)
@@ -78,10 +78,12 @@ function schedule(): void {
 onMounted(() => {
   schedule()
   resized = new ResizeObserver(schedule)
-  if (root.value)
-    resized.observe(root.value)
+  if (root.value) resized.observe(root.value)
   observed = new MutationObserver(schedule)
-  observed.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] })
+  observed.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class', 'data-theme'],
+  })
   window.addEventListener('resize', schedule)
   window.addEventListener('scroll', schedule, { passive: true })
 })

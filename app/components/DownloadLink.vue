@@ -11,7 +11,14 @@ const filename = computed(() => props.download || props.href.split('/').pop() ||
 const symbol = computed(() => ({ idle: '↓', pending: '…', started: '✓', error: '↻' })[status.value])
 
 function onClick(event: MouseEvent): void {
-  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+  if (
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
+  )
     return
   event.preventDefault()
   void start(props.href, filename.value)
@@ -37,7 +44,8 @@ function onClick(event: MouseEvent): void {
       <slot
         name="icon"
         :status="status"
-      >{{ symbol }}</slot>
+        >{{ symbol }}</slot
+      >
     </span>
     <span
       class="lig-download-announcement"

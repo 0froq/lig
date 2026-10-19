@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  colors: { name: string, hex: string, lightness: number }[]
+  colors: { name: string; hex: string; lightness: number }[]
 }>()
 
 const active = ref(6)
@@ -18,7 +18,7 @@ const outlineColors = computed(() => {
 const { format, copied, copyValue, textFor } = usePaletteClipboard()
 const stage = useTemplateRef<HTMLElement>('stage')
 const ribbon = useTemplateRef<HTMLElement>('ribbon')
-const outline = shallowRef<{ x: number, y: number, width: number, height: number }>()
+const outline = shallowRef<{ x: number; y: number; width: number; height: number }>()
 const tracking = ref(false)
 const nudging = ref(false)
 const pointerX = ref<number | null>(null)
@@ -53,11 +53,9 @@ function updateOutline(): void {
 
 function aimedNudge(): number {
   const button = ribbon.value?.children.item(active.value)
-  if (!button || pointerX.value == null)
-    return 0
+  if (!button || pointerX.value == null) return 0
   const target = button.getBoundingClientRect()
-  if (target.width === 0)
-    return 0
+  if (target.width === 0) return 0
   const ratio = Math.min(1, Math.max(0, (pointerX.value - target.left) / target.width))
   return (ratio - 0.5) * target.width * 0.18
 }
@@ -106,10 +104,8 @@ function followOutline(): void {
   const started = performance.now()
   const step = (now: number) => {
     updateOutline()
-    if (now - started < 300)
-      follow = requestAnimationFrame(step)
-    else
-      tracking.value = false
+    if (now - started < 300) follow = requestAnimationFrame(step)
+    else tracking.value = false
   }
   follow = requestAnimationFrame(step)
 }
@@ -117,14 +113,17 @@ function followOutline(): void {
 watch(active, followOutline, { flush: 'post' })
 onMounted(() => {
   observer = new ResizeObserver(updateOutline)
-  watch([stage, ribbon, () => props.colors], () => {
-    observer!.disconnect()
-    for (const element of [stage.value, ribbon.value, ...ribbon.value?.children ?? []]) {
-      if (element)
-        observer!.observe(element)
-    }
-    updateOutline()
-  }, { immediate: true, flush: 'post' })
+  watch(
+    [stage, ribbon, () => props.colors],
+    () => {
+      observer!.disconnect()
+      for (const element of [stage.value, ribbon.value, ...(ribbon.value?.children ?? [])]) {
+        if (element) observer!.observe(element)
+      }
+      updateOutline()
+    },
+    { immediate: true, flush: 'post' },
+  )
 })
 onBeforeUnmount(() => {
   observer?.disconnect()
@@ -144,6 +143,7 @@ onBeforeUnmount(() => {
         class="lig-neutral-ribbon"
         @pointerleave="onLeave"
       >
+        <!-- prettier-ignore -->
         <button
           v-for="(color, index) in colors"
           :key="color.name"
@@ -189,7 +189,8 @@ onBeforeUnmount(() => {
       <span
         class="lig-neutral-announcement"
         role="status"
-      >{{ copied === preview.name ? $t('install.copied') : '' }}</span>
+        >{{ copied === preview.name ? $t('install.copied') : '' }}</span
+      >
     </figcaption>
   </figure>
 </template>

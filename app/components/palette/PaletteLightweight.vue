@@ -7,12 +7,14 @@ import { LIGHTWEIGHT_PORTS, lightweightPath } from '../../../ports/catalog'
 
 const { t } = useI18n()
 const { variant } = useLigVariant()
-const options = computed<ChoiceOption<LigVariant>[]>(() => VARIANT_OPTIONS.map(option => ({
-  value: option.id,
-  label: t(option.label),
-})))
+const options = computed<ChoiceOption<LigVariant>[]>(() =>
+  VARIANT_OPTIONS.map(option => ({
+    value: option.id,
+    label: t(option.label),
+  })),
+)
 
-function downloadName(port: typeof LIGHTWEIGHT_PORTS[number], id: LigVariant): string {
+function downloadName(port: (typeof LIGHTWEIGHT_PORTS)[number], id: LigVariant): string {
   return lightweightPath(port, id).split('/').pop() ?? port.id
 }
 </script>

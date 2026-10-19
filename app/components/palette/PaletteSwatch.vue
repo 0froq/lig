@@ -33,11 +33,13 @@ async function onCopy(): Promise<void> {
       <span
         v-if="detail"
         class="lig-chip-detail"
-      >{{ detail }}</span>
+        >{{ detail }}</span
+      >
       <span
         v-if="showValue !== false || copied === name"
         class="lig-chip-value"
-      >{{ copied === name ? $t('install.copied') : value }}</span>
+        >{{ copied === name ? $t('install.copied') : value }}</span
+      >
     </span>
   </button>
 </template>

@@ -39,9 +39,27 @@ export const ROLE_ALIASES = {
 
 export const GROUP_ALIASES = {
   git: { add: 'git.add', delete: 'git.delete', change: 'git.change', ignore: 'git.ignore' },
-  diag: { error: 'diagnostic.error', warn: 'diagnostic.warning', info: 'diagnostic.info', hint: 'diagnostic.hint', ok: 'diagnostic.ok' },
-  msg: { success: 'message.success', failure: 'message.failure', warning: 'message.warning', info: 'message.info' },
-  mode: { normal: 'mode.normal', insert: 'mode.insert', visual: 'mode.visual', replace: 'mode.replace', command: 'mode.command', other: 'mode.other' },
+  diag: {
+    error: 'diagnostic.error',
+    warn: 'diagnostic.warning',
+    info: 'diagnostic.info',
+    hint: 'diagnostic.hint',
+    ok: 'diagnostic.ok',
+  },
+  msg: {
+    success: 'message.success',
+    failure: 'message.failure',
+    warning: 'message.warning',
+    info: 'message.info',
+  },
+  mode: {
+    normal: 'mode.normal',
+    insert: 'mode.insert',
+    visual: 'mode.visual',
+    replace: 'mode.replace',
+    command: 'mode.command',
+    other: 'mode.other',
+  },
 } as const
 
 export const SEMANTIC_KEYS = [

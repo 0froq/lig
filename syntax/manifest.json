@@ -6,18 +6,13 @@
     "typescript": {
       "parserRepository": "https://github.com/tree-sitter/tree-sitter-typescript",
       "parserRevision": "75b3874edb2dc714fb1fd77a32013d0f8699989f",
-      "queries": [
-        "ecma",
-        "typescript"
-      ],
+      "queries": ["ecma", "typescript"],
       "sample": "theme.ts.txt"
     },
     "python": {
       "parserRepository": "https://github.com/tree-sitter/tree-sitter-python",
       "parserRevision": "710796b8b877a970297106e5bbc8e2afa47f86ec",
-      "queries": [
-        "python"
-      ],
+      "queries": ["python"],
       "sample": "export_theme.py.txt"
     }
   }

@@ -11,7 +11,10 @@ export const ZED_VERSION = '0.1.3'
 export const ZED_SOURCE_REF = 'codex/mono-muted-parity'
 
 /** Native repository payload; authoring and palette remain in the LiG compiler. */
-export function zedDistribution(themes: ThemeIR[], metadata: BuildMetadata): Record<string, string | Buffer> {
+export function zedDistribution(
+  themes: ThemeIR[],
+  metadata: BuildMetadata,
+): Record<string, string | Buffer> {
   const files: Record<string, string | Buffer> = {
     ...distributionTools(),
     ...storeFiles('zed'),
@@ -21,13 +24,22 @@ export function zedDistribution(themes: ThemeIR[], metadata: BuildMetadata): Rec
   }
   for (const theme of themes)
     files[`themes/lig-${theme.variant}.json`] = `${JSON.stringify(zedFamily([theme]), null, 2)}\n`
-  files['lig-build.json'] = `${JSON.stringify({
-    ...metadata,
-    sourceRef: ZED_SOURCE_REF,
-    port: 'zed',
-    packageVersion: ZED_VERSION,
-    distributionRepository: ZED_REPOSITORY,
-    files: Object.fromEntries(Object.entries(files).map(([path, content]) => [path, createHash('sha256').update(content).digest('hex')])),
-  }, null, 2)}\n`
+  files['lig-build.json'] = `${JSON.stringify(
+    {
+      ...metadata,
+      sourceRef: ZED_SOURCE_REF,
+      port: 'zed',
+      packageVersion: ZED_VERSION,
+      distributionRepository: ZED_REPOSITORY,
+      files: Object.fromEntries(
+        Object.entries(files).map(([path, content]) => [
+          path,
+          createHash('sha256').update(content).digest('hex'),
+        ]),
+      ),
+    },
+    null,
+    2,
+  )}\n`
   return files
 }

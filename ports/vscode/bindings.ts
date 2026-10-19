@@ -2,21 +2,74 @@ import type { ScopeBinding } from '../types'
 
 export const TEXTMATE: ScopeBinding[] = [
   { scope: ['keyword', 'storage.type'], role: 'keyword' },
-  { scope: ['storage.modifier', 'meta.directive', 'entity.other.attribute-name.directive'], role: 'keyword.modifier' },
-  { scope: ['keyword.control.return', 'keyword.control.throw', 'keyword.control.trycatch', 'keyword.control.flow', 'storage.modifier.async', 'storage.type.function.async'], role: 'keyword.action' },
-  { scope: ['variable.other.readwrite', 'variable.other.object', 'variable.other.constant'], role: 'variable' },
-  { scope: ['variable.language', 'variable.parameter.function.language.special'], role: 'variable.builtin' },
+  {
+    scope: ['storage.modifier', 'meta.directive', 'entity.other.attribute-name.directive'],
+    role: 'keyword.modifier',
+  },
+  {
+    scope: [
+      'keyword.control.return',
+      'keyword.control.throw',
+      'keyword.control.trycatch',
+      'keyword.control.flow',
+      'storage.modifier.async',
+      'storage.type.function.async',
+    ],
+    role: 'keyword.action',
+  },
+  {
+    scope: ['variable.other.readwrite', 'variable.other.object', 'variable.other.constant'],
+    role: 'variable',
+  },
+  {
+    scope: ['variable.language', 'variable.parameter.function.language.special'],
+    role: 'variable.builtin',
+  },
   { scope: ['variable.parameter'], role: 'parameter.binding' },
-  { scope: ['variable.other.property', 'support.variable.property', 'meta.object-literal.key', 'meta.property-name', 'entity.other.attribute-name'], role: 'property' },
+  {
+    scope: [
+      'variable.other.property',
+      'support.variable.property',
+      'meta.object-literal.key',
+      'meta.property-name',
+      'entity.other.attribute-name',
+    ],
+    role: 'property',
+  },
   { scope: ['entity.name.namespace'], role: 'module' },
   { scope: ['entity.name.tag'], role: 'tag' },
-  { scope: ['entity.name.type', 'entity.name.class', 'support.type', 'support.class'], role: 'type.reference' },
-  { scope: ['meta.class entity.name.type', 'meta.interface entity.name.type', 'meta.type.declaration entity.name.type', 'entity.name.type.alias', 'entity.name.type.interface'], role: 'type.definition' },
+  {
+    scope: ['entity.name.type', 'entity.name.class', 'support.type', 'support.class'],
+    role: 'type.reference',
+  },
+  {
+    scope: [
+      'meta.class entity.name.type',
+      'meta.interface entity.name.type',
+      'meta.type.declaration entity.name.type',
+      'entity.name.type.alias',
+      'entity.name.type.interface',
+    ],
+    role: 'type.definition',
+  },
   { scope: ['entity.name.function'], role: 'function.definition' },
-  { scope: ['support.function', 'meta.function-call entity.name.function', 'meta.function-call.generic entity.name.function'], role: 'function.call' },
-  { scope: ['support.function.builtin', 'entity.name.function.decorator'], role: 'function.definition' },
+  {
+    scope: [
+      'support.function',
+      'meta.function-call entity.name.function',
+      'meta.function-call.generic entity.name.function',
+    ],
+    role: 'function.call',
+  },
+  {
+    scope: ['support.function.builtin', 'entity.name.function.decorator'],
+    role: 'function.definition',
+  },
   { scope: ['constant.numeric'], role: 'number' },
-  { scope: ['constant.language', 'entity.name.constant', 'support.class.component'], role: 'constant' },
+  {
+    scope: ['constant.language', 'entity.name.constant', 'support.class.component'],
+    role: 'constant',
+  },
   { scope: ['string', 'constant.character'], role: 'string' },
   { scope: ['constant.character.escape', 'string.regexp'], role: 'escape' },
   { scope: ['keyword.operator'], role: 'operator' },

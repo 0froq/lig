@@ -58,16 +58,20 @@ export function segmentSource(document: SyntaxDocument): SourceSegment[] {
   return points.slice(0, -1).map((startByte, id) => {
     const endByte = points[id + 1]!
     // Preorder means the last enclosing node is the deepest, including anonymous leaves.
-    const node = document.nodes.findLast(item => item.startByte <= startByte && item.endByte >= endByte) ?? document.nodes[0]!
-    const captures = document.captures.filter(item => item.startByte <= startByte && item.endByte >= endByte)
+    const node =
+      document.nodes.findLast(item => item.startByte <= startByte && item.endByte >= endByte) ??
+      document.nodes[0]!
+    const captures = document.captures
+      .filter(item => item.startByte <= startByte && item.endByte >= endByte)
       .sort((a, b) => b.priority - a.priority || b.order - a.order)
     // Neovim uses priority, then application order for overlapping foregrounds.
     // Unmapped captures remain visible in the inspector but must not mask a known role.
     const decorations: SyntaxDecorations = {}
     for (const key of ['bold', 'italic', 'underline', 'strikethrough'] as const) {
-      const value = captures.map(item => captureDecorations(item.name)[key]).find(value => value !== undefined)
-      if (value !== undefined)
-        decorations[key] = value
+      const value = captures
+        .map(item => captureDecorations(item.name)[key])
+        .find(value => value !== undefined)
+      if (value !== undefined) decorations[key] = value
     }
     const winner = captures.find(item => captureRole(item.name)?.matched != null) ?? null
     return {

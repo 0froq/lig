@@ -80,7 +80,8 @@ const open = defineModel<boolean>({ default: false })
 .lig-animated-details:not(.is-rule-dash) :deep(.ui-collapsible-trigger)::after {
   --rule-end: transparent;
   background-image:
-    linear-gradient(90deg, var(--accent), var(--rule-end)), linear-gradient(90deg, var(--line) 0%, transparent 100%);
+    linear-gradient(90deg, var(--accent), var(--rule-end)),
+    linear-gradient(90deg, var(--line) 0%, transparent 100%);
   background-size:
     0% 1px,
     100% 1px;

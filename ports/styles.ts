@@ -52,23 +52,20 @@ export const STYLES: Record<string, TextStyle> = {
 
 export function requireStyle(role: string): TextStyle {
   const value = STYLES[role]
-  if (!value)
-    throw new Error(`Unknown style role: ${role}`)
+  if (!value) throw new Error(`Unknown style role: ${role}`)
   return value
 }
 
 export function requireToken(theme: ThemeIR, token: string): string {
   const value = theme.tokens[token]
-  if (!value)
-    throw new Error(`Missing token: ${token} (${theme.variant})`)
+  if (!value) throw new Error(`Missing token: ${token} (${theme.variant})`)
   return value
 }
 
 export function compileTheme(variant: LigVariant): ThemeIR {
   const theme = { ...resolveVariant(variant), variant, styles: STYLES }
   for (const style of Object.values(STYLES)) {
-    if (style.foreground)
-      requireToken(theme, style.foreground)
+    if (style.foreground) requireToken(theme, style.foreground)
   }
   return theme
 }

@@ -34,9 +34,8 @@ function choose(next: LigVariant): void {
   run()
 }
 
-watch(variant, (next) => {
-  if (next === target.value)
-    return
+watch(variant, next => {
+  if (next === target.value) return
   clearTimeout(timer)
   target.value = next
   typed.value = next

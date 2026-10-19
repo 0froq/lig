@@ -9,22 +9,26 @@ export interface Oklch {
 }
 
 /** weight is the contribution of mix[0], interpolated in OKLab. */
-export type TokenExpression = string | {
-  readonly mix: readonly string[]
-  readonly weight: number
-} | {
-  readonly ramp: string
-  readonly toward: string
-  /** Fraction of the distance from the source L to the target L. */
-  readonly lightness: number
-  /** Multiplier for source C; source H is retained. */
-  readonly chroma: number
-} | {
-  /** Fixed OKLCH deltas from a source; H is retained. Invalid results fail. */
-  readonly offset: string
-  readonly lightness: number
-  readonly chroma: number
-}
+export type TokenExpression =
+  | string
+  | {
+      readonly mix: readonly string[]
+      readonly weight: number
+    }
+  | {
+      readonly ramp: string
+      readonly toward: string
+      /** Fraction of the distance from the source L to the target L. */
+      readonly lightness: number
+      /** Multiplier for source C; source H is retained. */
+      readonly chroma: number
+    }
+  | {
+      /** Fixed OKLCH deltas from a source; H is retained. Invalid results fail. */
+      readonly offset: string
+      readonly lightness: number
+      readonly chroma: number
+    }
 
 export interface CoreSpec {
   readonly schemaVersion: number
@@ -37,10 +41,15 @@ export interface CoreSpec {
   }
   readonly tokens: Readonly<Record<string, TokenExpression>>
   readonly modes: Readonly<Record<LigMode, Readonly<Record<string, TokenExpression>>>>
-  readonly variants: Readonly<Record<LigVariant, {
-    readonly mode: LigMode
-    readonly overrides: Readonly<Record<string, TokenExpression>>
-  }>>
+  readonly variants: Readonly<
+    Record<
+      LigVariant,
+      {
+        readonly mode: LigMode
+        readonly overrides: Readonly<Record<string, TokenExpression>>
+      }
+    >
+  >
 }
 
 export interface ResolvedVariant {
@@ -53,6 +62,10 @@ export interface TokenBundle {
   schemaVersion: number
   version: string
   colorSpace: 'oklch'
-  palette: { accents: Record<string, string>, neutrals: Record<string, string>, paper: Record<string, string> }
+  palette: {
+    accents: Record<string, string>
+    neutrals: Record<string, string>
+    paper: Record<string, string>
+  }
   variants: Record<LigVariant, ResolvedVariant>
 }

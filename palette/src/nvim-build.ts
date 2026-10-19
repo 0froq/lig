@@ -11,8 +11,7 @@ export type * from './types'
 
 function requiredToken(tokens: Record<string, string>, name: string): string {
   const hex = tokens[name]
-  if (hex === undefined)
-    throw new Error(`Website adapter references missing core token: ${name}`)
+  if (hex === undefined) throw new Error(`Website adapter references missing core token: ${name}`)
   return hex
 }
 
@@ -27,14 +26,17 @@ function triad(tokens: Record<string, string>, name: string): ColorTriad {
 export function buildVariant(style: LigVariant): BuiltColors {
   const { tokens } = resolveVariant(style)
   const colors: BuiltColors = { ...neutrals, none: 'NONE' }
-  for (const name of Object.keys(accents))
-    colors[name] = triad(tokens, name)
+  for (const name of Object.keys(accents)) colors[name] = triad(tokens, name)
   for (const [name, token] of Object.entries(ROLE_ALIASES))
     colors[name] = requiredToken(tokens, token)
   for (const [group, aliases] of Object.entries(GROUP_ALIASES))
-    colors[group] = Object.fromEntries(Object.entries(aliases).map(([name, token]) => [name, requiredToken(tokens, token)]))
+    colors[group] = Object.fromEntries(
+      Object.entries(aliases).map(([name, token]) => [name, requiredToken(tokens, token)]),
+    )
   for (const family of ['struct', 'ref', 'action', 'mono'])
-    colors[family] = ['highlight', 'base', 'muted'].map(tier => requiredToken(tokens, `family.${family}.${tier}`))
+    colors[family] = ['highlight', 'base', 'muted'].map(tier =>
+      requiredToken(tokens, `family.${family}.${tier}`),
+    )
   colors.member = triad(tokens, 'cyan')
   return colors
 }
@@ -49,13 +51,23 @@ export function baseSwatches(style: LigVariant): SwatchEntry[] {
   }))
   if (style.endsWith('paper')) {
     for (const [name, color] of Object.entries(spec.palette.paper))
-      entries.push({ name, hex: oklchToHex(color), role: 'neutral', sourceKey: `palette.paper.${name}` })
+      entries.push({
+        name,
+        hex: oklchToHex(color),
+        role: 'neutral',
+        sourceKey: `palette.paper.${name}`,
+      })
   }
   for (const name of Object.keys(accents)) {
     const steps = { hl: 'highlight', base: 'base', fd: 'faded' }
     for (const [suffix, step] of Object.entries(steps)) {
       const sourceKey = `accent.${name}.${step}`
-      entries.push({ name: `${name}_${suffix}`, hex: requiredToken(tokens, sourceKey), role: 'accent', sourceKey })
+      entries.push({
+        name: `${name}_${suffix}`,
+        hex: requiredToken(tokens, sourceKey),
+        role: 'accent',
+        sourceKey,
+      })
     }
   }
   return entries
@@ -65,10 +77,9 @@ export function semanticRoles(style: LigVariant): SemanticRole[] {
   const { tokens } = resolveVariant(style)
   const aliases: Record<string, string> = { ...ROLE_ALIASES }
   for (const [group, members] of Object.entries(GROUP_ALIASES)) {
-    for (const [name, token] of Object.entries(members))
-      aliases[`${group}.${name}`] = token
+    for (const [name, token] of Object.entries(members)) aliases[`${group}.${name}`] = token
   }
-  return SEMANTIC_KEYS.map((key) => {
+  return SEMANTIC_KEYS.map(key => {
     const baseRef = aliases[key]!
     return { role: key.replace('.', '_'), hex: requiredToken(tokens, baseRef), baseRef }
   })

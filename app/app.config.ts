@@ -35,7 +35,13 @@ export default defineAppConfig({
         accent: resolveVariant('dark').tokens['accent.primary']!,
       },
     },
-    signature: { paper: true, line: true, hand: true, bloom: true, pointer: { dwell: false, click: false, dwellAfter: 1.2 } },
+    signature: {
+      paper: true,
+      line: true,
+      hand: true,
+      bloom: true,
+      pointer: { dwell: false, click: false, dwellAfter: 1.2 },
+    },
     install: { href: '/#downloads' },
     nav: [
       { label: 'nav.notes', to: '/notes' },

@@ -6,25 +6,40 @@ const contentPath = useContentPath()
 
 const { data: notes } = await useAsyncData(
   () => `notes-${locale.value}`,
-  () => queryCollection('notes').where('path', 'LIKE', `${contentPath('/notes')}/%`).order('date', 'DESC').all().then(items => items.filter(item => item.title?.trim())),
+  () =>
+    queryCollection('notes')
+      .where('path', 'LIKE', `${contentPath('/notes')}/%`)
+      .order('date', 'DESC')
+      .all()
+      .then(items => items.filter(item => item.title?.trim())),
 )
 
 const slug = (path: string): string => path.split('/').pop() ?? ''
 
 useHead({ title: () => t('notes.label') })
 const files = useRuntimeConfig().public.publicFiles
-const override = computed(() => explicitContentCover({
-  collection: 'notes',
-  path: contentPath('/notes'),
-}, path => hasShareFile(files, path)))
+const override = computed(() =>
+  explicitContentCover(
+    {
+      collection: 'notes',
+      path: contentPath('/notes'),
+    },
+    path => hasShareFile(files, path),
+  ),
+)
 if (!override.value) {
-  defineOgImage('Paper', {
-    title: () => t('notes.label'),
-    description: () => t('notes.lede').trim() || t('notes.description') || t('palette.meta.description'),
-    words: 0,
-  }, {
-    alt: () => t('notes.label'),
-  })
+  defineOgImage(
+    'Paper',
+    {
+      title: () => t('notes.label'),
+      description: () =>
+        t('notes.lede').trim() || t('notes.description') || t('palette.meta.description'),
+      words: 0,
+    },
+    {
+      alt: () => t('notes.label'),
+    },
+  )
 }
 useShareMeta({
   title: () => t('notes.label'),
@@ -85,7 +100,10 @@ useShareMeta({
                 :size="24"
               />
             </p>
-            <span class="l-more">{{ t('notes.read') }} <small>{{ t('notes.minutes', { n: readingMinutes(note.body) }) }}</small></span>
+            <span class="l-more"
+              >{{ t('notes.read') }}
+              <small>{{ t('notes.minutes', { n: readingMinutes(note.body) }) }}</small></span
+            >
           </NuxtLink>
         </li>
       </ul>

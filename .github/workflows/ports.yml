@@ -2,9 +2,33 @@ name: Port contracts
 
 on:
   push:
-    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, shared/documentation-themes.ts, package.json, pnpm-lock.yaml, pnpm-workspace.yaml, .node-version, .github/workflows/ports.yml]
+    paths:
+      [
+        'core/**',
+        'ports/**',
+        'palette/**',
+        shared/crc32.ts,
+        shared/documentation-themes.ts,
+        package.json,
+        pnpm-lock.yaml,
+        pnpm-workspace.yaml,
+        .node-version,
+        .github/workflows/ports.yml,
+      ]
   pull_request:
-    paths: ['core/**', 'ports/**', 'palette/**', shared/crc32.ts, shared/documentation-themes.ts, package.json, pnpm-lock.yaml, pnpm-workspace.yaml, .node-version, .github/workflows/ports.yml]
+    paths:
+      [
+        'core/**',
+        'ports/**',
+        'palette/**',
+        shared/crc32.ts,
+        shared/documentation-themes.ts,
+        package.json,
+        pnpm-lock.yaml,
+        pnpm-workspace.yaml,
+        .node-version,
+        .github/workflows/ports.yml,
+      ]
 
 permissions:
   contents: read

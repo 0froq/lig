@@ -23,15 +23,17 @@ function engine(): HighlighterCore {
 }
 
 /** Color source with the VS Code theme of the active LiG variant. Shiki 4.5, JavaScript regex engine. */
-export function highlightSource(code: string, lang: keyof typeof languages, variant: LigVariant): CodeSpan[] {
+export function highlightSource(
+  code: string,
+  lang: keyof typeof languages,
+  variant: LigVariant,
+): CodeSpan[] {
   const { tokens } = engine().codeToTokens(code, { lang, theme: `lig-${variant}` })
   const spans: CodeSpan[] = []
   tokens.forEach((line, index) => {
-    if (index)
-      spans.push({ text: '\n' })
+    if (index) spans.push({ text: '\n' })
     for (const token of line) {
-      if (token.content)
-        spans.push({ text: token.content, color: token.color })
+      if (token.content) spans.push({ text: token.content, color: token.color })
     }
   })
   return spans

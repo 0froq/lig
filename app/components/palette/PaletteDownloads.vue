@@ -16,7 +16,8 @@ const codeStyle = computed(() => ({
   '--ui-accent': resolved.value.tokens['accent.primary'],
 }))
 
-const nvimSetup = computed(() => `{
+const nvimSetup = computed(
+  () => `{
   "0froq/lig.nvim",
   lazy = false,
   priority = 1000,
@@ -25,7 +26,8 @@ const nvimSetup = computed(() => `{
     require("lig").setup(opts)
     vim.cmd.colorscheme("lig")
   end,
-}`)
+}`,
+)
 const nvimSpans = computed(() => highlightSource(nvimSetup.value, 'lua', variant.value))
 </script>
 
@@ -47,12 +49,13 @@ const nvimSpans = computed(() => highlightSource(nvimSetup.value, 'lua', variant
           height="24"
           loading="lazy"
           decoding="async"
-        >
+        />
         <a
           href="https://github.com/0froq/lig.nvim"
           target="_blank"
           rel="noopener noreferrer"
-        >lig.nvim for Neovim</a>
+          >lig.nvim for Neovim</a
+        >
       </h3>
       <CodeBlock
         label="init.lua"
@@ -87,12 +90,13 @@ const nvimSpans = computed(() => highlightSource(nvimSetup.value, 'lua', variant
           height="24"
           loading="lazy"
           decoding="async"
-        >
+        />
         <a
           href="https://github.com/0froq/vscode-theme-LiG"
           target="_blank"
           rel="noopener noreferrer"
-        >LiG Theme for Code</a>
+          >LiG Theme for Code</a
+        >
       </h3>
       <p class="lig-port-actions">
         <a
@@ -100,13 +104,15 @@ const nvimSpans = computed(() => highlightSource(nvimSetup.value, 'lua', variant
           href="https://marketplace.visualstudio.com/items?itemName=froQ.theme-lig"
           target="_blank"
           rel="noopener noreferrer"
-        >{{ t('palette.downloads.vscodeMarket') }} ↗</a>
+          >{{ t('palette.downloads.vscodeMarket') }} ↗</a
+        >
         <a
           class="lig-install-link"
           :href="`https://github.com/0froq/vscode-theme-LiG/releases/tag/v${PACKAGE_VERSION}`"
           target="_blank"
           rel="noopener noreferrer"
-        >{{ t('palette.downloads.vscodeVsix') }} ↗</a>
+          >{{ t('palette.downloads.vscodeVsix') }} ↗</a
+        >
       </p>
     </section>
     <section
@@ -125,12 +131,13 @@ const nvimSpans = computed(() => highlightSource(nvimSetup.value, 'lua', variant
           height="24"
           loading="lazy"
           decoding="async"
-        >
+        />
         <a
           href="https://github.com/0froq/zed-theme-LiG"
           target="_blank"
           rel="noopener noreferrer"
-        >LiG for Zed</a>
+          >LiG for Zed</a
+        >
       </h3>
       <SlidingUnderline
         class="lig-port-variants"
@@ -182,7 +189,8 @@ const nvimSpans = computed(() => highlightSource(nvimSetup.value, 'lua', variant
       href="/ports/README.md"
       target="_blank"
       rel="noopener noreferrer"
-    >{{ $t('palette.downloads.install') }} ↗</a>
+      >{{ $t('palette.downloads.install') }} ↗</a
+    >
     <PaletteLightweight />
     <p class="lig-port-manifest">
       <DownloadLink

@@ -12,7 +12,11 @@ export function useDocsList() {
     () => `docs-list-${locale.value}`,
     async () => {
       const root = contentPath('/docs')
-      const all = await queryCollection('docs').where('path', 'LIKE', `${root}%`).order('stem', 'ASC').select('path', 'title', 'description').all()
+      const all = await queryCollection('docs')
+        .where('path', 'LIKE', `${root}%`)
+        .order('stem', 'ASC')
+        .select('path', 'title', 'description')
+        .all()
       return { all, root }
     },
   )
@@ -23,22 +27,29 @@ export function useDocsList() {
     return path.startsWith(localeRoot) ? path.slice(localeRoot.length) || '/' : path
   }
 
-  const pages = computed<DocsPageItem[]>(() => (list.value?.all ?? []).map(item => ({
-    title: item.title,
-    path: item.path,
-    to: toPublic(item.path),
-  })))
-
-  const navGroups = computed(() => [{
-    items: pages.value.map(item => ({
-      label: item.to === '/docs'
-        ? t('docs.overview')
-        : item.title?.trim() || item.to.split('/').pop() || item.to,
-      to: item.to,
+  const pages = computed<DocsPageItem[]>(() =>
+    (list.value?.all ?? []).map(item => ({
+      title: item.title,
+      path: item.path,
+      to: toPublic(item.path),
     })),
-  }])
+  )
 
-  const indexDoc = computed(() => (list.value?.all ?? []).find(item => toPublic(item.path) === '/docs'))
+  const navGroups = computed(() => [
+    {
+      items: pages.value.map(item => ({
+        label:
+          item.to === '/docs'
+            ? t('docs.overview')
+            : item.title?.trim() || item.to.split('/').pop() || item.to,
+        to: item.to,
+      })),
+    },
+  ])
+
+  const indexDoc = computed(() =>
+    (list.value?.all ?? []).find(item => toPublic(item.path) === '/docs'),
+  )
 
   return { list, pages, navGroups, indexDoc, toPublic }
 }

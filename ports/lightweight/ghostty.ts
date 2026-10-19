@@ -10,6 +10,14 @@ export function ghostty(theme: ThemeIR): string {
     'selection-background': 'terminal.selection',
     'selection-foreground': 'text.primary',
   }
-  return heading(theme) + Object.entries(bindings).map(([key, token]) => `${key} = ${color(theme, token)}\n`).join('')
-    + Array.from({ length: 16 }, (_, index) => `palette = ${index}=${color(theme, `terminal.ansi.${index}`)}\n`).join('')
+  return (
+    heading(theme) +
+    Object.entries(bindings)
+      .map(([key, token]) => `${key} = ${color(theme, token)}\n`)
+      .join('') +
+    Array.from(
+      { length: 16 },
+      (_, index) => `palette = ${index}=${color(theme, `terminal.ansi.${index}`)}\n`,
+    ).join('')
+  )
 }

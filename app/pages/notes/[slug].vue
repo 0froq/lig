@@ -9,12 +9,19 @@ const { data } = await useAsyncData(
   () => `note-${locale.value}-${slug.value}`,
   async () => {
     const [note, all] = await Promise.all([
-      queryCollection('notes').path(contentPath(`/notes/${slug.value}`)).first(),
-      queryCollection('notes').where('path', 'LIKE', `${contentPath('/notes')}/%`).order('date', 'DESC').select('path', 'title').all(),
+      queryCollection('notes')
+        .path(contentPath(`/notes/${slug.value}`))
+        .first(),
+      queryCollection('notes')
+        .where('path', 'LIKE', `${contentPath('/notes')}/%`)
+        .order('date', 'DESC')
+        .select('path', 'title')
+        .all(),
     ])
     const published = all.filter(item => item.title?.trim())
     const index = published.findIndex(item => item.path === note?.path)
-    const next = index >= 0 && published.length > 1 ? published[(index + 1) % published.length] : undefined
+    const next =
+      index >= 0 && published.length > 1 ? published[(index + 1) % published.length] : undefined
     return { note, next }
   },
 )
@@ -29,24 +36,28 @@ useHead({ title: () => note.value?.title })
 const files = useRuntimeConfig().public.publicFiles
 const override = computed(() => contentOgOverride(note.value, 'notes', files))
 if (override.value === undefined) {
-  defineOgImage(ogComponentName(note.value), {
-    title: () => paperFields(note.value).title,
-    description: () => paperFields(note.value, t('palette.meta.description')).description,
-    evergreen: () => paperFields(note.value).evergreen,
-    created: () => paperFields(note.value).created,
-    updated: () => paperFields(note.value).updated,
-    words: () => paperFields(note.value).words,
-    ...ogExtraProps(note.value),
-  }, {
-    alt: () => paperFields(note.value).title,
-  })
+  defineOgImage(
+    ogComponentName(note.value),
+    {
+      title: () => paperFields(note.value).title,
+      description: () => paperFields(note.value, t('palette.meta.description')).description,
+      evergreen: () => paperFields(note.value).evergreen,
+      created: () => paperFields(note.value).created,
+      updated: () => paperFields(note.value).updated,
+      words: () => paperFields(note.value).words,
+      ...ogExtraProps(note.value),
+    },
+    {
+      alt: () => paperFields(note.value).title,
+    },
+  )
 }
 useShareMeta({
   title: () => note.value?.title,
   description: () => note.value?.description,
   type: 'article',
   publishedTime: () => note.value?.date,
-  image: () => override.value === undefined ? false : override.value,
+  image: () => (override.value === undefined ? false : override.value),
 })
 </script>
 
@@ -91,9 +102,7 @@ useShareMeta({
         class="l-pager"
       >
         <p class="l-label">
-          <NuxtLink :to="link('/notes')">
-            ← {{ t('notes.back') }}
-          </NuxtLink>
+          <NuxtLink :to="link('/notes')"> ← {{ t('notes.back') }} </NuxtLink>
         </p>
         <NuxtLink
           class="l-entry"

@@ -21,10 +21,13 @@ export function useMeasureMotion(root: Ref<HTMLElement | undefined>): void {
   let previous = new Map<HTMLElement, DOMRect>()
 
   function targets(el: HTMLElement): HTMLElement[] {
-    if (!el.querySelector('.lig-hero'))
-      return []
+    if (!el.querySelector('.lig-hero')) return []
     // The foot itself is not moved: a transform on it would become the tagline's containing block.
-    return [...el.querySelectorAll<HTMLElement>('.lig-hero .l-lede, .lig-hero ~ .l-section .l-label, .lig-hero ~ .l-section .l-body')]
+    return [
+      ...el.querySelectorAll<HTMLElement>(
+        '.lig-hero .l-lede, .lig-hero ~ .l-section .l-label, .lig-hero ~ .l-section .l-body',
+      ),
+    ]
   }
 
   function snapshot(list: HTMLElement[]): Map<HTMLElement, DOMRect> {
@@ -32,29 +35,29 @@ export function useMeasureMotion(root: Ref<HTMLElement | undefined>): void {
   }
 
   function stop(): void {
-    for (const anim of playing)
-      anim.cancel()
+    for (const anim of playing) anim.cancel()
     playing.length = 0
   }
 
   function remember(): void {
     const el = root.value
-    if (!el || playing.length)
-      return
+    if (!el || playing.length) return
     previous = snapshot(targets(el))
   }
 
-  function glide(list: HTMLElement[], from: Map<HTMLElement, DOMRect>, to: Map<HTMLElement, DOMRect>): void {
+  function glide(
+    list: HTMLElement[],
+    from: Map<HTMLElement, DOMRect>,
+    to: Map<HTMLElement, DOMRect>,
+  ): void {
     stop()
     for (const el of list) {
       const a = from.get(el)
       const b = to.get(el)
-      if (!a || !b)
-        continue
+      if (!a || !b) continue
       const dx = a.left - b.left
       const dy = a.top - b.top
-      if (Math.hypot(dx, dy) < 1)
-        continue
+      if (Math.hypot(dx, dy) < 1) continue
       const anim = el.animate(
         [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'translate(0px, 0px)' }],
         { duration: DURATION, easing: EASE, fill: 'both' },
@@ -63,8 +66,7 @@ export function useMeasureMotion(root: Ref<HTMLElement | undefined>): void {
       anim.onfinish = () => {
         anim.cancel()
         const index = playing.indexOf(anim)
-        if (index >= 0)
-          playing.splice(index, 1)
+        if (index >= 0) playing.splice(index, 1)
         remember()
       }
     }
@@ -72,11 +74,14 @@ export function useMeasureMotion(root: Ref<HTMLElement | undefined>): void {
 
   function onResize(): void {
     const el = root.value
-    if (!el)
-      return
+    if (!el) return
     const next = window.matchMedia('(max-width: 860px)').matches
     const list = targets(el)
-    if (next !== narrow && previous.size && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (
+      next !== narrow &&
+      previous.size &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
       const current = snapshot(list)
       glide(list, previous, current)
       glideWidth = window.innerWidth
@@ -84,8 +89,7 @@ export function useMeasureMotion(root: Ref<HTMLElement | undefined>): void {
       previous = current
       return
     }
-    if (playing.length && Math.abs(window.innerWidth - glideWidth) > 28)
-      stop()
+    if (playing.length && Math.abs(window.innerWidth - glideWidth) > 28) stop()
     narrow = next
     remember()
   }

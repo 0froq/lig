@@ -92,23 +92,19 @@ export const SYNTAX_DECORATIONS: Record<string, SyntaxDecorations> = {
 export function captureDecorations(capture: string): SyntaxDecorations {
   let name = capture
   while (name) {
-    if (SYNTAX_DECORATIONS[name])
-      return SYNTAX_DECORATIONS[name]!
+    if (SYNTAX_DECORATIONS[name]) return SYNTAX_DECORATIONS[name]!
     name = name.slice(0, !name.includes('.') ? 0 : name.lastIndexOf('.'))
   }
   return {}
 }
 
-export function captureRole(capture: string): { token: string, matched: string | null } | null {
+export function captureRole(capture: string): { token: string; matched: string | null } | null {
   // Predicate helper captures and spell annotations do not paint text.
-  if (capture.startsWith('_') || capture === 'spell' || capture === 'nospell')
-    return null
+  if (capture.startsWith('_') || capture === 'spell' || capture === 'nospell') return null
   let name = capture
   while (name) {
-    if (SYNTAX_CAPTURES[name])
-      return { token: SYNTAX_CAPTURES[name]!, matched: name }
-    if (SYNTAX_DECORATIONS[name])
-      return null
+    if (SYNTAX_CAPTURES[name]) return { token: SYNTAX_CAPTURES[name]!, matched: name }
+    if (SYNTAX_DECORATIONS[name]) return null
     name = name.slice(0, !name.includes('.') ? 0 : name.lastIndexOf('.'))
   }
   return { token: 'text.primary', matched: null }
@@ -117,6 +113,9 @@ export function captureRole(capture: string): { token: string, matched: string |
 /** Syntax roles alias a family/tier in the core spec; the inspector uses the same link. */
 export function syntaxFamily(token: string, variant?: LigVariant): string | null {
   const selected = variant ? spec.variants[variant] : undefined
-  const value = selected?.overrides[token] ?? (selected ? spec.modes[selected.mode][token] : undefined) ?? spec.tokens[token]
+  const value =
+    selected?.overrides[token] ??
+    (selected ? spec.modes[selected.mode][token] : undefined) ??
+    spec.tokens[token]
   return typeof value === 'string' && value.startsWith('family.') ? value.slice(7) : null
 }

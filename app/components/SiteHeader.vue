@@ -6,13 +6,15 @@ const { product } = useAppConfig()
 const { t, locale, locales } = useI18n()
 const { status } = useLocaleStatus()
 const switchLocalePath = useSwitchLocalePath()
-const languageOptions = computed(() => locales.value.map((item) => {
-  const name = item.name ?? item.code
-  return {
-    value: item.code,
-    label: status(item.code) === 'wip' ? t('site.wipLanguage', { language: name }) : name,
-  }
-}))
+const languageOptions = computed(() =>
+  locales.value.map(item => {
+    const name = item.name ?? item.code
+    return {
+      value: item.code,
+      label: status(item.code) === 'wip' ? t('site.wipLanguage', { language: name }) : name,
+    }
+  }),
+)
 const language = computed({
   get: () => locale.value,
   set: (value: string) => {
@@ -22,7 +24,9 @@ const language = computed({
 const link = useKitLink()
 const route = useRoute()
 const pinned = ref(false)
-const menuItems = computed<MenuItem[]>(() => product.nav.map(item => ({ value: item.to, label: t(item.label) })))
+const menuItems = computed<MenuItem[]>(() =>
+  product.nav.map(item => ({ value: item.to, label: t(item.label) })),
+)
 const menuOpen = ref(false)
 
 function here(to: string): boolean {
@@ -36,17 +40,16 @@ function openPage(item: MenuItem): void {
 
 async function changeLanguage(value: string): Promise<void> {
   const language = locales.value.find(l => l.code === value)
-  if (!language || language.code === locale.value)
-    return
+  if (!language || language.code === locale.value) return
   const path = switchLocalePath(language.code)
-  if (path)
-    await navigateTo(path)
+  if (path) await navigateTo(path)
 }
 
 function onScroll(): void {
   // Shown once the head is gone, and put away again at the foot of the page so it never covers the footer
   const { scrollY, innerHeight } = window
-  pinned.value = scrollY > 220 && scrollY + innerHeight < document.documentElement.scrollHeight - 160
+  pinned.value =
+    scrollY > 220 && scrollY + innerHeight < document.documentElement.scrollHeight - 160
 }
 
 onMounted(() => {
@@ -118,7 +121,9 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
           class="l-language-select"
         >
           <template #option="{ option }">
-            <span :lang="locales.find(l => l.code === option.value)?.language">{{ option.label }}</span>
+            <span :lang="locales.find(l => l.code === option.value)?.language">{{
+              option.label
+            }}</span>
           </template>
         </Select>
       </div>

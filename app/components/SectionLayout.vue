@@ -1,10 +1,13 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
-  /** Open the banner. Closing it collapses the height so the body does not jump. */
-  banner?: boolean
-}>(), {
-  banner: true,
-})
+withDefaults(
+  defineProps<{
+    /** Open the banner. Closing it collapses the height so the body does not jump. */
+    banner?: boolean
+  }>(),
+  {
+    banner: true,
+  },
+)
 const slots = useSlots()
 </script>
 

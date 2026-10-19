@@ -3,7 +3,17 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { it } from 'vite-plus/test'
 import { baseSwatches, buildVariant, cssVarName, semanticRoles } from '../../palette/src/nvim-build'
-import { apcaContrast, blend, contrast, hexToOklch, mapToSrgb, mixOklab, offsetOklch, oklchToHex, rampOklch } from '../color'
+import {
+  apcaContrast,
+  blend,
+  contrast,
+  hexToOklch,
+  mapToSrgb,
+  mixOklab,
+  offsetOklch,
+  oklchToHex,
+  rampOklch,
+} from '../color'
 import { createTokenBundle, resolveVariant, spec, syntaxFamily, VARIANTS } from '../index'
 
 // Calibration floors for the selected canvases, not universal readability criteria.
@@ -41,18 +51,36 @@ it('foreground hierarchy preserves calibrated contrast and quieter muted ink', (
     const foregrounds = ['text.primary', 'text.secondary', 'text.subtle']
     const floors = contrastFloors[variant]
     for (const role of ['text.strong', 'text.primary', 'text.secondary'])
-      assert.ok(contrast(tokens[role]!, tokens['surface.canvas']!) >= (role === 'text.secondary' ? floors.secondary : floors.primary), `${variant}/${role}`)
-    const contrasts = ['text.strong', ...foregrounds].map(role => contrast(tokens[role]!, tokens['surface.canvas']!))
+      assert.ok(
+        contrast(tokens[role]!, tokens['surface.canvas']!) >=
+          (role === 'text.secondary' ? floors.secondary : floors.primary),
+        `${variant}/${role}`,
+      )
+    const contrasts = ['text.strong', ...foregrounds].map(role =>
+      contrast(tokens[role]!, tokens['surface.canvas']!),
+    )
     for (let i = 1; i < contrasts.length; i++)
       assert.ok(contrasts[i - 1]! > contrasts[i]!, `${variant}: contrast hierarchy`)
     const lightnesses = foregrounds.map(role => oklch[role]!.l)
     for (let i = 1; i < lightnesses.length; i++)
-      assert.ok(mode === 'dark' ? lightnesses[i - 1]! > lightnesses[i]! : lightnesses[i - 1]! < lightnesses[i]!, `${variant}: foreground hierarchy`)
+      assert.ok(
+        mode === 'dark'
+          ? lightnesses[i - 1]! > lightnesses[i]!
+          : lightnesses[i - 1]! < lightnesses[i]!,
+        `${variant}: foreground hierarchy`,
+      )
     assert.equal(tokens['syntax.comment'], tokens['family.mono.muted'])
     assert.equal(tokens['syntax.punctuation'], tokens['family.mono.muted'])
     assert.equal(tokens['syntax.string'], tokens['family.mono.muted'])
-    assert.ok(Math.abs(oklch['family.mono.base']!.l - oklch['family.mono.muted']!.l) >= 0.24 - 1e-12, `${variant}: muted/base separation`)
-    assert.ok(contrast(tokens['family.mono.muted']!, tokens['surface.canvas']!) < contrast(tokens['text.subtle']!, tokens['surface.canvas']!), `${variant}: quieter syntax without changing UI ink`)
+    assert.ok(
+      Math.abs(oklch['family.mono.base']!.l - oklch['family.mono.muted']!.l) >= 0.24 - 1e-12,
+      `${variant}: muted/base separation`,
+    )
+    assert.ok(
+      contrast(tokens['family.mono.muted']!, tokens['surface.canvas']!) <
+        contrast(tokens['text.subtle']!, tokens['surface.canvas']!),
+      `${variant}: quieter syntax without changing UI ink`,
+    )
     assert.equal(tokens['syntax.operator'], tokens['text.secondary'])
     for (const [role, hex] of Object.entries(tokens)) {
       const family = syntaxFamily(role, variant)
@@ -61,22 +89,47 @@ it('foreground hierarchy preserves calibrated contrast and quieter muted ink', (
       if (role.startsWith('syntax.') && !lighterInk) {
         const mono = family?.startsWith('mono.')
         const tier = family?.endsWith('.highlight') ? 'highlight' : 'base'
-        const floor = mono ? family === 'mono.secondary' ? floors.secondary : floors.primary : floors[tier]
-        assert.ok(contrast(hex, tokens['surface.canvas']!) >= floor, `${variant}/${role}: calibrated syntax contrast`)
+        const floor = mono
+          ? family === 'mono.secondary'
+            ? floors.secondary
+            : floors.primary
+          : floors[tier]
+        assert.ok(
+          contrast(hex, tokens['surface.canvas']!) >= floor,
+          `${variant}/${role}: calibrated syntax contrast`,
+        )
         if (!mono && mode === 'light')
-          assert.ok(apcaContrast(hex, tokens['surface.canvas']!) >= lightLcFloors[variant as keyof typeof lightLcFloors][tier], `${variant}/${role}: calibrated Lc`)
+          assert.ok(
+            apcaContrast(hex, tokens['surface.canvas']!) >=
+              lightLcFloors[variant as keyof typeof lightLcFloors][tier],
+            `${variant}/${role}: calibrated Lc`,
+          )
       }
     }
     assert.notEqual(tokens['border.default'], tokens['text.subtle'])
     assert.equal(tokens['border.divider'], tokens['border.default'])
-    assert.ok(variant.endsWith('paper') ? oklch['border.default']!.c > 0 && oklch['border.default']!.c < 0.015 : oklch['border.default']!.c === 0)
+    assert.ok(
+      variant.endsWith('paper')
+        ? oklch['border.default']!.c > 0 && oklch['border.default']!.c < 0.015
+        : oklch['border.default']!.c === 0,
+    )
     assert.notEqual(tokens['text.secondary'], tokens['surface.status'])
   }
 })
 
 it('canvases and raised surfaces use independently calibrated neutral lightness', () => {
-  const canvases = { 'dark': ['#090909', 0.14], 'light': ['#f2f2f2', 0.96], 'light-paper': ['#f4f2ec', 0.9610312307917526], 'dark-paper': ['#111113', 0.17852907078448418] } as const
-  const raised = { 'dark': ['#181818', 0.21], 'light': ['#ffffff', 1], 'light-paper': ['#fdfcf9', 0.99], 'dark-paper': ['#201f1c', 0.24] } as const
+  const canvases = {
+    'dark': ['#090909', 0.14],
+    'light': ['#f2f2f2', 0.96],
+    'light-paper': ['#f4f2ec', 0.9610312307917526],
+    'dark-paper': ['#111113', 0.17852907078448418],
+  } as const
+  const raised = {
+    'dark': ['#181818', 0.21],
+    'light': ['#ffffff', 1],
+    'light-paper': ['#fdfcf9', 0.99],
+    'dark-paper': ['#201f1c', 0.24],
+  } as const
   for (const variant of VARIANTS) {
     const { tokens, oklch } = resolveVariant(variant)
     assert.equal(tokens['surface.canvas'], canvases[variant][0])
@@ -84,9 +137,18 @@ it('canvases and raised surfaces use independently calibrated neutral lightness'
     assert.equal(tokens['surface.raised'], raised[variant][0])
     assert.ok(Math.abs(oklch['surface.raised']!.l - raised[variant][1]) < 1e-12)
     assert.ok(oklch['surface.raised']!.l > oklch['surface.canvas']!.l)
-    assert.ok(Math.abs(oklch['surface.raised']!.l - oklch['surface.canvas']!.l) >= (variant.endsWith('paper') ? 0.025 : 0.04) - 1e-12)
-    assert.ok(Math.abs(oklch['surface.selection']!.l - oklch['surface.canvas']!.l) >= 0.03, `${variant}: selection/canvas separation`)
-    assert.ok(contrast(tokens['text.primary']!, tokens['surface.selection']!) >= 4.5, `${variant}: selected text contrast`)
+    assert.ok(
+      Math.abs(oklch['surface.raised']!.l - oklch['surface.canvas']!.l) >=
+        (variant.endsWith('paper') ? 0.025 : 0.04) - 1e-12,
+    )
+    assert.ok(
+      Math.abs(oklch['surface.selection']!.l - oklch['surface.canvas']!.l) >= 0.03,
+      `${variant}: selection/canvas separation`,
+    )
+    assert.ok(
+      contrast(tokens['text.primary']!, tokens['surface.selection']!) >= 4.5,
+      `${variant}: selected text contrast`,
+    )
   }
   assert.equal(blend('#000000', 0.5, '#ffffff'), '#636363')
   assert.equal(blend('#123456', 1, '#ffffff'), '#123456')
@@ -109,13 +171,38 @@ it('bad references, cycles, variants, schema versions and weights fail explicitl
   })
   assert.throws(() => resolveVariant('dark', withToken('unknown')), /unknown/i)
   assert.throws(() => resolveVariant('dark', withToken('broken')), /cycle/i)
-  assert.throws(() => resolveVariant('dark', withToken({ mix: ['text.primary', 'surface.canvas'], weight: 2 })), /weight/i)
-  assert.throws(() => resolveVariant('dark', withToken({ mix: ['text.primary'], weight: 0.5 })), /two/i)
+  assert.throws(
+    () => resolveVariant('dark', withToken({ mix: ['text.primary', 'surface.canvas'], weight: 2 })),
+    /weight/i,
+  )
+  assert.throws(
+    () => resolveVariant('dark', withToken({ mix: ['text.primary'], weight: 0.5 })),
+    /two/i,
+  )
   assert.throws(() => resolveVariant('missing' as 'dark'), /variant/i)
   assert.throws(() => resolveVariant('dark', { ...spec, schemaVersion: 1 }), /schema/i)
   assert.throws(() => resolveVariant('dark', { ...spec, colorSpace: 'srgb' as 'oklch' }), /space/i)
-  assert.throws(() => resolveVariant('dark', withToken({ ramp: 'accent.green.base', toward: 'text.primary', lightness: Number.NaN, chroma: 0.8 })), /lightness/i)
-  assert.throws(() => resolveVariant('dark', withToken({ ramp: 'broken', toward: 'text.primary', lightness: 0.2, chroma: 0.8 })), /cycle/i)
+  assert.throws(
+    () =>
+      resolveVariant(
+        'dark',
+        withToken({
+          ramp: 'accent.green.base',
+          toward: 'text.primary',
+          lightness: Number.NaN,
+          chroma: 0.8,
+        }),
+      ),
+    /lightness/i,
+  )
+  assert.throws(
+    () =>
+      resolveVariant(
+        'dark',
+        withToken({ ramp: 'broken', toward: 'text.primary', lightness: 0.2, chroma: 0.8 }),
+      ),
+    /cycle/i,
+  )
 })
 
 it('website adapter reads core values and never depends on previous previews', () => {
@@ -129,8 +216,14 @@ it('website adapter reads core values and never depends on previous previews', (
   assert.equal(baseline.bg, tokens['surface.canvas'])
   assert.equal(baseline.fg_secondary, tokens['text.secondary'])
   assert.equal(baseline.func, tokens['syntax.function'])
-  assert.deepEqual(baseline.green, ['highlight', 'base', 'faded'].map(step => tokens[`accent.green.${step}`]))
-  assert.equal(baseSwatches('dark').find(swatch => swatch.name === 'green_hl')?.hex, tokens['accent.green.highlight'])
+  assert.deepEqual(
+    baseline.green,
+    ['highlight', 'base', 'faded'].map(step => tokens[`accent.green.${step}`]),
+  )
+  assert.equal(
+    baseSwatches('dark').find(swatch => swatch.name === 'green_hl')?.hex,
+    tokens['accent.green.highlight'],
+  )
 })
 
 it('website CSS exports contain every exposed swatch and semantic token', () => {
@@ -139,8 +232,13 @@ it('website CSS exports contain every exposed swatch and semantic token', () => 
     const entries = [
       ...baseSwatches(variant).map(({ name, hex }) => ({ name, hex })),
       ...semanticRoles(variant).map(({ role, hex }) => ({ name: role, hex })),
-      ...Object.entries(resolveVariant(variant).tokens).filter(([name]) => name.startsWith('family.')).map(([name, hex]) => ({ name, hex })),
-      ...['accent.yellow.fill', 'text.on.yellow'].map(name => ({ name, hex: resolveVariant(variant).tokens[name]! })),
+      ...Object.entries(resolveVariant(variant).tokens)
+        .filter(([name]) => name.startsWith('family.'))
+        .map(([name, hex]) => ({ name, hex })),
+      ...['accent.yellow.fill', 'text.on.yellow'].map(name => ({
+        name,
+        hex: resolveVariant(variant).tokens[name]!,
+      })),
     ]
     for (const { name, hex } of entries)
       assert.ok(css.includes(`${cssVarName(variant, name)}: ${hex};`), `${variant}: ${name}`)
@@ -151,14 +249,14 @@ it('neutral ramp separates near-white exports and retains the middle/dark calibr
   const neutrals = {
     white: 1,
     soft_50: 0.96,
-    soft_100: 0.90,
+    soft_100: 0.9,
     soft_200: 0.84,
     soft_300: 0.78,
     soft_400: 0.68,
     soft_500: 0.58,
     soft_600: 0.48,
     soft_700: 0.38,
-    soft_800: 0.30,
+    soft_800: 0.3,
     soft_900: 0.21,
     soft_950: 0.14,
     black: 0,
@@ -172,24 +270,44 @@ it('neutral ramp separates near-white exports and retains the middle/dark calibr
     assert.equal(hex.slice(1, 3), hex.slice(3, 5))
     assert.equal(hex.slice(3, 5), hex.slice(5, 7))
     // Near black, one 8-bit sRGB step spans more perceptual lightness.
-    assert.ok(Math.abs(hexToOklch(hex).l - l) < (l < 0.10 ? 0.006 : l < 0.25 ? 0.003 : 0.002), `${name}: exported L`)
+    assert.ok(
+      Math.abs(hexToOklch(hex).l - l) < (l < 0.1 ? 0.006 : l < 0.25 ? 0.003 : 0.002),
+      `${name}: exported L`,
+    )
   }
   const levels = Object.values(neutrals)
-  for (let i = 1; i < levels.length; i++)
-    assert.ok(levels[i - 1]! > levels[i]!)
-  for (const [first, second] of [[300, 400], [400, 500], [500, 600], [600, 700]])
-    assert.ok(Math.abs(spec.palette.neutrals[`soft_${first}`]!.l - spec.palette.neutrals[`soft_${second}`]!.l - 0.10) < 1e-12)
+  for (let i = 1; i < levels.length; i++) assert.ok(levels[i - 1]! > levels[i]!)
+  for (const [first, second] of [
+    [300, 400],
+    [400, 500],
+    [500, 600],
+    [600, 700],
+  ])
+    assert.ok(
+      Math.abs(
+        spec.palette.neutrals[`soft_${first}`]!.l -
+          spec.palette.neutrals[`soft_${second}`]!.l -
+          0.1,
+      ) < 1e-12,
+    )
   const nearWhite = ['white', 'soft_50', 'soft_100', 'soft_200', 'soft_300']
   for (let i = 1; i < nearWhite.length; i++) {
     const first = nearWhite[i - 1]!
     const second = nearWhite[i]!
     const targetGap = i === 1 ? 0.04 : 0.06
-    assert.ok(Math.abs(neutrals[first as keyof typeof neutrals] - neutrals[second as keyof typeof neutrals] - targetGap) < 1e-12)
+    assert.ok(
+      Math.abs(
+        neutrals[first as keyof typeof neutrals] -
+          neutrals[second as keyof typeof neutrals] -
+          targetGap,
+      ) < 1e-12,
+    )
     const firstHex = bundle.palette.neutrals[first]!
     const secondHex = bundle.palette.neutrals[second]!
     assert.ok(hexToOklch(firstHex).l - hexToOklch(secondHex).l >= targetGap - 0.004)
     // Guard exported separation too; this is a design threshold, not a JND claim.
-    const byteGap = Number.parseInt(firstHex.slice(1, 3), 16) - Number.parseInt(secondHex.slice(1, 3), 16)
+    const byteGap =
+      Number.parseInt(firstHex.slice(1, 3), 16) - Number.parseInt(secondHex.slice(1, 3), 16)
     assert.ok(byteGap >= (i === 1 ? 12 : 18), `${first}/${second}: near-white channel separation`)
   }
   assert.equal(new Set(Object.values(bundle.palette.neutrals)).size, levels.length)
@@ -198,11 +316,11 @@ it('neutral ramp separates near-white exports and retains the middle/dark calibr
 it('accents keep distinct hues with individually calibrated mode coordinates', () => {
   const targets = {
     red: { h: 22, dark: [0.74, 0.13], light: [0.59, 0.16] },
-    green: { h: 148, dark: [0.74, 0.12], light: [0.60, 0.14] },
+    green: { h: 148, dark: [0.74, 0.12], light: [0.6, 0.14] },
     yellow: { h: 95, dark: [0.79, 0.18], light: [0.79, 0.18] },
-    blue: { h: 275, dark: [0.74, 0.12], light: [0.60, 0.15] },
-    magenta: { h: 325, dark: [0.74, 0.14], light: [0.60, 0.15] },
-    cyan: { h: 194, dark: [0.74, 0.12], light: [0.60, 0.11] },
+    blue: { h: 275, dark: [0.74, 0.12], light: [0.6, 0.15] },
+    magenta: { h: 325, dark: [0.74, 0.14], light: [0.6, 0.15] },
+    cyan: { h: 194, dark: [0.74, 0.12], light: [0.6, 0.11] },
     orange: { h: 60, dark: [0.74, 0.13], light: [0.64, 0.15] },
     azure: { h: 234, dark: [0.74, 0.12], light: [0.59, 0.13] },
   }
@@ -214,11 +332,12 @@ it('accents keep distinct hues with individually calibrated mode coordinates', (
       assert.equal(color.h, target.h, `${variant}/${name}: hue identity`)
       assert.ok(Math.abs(color.l - target[mode][0]!) < 1e-12)
       assert.ok(Math.abs(color.c - target[mode][1]!) < 1e-12)
-      if (mode === 'dark')
-        assert.deepEqual(color, spec.palette.accents[name])
+      if (mode === 'dark') assert.deepEqual(color, spec.palette.accents[name])
     }
   }
-  const angles = Object.values(targets).map(target => target.h).sort((a, b) => a - b)
+  const angles = Object.values(targets)
+    .map(target => target.h)
+    .sort((a, b) => a - b)
   for (let i = 0; i < angles.length; i++) {
     const gap = (angles[(i + 1) % angles.length]! - angles[i]! + 360) % 360
     assert.ok(gap >= 35 && gap <= 57, `Hue separation: ${gap}`)
@@ -239,9 +358,16 @@ it('accent exports preserve calibrated coordinates and per-mode contrast ranges'
         // Yellow deliberately uses the accepted bright base, including as foreground.
         // Its real contrast remains visible in the terminal panel; ink floors apply to other hues.
         if (name !== 'yellow' || mode === 'dark')
-          assert.ok(contrast(tokens[key]!, tokens['surface.canvas']!) >= contrastFloors[variant][layer], `${variant}/${key}: calibrated layer`)
+          assert.ok(
+            contrast(tokens[key]!, tokens['surface.canvas']!) >= contrastFloors[variant][layer],
+            `${variant}/${key}: calibrated layer`,
+          )
         if (mode === 'light' && name !== 'yellow')
-          assert.ok(apcaContrast(tokens[key]!, tokens['surface.canvas']!) >= lightLcFloors[variant as keyof typeof lightLcFloors][layer], `${variant}/${key}: calibrated Lc`)
+          assert.ok(
+            apcaContrast(tokens[key]!, tokens['surface.canvas']!) >=
+              lightLcFloors[variant as keyof typeof lightLcFloors][layer],
+            `${variant}/${key}: calibrated Lc`,
+          )
         const result = hexToOklch(tokens[key]!)
         const angle = Math.PI / 180
         const delta = Math.hypot(
@@ -272,7 +398,10 @@ it('yellow is replaced throughout the palette, foreground roles and terminal ali
     assert.equal(tokens['terminal.ansi.3'], '#dbb800')
     assert.notEqual(tokens['terminal.ansi.11'], tokens['terminal.ansi.3'])
     assert.ok(contrast(tokens['text.on.yellow']!, fill) >= 9, `${variant}: fill label`)
-    assert.ok(contrast(tokens['text.strong']!, tokens['surface.search.match']!) >= 4.5, `${variant}: active search text`)
+    assert.ok(
+      contrast(tokens['text.strong']!, tokens['surface.search.match']!) >= 4.5,
+      `${variant}: active search text`,
+    )
     for (const [index, name] of ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan'].entries()) {
       assert.equal(tokens[`terminal.ansi.${index + 1}`], tokens[`accent.${name}.base`])
       assert.equal(tokens[`terminal.ansi.${index + 9}`], tokens[`accent.${name}.highlight`])
@@ -292,9 +421,15 @@ it('terminal neutral slots stay distinct from the canvas without changing defaul
     const subtle = tokens['terminal.ansi.8']!
     assert.notEqual(dim, background, `${variant}: explicit ANSI black must not disappear`)
     assert.ok(contrast(dim, background) > 1.3, `${variant}: visible neutral separation`)
-    assert.ok(contrast(dim, background) < contrast(subtle, background), `${variant}: dim precedes subtle ink`)
+    assert.ok(
+      contrast(dim, background) < contrast(subtle, background),
+      `${variant}: dim precedes subtle ink`,
+    )
     assert.equal(tokens['terminal.ansi.7'], tokens['terminal.foreground'])
-    assert.ok(contrast(tokens['terminal.ansi.15']!, background) > contrast(tokens['terminal.ansi.7']!, background))
+    assert.ok(
+      contrast(tokens['terminal.ansi.15']!, background) >
+        contrast(tokens['terminal.ansi.7']!, background),
+    )
   }
 })
 
@@ -303,7 +438,16 @@ it('conversion matches reference primary colors and round-trips sRGB samples', (
   assert.ok(Math.abs(red.l - 0.62795536) < 1e-7)
   assert.ok(Math.abs(red.c - 0.25768331) < 1e-7)
   assert.ok(Math.abs(red.h! - 29.233885) < 1e-5)
-  for (const hex of ['#000000', '#ffffff', '#ff0000', '#00ff00', '#0000ff', '#808080', '#010203', '#abcdef'])
+  for (const hex of [
+    '#000000',
+    '#ffffff',
+    '#ff0000',
+    '#00ff00',
+    '#0000ff',
+    '#808080',
+    '#010203',
+    '#abcdef',
+  ])
     assert.equal(oklchToHex(hexToOklch(hex)), hex)
   assert.deepEqual(hexToOklch('#000000'), { l: 0, c: 0, h: null })
   assert.equal(hexToOklch('#ffffff').h, null)
@@ -320,7 +464,10 @@ it('OKLab mixes preserve neutral axes and endpoints without intermediate 8-bit q
   assert.deepEqual(mixOklab(first, 0, second), second)
   const variant = resolveVariant('dark')
   assert.equal(variant.tokens['surface.status'], oklchToHex(variant.oklch['surface.status']!))
-  assert.ok(Math.abs(variant.oklch['surface.status']!.l - hexToOklch(variant.tokens['surface.status']!).l) > 1e-5)
+  assert.ok(
+    Math.abs(variant.oklch['surface.status']!.l - hexToOklch(variant.tokens['surface.status']!).l) >
+      1e-5,
+  )
 })
 
 it('accent ramps preserve hue and follow the mode emphasis direction', () => {
@@ -334,12 +481,15 @@ it('accent ramps preserve hue and follow the mode emphasis direction', () => {
         if (mode === 'light') {
           assert.equal(color.c, base.c)
           const distance = 0.07
-          assert.ok(Math.abs(color.l - base.l - (step === 'highlight' ? -distance : distance)) < 1e-12)
-        }
-        else {
+          assert.ok(
+            Math.abs(color.l - base.l - (step === 'highlight' ? -distance : distance)) < 1e-12,
+          )
+        } else {
           assert.ok(color.c < base.c)
           const distance = 0.07
-          assert.ok(Math.abs(color.l - base.l - (step === 'highlight' ? distance : -distance)) < 1e-12)
+          assert.ok(
+            Math.abs(color.l - base.l - (step === 'highlight' ? distance : -distance)) < 1e-12,
+          )
         }
         const brighter = mode === 'dark' ? step === 'highlight' : step === 'faded'
         assert.ok(brighter ? color.l > base.l : color.l < base.l)
@@ -383,7 +533,10 @@ it('syntax roles preserve the mono/struct/ref/action family contract', () => {
     const { tokens } = resolveVariant(variant)
     const built = buildVariant(variant)
     for (const family of ['mono', 'struct', 'ref', 'action'])
-      assert.deepEqual(built[family], ['highlight', 'base', 'muted'].map(tier => tokens[`family.${family}.${tier}`]))
+      assert.deepEqual(
+        built[family],
+        ['highlight', 'base', 'muted'].map(tier => tokens[`family.${family}.${tier}`]),
+      )
     for (const name of Object.keys(tokens).filter(name => name.startsWith('syntax.'))) {
       const family = syntaxFamily(name, variant)
       assert.ok(family, name)
@@ -410,7 +563,8 @@ it('mono tiers derive from neutral steps with quieter muted syntax ink', () => {
     for (const [i, tier] of tiers.entries()) {
       const name = selections[variant][i]!
       const selected = (spec.palette.neutrals[name] ?? spec.palette.paper[name])!
-      const neutral = tier === 'muted' ? offsetOklch(selected, mode === 'light' ? 0.04 : -0.04, 0) : selected
+      const neutral =
+        tier === 'muted' ? offsetOklch(selected, mode === 'light' ? 0.04 : -0.04, 0) : selected
       assert.deepEqual(oklch[`family.mono.${tier}`], neutral)
       assert.equal(tokens[`family.mono.${tier}`], oklchToHex(neutral))
     }
@@ -418,18 +572,27 @@ it('mono tiers derive from neutral steps with quieter muted syntax ink', () => {
     for (let i = 1; i < lightness.length; i++) {
       const delta = lightness[i]! - lightness[i - 1]!
       assert.ok(mode === 'light' ? delta > 0 : delta < 0)
-      assert.ok(Math.abs(delta) >= 0.10 - 1e-12)
+      assert.ok(Math.abs(delta) >= 0.1 - 1e-12)
     }
   }
 })
 
 it('paper variants retain semantic colors and propagate their tinted ink through shared aliases', () => {
   const bundle = createTokenBundle()
-  for (const [paperName, standardName] of [['light-paper', 'light'], ['dark-paper', 'dark']] as const) {
+  for (const [paperName, standardName] of [
+    ['light-paper', 'light'],
+    ['dark-paper', 'dark'],
+  ] as const) {
     const paper = resolveVariant(paperName)
     const standard = resolveVariant(standardName)
-    for (const key of Object.keys(standard.tokens).filter(key => key.startsWith('accent.') || /^family\.(?:struct|ref|action)\./.test(key))) {
-      assert.deepEqual(paper.oklch[key], standard.oklch[key], `${paperName}/${key}: shared semantic coordinates`)
+    for (const key of Object.keys(standard.tokens).filter(
+      key => key.startsWith('accent.') || /^family\.(?:struct|ref|action)\./.test(key),
+    )) {
+      assert.deepEqual(
+        paper.oklch[key],
+        standard.oklch[key],
+        `${paperName}/${key}: shared semantic coordinates`,
+      )
       assert.equal(paper.tokens[key], standard.tokens[key])
     }
     for (const [alias, target] of Object.entries({
@@ -446,7 +609,10 @@ it('paper variants retain semantic colors and propagate their tinted ink through
     }
     for (const tier of ['highlight', 'base', 'secondary', 'muted']) {
       const key = `family.mono.${tier}`
-      assert.ok(Math.abs(paper.oklch[key]!.l - standard.oklch[key]!.l) < 0.002, `${paperName}/${tier}: matched emphasis lightness`)
+      assert.ok(
+        Math.abs(paper.oklch[key]!.l - standard.oklch[key]!.l) < 0.002,
+        `${paperName}/${tier}: matched emphasis lightness`,
+      )
       assert.ok(paper.oklch[key]!.c > 0 && paper.oklch[key]!.c < 0.015)
     }
     const colors = buildVariant(paperName)
@@ -465,30 +631,54 @@ it('both sides of chromatic families and accents have balanced perceptual distan
       ...['struct', 'ref', 'action'].map(name => [`family.${name}`, 'muted']),
     ]
     for (const [group, end] of groups) {
-      const [highlight, base, muted] = ['highlight', 'base', end].map(tier => oklch[`${group}.${tier}`]!)
+      const [highlight, base, muted] = ['highlight', 'base', end].map(
+        tier => oklch[`${group}.${tier}`]!,
+      )
       const distance = (first: Oklch, second: Oklch) => {
-        const a = (first.h ?? 0) * Math.PI / 180
-        const b = (second.h ?? 0) * Math.PI / 180
-        return Math.hypot(first.l - second.l, first.c * Math.cos(a) - second.c * Math.cos(b), first.c * Math.sin(a) - second.c * Math.sin(b))
+        const a = ((first.h ?? 0) * Math.PI) / 180
+        const b = ((second.h ?? 0) * Math.PI) / 180
+        return Math.hypot(
+          first.l - second.l,
+          first.c * Math.cos(a) - second.c * Math.cos(b),
+          first.c * Math.sin(a) - second.c * Math.sin(b),
+        )
       }
       const left = distance(highlight!, base!)
       const right = distance(muted!, base!)
       assert.ok(left > 0.03, `${variant}/${group}: visible step`)
       assert.ok(Math.abs(left - right) < 1e-12, `${variant}/${group}: symmetric design distance`)
-      const exported = ['highlight', 'base', end].map(tier => hexToOklch(tokens[`${group}.${tier}`]!))
+      const exported = ['highlight', 'base', end].map(tier =>
+        hexToOklch(tokens[`${group}.${tier}`]!),
+      )
       if (group === 'accent.yellow') {
         // The accepted vivid yellow hits the sRGB boundary unevenly at the endpoints.
         // Preserve the design steps and verify exports against the actual gamut mapping.
         const mapped = [highlight!, base!, muted!].map(mapToSrgb)
         for (const index of [0, 2]) {
-          assert.ok(distance(exported[index]!, exported[1]!) > 0.06, `${variant}/${group}: visible exported step`)
-          assert.ok(Math.abs(distance(exported[index]!, exported[1]!) - distance(mapped[index]!, mapped[1]!)) < 0.004, `${variant}/${group}: mapped exported distance`)
+          assert.ok(
+            distance(exported[index]!, exported[1]!) > 0.06,
+            `${variant}/${group}: visible exported step`,
+          )
+          assert.ok(
+            Math.abs(
+              distance(exported[index]!, exported[1]!) - distance(mapped[index]!, mapped[1]!),
+            ) < 0.004,
+            `${variant}/${group}: mapped exported distance`,
+          )
         }
+      } else {
+        assert.ok(
+          Math.abs(distance(exported[0]!, exported[1]!) - distance(exported[2]!, exported[1]!)) <
+            0.004,
+          `${variant}/${group}: symmetric exported distance`,
+        )
       }
-      else {
-        assert.ok(Math.abs(distance(exported[0]!, exported[1]!) - distance(exported[2]!, exported[1]!)) < 0.004, `${variant}/${group}: symmetric exported distance`)
-      }
-      assert.ok(mode === 'dark' ? highlight!.l > base!.l && base!.l > muted!.l : highlight!.l < base!.l && base!.l < muted!.l, `${variant}/${group}: correct emphasis direction`)
+      assert.ok(
+        mode === 'dark'
+          ? highlight!.l > base!.l && base!.l > muted!.l
+          : highlight!.l < base!.l && base!.l < muted!.l,
+        `${variant}/${group}: correct emphasis direction`,
+      )
     }
   }
 })
@@ -501,6 +691,9 @@ it('OKLCH offsets preserve hue, use fixed distances and reject invalid coordinat
   assert.throws(() => offsetOklch(source, 0, -0.2), /OKLCH/)
   assert.throws(() => offsetOklch(source, Number.NaN, 0), /offset/)
   assert.throws(() => offsetOklch(source, 0, Number.POSITIVE_INFINITY), /offset/)
-  const broken = { ...spec, tokens: { ...spec.tokens, broken: { offset: 'broken', lightness: 0, chroma: 0 } } }
+  const broken = {
+    ...spec,
+    tokens: { ...spec.tokens, broken: { offset: 'broken', lightness: 0, chroma: 0 } },
+  }
   assert.throws(() => resolveVariant('dark', broken), /cycle/)
 })

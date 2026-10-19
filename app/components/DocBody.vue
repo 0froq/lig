@@ -1,10 +1,13 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
-  /** Release notes: a plain list, not the usual indented prose list. */
-  notes?: boolean
-}>(), {
-  notes: false,
-})
+withDefaults(
+  defineProps<{
+    /** Release notes: a plain list, not the usual indented prose list. */
+    notes?: boolean
+  }>(),
+  {
+    notes: false,
+  },
+)
 </script>
 
 <template>

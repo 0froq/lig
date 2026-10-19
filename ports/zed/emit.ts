@@ -163,9 +163,28 @@ const ANSI = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'whi
 const ACCENTS = ['green', 'blue', 'orange', 'red', 'yellow', 'magenta', 'cyan', 'azure']
 
 export function zedTheme(theme: ThemeIR) {
-  const bindings: Record<string, UiBinding> = Object.fromEntries(Object.entries(UI).map(([key, token]) => [key, { token }]))
+  const bindings: Record<string, UiBinding> = Object.fromEntries(
+    Object.entries(UI).map(([key, token]) => [key, { token }]),
+  )
   for (const [key, token] of Object.entries(UI)) {
-    if (['conflict', 'created', 'deleted', 'modified', 'renamed', 'error', 'warning', 'info', 'hint', 'success', 'ignored', 'hidden', 'predictive', 'unreachable'].includes(key)) {
+    if (
+      [
+        'conflict',
+        'created',
+        'deleted',
+        'modified',
+        'renamed',
+        'error',
+        'warning',
+        'info',
+        'hint',
+        'success',
+        'ignored',
+        'hidden',
+        'predictive',
+        'unreachable',
+      ].includes(key)
+    ) {
       bindings[`${key}.background`] = { token, alpha: '18' }
       bindings[`${key}.border`] = { token, alpha: '60' }
     }
@@ -179,31 +198,47 @@ export function zedTheme(theme: ThemeIR) {
     // No extra dim palette: use the existing normal slot when dim ANSI is requested.
     bindings[`terminal.ansi.dim_${name}`] = { token: `terminal.ansi.${index}` }
   })
-  const colors = Object.fromEntries(Object.entries(bindings).map(([key, { token, alpha = '' }]) => [key, `${requireToken(theme, token)}${alpha}`]))
-  const syntax = Object.fromEntries(Object.entries(ZED_SYNTAX).map(([capture, role]) => {
-    const style = requireStyle(role)
-    return [capture, {
-      color: requireToken(theme, style.foreground ?? 'text.primary'),
-      font_style: style.italic ? 'italic' : 'normal',
-      // Leave ordinary syntax at the user's buffer_font_weight.
-      font_weight: style.bold ? 700 : null,
-    }]
-  }))
+  const colors = Object.fromEntries(
+    Object.entries(bindings).map(([key, { token, alpha = '' }]) => [
+      key,
+      `${requireToken(theme, token)}${alpha}`,
+    ]),
+  )
+  const syntax = Object.fromEntries(
+    Object.entries(ZED_SYNTAX).map(([capture, role]) => {
+      const style = requireStyle(role)
+      return [
+        capture,
+        {
+          color: requireToken(theme, style.foreground ?? 'text.primary'),
+          font_style: style.italic ? 'italic' : 'normal',
+          // Leave ordinary syntax at the user's buffer_font_weight.
+          font_weight: style.bold ? 700 : null,
+        },
+      ]
+    }),
+  )
   return {
-    name: `LiG ${theme.variant.split('-').map(word => word[0]!.toUpperCase() + word.slice(1)).join(' ')}`,
+    name: `LiG ${theme.variant
+      .split('-')
+      .map(word => word[0]!.toUpperCase() + word.slice(1))
+      .join(' ')}`,
     appearance: theme.mode,
     style: {
       ...colors,
       accents: ACCENTS.map(name => requireToken(theme, `accent.${name}.base`)),
-      players: [{
-        cursor: requireToken(theme, 'text.primary'),
-        background: requireToken(theme, 'text.primary'),
-        selection: requireToken(theme, 'surface.selection'),
-      }, ...ACCENTS.map(name => ({
-        cursor: requireToken(theme, `accent.${name}.base`),
-        background: requireToken(theme, `accent.${name}.base`),
-        selection: `${requireToken(theme, `accent.${name}.base`)}30`,
-      }))],
+      players: [
+        {
+          cursor: requireToken(theme, 'text.primary'),
+          background: requireToken(theme, 'text.primary'),
+          selection: requireToken(theme, 'surface.selection'),
+        },
+        ...ACCENTS.map(name => ({
+          cursor: requireToken(theme, `accent.${name}.base`),
+          background: requireToken(theme, `accent.${name}.base`),
+          selection: `${requireToken(theme, `accent.${name}.base`)}30`,
+        })),
+      ],
       syntax,
     },
   }

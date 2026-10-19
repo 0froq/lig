@@ -11,7 +11,10 @@ useHead({
   style: [{ key: 'theme', innerHTML: () => themeStyle(product.theme) }],
   title: () => copy('notFound.title') || `${props.error.statusCode ?? 404} — ${t('site.title')}`,
   titleTemplate: '%s',
-  htmlAttrs: { lang: () => localeProperties.value.language, dir: () => localeProperties.value.dir ?? 'ltr' },
+  htmlAttrs: {
+    lang: () => localeProperties.value.language,
+    dir: () => localeProperties.value.dir ?? 'ltr',
+  },
 })
 useSeoMeta({ robots: 'noindex, follow' })
 </script>

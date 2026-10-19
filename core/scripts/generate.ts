@@ -10,4 +10,6 @@ const path = fileURLToPath(new URL('../generated/tokens.json', import.meta.url))
 writeArtifact(path, `${JSON.stringify(createTokenBundle(), null, 2)}\n`, check)
 generatePalette(check)
 generateIcons(check)
-console.log(check ? 'Core and website artifacts match the spec.' : 'Generated core and website artifacts.')
+console.log(
+  check ? 'Core and website artifacts match the spec.' : 'Generated core and website artifacts.',
+)

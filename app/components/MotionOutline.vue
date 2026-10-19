@@ -24,7 +24,12 @@ defineProps<{
       <rect
         v-if="contrastColor"
         :stroke-width="(strokeWidth ?? 1) + 2"
-        :style="{ width: `${width}px`, height: `${height}px`, rx: `${radius ?? 0}px`, stroke: contrastColor }"
+        :style="{
+          width: `${width}px`,
+          height: `${height}px`,
+          rx: `${radius ?? 0}px`,
+          stroke: contrastColor,
+        }"
       />
       <rect
         :stroke-width="strokeWidth ?? 1"

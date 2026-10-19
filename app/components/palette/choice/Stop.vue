@@ -30,7 +30,13 @@ function wordOf(id: LigVariant): HTMLElement | undefined {
 }
 
 function dot(word: HTMLElement): Shape {
-  return { left: word.offsetLeft + word.offsetWidth + 3, top: word.offsetTop + DOT_TOP, width: DOT, height: DOT, radius: DOT / 2 }
+  return {
+    left: word.offsetLeft + word.offsetWidth + 3,
+    top: word.offsetTop + DOT_TOP,
+    width: DOT,
+    height: DOT,
+    radius: DOT / 2,
+  }
 }
 
 function rule(word: HTMLElement, left = word.offsetLeft, width = word.offsetWidth): Shape {
@@ -62,8 +68,7 @@ function frame(shape: Shape, offset: number, easing: string): Keyframe {
 
 function settle(): void {
   const word = wordOf(variant.value)
-  if (!word)
-    return
+  if (!word) return
   const shape = dot(word)
   rest.x = shape.left
   rest.y = shape.top
@@ -73,27 +78,27 @@ function travel(from: LigVariant, to: LigVariant): void {
   const el = mark.value
   const a = wordOf(from)
   const b = wordOf(to)
-  if (!el || !a || !b)
-    return
+  if (!el || !a || !b) return
   const start = motion?.playState === 'running' ? current(el) : dot(a)
   motion?.cancel()
   settle()
-  if (a.offsetTop !== b.offsetTop || matchMedia('(prefers-reduced-motion: reduce)').matches)
-    return
+  if (a.offsetTop !== b.offsetTop || matchMedia('(prefers-reduced-motion: reduce)').matches) return
   const left = Math.min(a.offsetLeft, b.offsetLeft)
   const right = Math.max(a.offsetLeft + a.offsetWidth, b.offsetLeft + b.offsetWidth)
-  motion = el.animate([
-    frame(start, 0, 'cubic-bezier(0.5, 0, 0.75, 0)'),
-    frame(rule(a), 0.2, 'cubic-bezier(0.45, 0, 0.55, 1)'),
-    frame(rule(b, left, right - left), 0.5, 'cubic-bezier(0.16, 1, 0.3, 1)'),
-    frame(rule(b), 0.78, 'cubic-bezier(0.7, 0, 0.84, 0)'),
-    frame(dot(b), 1, 'linear'),
-  ], { duration: 820 })
+  motion = el.animate(
+    [
+      frame(start, 0, 'cubic-bezier(0.5, 0, 0.75, 0)'),
+      frame(rule(a), 0.2, 'cubic-bezier(0.45, 0, 0.55, 1)'),
+      frame(rule(b, left, right - left), 0.5, 'cubic-bezier(0.16, 1, 0.3, 1)'),
+      frame(rule(b), 0.78, 'cubic-bezier(0.7, 0, 0.84, 0)'),
+      frame(dot(b), 1, 'linear'),
+    ],
+    { duration: 820 },
+  )
 }
 
 function choose(next: LigVariant): void {
-  if (next === variant.value)
-    return
+  if (next === variant.value) return
   const from = variant.value
   variant.value = next
   nextTick(() => travel(from, next))
@@ -124,7 +129,8 @@ onBeforeUnmount(() => {
     <span
       :id="labelId"
       class="lig-stop-label"
-    >{{ t('palette.choice.label') }}</span>
+      >{{ t('palette.choice.label') }}</span
+    >
     <div
       class="lig-stop-options"
       role="radiogroup"
@@ -133,7 +139,11 @@ onBeforeUnmount(() => {
       <button
         v-for="(option, index) in VARIANT_OPTIONS"
         :key="option.id"
-        :ref="el => { if (el) words[index] = el as HTMLElement }"
+        :ref="
+          el => {
+            if (el) words[index] = el as HTMLElement
+          }
+        "
         type="button"
         role="radio"
         class="lig-stop-word"

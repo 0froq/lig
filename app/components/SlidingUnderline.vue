@@ -67,25 +67,28 @@ function travel(from: string, to: string): void {
   const start = motion?.playState === 'running' ? current(el) : measure(a)
   motion?.cancel()
   settle()
-  if (prefersReducedMotion())
-    return
+  if (prefersReducedMotion()) return
   const left = Math.min(a.offsetLeft, b.offsetLeft)
   const right = Math.max(a.offsetLeft + a.offsetWidth, b.offsetLeft + b.offsetWidth)
-  motion = el.animate([
-    frame(start, 0, 'cubic-bezier(0.5, 0, 0.75, 0)'),
-    frame(measure(b, left, right - left), 0.46, 'cubic-bezier(0.16, 1, 0.3, 1)'),
-    frame(measure(b), 1, 'cubic-bezier(0.7, 0, 0.84, 0)'),
-  ], { duration: 640 })
+  motion = el.animate(
+    [
+      frame(start, 0, 'cubic-bezier(0.5, 0, 0.75, 0)'),
+      frame(measure(b, left, right - left), 0.46, 'cubic-bezier(0.16, 1, 0.3, 1)'),
+      frame(measure(b), 1, 'cubic-bezier(0.7, 0, 0.84, 0)'),
+    ],
+    { duration: 640 },
+  )
 }
 
-watch(() => props.active, (next, prev) => {
-  nextTick(() => {
-    if (!prev || prev === next)
-      settle()
-    else
-      travel(prev, next)
-  })
-})
+watch(
+  () => props.active,
+  (next, prev) => {
+    nextTick(() => {
+      if (!prev || prev === next) settle()
+      else travel(prev, next)
+    })
+  },
+)
 
 function onResize(): void {
   motion?.cancel()
@@ -96,8 +99,7 @@ onMounted(async () => {
   settle()
   addEventListener('resize', onResize)
   await document.fonts?.ready
-  if (!disposed)
-    settle()
+  if (!disposed) settle()
 })
 
 onBeforeUnmount(() => {

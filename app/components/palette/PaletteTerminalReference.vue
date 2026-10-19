@@ -12,10 +12,13 @@ const open = ref(false)
 const { copied, copyValue } = usePaletteClipboard()
 
 onMounted(() => {
-  watch(() => route.hash, (hash) => {
-    if (hash === '#terminal-colors')
-      open.value = true
-  }, { immediate: true })
+  watch(
+    () => route.hash,
+    hash => {
+      if (hash === '#terminal-colors') open.value = true
+    },
+    { immediate: true },
+  )
 })
 </script>
 
@@ -36,7 +39,11 @@ onMounted(() => {
         :class="{ 'is-copied': copied === 'terminal.background' }"
         @click="copyValue(resolved.tokens['terminal.background']!, 'terminal.background')"
       >
-        {{ copied === 'terminal.background' ? t('install.copied') : resolved.tokens['terminal.background'] }}
+        {{
+          copied === 'terminal.background'
+            ? t('install.copied')
+            : resolved.tokens['terminal.background']
+        }}
       </button>
     </p>
     <div
@@ -61,18 +68,10 @@ onMounted(() => {
             >
               {{ t('palette.terminal.color') }}
             </th>
-            <th scope="col">
-              HEX
-            </th>
-            <th scope="col">
-              SGR fg / bg
-            </th>
-            <th scope="col">
-              WCAG 2.2
-            </th>
-            <th scope="col">
-              APCA Lc
-            </th>
+            <th scope="col"> HEX </th>
+            <th scope="col"> SGR fg / bg </th>
+            <th scope="col"> WCAG 2.2 </th>
+            <th scope="col"> APCA Lc </th>
           </tr>
         </thead>
         <tbody
@@ -121,7 +120,8 @@ onMounted(() => {
     <span
       class="lig-color-announcement"
       role="status"
-    >{{ copied ? t('install.copied') : '' }}</span>
+      >{{ copied ? t('install.copied') : '' }}</span
+    >
   </Collapsible>
 </template>
 

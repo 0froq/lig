@@ -26,11 +26,32 @@ export const EZA_BINDINGS: Record<string, Record<string, string>> = {
     other_write: 'accent.orange.base',
     other_execute: 'accent.green.base',
   },
-  git: { new: 'git.add', modified: 'git.change', deleted: 'git.delete', renamed: 'accent.blue.base', ignored: 'text.subtle', conflicted: 'diagnostic.error' },
+  git: {
+    new: 'git.add',
+    modified: 'git.change',
+    deleted: 'git.delete',
+    renamed: 'accent.blue.base',
+    ignored: 'text.subtle',
+    conflicted: 'diagnostic.error',
+  },
 }
 
 export function eza(theme: ThemeIR): string {
-  return heading(theme) + Object.entries(EZA_BINDINGS).map(([group, entries]) => `${group}:\n${
-    Object.entries(entries).map(([key, token]) => `  ${key}:\n    foreground: "${color(theme, token)}"\n`).join('')}`).join('')
-  + ['punctuation', 'date', 'inode', 'blocks', 'header', 'octal', 'flags'].map(key => `${key}:\n  foreground: "${color(theme, key === 'header' ? 'text.strong' : 'text.secondary')}"\n`).join('')
+  return (
+    heading(theme) +
+    Object.entries(EZA_BINDINGS)
+      .map(
+        ([group, entries]) =>
+          `${group}:\n${Object.entries(entries)
+            .map(([key, token]) => `  ${key}:\n    foreground: "${color(theme, token)}"\n`)
+            .join('')}`,
+      )
+      .join('') +
+    ['punctuation', 'date', 'inode', 'blocks', 'header', 'octal', 'flags']
+      .map(
+        key =>
+          `${key}:\n  foreground: "${color(theme, key === 'header' ? 'text.strong' : 'text.secondary')}"\n`,
+      )
+      .join('')
+  )
 }

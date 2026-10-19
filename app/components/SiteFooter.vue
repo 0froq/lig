@@ -24,49 +24,56 @@ const year = new Date().getFullYear()
               href="https://bottosson.github.io/posts/oklab/"
               target="_blank"
               rel="noopener noreferrer"
-            >OKLab</a>
+              >OKLab</a
+            >
           </template>
           <template #vitesse>
             <a
               href="https://github.com/antfu/vscode-theme-vitesse"
               target="_blank"
               rel="noopener noreferrer"
-            >Vitesse</a>
+              >Vitesse</a
+            >
           </template>
           <template #treesitter>
             <a
               href="https://github.com/nvim-treesitter/nvim-treesitter"
               target="_blank"
               rel="noopener noreferrer"
-            >nvim-treesitter</a>
+              >nvim-treesitter</a
+            >
           </template>
           <template #shiki>
             <a
               href="https://shiki.style"
               target="_blank"
               rel="noopener noreferrer"
-            >Shiki</a>
+              >Shiki</a
+            >
           </template>
           <template #geist>
             <a
               href="https://vercel.com/font"
               target="_blank"
               rel="noopener noreferrer"
-            >Geist</a>
+              >Geist</a
+            >
           </template>
           <template #instrument>
             <a
               href="https://fonts.google.com/specimen/Instrument+Serif"
               target="_blank"
               rel="noopener noreferrer"
-            >Instrument Serif</a>
+              >Instrument Serif</a
+            >
           </template>
           <template #allura>
             <a
               href="https://github.com/googlefonts/allura"
               target="_blank"
               rel="noopener noreferrer"
-            >Allura</a>
+              >Allura</a
+            >
           </template>
         </i18n-t>
       </section>
@@ -117,21 +124,24 @@ const year = new Date().getFullYear()
               href="https://github.com/0froq/lig.nvim"
               target="_blank"
               rel="noopener noreferrer"
-            >Neovim</a>
+              >Neovim</a
+            >
           </li>
           <li>
             <a
               href="https://github.com/0froq/vscode-theme-LiG"
               target="_blank"
               rel="noopener noreferrer"
-            >VS Code</a>
+              >VS Code</a
+            >
           </li>
           <li>
             <a
               href="https://github.com/0froq/zed-theme-LiG"
               target="_blank"
               rel="noopener noreferrer"
-            >Zed</a>
+              >Zed</a
+            >
           </li>
         </ul>
       </section>
@@ -145,14 +155,16 @@ const year = new Date().getFullYear()
               href="https://froq.me"
               target="_blank"
               rel="noopener noreferrer"
-            >froQ</a>
+              >froQ</a
+            >
           </li>
           <li>
             <a
               href="https://github.com/0froq"
               target="_blank"
               rel="noopener noreferrer"
-            >GitHub</a>
+              >GitHub</a
+            >
           </li>
           <li>
             <a href="mailto:sayhola@froq.me">{{ $t('site.foot.mail') }}</a>
@@ -162,7 +174,8 @@ const year = new Date().getFullYear()
               href="https://github.com/0froq/ui"
               target="_blank"
               rel="noopener noreferrer"
-            >{{ $t('site.foot.ui') }}</a>
+              >{{ $t('site.foot.ui') }}</a
+            >
           </li>
         </ul>
       </section>
@@ -179,7 +192,8 @@ const year = new Date().getFullYear()
       Less is Great<span
         class="l-foot-stop"
         data-anchor="foot-mark"
-      >.</span>
+        >.</span
+      >
     </p>
     <p class="l-foot-legal">
       <span>© {{ year }} froQ</span>
@@ -187,12 +201,14 @@ const year = new Date().getFullYear()
         href="https://github.com/0froq/lig/blob/main/LICENSE"
         target="_blank"
         rel="noopener noreferrer"
-      >{{ $t('site.license') }}</a>
+        >{{ $t('site.license') }}</a
+      >
       <a
         href="https://github.com/0froq/lig"
         target="_blank"
         rel="noopener noreferrer"
-      >{{ $t('site.source') }}</a>
+        >{{ $t('site.source') }}</a
+      >
     </p>
   </footer>
 </template>

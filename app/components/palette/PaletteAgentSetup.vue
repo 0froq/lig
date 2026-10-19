@@ -10,13 +10,15 @@ onMounted(() => {
   origin.value = window.location.origin
 })
 
-const instruction = computed(() => t('palette.downloads.agentInstruction', {
-  page: `${origin.value}/?variant=${variant.value}#downloads`,
-  manifest: `${origin.value}/ports/manifest.json`,
-  notes: `${origin.value}/ports/README.md`,
-  variant: variant.value,
-  tools: ['Neovim', 'VS Code', 'Zed', ...LIGHTWEIGHT_PORTS.map(port => port.title)].join(', '),
-}))
+const instruction = computed(() =>
+  t('palette.downloads.agentInstruction', {
+    page: `${origin.value}/?variant=${variant.value}#downloads`,
+    manifest: `${origin.value}/ports/manifest.json`,
+    notes: `${origin.value}/ports/README.md`,
+    variant: variant.value,
+    tools: ['Neovim', 'VS Code', 'Zed', ...LIGHTWEIGHT_PORTS.map(port => port.title)].join(', '),
+  }),
+)
 </script>
 
 <template>

@@ -13,7 +13,8 @@ on:
         required: true
         default: check-package
         type: choice
-        options: [check-package, identify, verify-access, publish, bootstrap-openvsx, publish-openvsx]
+        options:
+          [check-package, identify, verify-access, publish, bootstrap-openvsx, publish-openvsx]
 permissions:
   contents: read
 concurrency:

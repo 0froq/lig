@@ -31,8 +31,7 @@ describe('shared theme and native adapter contracts', () => {
     }
     const groups = neovimGroups()
     for (const [name, binding] of Object.entries(groups)) {
-      if (binding.link)
-        assert.ok(groups[binding.link], `${name}: unresolved link ${binding.link}`)
+      if (binding.link) assert.ok(groups[binding.link], `${name}: unresolved link ${binding.link}`)
     }
     assert.deepEqual(groups.WhichKeyIconBlue, groups.WhichKeylconBlue)
     assert.equal(groups.GitSignsChangeLn!.bg, 'surface.git.change.line')
@@ -65,20 +64,27 @@ describe('shared theme and native adapter contracts', () => {
   for (const variant of VARIANTS) {
     it(`${variant}: native styles use exact shared token values`, () => {
       const theme = compileTheme(variant)
-      const native = vscodeTheme(theme, variant) as { colors: Record<string, string>, semanticTokenColors: Record<string, object> }
-      assert.notEqual(vscodeStyle(theme, 'variable').foreground, vscodeStyle(theme, 'keyword').foreground)
+      const native = vscodeTheme(theme, variant) as {
+        colors: Record<string, string>
+        semanticTokenColors: Record<string, object>
+      }
+      assert.notEqual(
+        vscodeStyle(theme, 'variable').foreground,
+        vscodeStyle(theme, 'keyword').foreground,
+      )
       assert.equal(native.colors['editor.background'], theme.tokens['surface.canvas'])
-      assert.deepEqual(native.semanticTokenColors['function.declaration'], vscodeStyle(theme, 'function.definition'))
+      assert.deepEqual(
+        native.semanticTokenColors['function.declaration'],
+        vscodeStyle(theme, 'function.definition'),
+      )
       assert.deepEqual(native.semanticTokenColors['*.defaultLibrary'], { italic: true })
       assert.equal(native.colors['terminal.ansiBrightBlack'], theme.tokens['terminal.ansi.8'])
       for (const value of Object.values(native.colors))
         assert.match(value, /^#[0-9a-f]{6}(?:[0-9a-f]{2})?$/)
       for (const binding of Object.values(neovimGroups())) {
-        if (binding.role)
-          requireStyle(binding.role)
+        if (binding.role) requireStyle(binding.role)
         for (const key of ['fg', 'bg', 'sp'] as const) {
-          if (binding[key])
-            requireToken(theme, binding[key]!)
+          if (binding[key]) requireToken(theme, binding[key]!)
         }
       }
     })
@@ -102,9 +108,13 @@ describe('shared theme and native adapter contracts', () => {
   })
 
   it('every managed artifact matches its published manifest checksum', () => {
-    const manifest = JSON.parse(readFileSync(`${root}manifest.json`, 'utf8')) as { files: Record<string, string> }
+    const manifest = JSON.parse(readFileSync(`${root}manifest.json`, 'utf8')) as {
+      files: Record<string, string>
+    }
     for (const [path, checksum] of Object.entries(manifest.files)) {
-      const actual = createHash('sha256').update(readFileSync(`${root}${path}`)).digest('hex')
+      const actual = createHash('sha256')
+        .update(readFileSync(`${root}${path}`))
+        .digest('hex')
       assert.equal(actual, checksum, path)
     }
   })
@@ -113,7 +123,10 @@ describe('shared theme and native adapter contracts', () => {
 it('prunes retired manifest-owned files while preserving unmanaged files and check-only output', () => {
   const directory = mkdtempSync(join(tmpdir(), 'lig-artifacts-'))
   try {
-    writeFileSync(join(directory, 'manifest.json'), JSON.stringify({ files: { 'retired.lua': 'hash', 'current.lua': 'hash' } }))
+    writeFileSync(
+      join(directory, 'manifest.json'),
+      JSON.stringify({ files: { 'retired.lua': 'hash', 'current.lua': 'hash' } }),
+    )
     for (const name of ['retired.lua', 'current.lua', 'local-note.txt'])
       writeFileSync(join(directory, name), name)
     const artifacts = { 'current.lua': 'current.lua' }
@@ -124,10 +137,12 @@ it('prunes retired manifest-owned files while preserving unmanaged files and che
     assert.equal(readFileSync(join(directory, 'current.lua'), 'utf8'), 'current.lua')
     assert.equal(readFileSync(join(directory, 'local-note.txt'), 'utf8'), 'local-note.txt')
     pruneArtifacts(directory, artifacts, true)
-    writeFileSync(join(directory, 'manifest.json'), JSON.stringify({ files: { '../outside.lua': 'hash' } }))
+    writeFileSync(
+      join(directory, 'manifest.json'),
+      JSON.stringify({ files: { '../outside.lua': 'hash' } }),
+    )
     assert.throws(() => pruneArtifacts(directory, artifacts, false), /outside/i)
-  }
-  finally {
+  } finally {
     rmSync(directory, { recursive: true, force: true })
   }
 })

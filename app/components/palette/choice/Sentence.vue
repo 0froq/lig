@@ -52,12 +52,15 @@ onMounted(async () => {
       <span
         :ref="keep('light')"
         :class="{ 'is-on': axes.tone === 'light' }"
-      >{{ t('palette.choice.toneLight') }}</span>
+        >{{ t('palette.choice.toneLight') }}</span
+      >
       <span
         :ref="keep('dark')"
         :class="{ 'is-on': axes.tone === 'dark' }"
-      >{{ t('palette.choice.toneDark') }}</span>
-    </button>{{ t('palette.choice.sentence.join') }}<button
+        >{{ t('palette.choice.toneDark') }}</span
+      > </button
+    >{{ t('palette.choice.sentence.join')
+    }}<button
       type="button"
       role="switch"
       class="lig-flip"
@@ -69,11 +72,14 @@ onMounted(async () => {
       <span
         :ref="keep('crisp')"
         :class="{ 'is-on': axes.edge === 'crisp' }"
-      >{{ t('palette.choice.edgeCrisp') }}</span>
+        >{{ t('palette.choice.edgeCrisp') }}</span
+      >
       <span
         :ref="keep('paper')"
         :class="{ 'is-on': axes.edge === 'paper' }"
-      >{{ t('palette.choice.edgePaper') }}</span>
-    </button>{{ t('palette.choice.sentence.tail') }}<span class="lig-sentence-mark">{{ t('palette.choice.sentence.mark') }}</span>
+        >{{ t('palette.choice.edgePaper') }}</span
+      > </button
+    >{{ t('palette.choice.sentence.tail')
+    }}<span class="lig-sentence-mark">{{ t('palette.choice.sentence.mark') }}</span>
   </p>
 </template>
