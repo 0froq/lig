@@ -155,12 +155,12 @@
   margin-top: 28px;
 }
 
-/* Stacked sections read as one list, not two blocks. */
-.lig-more + .lig-more {
+/* Keep closed sections compact, but leave space after an open section's content. */
+.lig-more:not(.is-open) + .lig-more {
   margin-top: 0;
 }
 
-.lig-more + .lig-more > .ui-collapsible-trigger {
+.lig-more:not(.is-open) + .lig-more > .ui-collapsible-trigger {
   padding-top: 8px;
 }
 
