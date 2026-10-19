@@ -1,6 +1,6 @@
 # Lightweight ports
 
-Seven tools, four variants: `light`, `dark`, `light-paper`, `dark-paper`.
+Nine tools, four variants: `light`, `dark`, `light-paper`, `dark-paper`.
 All of them are generated from [`core/spec.json`](../../core/spec.json).
 There is no second palette and no separate repository.
 
@@ -34,6 +34,38 @@ Fonts, keys, opacity, and window appearance stay yours.
 An explicit `background`, `foreground`, `palette`, `selection-*`, or `cursor-*` in the main config wins over the theme.
 
 [Ghostty themes](https://ghostty.org/docs/features/theme)
+
+## iTerm2
+
+Import `iterm2/lig-dark.itermcolors` (or another variant) in **iTerm2 → Settings → Profiles → Colors → Color Presets → Import**.
+
+The preset is Apple plist XML with `Ansi 0 Color` through `Ansi 15 Color`,
+`Background Color`, `Foreground Color`, `Cursor Color`, `Cursor Text Color`,
+`Selection Color`, `Selected Text Color`, `Bold Color`, and `Link Color`.
+Each entry uses the `sRGB` color space with `Red`, `Green`, `Blue`, and `Alpha`
+components from LiG's `terminal.*` and `text.primary` tokens.
+
+[iTerm2 colors](https://iterm2.com/documentation-colors.html)
+
+## Windows Terminal
+
+Import `windows-terminal/lig-dark.json` through **Settings → Open JSON settings**,
+or add the object to the `schemes` array in your profile settings file.
+
+Each file is one scheme object: `name`, `background`, `foreground`, `cursorColor`,
+`selectionBackground`, the eight ANSI names (`purple` for magenta), and
+`brightBlack` through `brightWhite`. All 16 ANSI slots use LiG's shared terminal
+mapping from `core/spec.json`.
+
+[Windows Terminal color schemes](https://learn.microsoft.com/en-us/windows/terminal/customize-settings#color-schemes)
+
+### Hatoba
+
+[Hatoba](https://github.com/scarletkc/Hatoba) can load these standard formats via
+its custom-scheme import ([upstream PR #98](https://github.com/scarletkc/Hatoba/pull/98)):
+use the Windows Terminal JSON on every platform, or the iTerm2 preset on macOS.
+Pick **LiG Dark** / **LiG Light** (or the paper variants) in **Settings →
+Appearance → Terminal Colors**.
 
 ## fzf
 
@@ -128,7 +160,7 @@ Icons and file matching are unchanged.
 
 ## Colors
 
-Ghostty uses `terminal.background`, `terminal.foreground`, cursor, selection, and `terminal.ansi.0–15`.
+Ghostty, iTerm2, and Windows Terminal use `terminal.background`, `terminal.foreground`, cursor, selection, and `terminal.ansi.0–15`.
 The other tools map shared `surface`, `text`, `accent`, `git`, and `diagnostic` tokens.
 bat also uses the shared TextMate styles.
 No file in this directory authors a hex by hand.

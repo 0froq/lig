@@ -5,11 +5,13 @@ import { bat } from './bat'
 import { eza } from './eza'
 import { fzf } from './fzf'
 import { ghostty } from './ghostty'
+import { iterm2 } from './iterm2'
 import { starship } from './starship'
 import { tmux } from './tmux'
+import { windowsTerminal } from './windows-terminal'
 import { zellij } from './zellij'
 
-const emitters: Record<LightweightPort, (theme: ThemeIR) => string> = { ghostty, fzf, zellij, tmux, starship, bat, eza }
+const emitters: Record<LightweightPort, (theme: ThemeIR) => string> = { ghostty, iterm2, 'windows-terminal': windowsTerminal, fzf, zellij, tmux, starship, bat, eza }
 
 export function lightweightArtifacts(themes: ThemeIR[]): Record<string, string> {
   return Object.fromEntries(themes.flatMap(theme => LIGHTWEIGHT_PORTS.map(port => [lightweightPath(port, theme.variant), emitters[port.id](theme)])))

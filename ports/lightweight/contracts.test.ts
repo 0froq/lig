@@ -6,8 +6,9 @@ import { join } from 'node:path'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { VARIANTS } from '../../core/resolve'
-import { LIGHTWEIGHT_PORTS, lightweightPath } from '../catalog'
+import { LIGHTWEIGHT_PORTS, lightweightArchivePath, lightweightPath } from '../catalog'
 import { compileTheme } from '../styles'
+import { zip } from '../zip'
 import { rgb } from './common'
 import { lightweightArtifacts } from './index'
 
@@ -17,7 +18,7 @@ describe('lightweight tool distributions', () => {
   const outputs = lightweightArtifacts(VARIANTS.map(compileTheme))
 
   it('ships each tool and variant once, without authoring another palette', () => {
-    assert.deepEqual(LIGHTWEIGHT_PORTS.map(port => port.id), ['ghostty', 'fzf', 'zellij', 'tmux', 'starship', 'bat', 'eza'])
+    assert.deepEqual(LIGHTWEIGHT_PORTS.map(port => port.id), ['ghostty', 'iterm2', 'windows-terminal', 'fzf', 'zellij', 'tmux', 'starship', 'bat', 'eza'])
     assert.equal(Object.keys(outputs).length, LIGHTWEIGHT_PORTS.length * VARIANTS.length)
     for (const variant of VARIANTS) {
       const theme = compileTheme(variant)
@@ -44,6 +45,24 @@ describe('lightweight tool distributions', () => {
       for (const key of ['background', 'foreground'])
         assert.ok(ghostty.includes(`${key} = ${theme.tokens[`terminal.${key}`]}\n`))
       assert.doesNotMatch(ghostty, /^(?:font|keybind|window|command|theme|config-file)/m)
+      const wtAnsi = ['black', 'red', 'green', 'yellow', 'blue', 'purple', 'cyan', 'white', 'brightBlack', 'brightRed', 'brightGreen', 'brightYellow', 'brightBlue', 'brightPurple', 'brightCyan', 'brightWhite']
+      const wt = JSON.parse(outputs[`windows-terminal/lig-${variant}.json`]!) as Record<string, string>
+      assert.equal(wt.name, `LiG ${variant.split('-').map(word => word[0]!.toUpperCase() + word.slice(1)).join(' ')}`)
+      assert.equal(wt.background, theme.tokens['terminal.background'])
+      assert.equal(wt.foreground, theme.tokens['terminal.foreground'])
+      assert.equal(wt.cursorColor, theme.tokens['terminal.cursor'])
+      assert.equal(wt.selectionBackground, theme.tokens['terminal.selection'])
+      for (const [index, key] of wtAnsi.entries())
+        assert.equal(wt[key], theme.tokens[`terminal.ansi.${index}`])
+      for (const key of wtAnsi)
+        assert.match(wt[key]!, /^#[a-f0-9]{6}$/)
+      const iterm = outputs[`iterm2/lig-${variant}.itermcolors`]!
+      assert.match(iterm, /^<\?xml version="1.0"/)
+      for (let index = 0; index < 16; index++)
+        assert.ok(iterm.includes(`<key>Ansi ${index} Color</key>`))
+      for (const key of ['Background Color', 'Foreground Color', 'Cursor Color', 'Cursor Text Color', 'Selection Color', 'Selected Text Color', 'Bold Color', 'Link Color'])
+        assert.ok(iterm.includes(`<key>${key}</key>`))
+      assert.ok(iterm.includes(`<key>Color Space</key><string>sRGB</string>`))
       const fzf = outputs[`fzf/lig-${variant}.fzfrc`]!
       assert.match(fzf, new RegExp(`^--color=${theme.mode},`))
       assert.equal(fzf.trim().split('\n').length, 1)
@@ -65,6 +84,15 @@ describe('lightweight tool distributions', () => {
         assert.ok(bat.includes(`<key>foreground</key><string>${theme.tokens[token]}</string>`))
       assert.notEqual(theme.tokens['syntax.variable'], theme.tokens['syntax.keyword'])
       assert.ok(bat.includes('<key>scope</key>'))
+    })
+  }
+
+  for (const portId of ['iterm2', 'windows-terminal'] as const) {
+    it(`bundles all ${portId} variants and the license`, () => {
+      const port = LIGHTWEIGHT_PORTS.find(port => port.id === portId)!
+      const entries = Object.fromEntries(VARIANTS.map(variant => [lightweightPath(port, variant), outputs[lightweightPath(port, variant)]!]))
+      entries.LICENSE = readFileSync(new URL('../../LICENSE', import.meta.url), 'utf8')
+      assert.deepEqual(readFileSync(join(root, lightweightArchivePath(port))), zip(entries))
     })
   }
 

@@ -23,9 +23,10 @@ python3 ports/lightweight/verify.py
 ```
 
 The Neovim check needs Neovim.
-The lightweight check needs Python 3.11+ and the seven tools.
+The lightweight check needs Python 3.11+ and the seven native CLI tools.
 It uses a temporary config.
 It does not edit the machine's real config.
+It also plist-parses every `.itermcolors` file and JSON-parses every Windows Terminal scheme.
 
 ## Layout
 
@@ -35,7 +36,7 @@ It does not edit the machine's real config.
 | `neovim/`                   | Lua colorscheme for [lig.nvim](https://github.com/0froq/lig.nvim)                                 |
 | `vscode/`                   | JSON theme for [vscode-theme-LiG](https://github.com/0froq/vscode-theme-LiG), id `froQ.theme-lig` |
 | `zed/`                      | Extension for [zed-theme-LiG](https://github.com/0froq/zed-theme-LiG)                             |
-| `lightweight/`              | Ghostty, fzf, Zellij, tmux, Starship, bat, eza                                                    |
+| `lightweight/`              | Ghostty, iTerm2, Windows Terminal, fzf, Zellij, tmux, Starship, bat, eza                          |
 | `dist/ports/`               | Generated payloads and checksums. Not committed                                                   |
 
 `constants.ts` and `zed/distribution.ts` pin package versions and the source ref.
@@ -66,6 +67,12 @@ The same lightweight and Zed download bytes are copied to `public/ports/`, which
 `pnpm build` and `pnpm generate` run the compiler first.
 `ports:check` compares both trees and does not write.
 A custom `--out` directory stays isolated.
+
+iTerm2 `.itermcolors` presets and Windows Terminal scheme JSON (four variants each,
+plus per-tool ZIPs) ship with the lightweight distributions, manifests, and
+website downloads via `catalog.ts`. [Hatoba](https://github.com/scarletkc/Hatoba)
+can import the Windows Terminal JSON (or iTerm2 on macOS); see
+[lightweight/README.md#hatoba](lightweight/README.md#hatoba).
 
 CI uploads `lig-lightweight-ports` and `lig-zed-port`.
 Generating files does not publish a release.

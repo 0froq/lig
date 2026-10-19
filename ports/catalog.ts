@@ -3,6 +3,8 @@ import type { LigVariant } from '../core/types'
 /** Download metadata only; safe to share with the website without compiler code. */
 export const LIGHTWEIGHT_PORTS = [
   { id: 'ghostty', title: 'Ghostty', extension: '', docs: 'https://ghostty.org/docs/features/theme' },
+  { id: 'iterm2', title: 'iTerm2', extension: '.itermcolors', docs: 'https://iterm2.com/documentation-colors.html' },
+  { id: 'windows-terminal', title: 'Windows Terminal', extension: '.json', docs: 'https://learn.microsoft.com/en-us/windows/terminal/customize-settings#color-schemes' },
   { id: 'fzf', title: 'fzf', extension: '.fzfrc', docs: 'https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1' },
   { id: 'zellij', title: 'Zellij', extension: '.kdl', docs: 'https://zellij.dev/documentation/themes' },
   { id: 'tmux', title: 'tmux', extension: '.conf', docs: 'https://github.com/tmux/tmux/wiki/Getting-Started' },
