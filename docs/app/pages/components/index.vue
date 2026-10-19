@@ -3,7 +3,10 @@ const { t } = useI18n()
 const link = useSiteLink()
 const sections = componentSections()
 
-useHead({ title: () => t('components.title') })
+usePaperOgImage({
+  title: () => t('components.title'),
+  description: () => t('components.lede'),
+})
 
 const { docFor } = await useComponentDocs()
 
