@@ -23,7 +23,3 @@ export default antfu(
   },
 )
   .append(nuxt())
-  .append({
-    files: ['core/tests/**/*.test.ts', 'syntax/tests/**/*.test.ts', 'ports/**/*.test.ts'],
-    rules: { 'test/no-import-node-test': 'off' },
-  })

@@ -1,8 +1,4 @@
 import { defineConfig } from 'void/config'
-import cloudflare from './cloudflare.config'
-
-// Keep the working cf deployment as the source of the existing Worker's policy.
-const { worker } = cloudflare
 
 export default defineConfig({
   target: 'cloudflare',
@@ -12,12 +8,18 @@ export default defineConfig({
     build: 'pnpm exec vp run generate',
   },
   cloudflare: {
-    name: worker.name,
-    compatibility_date: worker.compatibilityDate,
-    observability: worker.observability,
+    name: 'lig',
+    routes: [{ pattern: 'lig.froq.me', custom_domain: true }],
+    workers_dev: true,
+    preview_urls: true,
+    compatibility_date: '2026-10-12',
+    observability: {
+      enabled: true,
+      traces: { enabled: true },
+    },
     assets: {
-      html_handling: worker.assets.htmlHandling,
-      not_found_handling: worker.assets.notFoundHandling,
+      html_handling: 'drop-trailing-slash',
+      not_found_handling: '404-page',
     },
   },
 })

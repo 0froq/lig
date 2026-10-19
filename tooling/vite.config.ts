@@ -1,0 +1,13 @@
+import { defineConfig } from 'vite-plus'
+
+// Keep tool configuration outside the root so Nuxt owns its Vite configuration.
+export default defineConfig({
+  test: {
+    environment: 'node',
+    include: ['core/tests/**/*.test.ts', 'syntax/tests/**/*.test.ts', 'ports/contracts.test.ts'],
+  },
+  lint: {
+    categories: { correctness: 'error' },
+    ignorePatterns: ['vendor/**', 'content/**', '**/generated/**', '.agents/**'],
+  },
+})

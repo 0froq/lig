@@ -4,6 +4,16 @@
 - 不对 UI 写测试，不用浏览器或 computer use 测 UI；使用源码、类型和构建检查，并列出手动验收行为。
 - core/spec.json 是颜色事实源。port 适配器不单独维护色值。
 
+## Deployment and tooling
+
+- LiG 生产部署用 Void。`void.config.ts` 是部署参数事实源，`pnpm deploy` 由 Void 调用静态生成，不再手动串一次 build。
+- 分支预览必须保留。当前通过 Workers Builds 的 `cf previews deploy` 发布，`cloudflare.config.ts` 只作为预览适配器，从 Void 配置取值。不要把它恢复为独立的生产配置。
+- GitHub Actions 生产发布由 `VOID_DEPLOY_ENABLED` 开关控制。没有完成 `docs/void-viteplus.md` 的切换清单前，不开启，不关闭旧自动部署，不删除预览配置。
+- 使用 `.node-version` / `mise.toml` 中的 Node 24.21.0。Node 22 不能运行当前 Void。
+- Vite+ 工具配置在 `tooling/vite.config.ts`。使用 `vp run <script>`，测试使用 `vp run test`。不要为工具另加 Nuxt 不读取的根目录 Vite 配置。
+- 源码检查用 Oxlint，Vue、Nuxt 和格式规则保留 ESLint。Oxfmt 与现有 Antfu 风格有冲突，不要顺手全仓格式化。
+- `syntax:test` 和 `syntax:check` 需要 `syntax/manifest.json` 指定的 Neovim 和 parser，本地验证。普通静态构建不需要这套原生工具。
+
 <!-- froq-ui -->
 ## @froq/ui
 
