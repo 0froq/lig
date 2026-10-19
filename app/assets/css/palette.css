@@ -49,40 +49,21 @@
 }
 
 .lig-hero ~ .l-section .l-label {
+  padding-top: 0.55em;
+  color: var(--fg);
+  font-size: 12px;
+  letter-spacing: 0.1em;
   text-align: end;
 }
 
-/* Homepage footer shares the centered measure, and the rule starts on the
-   body rail so it meets the instruction block instead of the page edge. */
-.l-foot.is-measure {
-  --edge: clamp(80px, 11vw, 220px);
-  --measure-gap: 48px;
-  box-sizing: border-box;
-  width: min(1080px, calc(100vw - var(--edge) * 2));
-  margin-inline: auto;
-  padding-inline: 0;
-}
-
-.l-foot.is-measure .l-foot-row {
-  max-width: 48rem;
-  margin-inline-start: calc((100% - 11 * var(--measure-gap)) / 12 * 2 + 2 * var(--measure-gap));
-}
-
-.l-foot.is-measure .l-foot-line {
-  display: none;
-}
-
-/* The lede shares the body rail with the section titles. The kit column
-   leaves it one track in from that edge. */
-.lig-hero .l-hero-foot .l-lede {
-  grid-column: calc(var(--span-margin) + 1) / -1;
-  max-width: 28rem;
+/* The tagline is the whole foot now. */
+.lig-hero .l-tagline {
+  grid-column: 1 / -1;
 }
 
 @media (max-width: 860px) {
   .lig-hero,
-  .lig-hero ~ .l-section,
-  .l-foot.is-measure {
+  .lig-hero ~ .l-section {
     --edge: clamp(16px, 4vw, 28px);
   }
 
@@ -100,24 +81,35 @@
   .lig-hero ~ .l-section .l-label {
     text-align: start;
   }
-
-  .l-foot.is-measure {
-    width: auto;
-    margin-inline: 0;
-    padding-inline: var(--edge);
-  }
-
-  .l-foot.is-measure .l-foot-row {
-    margin-inline-start: 0;
-  }
-
-  .lig-hero .l-hero-foot .l-lede {
-    grid-column: 1 / -1;
-  }
 }
 
 .lig-section-quiet {
   padding-top: clamp(64px, 8svh, 96px);
+}
+
+/* The last section is the way out: more air above it than between the others. */
+#downloads.lig-section-quiet {
+  padding-top: clamp(104px, 16svh, 176px);
+}
+
+/* Sections are numbered in the margin like the leaves of a book. */
+.lig-hero {
+  counter-reset: lig-leaf;
+}
+
+.lig-hero ~ .l-section {
+  counter-increment: lig-leaf;
+}
+
+.lig-hero ~ .l-section .l-label::before {
+  margin-inline-end: 0.7em;
+  color: var(--muted);
+  content: counter(lig-leaf, lower-roman) '.';
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .lig-quiet-title {
@@ -127,6 +119,10 @@
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.02em;
+}
+
+.lig-palette-lead {
+  margin-bottom: 40px;
 }
 
 .lig-syntax-lede {
@@ -159,13 +155,19 @@
   margin-top: 28px;
 }
 
-.lig-more summary {
-  cursor: pointer;
-  color: var(--muted);
-  font-family: var(--font-meta);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+/* Stacked sections read as one list, not two blocks. */
+.lig-more + .lig-more {
+  margin-top: 0;
+}
+
+.lig-more + .lig-more > .ui-collapsible-trigger {
+  padding-top: 8px;
+}
+
+/* Pinned titles sit under the notice bar when there is one. */
+.ui-collapsible.lig-more.is-open > .ui-collapsible-trigger,
+.lig-ui .ui-code-block.is-collapsible.is-open > .ui-code-block-header {
+  top: var(--banner-h, 0px);
 }
 
 .lig-copy-bar {
@@ -224,8 +226,10 @@
 }
 
 .lig-color-table {
+  --pin-1: 4ch;
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   white-space: nowrap;
   font: 11px/1.6 var(--font-meta);
   font-variant-numeric: tabular-nums;
@@ -251,8 +255,51 @@
   color: var(--muted);
 }
 
-.lig-color-table tbody {
+.lig-color-table tbody tr:first-child > * {
   border-top: 1px solid var(--line);
+}
+
+/* The first columns stay put while the rest scrolls. The last pinned one fades into the data
+   once the table has moved. Separate borders keep the rules visible under pinned cells. */
+.lig-pin-1,
+.lig-pin-2 {
+  position: sticky;
+  z-index: 1;
+  background: var(--bg);
+}
+
+.lig-pin-1 {
+  left: 0;
+  min-width: var(--pin-1);
+}
+
+.lig-pin-2 {
+  left: calc(var(--pin-1) + 16px);
+}
+
+.lig-pin-end::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 100%;
+  width: 20px;
+  background: linear-gradient(to right, var(--bg), transparent);
+  pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .lig-pin-end::after {
+    opacity: 0;
+    animation: lig-pin-fade linear both;
+    animation-timeline: scroll(nearest inline);
+    animation-range: 0 24px;
+  }
+}
+
+@keyframes lig-pin-fade {
+  to {
+    opacity: 1;
+  }
 }
 
 .lig-color-key {
@@ -578,17 +625,18 @@
 
 .lig-ports {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px 40px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
   margin-top: 40px;
 }
 
 .lig-port {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   gap: 10px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
+  padding-inline-start: 16px;
+  border-inline-start: 4px solid var(--line);
 }
 
 .lig-port-title {
@@ -609,30 +657,111 @@
   border-radius: 3px;
 }
 
-.lig-port[href]:hover .lig-port-title {
+.lig-project-icon.is-mark {
+  border-radius: 0;
+}
+
+.lig-port-title a:hover {
   color: var(--accent);
 }
 
-.lig-port-note {
-  max-width: 36ch;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.lig-port-zed {
-  grid-column: 1 / -1;
-}
-
-.lig-port-zed h3,
-.lig-port-zed p {
+.lig-port h3,
+.lig-port p {
   margin: 0;
 }
 
-.lig-port-zed .lig-port-note {
-  max-width: 64ch;
+.lig-port .ui-code-block {
+  margin-top: 6px;
 }
 
-.lig-port-zed .lig-port-variants {
+.lig-port .lig-copy-action {
+  color: var(--ui-muted);
+}
+
+.lig-port .lig-copy-action:hover:not(:disabled),
+.lig-port .lig-copy-action:focus-visible {
+  color: var(--ui-fg);
+}
+
+.lig-port .lig-copy-action:has(.ui-copy-label:nth-child(3).is-visible) {
+  color: var(--ui-accent);
+}
+
+.lig-port .lig-copy-action:focus-visible {
+  outline-color: var(--ui-accent);
+}
+
+.lig-copy-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 1ch;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: 12px/1.5 var(--font-meta);
+  text-align: start;
+  transition: color 0.35s var(--ease);
+}
+
+.lig-copy-action .ui-copy-label {
+  justify-self: start;
+}
+
+/* Idle labels are invisible and take no space. Cap them at the button's width: uncapped,
+   a longer one ("Copy failed") runs past the page edge and widens the page unseen. */
+.lig-copy-action .ui-copy-label:not(.is-visible) {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.lig-copy-action::before {
+  content: '';
+  flex: none;
+  width: 13px;
+  height: 13px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.4'%3E%3Crect x='5.5' y='1.5' width='9' height='9'/%3E%3Cpath d='M3.5 5.5H2v9h9v-1.5'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.4'%3E%3Crect x='5.5' y='1.5' width='9' height='9'/%3E%3Cpath d='M3.5 5.5H2v9h9v-1.5'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+.lig-copy-action:hover:not(:disabled),
+.lig-copy-action:focus-visible {
+  color: var(--fg);
+}
+
+.lig-copy-action:has(.ui-copy-label:nth-child(3).is-visible) {
+  color: var(--accent);
+}
+
+.lig-copy-action:has(.ui-copy-label:nth-child(3).is-visible)::before {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.4'%3E%3Cpath d='M3 8.5 6.2 11.5 13 4.5'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.4'%3E%3Cpath d='M3 8.5 6.2 11.5 13 4.5'/%3E%3C/svg%3E");
+}
+
+.lig-copy-action:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.lig-port-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.lig-port-actions .lig-install-link {
+  margin-top: 4px;
+}
+
+.lig-port .lig-port-variants {
   margin-top: 10px;
   font: 12px/1.6 var(--font-meta);
 }
@@ -657,8 +786,7 @@
 
 @media (max-width: 860px) {
   .lig-stage,
-  .lig-stage-syntax,
-  .lig-ports {
+  .lig-stage-syntax {
     grid-template-columns: 1fr;
   }
 
@@ -698,7 +826,6 @@
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 24px;
   align-items: center;
-  margin-top: 16px;
 }
 
 .lig-oklch-plot {
@@ -989,27 +1116,146 @@
   }
 }
 
-.lig-port-downloads {
+.lig-matrix {
   display: grid;
+  /* Variant names need room to read; below that the table scrolls sideways. */
+  grid-template-columns: max-content repeat(4, minmax(7rem, 1fr));
+  align-items: stretch;
   gap: 0;
+  width: 100%;
   margin: 24px 0 0;
-  padding: 0;
-  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  border-bottom: 1px solid var(--line);
   font: 12px/1.6 var(--font-meta);
 }
 
-.lig-port-downloads li {
-  display: grid;
-  grid-template-columns: 7rem minmax(0, 1fr);
-  align-items: center;
-  gap: 12px 24px;
-  padding-block: 20px;
+.lig-matrix-corner,
+.lig-matrix-variant,
+.lig-matrix-port,
+.lig-matrix-cell {
+  min-height: 48px;
+  margin: 0;
+  padding: 0;
+  border: 0;
   border-top: 1px solid var(--line);
+  background: none;
 }
 
-.lig-port-downloads h3 {
-  margin: 0;
+.lig-matrix-choice {
+  display: contents;
+}
+
+.lig-matrix-choice .ui-choice-options {
+  display: grid;
+  grid-column: 2 / -1;
+  grid-template-columns: subgrid;
+  gap: 0;
+  align-items: stretch;
   font: inherit;
+  line-height: 1.6;
+}
+
+.lig-matrix-choice .ui-choice-mark,
+.lig-matrix-choice .ui-choice-word::after {
+  display: none;
+}
+
+.lig-matrix-choice .ui-choice-word {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 40px;
+  padding-inline: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.lig-matrix-choice .ui-choice-word.is-active,
+.lig-matrix-cell.is-current {
+  background: color-mix(in oklab, var(--fg) 7%, transparent);
+}
+
+.lig-matrix-port {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding-inline: 16px;
+  color: var(--fg);
+  font: inherit;
+  background: var(--bg);
+}
+
+.lig-matrix-port::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 100%;
+  width: 20px;
+  background: linear-gradient(to right, var(--bg), transparent);
+  pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .lig-matrix-port::after {
+    opacity: 0;
+    animation: lig-pin-fade linear both;
+    animation-timeline: scroll(nearest inline);
+    animation-range: 0 24px;
+  }
+}
+
+.lig-matrix-corner {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background: var(--bg);
+}
+
+.lig-matrix-cell {
+  display: flex;
+  color: var(--fg);
+}
+
+.lig-matrix-cell .lig-download-link {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.lig-matrix-cell .lig-download-symbol {
+  margin-inline-start: 0;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+  transition:
+    color 0.2s var(--ease),
+    scale 0.2s var(--ease);
+}
+
+.lig-matrix-cell:hover .lig-download-symbol,
+.lig-matrix-cell:focus-within .lig-download-symbol {
+  color: var(--accent);
+  scale: 1.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lig-matrix-cell .lig-download-symbol {
+    transition: none;
+  }
+}
+
+.lig-matrix a:focus-visible,
+.lig-matrix-choice .ui-choice-word:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -2px;
 }
 
 .lig-port-variants {
@@ -1037,17 +1283,30 @@
   color: var(--fg);
 }
 
-.lig-port-downloads a:hover,
-.lig-port-zed a:hover,
+.lig-port a:hover,
 .lig-port-manifest a:hover {
   color: var(--accent);
 }
 
-.lig-port-downloads a:focus-visible,
-.lig-port-zed a:focus-visible,
+.lig-port a:focus-visible,
 .lig-port-manifest a:focus-visible {
   outline: 1px solid var(--accent);
   outline-offset: 4px;
+}
+
+.lig-lightweight {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  margin-top: 48px;
+  padding-inline-start: 16px;
+  border-inline-start: 4px solid var(--line);
+}
+
+.lig-lightweight .lig-group {
+  margin: 0;
+  font-weight: 400;
 }
 
 .lig-port-manifest {
@@ -1057,10 +1316,6 @@
 }
 
 @media (max-width: 860px) {
-  .lig-port-downloads li {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .lig-port-variants .lig-port-all {
     margin-left: 0;
   }

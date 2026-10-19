@@ -108,7 +108,8 @@ const banks = computed(() => terminalColors(tokens.value))
 
 .lig-ansi-output {
   display: grid;
-  /* Two 13-character labels, their padding, and the inner column gap. */
+  min-width: 0;
+  /* Two banks sit side by side until the card is narrower than both. */
   grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(26ch + 36px)), 1fr));
   gap: 32px clamp(32px, 6vw, 80px);
 }
@@ -127,16 +128,16 @@ const banks = computed(() => terminalColors(tokens.value))
 
 .lig-ansi-colors {
   display: grid;
-  grid-template-columns: repeat(2, minmax(max-content, 1fr));
-  gap: 4px 12px;
+  min-width: 0;
+  gap: 4px;
 }
 
 .lig-ansi-color {
   display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
+  /* Name and sample stay on one row until the row is narrower than both. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(14ch + 12px)), 1fr));
   align-items: baseline;
-  gap: 12px;
+  gap: 4px 12px;
   min-width: 0;
 }
 

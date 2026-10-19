@@ -4,7 +4,6 @@ import { resolveVariant, spec } from '../../../core'
 
 const props = defineProps<{ variant: LigVariant }>()
 const { t } = useI18n()
-const link = useKitLink()
 const center = 180
 const radius = 120
 const activeName = ref('red')
@@ -129,20 +128,6 @@ onBeforeUnmount(() => cancelAnimationFrame(nudgeFrame))
 
 <template>
   <figure class="lig-oklch">
-    <figcaption>
-      <h3 class="lig-oklch-title">
-        {{ t('palette.oklch.title') }}
-      </h3>
-      <p class="lig-aside">
-        {{ t('palette.oklch.note') }}
-      </p>
-      <NuxtLink
-        class="lig-oklch-note-link"
-        :to="link('/notes/color-design')"
-      >
-        {{ t('palette.oklch.designNote') }} ↗
-      </NuxtLink>
-    </figcaption>
     <div class="lig-oklch-layout">
       <svg
         ref="hue"

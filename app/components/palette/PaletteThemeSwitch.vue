@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import type { LigVariant } from '#palette/nvim-build'
-import { joinVariant, radioKey, splitVariant, VARIANT_OPTIONS } from '~/utils/lig-variant'
+import { radioKey, VARIANT_OPTIONS } from '~/utils/lig-variant'
 
-const props = defineProps<{ toneOnly?: boolean }>()
 const { variant } = useLigVariant()
 const { t } = useI18n()
-const options = computed(() => props.toneOnly ? VARIANT_OPTIONS.slice(0, 2) : VARIANT_OPTIONS)
-const ids = computed(() => options.value.map(option => option.id))
-const selected = computed(() => props.toneOnly ? splitVariant(variant.value).tone : variant.value)
+const options = VARIANT_OPTIONS
+const ids = options.map(option => option.id)
+const selected = computed(() => variant.value)
 
 function select(next: LigVariant): void {
-  variant.value = props.toneOnly ? joinVariant(splitVariant(next).tone, splitVariant(variant.value).edge) : next
+  variant.value = next
 }
 </script>
 

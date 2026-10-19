@@ -22,9 +22,6 @@ const inks = computed(() => families.map((family) => {
 </script>
 
 <template>
-  <p class="lig-syntax-lede">
-    {{ t('palette.syntax.lede') }}
-  </p>
   <div class="lig-swatch-groups lig-semantic-families">
     <section
       v-for="ink in inks"

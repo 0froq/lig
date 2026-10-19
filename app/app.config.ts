@@ -37,6 +37,10 @@ export default defineAppConfig({
     },
     signature: { paper: true, line: true, hand: true, bloom: true, pointer: { dwell: false, click: false, dwellAfter: 1.2 } },
     install: { href: '/#downloads' },
-    nav: [],
+    nav: [
+      { label: 'nav.notes', to: '/notes' },
+      { label: 'nav.docs', to: '/docs' },
+      { label: 'nav.changelog', to: '/changelog' },
+    ],
   } satisfies ProductConfig,
 })

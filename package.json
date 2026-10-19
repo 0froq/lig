@@ -42,7 +42,9 @@
     "@froq/ui": "file:vendor/ui",
     "@nuxt/content": "catalog:prod",
     "@nuxtjs/i18n": "catalog:prod",
+    "@shikijs/langs": "catalog:prod",
     "nuxt": "catalog:prod",
+    "shiki": "catalog:prod",
     "vue": "catalog:prod",
     "zod": "catalog:prod"
   },

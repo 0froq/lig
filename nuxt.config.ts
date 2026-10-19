@@ -1,4 +1,4 @@
-import { realpathSync } from 'node:fs'
+import { readdirSync, readFileSync, realpathSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
@@ -13,6 +13,21 @@ import { IMAGE_ORIGIN, SITE_ORIGIN } from './shared/site'
 import { themePreferenceScript } from './shared/theme-preference'
 
 const requireUI = createRequire(realpathSync(fileURLToPath(new URL('./node_modules/@froq/ui/package.json', import.meta.url))))
+
+// `status` lives on the locale file. The client message compiler drops keys that
+// `t()` never touches, so the browser must not read it from the message catalog.
+function localeStatus(): Record<string, string> {
+  const dir = fileURLToPath(new URL('./i18n/locales', import.meta.url))
+  const status: Record<string, string> = {}
+  for (const name of readdirSync(dir)) {
+    if (!name.endsWith('.json'))
+      continue
+    const file = JSON.parse(readFileSync(join(dir, name), 'utf8')) as { status?: unknown }
+    if (typeof file.status === 'string')
+      status[name.slice(0, -'.json'.length)] = file.status
+  }
+  return status
+}
 
 export default defineNuxtConfig({
   extends: [
@@ -49,6 +64,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       publicFiles: listPublicShareImages(),
+      localeStatus: localeStatus(),
     },
   },
 

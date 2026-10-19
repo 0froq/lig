@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { LigVariant } from '../../../core'
+import { Collapsible } from '@froq/ui'
 import { resolveVariant } from '../../../core'
 
 const props = defineProps<{ variant: LigVariant }>()
 const { t } = useI18n()
 const route = useRoute()
-const link = useKitLink()
 const resolved = computed(() => resolveVariant(props.variant))
 const banks = computed(() => terminalColors(resolved.value.tokens))
 const open = ref(false)
@@ -20,11 +20,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <AnimatedDetails
+  <Collapsible
     id="terminal-colors"
     v-model="open"
-    class="lig-more lig-terminal-reference"
-    rule="dash"
+    class="lig-more lig-terminal-reference lig-ui ui"
     :label="t('palette.terminal.reference')"
   >
     <p class="lig-aside">
@@ -50,10 +49,16 @@ onMounted(() => {
         <caption>{{ variant }} / terminal.ansi.0-15</caption>
         <thead>
           <tr>
-            <th scope="col">
+            <th
+              scope="col"
+              class="lig-pin-1"
+            >
               ANSI
             </th>
-            <th scope="col">
+            <th
+              scope="col"
+              class="lig-pin-2 lig-pin-end"
+            >
               {{ t('palette.terminal.color') }}
             </th>
             <th scope="col">
@@ -78,10 +83,16 @@ onMounted(() => {
             v-for="color in bank.colors"
             :key="color.index"
           >
-            <th scope="row">
+            <th
+              scope="row"
+              class="lig-pin-1"
+            >
               {{ color.index }}
             </th>
-            <td :style="{ color: color.hex }">
+            <td
+              class="lig-pin-2 lig-pin-end"
+              :style="{ color: color.hex }"
+            >
               <span
                 class="lig-color-key"
                 :style="{ background: color.hex }"
@@ -111,19 +122,7 @@ onMounted(() => {
       class="lig-color-announcement"
       role="status"
     >{{ copied ? t('install.copied') : '' }}</span>
-    <p class="lig-aside">
-      {{ t('palette.terminal.slotNote') }}
-      <NuxtLink
-        class="lig-oklch-note-link"
-        :to="link('/notes/color-design')"
-      >
-        {{ t('palette.oklch.designNote') }} ↗
-      </NuxtLink>
-    </p>
-    <p class="lig-aside">
-      {{ t('palette.terminal.contrastNote') }}
-    </p>
-  </AnimatedDetails>
+  </Collapsible>
 </template>
 
 <style scoped>

@@ -30,14 +30,23 @@ const families = computed(() => {
     tabindex="0"
     :aria-label="t('palette.more')"
   >
-    <table class="lig-color-table">
+    <table
+      class="lig-color-table"
+      style="--pin-1: 7ch"
+    >
       <caption>{{ variant }} / accent.*</caption>
       <thead>
         <tr>
-          <th scope="col">
+          <th
+            scope="col"
+            class="lig-pin-1"
+          >
             {{ t('palette.tiers.color') }}
           </th>
-          <th scope="col">
+          <th
+            scope="col"
+            class="lig-pin-2 lig-pin-end"
+          >
             {{ t('palette.tiers.tier') }}
           </th>
           <th scope="col">
@@ -66,12 +75,14 @@ const families = computed(() => {
             v-if="index === 0"
             scope="rowgroup"
             rowspan="3"
+            class="lig-pin-1"
             :style="{ color: family.hex }"
           >
             {{ family.name }}
           </th>
           <th
             scope="row"
+            class="lig-pin-2 lig-pin-end"
             :style="{ color: level.hex }"
           >
             {{ t(`palette.tiers.${level.label}`) }}

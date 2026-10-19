@@ -1,39 +1,8 @@
 <script setup lang="ts">
-// Product docs: the margin holds the table of contents, so the pen stays off these pages
-const route = useRoute()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const link = useKitLink()
-const contentPath = useContentPath()
 
-const rest = computed(() => {
-  const slug = route.params.slug
-  const parts = Array.isArray(slug) ? slug : slug ? [slug] : []
-  return parts.length ? `/${parts.join('/')}` : ''
-})
-
-const { data } = await useAsyncData(
-  () => `docs-${locale.value}-${rest.value}`,
-  async () => {
-    const root = contentPath('/docs')
-    const [doc, all] = await Promise.all([
-      queryCollection('docs').path(`${root}${rest.value}`).first(),
-      queryCollection('docs').where('path', 'LIKE', `${root}%`).order('stem', 'ASC').select('path', 'title').all(),
-    ])
-    return { doc, all, root }
-  },
-)
-const doc = computed(() => data.value?.doc)
-if (!doc.value)
-  throw createError({ statusCode: 404, statusMessage: 'Not found', fatal: true })
-
-const pages = computed(() => (data.value?.all ?? []).map(item => ({
-  title: item.title,
-  path: item.path,
-  to: link(`/docs${item.path.slice(data.value?.root.length ?? 0)}`),
-})))
-const index = computed(() => pages.value.findIndex(item => item.path === doc.value?.path))
-const prev = computed(() => pages.value[index.value - 1])
-const next = computed(() => pages.value[index.value + 1])
+const { doc, isIndex, prev, next } = await useDocsPage()
 
 useHead({ title: () => doc.value?.title?.trim() || t('docs.label') })
 const files = useRuntimeConfig().public.publicFiles
@@ -60,48 +29,40 @@ useSeoMeta({ robots: () => doc.value?.title?.trim() ? undefined : 'noindex, foll
 </script>
 
 <template>
-  <Sheet v-if="doc">
-    <PageHead
-      :title="doc.title"
-      title-name="doc.title"
-      :lede="doc.description"
-      lede-name="doc.description"
-      long
-      compact
+  <div>
+    <header
+      v-if="!isIndex"
+      class="l-doc-head"
     >
-      <template #kicker>
+      <p class="l-doc-kicker">
         <NuxtLink :to="link('/docs')">
           {{ t('docs.label') }}
         </NuxtLink>
-      </template>
-    </PageHead>
-    <section class="l-section is-docs">
-      <nav class="l-toc">
-        <NuxtLink
-          v-for="item in pages"
-          :key="item.path"
-          :to="item.to"
-          :aria-current="item.path === doc.path ? 'page' : undefined"
-        >
-          <Fill
-            :value="item.title"
-            name="doc.title"
-            :size="10"
-          />
-        </NuxtLink>
-      </nav>
-      <div class="l-body l-doc">
-        <ContentRenderer
-          :value="doc"
-          class="l-md"
-        />
-      </div>
-    </section>
-    <nav class="l-section is-pager">
+      </p>
+      <h1 class="l-doc-title">
+        {{ doc.title }}
+      </h1>
+      <p
+        v-if="doc.description"
+        class="l-doc-lede"
+      >
+        {{ doc.description }}
+      </p>
+    </header>
+    <DocBody>
+      <ContentRenderer
+        :value="doc"
+        class="l-md"
+      />
+    </DocBody>
+    <nav
+      v-if="prev || next"
+      class="l-pager"
+    >
       <p class="l-label">
         <NuxtLink
           v-if="prev"
-          :to="prev.to"
+          :to="link(prev.to)"
         >
           ← <Fill
             :value="prev.title"
@@ -112,8 +73,8 @@ useSeoMeta({ robots: () => doc.value?.title?.trim() ? undefined : 'noindex, foll
       </p>
       <NuxtLink
         v-if="next"
-        class="l-body l-entry"
-        :to="next.to"
+        class="l-entry"
+        :to="link(next.to)"
       >
         <span class="l-kicker">{{ t('docs.next') }}</span>
         <span class="l-entry-title">
@@ -125,5 +86,116 @@ useSeoMeta({ robots: () => doc.value?.title?.trim() ? undefined : 'noindex, foll
         </span>
       </NuxtLink>
     </nav>
-  </Sheet>
+  </div>
 </template>
+
+<style scoped>
+.l-doc-head {
+  max-width: 42rem;
+  padding-bottom: clamp(24px, 4vh, 40px);
+}
+
+.l-doc-kicker {
+  margin: 0 0 18px;
+  font-family: var(--font-meta);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.l-doc-kicker a {
+  transition: color 0.3s;
+}
+
+.l-doc-kicker a:hover {
+  color: var(--fg);
+}
+
+.l-doc-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: calc(clamp(44px, 6vw, 80px) * var(--title-scale));
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+:lang(zh) .l-doc-title {
+  letter-spacing: 0;
+}
+
+.l-doc-lede {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.l-pager {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: var(--gap);
+  align-items: baseline;
+  padding-top: clamp(96px, 18vh, 200px);
+  padding-bottom: clamp(96px, 16vh, 180px);
+}
+
+.l-label {
+  grid-column: span var(--span-margin);
+  margin: 0;
+  font-family: var(--font-meta);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.l-label a {
+  transition: color 0.3s;
+}
+
+.l-label a:hover {
+  color: var(--fg);
+}
+
+.l-entry {
+  grid-column: span var(--span-body);
+  display: grid;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.l-entry-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: calc(clamp(32px, 3.6vw, 56px) * var(--title-scale));
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  transition: color 0.3s;
+}
+
+:lang(zh) .l-entry-title {
+  letter-spacing: 0;
+}
+
+.l-entry:hover .l-entry-title {
+  color: var(--muted);
+}
+
+@media (max-width: 860px) {
+  .l-pager {
+    grid-template-columns: 1fr;
+  }
+
+  .l-label,
+  .l-entry {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+</style>

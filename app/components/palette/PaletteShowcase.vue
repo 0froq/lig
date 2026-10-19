@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { Collapsible } from '@froq/ui'
 import { radioKey } from '~/utils/lig-variant'
 import { spec } from '../../../core'
 
 const { t } = useI18n()
+const link = useKitLink()
 const { variant, swatches } = useLigVariant()
 const { format, labelFor } = usePaletteClipboard()
 
@@ -66,9 +68,6 @@ const neutrals = computed(() => {
       >
         {{ t('palette.hero.tagline') }}
       </p>
-      <p class="l-lede">
-        {{ t('palette.hero.lede') }}
-      </p>
     </div>
   </section>
 
@@ -101,12 +100,17 @@ const neutrals = computed(() => {
       Source
     </p>
     <div class="l-body">
-      <h2 class="lig-quiet-title">
-        {{ t('palette.sections.swatchesTitle') }}
-      </h2>
-      <p class="lig-aside">
-        {{ t('palette.paletteNote') }}
-      </p>
+      <div class="lig-palette-lead">
+        <h2 class="lig-quiet-title">
+          {{ t('palette.sections.swatchesTitle') }}
+        </h2>
+        <NuxtLink
+          class="lig-oklch-note-link"
+          :to="link('/notes/color-design')"
+        >
+          {{ t('palette.oklch.designNote') }} ↗
+        </NuxtLink>
+      </div>
       <div class="lig-copy-bar">
         <span class="lig-copy-label">{{ t('palette.copyAs') }}</span>
         <SlidingUnderline
@@ -132,18 +136,17 @@ const neutrals = computed(() => {
       </div>
       <div class="lig-source-palette">
         <section class="lig-palette-column">
-          <h3 class="lig-palette-heading">
-            <span>{{ t('palette.groups.neutrals') }}</span>
-            <span>{{ neutrals.length.toString().padStart(2, '0') }}</span>
-          </h3>
           <PaletteNeutralRibbon :colors="neutrals" />
         </section>
         <PaletteOklch :variant="variant" />
       </div>
       <PaletteTerminalReference :variant="variant" />
-      <AnimatedDetails :label="t('palette.more')">
+      <Collapsible
+        class="lig-more lig-ui ui"
+        :label="t('palette.more')"
+      >
         <PaletteAccentTiers :variant="variant" />
-      </AnimatedDetails>
+      </Collapsible>
     </div>
   </section>
 

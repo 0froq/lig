@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { Select } from '@froq/ui'
+import type { MenuItem } from '@froq/ui/vue'
+import { DropdownMenu, Select } from '@froq/ui'
 
 const { product } = useAppConfig()
 const { t, locale, locales } = useI18n()
+const { status } = useLocaleStatus()
 const switchLocalePath = useSwitchLocalePath()
-const languageOptions = computed(() => locales.value.map(l => ({ value: l.code, label: l.name ?? l.code })))
+const languageOptions = computed(() => locales.value.map((item) => {
+  const name = item.name ?? item.code
+  return {
+    value: item.code,
+    label: status(item.code) === 'wip' ? t('site.wipLanguage', { language: name }) : name,
+  }
+}))
 const language = computed({
   get: () => locale.value,
   set: (value: string) => {
@@ -13,8 +21,18 @@ const language = computed({
 })
 const link = useKitLink()
 const route = useRoute()
-const isNotes = computed(() => /^\/(?:zh\/)?notes(?:\/|$)/.test(route.path))
 const pinned = ref(false)
+const menuItems = computed<MenuItem[]>(() => product.nav.map(item => ({ value: item.to, label: t(item.label) })))
+const menuOpen = ref(false)
+
+function here(to: string): boolean {
+  const path = link(to)
+  return route.path === path || route.path.startsWith(`${path}/`)
+}
+
+function openPage(item: MenuItem): void {
+  void navigateTo(link(item.value))
+}
 
 async function changeLanguage(value: string): Promise<void> {
   const language = locales.value.find(l => l.code === value)
@@ -26,7 +44,9 @@ async function changeLanguage(value: string): Promise<void> {
 }
 
 function onScroll(): void {
-  pinned.value = window.scrollY > 220
+  // Shown once the head is gone, and put away again at the foot of the page so it never covers the footer
+  const { scrollY, innerHeight } = window
+  pinned.value = scrollY > 220 && scrollY + innerHeight < document.documentElement.scrollHeight - 160
 }
 
 onMounted(() => {
@@ -48,7 +68,7 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
         :size="4"
       /><span class="l-dot">{{ product.mark }}</span>
     </NuxtLink>
-    <PaletteThemeSwitch :tone-only="isNotes" />
+    <PaletteThemeSwitch />
     <div class="l-header-actions">
       <nav class="l-nav">
         <NuxtLink
@@ -60,6 +80,34 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
         </NuxtLink>
       </nav>
       <div class="l-controls lig-ui ui">
+        <DropdownMenu
+          v-model="menuOpen"
+          class="l-menu-list"
+          :label="t('site.menu')"
+          :items="menuItems"
+          :modal="false"
+          align="end"
+          @select="openPage"
+        >
+          <template #item="{ item }">
+            <span :aria-current="here(item.value) ? 'page' : undefined">{{ item.label }}</span>
+          </template>
+          <template #trigger>
+            <button
+              type="button"
+              class="l-menu"
+            >
+              {{ t('site.menu') }}
+              <svg
+                viewBox="0 0 12 8"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="m1 1 5 5 5-5" />
+              </svg>
+            </button>
+          </template>
+        </DropdownMenu>
         <Select
           v-model="language"
           :label="t('site.language')"
@@ -77,7 +125,7 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
     </div>
     <Transition name="theme-bar">
       <div
-        v-if="pinned && !isNotes"
+        v-if="pinned"
         class="l-theme-bar"
       >
         <PaletteThemeSwitch />

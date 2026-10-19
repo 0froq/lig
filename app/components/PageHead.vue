@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Head of an inner page: a large title whose stop blooms, over a ruled line the pen draws
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   kicker?: string | null
   kickerName?: string
   title?: string | null
@@ -8,8 +8,12 @@ withDefaults(defineProps<{
   lede?: string | null
   ledeName?: string
   long?: boolean
-  /** A shorter head for reference pages, where the content should start above the fold. */
+  /** Section heads own their inset, typography and metadata layout. */
+  variant?: 'poster' | 'section'
+  /** @deprecated Use variant="section" */
   compact?: boolean
+  /** Render the trailing accent stop after the title. */
+  stop?: boolean
 }>(), {
   kicker: null,
   kickerName: 'kicker',
@@ -17,22 +21,34 @@ withDefaults(defineProps<{
   titleName: 'title',
   lede: null,
   ledeName: 'lede',
+  variant: 'poster',
+  compact: false,
+  stop: true,
 })
+
+const section = computed(() => props.variant === 'section' || props.compact)
 </script>
 
 <template>
   <section
     class="l-page-head"
-    :class="{ 'is-compact': compact }"
+    :class="{ 'is-section': section }"
   >
     <h1
       class="l-page-title"
       :class="{ 'is-long': long }"
     >
       <Stop
+        v-if="stop"
         :text="title"
         :name="titleName"
         fallback="."
+        :size="long ? 12 : 5"
+      />
+      <Fill
+        v-else
+        :value="title"
+        :name="titleName"
         :size="long ? 12 : 5"
       />
     </h1>

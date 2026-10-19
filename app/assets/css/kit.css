@@ -96,7 +96,9 @@
 
 html {
   overflow-x: clip;
-  background: var(--bg);
+  /* The scrollbar track is the canvas, not the banner. Paint the banner color
+     there for the bar's height so the track does not show a page-colored seam. */
+  background: linear-gradient(var(--faint) var(--banner-h, 0px), var(--bg) var(--banner-h, 0px)) fixed;
   transition:
     background-color 0.6s var(--ease),
     color 0.6s var(--ease);
@@ -139,6 +141,16 @@ code {
 .l-site {
   position: relative;
   z-index: 1;
+}
+
+.l-frame {
+  position: relative;
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  width: 100%;
+  /* Nothing inside may widen the page. `clip` does not make a scroll container, so sticky still works. */
+  overflow-x: clip;
 }
 
 .ui-paper {
@@ -192,8 +204,8 @@ code {
 
 .l-nav {
   display: flex;
-  gap: 28px;
-  font-size: 14px;
+  gap: 22px;
+  font: 11px/1.3 var(--font-meta);
   color: var(--muted);
 }
 
@@ -207,6 +219,80 @@ code {
 
 .l-language-select {
   font-size: 11px;
+}
+
+.l-nav a.router-link-active {
+  color: var(--fg);
+}
+
+/* Below the wide layout the three pages fold into one menu beside the language select. */
+.l-menu {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--ui-fg);
+  font: 11px/1.3 var(--ui-font-meta);
+  cursor: pointer;
+  transition: color var(--ui-dur) var(--ui-ease);
+}
+
+.l-menu svg {
+  width: 10px;
+  height: 7px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+}
+
+.l-menu:hover,
+.l-menu[data-state='open'] {
+  color: var(--ui-accent);
+}
+
+.l-menu:focus-visible {
+  outline: 1px solid var(--ui-accent);
+  outline-offset: 2px;
+}
+
+/* A list of pages, not a choice: no filled rows and no shadow, only text that warms toward the accent. */
+.l-menu-list.ui-menu-content {
+  min-width: 9.5rem;
+  padding: 6px 16px;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.l-menu-list .ui-menu-item {
+  padding: 7px 0;
+  border-radius: 0;
+  color: var(--ui-fg);
+  font-size: 15px;
+  transition: color var(--ui-dur) var(--ui-ease);
+}
+
+.l-menu-list .ui-menu-item[data-highlighted] {
+  background: none;
+  color: var(--ui-accent);
+}
+
+.l-menu-list .ui-menu-item [aria-current='page']::after {
+  content: '.';
+  color: var(--ui-accent);
+}
+
+/* The three pages sit beside the centred variant switch; when the two would touch they fold into the menu. */
+@media (max-width: 1100px) {
+  .l-header-actions > .l-nav {
+    display: none;
+  }
+
+  .l-menu {
+    display: inline-flex;
+  }
 }
 
 .l-top > .l-sections {
@@ -234,9 +320,11 @@ code {
   color: var(--fg);
 }
 
+/* The variant switch rests at the bottom edge once the head has scrolled away; the top edge belongs
+   to the pinned titles of open sections. */
 .l-theme-bar {
   position: fixed;
-  top: 36px;
+  bottom: max(16px, env(safe-area-inset-bottom));
   left: 50%;
   z-index: 20;
   translate: -50% 0;
@@ -256,7 +344,7 @@ code {
 .theme-bar-enter-from,
 .theme-bar-leave-to {
   opacity: 0;
-  translate: -50% calc(-100% - 36px);
+  translate: -50% calc(100% + 32px);
 }
 
 .lig-theme-switch {
@@ -327,6 +415,18 @@ code {
   color: transparent;
 }
 
+/* A page with no closing block of its own ends on the footer's stop: hidden until the paper or pen lands it.
+   Narrow handwriting stops at the tagline and never gets there, so the stop stays as type. */
+html.has-stroke:not(.has-hand, :has(.l-sheet [data-anchor='final-mark'])) .l-foot-stop {
+  color: transparent;
+}
+
+@media (min-width: 861px) {
+  html.has-stroke.has-hand:not(:has(.l-sheet [data-anchor='final-mark'])) .l-foot-stop {
+    color: transparent;
+  }
+}
+
 .has-hand .l-tagline {
   position: absolute;
   top: 24svh;
@@ -338,6 +438,13 @@ code {
 
 .has-stroke [data-anchor='rule'] {
   border-top-color: transparent;
+}
+
+/* Narrow handwriting stops at the tagline, so the foot keeps its own rule. */
+@media (max-width: 860px) {
+  .has-hand.has-stroke [data-anchor='rule'] {
+    border-top-color: var(--line);
+  }
 }
 
 .l-skip {
@@ -711,49 +818,10 @@ html:not(.has-hand) .l-release {
   margin: 0 0 16px;
 }
 
-.l-foot {
-  padding: 0 var(--pad);
-  color: var(--muted);
-}
-
-.l-foot-row {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 32px 0 44px;
-  border-top: 1px solid var(--line);
-}
-
-.l-foot-line {
-  margin: 0;
-  color: var(--fg);
-  font-family: var(--font-display);
-  font-size: calc(28px * var(--title-scale));
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.l-foot-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-  font-size: 13px;
-}
-
 .l-controls {
   display: flex;
   gap: 20px;
   justify-self: end;
-}
-
-.l-foot a {
-  transition: color 0.3s;
-}
-
-.l-foot a:hover {
-  color: var(--fg);
 }
 
 /* Inner pages */
@@ -764,8 +832,21 @@ html:not(.has-hand) .l-release {
   padding: 0 var(--pad) clamp(32px, 6svh, 64px);
 }
 
-.l-page-head.is-compact {
-  min-height: 54svh;
+.l-page-head.is-section {
+  min-height: 0;
+  padding: 112px 0 28px;
+}
+
+.is-section .l-page-title.is-long {
+  font-size: clamp(44px, 6vw, 80px);
+}
+
+.is-section .l-page-foot {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.is-section .l-page-foot > * {
+  grid-column: auto;
 }
 
 .l-page-title {
@@ -1085,6 +1166,10 @@ button.l-cta {
     display: none;
   }
 
+  .l-menu {
+    display: inline-flex;
+  }
+
   .l-top {
     grid-template-columns: 1fr auto;
     height: auto;
@@ -1211,142 +1296,7 @@ button.l-cta {
   margin-inline: var(--pad);
 }
 
-/* Docs */
-.l-section.is-docs {
-  align-items: start;
-  padding-top: clamp(48px, 8svh, 96px);
-}
-
-.l-toc {
-  position: sticky;
-  top: 96px;
-  grid-column: span var(--span-margin);
-  display: grid;
-  align-content: start;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.l-toc a {
-  width: fit-content;
-  transition: color 0.3s;
-}
-
-.l-toc a:hover,
-.l-toc a[aria-current='page'] {
-  color: var(--fg);
-}
-
-.l-doc {
-  max-width: 42rem;
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-.l-doc h2,
-.l-prose h2 {
-  margin: 2.4em 0 0.6em;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: calc(clamp(30px, 2.8vw, 40px) * var(--title-scale));
-  line-height: 1.1;
-  letter-spacing: -0.015em;
-}
-
-.l-doc h3,
-.l-prose h3 {
-  margin: 2em 0 0.5em;
-  font-size: 17px;
-  font-weight: 500;
-}
-
-.l-doc h2 a,
-.l-doc h3 a {
-  text-decoration: none;
-}
-
-.l-md > :first-child {
-  margin-top: 0;
-}
-
-.l-doc p,
-.l-doc ul,
-.l-doc ol {
-  margin: 0 0 1em;
-}
-
-.l-doc ul,
-.l-doc ol {
-  padding-left: 1.2em;
-}
-
-.l-doc li {
-  margin: 0.3em 0;
-}
-
-.l-doc p a,
-.l-doc li a,
-.l-prose p a {
-  text-decoration: underline;
-  text-decoration-color: var(--faint);
-  text-underline-offset: 3px;
-  transition: text-decoration-color 0.3s;
-}
-
-.l-doc p a:hover,
-.l-doc li a:hover,
-.l-prose p a:hover {
-  text-decoration-color: var(--fg);
-}
-
-.l-doc pre {
-  overflow-x: auto;
-  margin: 1.4em 0;
-  padding: 16px 18px;
-  border: 1px solid var(--line);
-  font-size: 13.5px;
-  line-height: 1.6;
-}
-
-.l-doc :not(pre) > code,
-.l-prose :not(pre) > code {
-  padding: 0.1em 0.35em;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-}
-
-.l-doc blockquote {
-  margin: 1.4em 0;
-  padding-left: 16px;
-  border-left: 1px solid var(--line);
-  color: var(--muted);
-}
-
-.l-doc table {
-  width: 100%;
-  margin: 1.4em 0;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.l-doc th,
-.l-doc td {
-  padding: 10px 12px 10px 0;
-  border-top: 1px solid var(--line);
-  text-align: left;
-}
-
-.l-doc th {
-  font-weight: 400;
-  color: var(--muted);
-}
-
-.l-doc hr {
-  margin: 2.4em 0;
-  border: 0;
-  border-top: 1px solid var(--line);
-}
+/* Docs — prose lives in DocBody.vue; section chrome in SectionLayout.vue */
 
 /* Code highlighting follows the paper, not its own background */
 .shiki,
@@ -1396,15 +1346,5 @@ button.l-cta {
     font-style: var(--shiki-dark-font-style, normal) !important;
     font-weight: var(--shiki-dark-font-weight, normal) !important;
     text-decoration: var(--shiki-dark-text-decoration, none) !important;
-  }
-}
-
-@media (max-width: 860px) {
-  .l-toc {
-    position: static;
-    grid-column: 1 / -1;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 18px;
   }
 }

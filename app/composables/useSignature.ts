@@ -39,7 +39,10 @@ export function useSignature(root: Ref<HTMLElement | undefined>, options: Signat
       const hand = find('tagline')
       const copy = hand?.cloneNode(true) as HTMLElement | undefined
       copy?.querySelectorAll('.l-fill').forEach(node => node.remove())
-      const finalMark = find('final-mark')
+      // A page that ends in its own closing block keeps that stop. Every other pen page ends on the footer's.
+      const pageMark = find('final-mark')
+      const footMark = options.line && !pageMark ? document.querySelector<HTMLElement>('[data-anchor="foot-mark"]') : null
+      const finalMark = pageMark ?? footMark
       const narrow = window.innerWidth < 860
       return {
         mark: find('mark'),
@@ -48,7 +51,8 @@ export function useSignature(root: Ref<HTMLElement | undefined>, options: Signat
         hand,
         handText: copy?.textContent ?? '',
         finalMark,
-        finalSection: finalMark?.closest('section'),
+        finalSection: pageMark ? pageMark.closest('section') : footMark?.closest('footer'),
+        finalBand: footMark ? document.querySelector('[data-anchor="foot-band"]') : null,
         margin: find('label'),
         sections: Array.from(el?.querySelectorAll('.l-section') ?? []).flatMap((element) => {
           const label = element.querySelector('[data-anchor="label"]')

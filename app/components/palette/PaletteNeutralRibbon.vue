@@ -143,7 +143,6 @@ onBeforeUnmount(() => {
         ref="ribbon"
         class="lig-neutral-ribbon"
         @pointerleave="onLeave"
-        @scroll.passive="updateOutline"
       >
         <button
           v-for="(color, index) in colors"
@@ -179,12 +178,18 @@ onBeforeUnmount(() => {
         <span>{{ preview.name }}</span>
         <span class="lig-neutral-lightness">L {{ (preview.lightness * 100).toFixed(0) }}%</span>
       </span>
-      <span>
-        <span
-          role="status"
-        >{{ copied === preview.name ? $t('install.copied') : '' }}</span>
-        <span v-if="copied !== preview.name">{{ textFor(preview.hex, format) }}</span>
-      </span>
+      <button
+        type="button"
+        :style="{ '--copy-color': preview.hex }"
+        :aria-label="`${preview.name}: ${textFor(preview.hex, format)}`"
+        @click="copyValue(textFor(preview.hex, format), preview.name)"
+      >
+        {{ copied === preview.name ? $t('install.copied') : textFor(preview.hex, format) }}
+      </button>
+      <span
+        class="lig-neutral-announcement"
+        role="status"
+      >{{ copied === preview.name ? $t('install.copied') : '' }}</span>
     </figcaption>
   </figure>
 </template>
@@ -211,18 +216,15 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   height: clamp(80px, 10vw, 128px);
-  overflow-x: auto;
 }
 
 .lig-neutral-ribbon button {
-  flex: 1 0 24px;
+  flex: 1 1 0;
   min-width: 0;
   padding: 0;
   border: 0;
   cursor: pointer;
-  transition:
-    flex-grow 260ms var(--ease),
-    height 260ms var(--ease);
+  transition: height 260ms var(--ease);
 }
 
 .lig-neutral-outline.is-nudging :deep(.motion-outline) {
@@ -232,11 +234,6 @@ onBeforeUnmount(() => {
 .lig-neutral-outline.is-tracking :deep(.motion-outline),
 .lig-neutral-outline.is-tracking :deep(.motion-outline rect) {
   transition: none;
-}
-
-.lig-neutral-ribbon button:hover,
-.lig-neutral-ribbon button:focus-visible {
-  flex-grow: 2;
 }
 
 .lig-neutral-ribbon button:focus-visible {
@@ -252,12 +249,39 @@ onBeforeUnmount(() => {
 }
 
 .lig-neutral-readout {
+  position: relative;
   justify-content: space-between;
   min-height: 2.5em;
   padding-top: 12px;
   color: var(--fg);
   font: 11px/1.5 var(--font-meta);
   overflow-wrap: anywhere;
+}
+
+.lig-neutral-readout button {
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: inset 0 -1px 0 var(--line);
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.lig-neutral-readout button:hover,
+.lig-neutral-readout button:focus-visible {
+  box-shadow: inset 0 -1px 0 var(--copy-color);
+}
+
+.lig-neutral-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .lig-neutral-lightness {
