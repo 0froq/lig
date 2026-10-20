@@ -522,8 +522,11 @@
   border-top: 1px solid color-mix(in srgb, var(--pv-fg) 14%, transparent);
 }
 
+/* Pane titles follow the CodeBlock title row: a rule under the label, then the source. */
 .lig-file {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--pv-line);
   font-family: var(--font-meta);
   font-size: 11px;
   letter-spacing: 0.08em;
