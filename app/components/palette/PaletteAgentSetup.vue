@@ -35,7 +35,6 @@ const instruction = computed(() =>
     >
       <template #action>
         <CopyButton
-          class="lig-copy-action"
           :text="instruction"
           :label="t('palette.downloads.agentCopy')"
           :copied-label="t('install.copied')"

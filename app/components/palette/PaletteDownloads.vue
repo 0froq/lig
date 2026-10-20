@@ -64,7 +64,6 @@ const nvimSpans = computed(() => highlightSource(nvimSetup.value, 'lua', variant
       >
         <template #action>
           <CopyButton
-            class="lig-copy-action"
             :text="nvimSetup"
             :label="t('palette.downloads.copySetup')"
             :copied-label="t('install.copied')"
