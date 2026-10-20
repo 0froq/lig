@@ -396,13 +396,14 @@ code {
 }
 
 .l-word {
+  --len: 4;
+  --word-fit: calc(108vw / var(--len));
+  /* Long names shrink so the word always fits the width */
+  --word-px: clamp(88px, min(27vw, var(--word-fit)), 440px);
   margin: 0 0 0 -0.05em;
   font-family: var(--font-display);
   font-weight: 400;
-  /* Long names shrink so the word always fits the width */
-  font-size: calc(
-    clamp(88px, min(27vw, calc(108vw / var(--len, 4))), 440px) * var(--display-scale)
-  );
+  font-size: calc(var(--word-px) * var(--display-scale));
   line-height: 0.78;
   letter-spacing: -0.045em;
 }
