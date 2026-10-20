@@ -191,6 +191,11 @@
     "copy": "复制",
     "copied": "已复制"
   },
+  "codeblock": {
+    "copy": "复制",
+    "copied": "已复制",
+    "copyError": "复制失败 · 重试"
+  },
   "notes": {
     "label": "笔记",
     "description": "关于 LiG 配色设计、语法高亮与共享主题 token 的笔记。",

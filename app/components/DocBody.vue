@@ -78,19 +78,6 @@ withDefaults(
   text-decoration-color: var(--fg);
 }
 
-.l-doc :deep(pre) {
-  overflow-x: auto;
-  margin: 1.4em 0;
-  padding: 16px 18px;
-  border: 1px solid var(--line);
-  font-size: 13.5px;
-  line-height: 1.6;
-}
-
-.l-doc :deep(pre code) {
-  font-size: inherit;
-}
-
 .l-doc :deep(:not(pre) > code) {
   padding: 0.1em 0.35em;
   border: 1px solid var(--line);

@@ -190,6 +190,11 @@
     "copy": "Copy",
     "copied": "Copied"
   },
+  "codeblock": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyError": "Copy failed · retry"
+  },
   "notes": {
     "label": "Notes",
     "description": "Notes on LiG's color design, syntax highlighting and shared theme tokens.",
