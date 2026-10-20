@@ -20,6 +20,16 @@ const source = 'print("hello")'
         />
       </template>
     </CodeBlock>
+    <CodeBlock :code="source">
+      <template #action>
+        <CopyButton
+          :text="source"
+          label="Copy"
+          copied-label="Copied"
+          error-label="Copy failed"
+        />
+      </template>
+    </CodeBlock>
     <CodeBlock
       collapsible
       label="notes.txt"

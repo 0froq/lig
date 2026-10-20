@@ -4,12 +4,14 @@ import { computed, useId, useTemplateRef, watch } from 'vue'
 import { useDisclosure } from '../../vue'
 
 const props = withDefaults(defineProps<{
-  label: string
+  /** Visible title, usually a filename. A blank label draws no title row. */
+  label?: string
   code?: string
   spans?: readonly CodeSpan[]
-  /** Fold the source behind the title. A blank label cannot fold. */
+  /** Fold the source behind the title. A frame without a title cannot fold. */
   collapsible?: boolean
 }>(), {
+  label: '',
   collapsible: false,
 })
 defineSlots<{
@@ -17,7 +19,8 @@ defineSlots<{
   default?: () => unknown
 }>()
 const open = defineModel<boolean>('open', { default: false })
-const foldable = computed(() => props.collapsible && props.label.trim().length > 0)
+const titled = computed(() => props.label.trim().length > 0)
+const foldable = computed(() => props.collapsible && titled.value)
 const id = useId()
 const triggerId = `${id}-trigger`
 const panelId = `${id}-panel`
@@ -35,9 +38,12 @@ watch(open, (value) => {
 <template>
   <div
     class="ui-code-block"
-    :class="{ 'is-collapsible': foldable, 'is-open': foldable && open }"
+    :class="{ 'is-titled': titled, 'is-collapsible': foldable, 'is-open': foldable && open }"
   >
-    <header class="ui-code-block-header">
+    <header
+      v-if="titled"
+      class="ui-code-block-header"
+    >
       <button
         v-if="foldable"
         :id="triggerId"
@@ -61,6 +67,12 @@ watch(open, (value) => {
         <slot name="action" />
       </div>
     </header>
+    <div
+      v-else-if="$slots.action"
+      class="ui-code-block-action is-corner"
+    >
+      <slot name="action" />
+    </div>
     <div
       :id="foldable ? panelId : undefined"
       ref="panel"
