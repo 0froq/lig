@@ -1117,7 +1117,8 @@
   background: var(--bg);
 }
 
-.lig-matrix-port::after {
+.lig-matrix-port::after,
+.lig-matrix-corner::after {
   content: '';
   position: absolute;
   inset-block: 0;
@@ -1128,7 +1129,8 @@
 }
 
 @supports (animation-timeline: scroll()) {
-  .lig-matrix-port::after {
+  .lig-matrix-port::after,
+  .lig-matrix-corner::after {
     opacity: 0;
     animation: lig-pin-fade linear both;
     animation-timeline: scroll(nearest inline);
