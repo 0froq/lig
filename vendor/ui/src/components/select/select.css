@@ -101,6 +101,7 @@
   padding: 0;
   border: 1px solid var(--ui-muted);
   background: var(--ui-bg);
+  box-shadow: 0 0 20px 10px var(--ui-bg);
   color: var(--ui-fg);
   font: inherit;
   outline: none;

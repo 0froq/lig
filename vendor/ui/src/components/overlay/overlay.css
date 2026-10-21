@@ -36,7 +36,9 @@
   color: var(--ui-fg);
   font-family: var(--ui-font-text);
   line-height: 1.5;
-  box-shadow: 0 12px 40px color-mix(in srgb, var(--ui-fg) 8%, transparent);
+  box-shadow:
+    0 0 20px 10px var(--ui-bg),
+    0 12px 40px color-mix(in srgb, var(--ui-fg) 8%, transparent);
 }
 
 .ui-context-menu-target {
@@ -77,7 +79,9 @@
   font-family: var(--ui-font-text);
   font-size: 14px;
   line-height: 1.5;
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--ui-fg) 8%, transparent);
+  box-shadow:
+    0 0 20px 10px var(--ui-bg),
+    0 8px 24px color-mix(in srgb, var(--ui-fg) 8%, transparent);
 }
 
 .ui-tooltip-content,
@@ -93,7 +97,9 @@
   font-size: 14px;
   font-weight: normal;
   line-height: 1.5;
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--ui-fg) 8%, transparent);
+  box-shadow:
+    0 0 20px 10px var(--ui-bg),
+    0 8px 24px color-mix(in srgb, var(--ui-fg) 8%, transparent);
 }
 
 .ui-tooltip-content {
