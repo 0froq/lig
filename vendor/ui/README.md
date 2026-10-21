@@ -43,7 +43,7 @@ Everything below is exported from `@froq/ui`.
 | Toast / ToastRegion | Temporary notice and a shared region. The queue stays with the caller |
 | IconButton / EmptyState | Named icon button. Empty content and an actions slot |
 | Badge / Avatar / Separator / Card / AspectRatio / Table | Mark, image, rule, surface, ratio, native table |
-| Dialog / AlertDialog / Drawer / Popover / DropdownMenu / Tooltip | Dialog, confirm, side panel, anchored layer, menu, tip |
+| Dialog / AlertDialog / Drawer / Popover / Menu / Tooltip | Dialog, confirm, side panel, anchored layer, menu, tip |
 | ContextMenu / HoverCard | Context menu and link preview. The preview is not required content |
 | Paper | Paper texture |
 

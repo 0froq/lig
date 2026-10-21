@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { MenuItem } from '@froq/ui/vue'
-import { DropdownMenu, Select } from '@froq/ui'
+import { Menu, Select } from '@froq/ui'
 
 const { product } = useAppConfig()
 const { t, locale, locales } = useI18n()
@@ -83,7 +83,7 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
         </NuxtLink>
       </nav>
       <div class="l-controls lig-ui ui">
-        <DropdownMenu
+        <Menu
           v-model="menuOpen"
           class="l-menu-list"
           :label="t('site.menu')"
@@ -110,7 +110,7 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
               </svg>
             </button>
           </template>
-        </DropdownMenu>
+        </Menu>
         <Select
           v-model="language"
           :label="t('site.language')"

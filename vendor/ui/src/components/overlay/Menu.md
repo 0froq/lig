@@ -1,5 +1,5 @@
 ---
-title: DropdownMenu
+title: Menu
 designStatus: ai-draft
 description: An accessible menu with optional nested submenus.
 model:
@@ -52,7 +52,7 @@ slots:
     description: Replaces an item's label content and receives item. Keep this content non-interactive; do not add interactive descendants.
 ---
 
-DropdownMenu is an accessible menu that can contain nested submenus. Its trigger slot must resolve to one real button; a button component used there must forward the attributes and listeners provided by the primitive. Without that slot, `label` supplies the trigger text. `disabled` affects only the trigger.
+Menu is an accessible menu that can contain nested submenus. Its trigger slot must resolve to one real button; a button component used there must forward the attributes and listeners provided by the primitive. Without that slot, `label` supplies the trigger text. `disabled` affects only the trigger.
 
 `items` use the shared `MenuItem` shape: `{ value, label, disabled?, separatorBefore?, children? }`. Keep `value` unique among siblings. A non-empty `children` array makes an entry a submenu trigger, which cannot itself be selected; an empty or omitted `children` array makes it a selectable leaf. `separatorBefore` adds a visual separator before the entry except at the beginning of its sibling list. The `item` slot receives `{ item }` and replaces only the label content. Keep it free of buttons, links, or other interactive descendants so menu keyboard interaction remains intact.
 
@@ -67,7 +67,7 @@ By default, content is teleported into the closest consumer element with `class=
 ```vue
 <script setup lang="ts">
 import type { MenuItem } from '@froq/ui/vue'
-import { Button, DropdownMenu } from '@froq/ui'
+import { Button, Menu } from '@froq/ui'
 import { ref } from 'vue'
 import '@froq/ui/style.css'
 
@@ -94,7 +94,7 @@ function selectItem(item: MenuItem, event: Event) {
 
 <template>
   <div class="ui">
-    <DropdownMenu
+    <Menu
       v-model="open"
       label="Document actions"
       :items="items"
@@ -103,7 +103,7 @@ function selectItem(item: MenuItem, event: Event) {
       <template #trigger>
         <Button>Document actions</Button>
       </template>
-    </DropdownMenu>
+    </Menu>
   </div>
 </template>
 ```
