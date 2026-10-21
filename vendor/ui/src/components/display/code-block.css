@@ -91,6 +91,7 @@
   top: 0;
   z-index: 2;
   background-color: var(--ui-bg);
+  box-shadow: 0 0 20px 10px var(--ui-bg);
 }
 
 /* The fade is always laid out and only its opacity changes, so closing it does not snap. */
