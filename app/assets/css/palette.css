@@ -296,6 +296,23 @@
   }
 }
 
+/* At rest the pinned columns are clear so the paper shows through. They fill in as the table scrolls. */
+@supports (animation-timeline: scroll()) {
+  .lig-pin-1,
+  .lig-pin-2 {
+    background-color: transparent;
+    animation: lig-pin-fill linear both;
+    animation-timeline: scroll(nearest inline);
+    animation-range: 0 24px;
+  }
+}
+
+@keyframes lig-pin-fill {
+  to {
+    background-color: var(--bg);
+  }
+}
+
 @keyframes lig-pin-fade {
   to {
     opacity: 1;

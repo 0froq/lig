@@ -287,6 +287,27 @@
   }
 }
 
+/* At rest the pinned cells are clear so the paper shows through. They fill in as the grid scrolls. */
+@supports (animation-timeline: scroll()) {
+  .ui-grid-table-corner,
+  .ui-grid-table-row-header {
+    background-color: transparent;
+    animation: ui-grid-table-pin-fill linear both;
+    animation-timeline: scroll(nearest inline);
+    animation-range: 0 24px;
+  }
+
+  .ui-grid-table-row-header.is-hover {
+    background-color: color-mix(in srgb, var(--ui-fg) 5%, transparent);
+  }
+}
+
+@keyframes ui-grid-table-pin-fill {
+  to {
+    background-color: var(--ui-grid-table-pin, var(--ui-bg));
+  }
+}
+
 @keyframes ui-grid-table-pin-fade {
   to {
     opacity: 1;

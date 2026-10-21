@@ -77,7 +77,10 @@
   position: relative;
   padding-top: 12px;
   background-color: transparent;
-  transition: background-color 320ms var(--ui-ease);
+  box-shadow: 0 0 20px 10px transparent;
+  transition:
+    background-color 320ms var(--ui-ease),
+    box-shadow 320ms var(--ui-ease);
 }
 
 .ui-code-block.is-collapsible.is-open {
