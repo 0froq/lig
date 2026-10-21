@@ -278,31 +278,33 @@ code {
   border-radius: 0;
 }
 
-/* The current row keeps ink text and gets an accent mark in the left gutter: a check for a value, a bar for the current page. */
+/* Rows stay plain: hover and keyboard focus get an underline, not a fill. */
+.l-menu-list .ui-menu-item[data-highlighted],
+.l-language-select .ui-select-item[data-highlighted] {
+  background: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+/* The current row keeps ink text and an accent dot in the left gutter: the checked value, or the current page. */
 .l-language-select .ui-select-item[data-state='checked'] {
   background: none;
   color: var(--ui-fg);
 }
 
-.l-language-select .ui-select-item[data-highlighted] {
-  background: var(--ui-faint);
-}
-
-.l-language-select .ui-select-item > [aria-hidden='true'] {
-  position: absolute;
-  top: 50%;
-  left: 16px;
-  transform: translateY(-50%);
-  color: var(--ui-accent);
-}
-
 .l-menu-list [aria-current='page']::before {
   content: '';
+}
+
+.l-language-select .ui-select-item > [aria-hidden='true'],
+.l-menu-list [aria-current='page']::before {
   position: absolute;
   top: 50%;
   left: 16px;
-  width: 2px;
-  height: 1em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
   background: var(--ui-accent);
   transform: translateY(-50%);
 }
