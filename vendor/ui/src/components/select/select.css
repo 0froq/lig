@@ -135,6 +135,14 @@
   color: var(--ui-bg);
 }
 
+.ui-select-indicator {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
 .ui-select-item[data-disabled] {
   opacity: 0.5;
   pointer-events: none;

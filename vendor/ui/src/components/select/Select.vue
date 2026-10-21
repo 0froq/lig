@@ -140,9 +140,10 @@ function preventRepeatedSelection(event: MouseEvent): void {
                   {{ option.label }}
                 </slot>
               </SelectItemText>
-              <SelectItemIndicator aria-hidden="true">
-                ✓
-              </SelectItemIndicator>
+              <SelectItemIndicator
+                class="ui-select-indicator"
+                aria-hidden="true"
+              />
             </SelectItem>
           </SelectViewport>
         </SelectContent>
