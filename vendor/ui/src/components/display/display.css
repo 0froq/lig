@@ -245,7 +245,7 @@
 }
 
 .ui-grid-table-row-header.is-hover {
-  background: color-mix(in oklab, var(--ui-fg) 5%, var(--ui-bg));
+  --ui-grid-table-pin: color-mix(in oklab, var(--ui-fg) 5%, var(--ui-bg));
 }
 
 .ui-grid-table-corner,
@@ -257,7 +257,7 @@
   margin: 0;
   padding: 0;
   border-top: 1px solid var(--ui-line);
-  background: var(--ui-bg);
+  background: var(--ui-grid-table-pin, var(--ui-bg));
 }
 
 .ui-grid-table-row-header {
@@ -274,7 +274,7 @@
   inset-block: 0;
   inset-inline-start: 100%;
   width: 20px;
-  background: linear-gradient(to right, var(--ui-bg), transparent);
+  background: linear-gradient(to right, var(--ui-grid-table-pin, var(--ui-bg)), transparent);
   pointer-events: none;
 }
 
