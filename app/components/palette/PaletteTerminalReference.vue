@@ -46,6 +46,7 @@ onMounted(() => {
         }}
       </button>
     </p>
+    <p class="lig-color-table-title"> {{ variant }} / terminal.ansi.0-15 </p>
     <div
       class="lig-color-table-scroll"
       role="region"
@@ -53,7 +54,6 @@ onMounted(() => {
       :aria-label="t('palette.terminal.reference')"
     >
       <table class="lig-color-table">
-        <caption>{{ variant }} / terminal.ansi.0-15</caption>
         <thead>
           <tr>
             <th
