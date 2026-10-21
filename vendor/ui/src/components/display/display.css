@@ -236,6 +236,18 @@
   background: color-mix(in oklab, var(--ui-fg) 7%, transparent);
 }
 
+.ui-grid-table-cell.is-hover {
+  background: color-mix(in oklab, var(--ui-fg) 5%, transparent);
+}
+
+.ui-grid-table-cell.is-current.is-hover {
+  background: color-mix(in oklab, var(--ui-fg) 10%, transparent);
+}
+
+.ui-grid-table-row-header.is-hover {
+  background: color-mix(in oklab, var(--ui-fg) 5%, var(--ui-bg));
+}
+
 .ui-grid-table-corner,
 .ui-grid-table-row-header {
   position: sticky;

@@ -32,6 +32,9 @@ props:
   - name: columnWidth
     type: string
     description: Minimum width of each data column, as a CSS length. Defaults to 7rem.
+  - name: crosshair
+    type: boolean
+    description: Highlights the hovered cell row and column, including the row header. Mouse only. Defaults to true.
 slots:
   - name: header
     description: Content for the top row. It spans the data columns, usually with a Choice.

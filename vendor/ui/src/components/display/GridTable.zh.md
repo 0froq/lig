@@ -32,6 +32,9 @@ props:
   - name: columnWidth
     type: string
     description: 每个数据列的最小宽度，使用 CSS 长度。默认为 7rem。
+  - name: crosshair
+    type: boolean
+    description: 高亮悬停单元格所在的行和列，包括行头。仅鼠标触发。默认为 true。
 slots:
   - name: header
     description: 顶部行的内容，横跨数据列，通常放一个 Choice。
