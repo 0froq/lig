@@ -396,7 +396,6 @@ code {
 }
 
 .l-word {
-  --len: 4;
   --word-fit: calc(108vw / var(--len));
   /* Long names shrink so the word always fits the width */
   --word-px: clamp(88px, min(27vw, var(--word-fit)), 440px);
