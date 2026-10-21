@@ -9,7 +9,6 @@
   align-items: center;
   border: 1px solid var(--ui-line);
   border-radius: var(--ui-radius);
-  background: var(--ui-bg);
 }
 
 .ui-combobox-anchor:focus-within {

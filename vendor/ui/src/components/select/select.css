@@ -12,7 +12,6 @@
 .ui-select.is-framed {
   padding: 6px 34px 6px 8px;
   border: 1px solid var(--ui-line);
-  background: var(--ui-bg);
   font: inherit;
 }
 
@@ -67,7 +66,6 @@
 
 .ui-select-trigger.is-framed {
   border: 1px solid var(--ui-line);
-  background: var(--ui-bg);
 }
 
 .ui-select-trigger:hover,

@@ -4,7 +4,6 @@
   min-width: 0;
   padding: 16px 18px;
   color: var(--ui-fg);
-  background: var(--ui-bg);
   border: 1px solid var(--ui-line);
 }
 
@@ -160,7 +159,6 @@
 .ui-code-block-action .ui-copy-button {
   padding: 2px 8px;
   border: 1px solid var(--ui-line);
-  background: var(--ui-bg);
   color: var(--ui-muted);
   font-family: var(--ui-font-text);
   font-size: 12px;
