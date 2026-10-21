@@ -1043,114 +1043,15 @@
 }
 
 .lig-matrix {
-  display: grid;
-  /* Variant names need room to read; below that the table scrolls sideways. */
-  grid-template-columns: max-content repeat(4, minmax(7rem, 1fr));
-  align-items: stretch;
-  gap: 0;
-  width: 100%;
   margin: 24px 0 0;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-width: thin;
-  border-bottom: 1px solid var(--line);
-  font: 12px/1.6 var(--font-meta);
 }
 
-.lig-matrix-corner,
-.lig-matrix-variant,
-.lig-matrix-port,
-.lig-matrix-cell {
-  min-height: 48px;
+.lig-matrix .lig-matrix-port {
   margin: 0;
-  padding: 0;
-  border: 0;
-  border-top: 1px solid var(--line);
-  background: none;
-}
-
-.lig-matrix-choice {
-  display: contents;
-}
-
-.lig-matrix-choice .ui-choice-options {
-  display: grid;
-  grid-column: 2 / -1;
-  grid-template-columns: subgrid;
-  gap: 0;
-  align-items: stretch;
   font: inherit;
-  line-height: 1.6;
 }
 
-.lig-matrix-choice .ui-choice-mark,
-.lig-matrix-choice .ui-choice-word::after {
-  display: none;
-}
-
-.lig-matrix-choice .ui-choice-word {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 40px;
-  padding-inline: 12px;
-  border-top: 1px solid var(--line);
-  font-size: 12px;
-}
-
-.lig-matrix-choice .ui-choice-word.is-active,
-.lig-matrix-cell.is-current {
-  background: color-mix(in oklab, var(--fg) 7%, transparent);
-}
-
-.lig-matrix-port {
-  position: sticky;
-  inset-inline-start: 0;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding-inline: 16px;
-  color: var(--fg);
-  font: inherit;
-  background: var(--bg);
-}
-
-.lig-matrix-port::after,
-.lig-matrix-corner::after {
-  content: '';
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 100%;
-  width: 20px;
-  background: linear-gradient(to right, var(--bg), transparent);
-  pointer-events: none;
-}
-
-@supports (animation-timeline: scroll()) {
-  .lig-matrix-port::after,
-  .lig-matrix-corner::after {
-    opacity: 0;
-    animation: lig-pin-fade linear both;
-    animation-timeline: scroll(nearest inline);
-    animation-range: 0 24px;
-  }
-}
-
-.lig-matrix-corner {
-  position: sticky;
-  inset-inline-start: 0;
-  z-index: 1;
-  background: var(--bg);
-}
-
-.lig-matrix-cell {
-  display: flex;
-  color: var(--fg);
-}
-
-.lig-matrix-cell .lig-download-link {
+.lig-matrix .lig-download-link {
   display: flex;
   flex: 1;
   align-items: center;
@@ -1158,7 +1059,7 @@
   color: inherit;
 }
 
-.lig-matrix-cell .lig-download-symbol {
+.lig-matrix .lig-download-symbol {
   margin-inline-start: 0;
   color: var(--muted);
   font-size: 20px;
@@ -1168,22 +1069,16 @@
     scale 0.2s var(--ease);
 }
 
-.lig-matrix-cell:hover .lig-download-symbol,
-.lig-matrix-cell:focus-within .lig-download-symbol {
+.lig-matrix .lig-download-link:hover .lig-download-symbol,
+.lig-matrix .lig-download-link:focus-within .lig-download-symbol {
   color: var(--accent);
   scale: 1.3;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lig-matrix-cell .lig-download-symbol {
+  .lig-matrix .lig-download-symbol {
     transition: none;
   }
-}
-
-.lig-matrix a:focus-visible,
-.lig-matrix-choice .ui-choice-word:focus-visible {
-  outline: 1px solid var(--accent);
-  outline-offset: -2px;
 }
 
 .lig-port-variants {
