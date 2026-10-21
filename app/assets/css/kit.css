@@ -222,25 +222,28 @@ code {
   gap: 28px;
 }
 
-.l-language-select {
-  font-size: 11px;
+/* Header controls speak like the nav: muted meta type, no frame, firmer on hover or open. */
+.l-menu,
+.l-language-select .ui-select-trigger {
+  gap: 8px;
+  padding: 4px 0;
+  color: var(--ui-muted);
+  font: 11px/1.3 var(--ui-font-meta);
 }
 
-.l-nav a.router-link-active {
-  color: var(--fg);
+.l-menu:hover,
+.l-menu[data-state='open'],
+.l-language-select .ui-select-trigger:hover,
+.l-language-select .ui-select-trigger[data-state='open'] {
+  color: var(--ui-fg);
 }
 
 /* Below the wide layout the three pages fold into one menu beside the language select. */
 .l-menu {
   display: none;
   align-items: center;
-  gap: 8px;
   min-height: 28px;
-  padding: 4px 0;
   border: 0;
-  background: none;
-  color: var(--ui-fg);
-  font: 11px/1.3 var(--ui-font-meta);
   cursor: pointer;
   transition: color var(--ui-dur) var(--ui-ease);
 }
@@ -253,40 +256,59 @@ code {
   stroke-width: 1.25;
 }
 
-.l-menu:hover,
-.l-menu[data-state='open'] {
-  color: var(--ui-accent);
-}
-
 .l-menu:focus-visible {
-  outline: 1px solid var(--ui-accent);
   outline-offset: 2px;
 }
 
-/* A list of pages, not a choice: no filled rows and no shadow, only text that warms toward the accent. */
-.l-menu-list.ui-menu-content {
+/* One list for both: hairline frame, no radius or shadow, plain rows. */
+.l-menu-list.ui-menu-content,
+.l-language-select .ui-select-content {
   min-width: 9.5rem;
-  padding: 6px 16px;
+  padding: 4px 0;
+  border-color: var(--ui-line);
   border-radius: 0;
   box-shadow: none;
+  font: 11px/1.3 var(--ui-font-meta);
 }
 
-.l-menu-list .ui-menu-item {
-  padding: 7px 0;
+.l-menu-list .ui-menu-item,
+.l-language-select .ui-select-item {
+  position: relative;
+  padding: 8px 16px 8px 36px;
   border-radius: 0;
-  color: var(--ui-fg);
-  font-size: 15px;
-  transition: color var(--ui-dur) var(--ui-ease);
 }
 
-.l-menu-list .ui-menu-item[data-highlighted] {
+/* The current row keeps ink text and gets an accent mark in the left gutter: a check for a value, a bar for the current page. */
+.l-language-select .ui-select-item[data-state='checked'] {
   background: none;
+  color: var(--ui-fg);
+}
+
+.l-language-select .ui-select-item[data-highlighted] {
+  background: var(--ui-faint);
+}
+
+.l-language-select .ui-select-item > [aria-hidden='true'] {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
   color: var(--ui-accent);
 }
 
-.l-menu-list .ui-menu-item [aria-current='page']::after {
-  content: '.';
-  color: var(--ui-accent);
+.l-menu-list [aria-current='page']::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  width: 2px;
+  height: 1em;
+  background: var(--ui-accent);
+  transform: translateY(-50%);
+}
+
+.l-nav a.router-link-active {
+  color: var(--fg);
 }
 
 /* The three pages sit beside the centred variant switch; when the two would touch they fold into the menu. */
