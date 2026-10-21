@@ -21,7 +21,7 @@ function downloadName(port: (typeof LIGHTWEIGHT_PORTS)[number], id: LigVariant):
 
 <template>
   <GridTable
-    class="lig-matrix"
+    class="lig-matrix lig-ui ui"
     :label="t('palette.downloads.lightweight')"
     :rows="LIGHTWEIGHT_PORTS"
     :row-key="port => port.id"
