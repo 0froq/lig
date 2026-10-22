@@ -169,4 +169,23 @@ useShareMeta({
 .l-note-entry:hover .l-entry-title {
   color: var(--muted);
 }
+
+.l-more {
+  display: inline-flex;
+  gap: 10px;
+  align-items: baseline;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.l-more::after {
+  content: '→';
+  transition: translate 0.4s var(--ease);
+}
+
+.l-more small {
+  order: 2;
+  font-size: 13px;
+  color: var(--muted);
+}
 </style>
