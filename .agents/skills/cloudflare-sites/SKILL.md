@@ -1,21 +1,23 @@
 ---
 name: cloudflare-sites
-description: Deploy froQ static sites and Nuxt sites to Cloudflare as Workers with the cf CLI. Use when adding Cloudflare deploy, Workers Builds, migrating a Pages project, migrating wrangler.jsonc, or when asked to copy void, paper-landing, or lig. Do not create new Pages projects.
+description: Deploy froQ static sites and Nuxt sites to Cloudflare as Workers with the cf CLI. Use when adding Cloudflare deploy, Workers Builds, migrating a Pages project, or migrating wrangler.jsonc. Use lig (this repo) and docs/viteplus.md for the current Workers Builds split; do not treat paper-landing as a universal template or copy void. Do not create new Pages projects.
 metadata:
   author: froQ
-  version: "2026.10.11"
+  version: "2026.10.22"
   source: Hand-written from the 1000-observations Workers migration. https://github.com/0froq/skills-pack
 ---
 
-新的 froQ 静态站和 Nuxt 站发布到 Cloudflare Workers，用 `cf`。不要新建 Pages 项目，也不要照抄 void、paper-landing、lig。
+新的 froQ 静态站和 Nuxt 站发布到 Cloudflare Workers，用 `cf`。不要新建 Pages 项目。新站优先读 [skills-pack](https://github.com/0froq/skills-pack) 与 [poim](https://github.com/0froq/poim) main；不要照抄 `void`。`paper-landing` 是留在 Pages 上的旧站，不是通用模板。
 
 ## 不要照抄的仓库
 
 - `void`：先是 Worker 加 GitHub Action（仓库里放 API token），后来改成 Pages 的 GitHub 连接。那是旧决定。
-- `paper-landing`：Pages 的 GitHub 连接，构建 `pnpm generate`，发布 `.output/public`。没有 wrangler。
-- `lig`：没有部署。
+- `paper-landing`（仅作对照）：Pages 的 GitHub 连接，构建 `pnpm generate`，发布 `.output/public`。没有 wrangler。只用来理解 Pages → Workers 迁移，不要当作新站模板。
+- `lig`（本仓库，已部署）：Workers Builds + `cf`，构建 `pnpm generate`，生产 `pnpm exec cf deploy`，预览 `pnpm exec cf previews deploy`。Node `24.21.0`、`pnpm@12.11.2`、Vite+ / Oxlint / Oxfmt 见根目录 `AGENTS.md` 与 `docs/viteplus.md`。其他仓库不要整仓照抄，但 cf 分拆构建/部署可与这里对齐。
 
-不要照抄它们的部署方式。新站点和从 Pages 迁过来的站点都读这份 skill。迁的时候新建 Worker，不要沿用 Pages 项目、仓库里的 API token，或 `preset: 'cloudflare_pages'`。
+`osdash` 有独立部署约定，不适用「不要照抄 lig」这一条。
+
+不要照抄 `void` 或 `paper-landing` 的部署方式。新站点和从 Pages 迁过来的站点都读这份 skill（以及 skills-pack 更新）。迁的时候新建 Worker，不要沿用 Pages 项目、仓库里的 API token，或 `preset: 'cloudflare_pages'`。
 
 ## Pages
 
@@ -87,9 +89,19 @@ export default defineWranglerConfig({
 
 Nuxt 路由没有尾斜杠，静态文件却是 `folder/index.html`。`auto-trailing-slash` 会把 `/s/0001/homepage` 307 到 `/s/0001/homepage/`，空段再进文档路径就会 404。用 `drop-trailing-slash`。页面如果自己拼接 slug，丢掉空段。
 
-Workers Builds 设 `NODE_VERSION=22`。构建命令 `pnpm generate`。生产分支的部署命令是 `pnpm exec cf deploy`，用项目里钉住的 `cf`。仓库里不放 API token。
+## Workers Builds
 
-非生产分支的预览部署命令是 `pnpm exec cf previews deploy`。预览不继承生产的变量和绑定；静态站两边都只要 `NODE_VERSION`。分支预览地址按分支名固定，后面的构建更新同一条。日志里另外一条带哈希的地址每次都会变。
+控制台用 GitHub 连接，仓库里不放 API token：
+
+| 项 | 生产 | 分支预览 |
+| --- | --- | --- |
+| `NODE_VERSION` | `24.21.0` | `24.21.0` |
+| 构建命令 | `pnpm generate` | `pnpm generate` |
+| 部署命令 | `pnpm exec cf deploy` | `pnpm exec cf previews deploy` |
+
+不要在 Builds 里跑 `pnpm deploy`（本地一条龙脚本）；构建步已经 `generate`，部署步只调 `cf`。用项目里钉住的 `cf`。
+
+预览不继承生产的变量和绑定；静态站两边都只要 `NODE_VERSION`。分支预览地址按分支名固定，后面的构建更新同一条。日志里另外一条带哈希的地址每次都会变。
 
 PR 评论里的 Preview URL 只在部署命令执行 `wrangler preview` 时出现。`cf previews deploy` 会把预览部署上去，地址在构建日志里，评论不写链接。继续用 `cf`，不要为了那条评论改成 wrangler。
 
@@ -100,7 +112,7 @@ PR 评论里的 Preview URL 只在部署命令执行 `wrangler preview` 时出�
 ## 工具版本
 
 - `cf` 是 beta，命令和配置格式还会变。验证过的版本是 `1.0.0-beta.12`，钉死这个版本，不要跟 latest。
-- 加载 `cloudflare.config.ts` 需要 Node.js >= 22.18（`module.registerHooks`）。报错文案可能让人以为是 Bun，先看 `node -v`。
+- froQ 站点（含本仓库）钉住 Node `24.21.0`（`.node-version` / `mise.toml`）和 `pnpm@12.11.2`（`package.json` 的 `packageManager`）。加载 `cloudflare.config.ts` 至少需要 Node.js >= 22.18（`module.registerHooks`）；低于 22.18 时报错文案可能让人以为是 Bun，先看 `node -v`。
 - 项目声明了 `cf` 之后，全局的 `cf` 会转给项目里的那份。
 - `cf deploy --dry-run` 不需要登录，用来确认资源打进了包。
 - `cf auth login` 要浏览器。无人值守用环境变量 `CLOUDFLARE_API_TOKEN`，不要写进仓库。
