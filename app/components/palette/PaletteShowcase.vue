@@ -43,12 +43,13 @@ const neutrals = computed(() => {
 </script>
 
 <template>
-  <section class="l-hero lig-hero">
-    <h1
-      class="l-word lig-hero-title"
-      :style="{ '--len': 3 }"
-      aria-label="LiG"
-    >
+  <HeroFrame
+    class="lig-hero"
+    :length="3"
+    word-class="lig-hero-title"
+    word-label="LiG"
+  >
+    <template #word>
       <img
         class="lig-hero-icon"
         :src="`/brand/lig-${variant}.svg`"
@@ -57,122 +58,84 @@ const neutrals = computed(() => {
         height="96"
       />
       <span class="lig-hero-name">
-        <span data-anchor="word">LiG</span
-        ><span
-          class="l-mark"
-          data-anchor="mark"
-          >.</span
-        >
+        <span data-anchor="word">LiG</span><AccentMark>.</AccentMark>
       </span>
-    </h1>
-    <div
-      class="l-hero-foot"
-      data-anchor="rule"
-    >
-      <p
-        class="l-tagline"
-        data-anchor="tagline"
-        lang="en"
-      >
-        {{ t('palette.hero.tagline') }}
-      </p>
-    </div>
-  </section>
+    </template>
+    <template #tagline>
+      {{ t('palette.hero.tagline') }}
+    </template>
+  </HeroFrame>
 
-  <section
-    id="syntax"
-    class="l-section"
-  >
-    <p
-      class="l-label"
-      data-anchor="label"
-    >
-      Syntax
-    </p>
-    <div class="l-body">
-      <h2 class="l-title">
-        {{ t('palette.sections.syntaxTitle') }}
-      </h2>
-      <PaletteSyntax v-model:variant="variant" />
-    </div>
-  </section>
+  <Section id="syntax">
+    <template #label>{{ ' Syntax ' }}</template>
+    <template #title>
+      {{ t('palette.sections.syntaxTitle') }}
+    </template>
+    <PaletteSyntax v-model:variant="variant" />
+  </Section>
 
-  <section
+  <Section
     id="palette"
-    class="l-section lig-section-quiet"
+    class="lig-section-quiet"
   >
-    <p
-      class="l-label"
-      data-anchor="label"
-    >
-      Source
-    </p>
-    <div class="l-body">
-      <div class="lig-palette-lead">
-        <h2 class="lig-quiet-title">
-          {{ t('palette.sections.swatchesTitle') }}
-        </h2>
-        <NuxtLink
-          class="lig-oklch-note-link"
-          :to="link('/notes/color-design')"
-        >
-          {{ t('palette.oklch.designNote') }} ↗
-        </NuxtLink>
-      </div>
-      <div class="lig-copy-bar">
-        <span class="lig-copy-label">{{ t('palette.copyAs') }}</span>
-        <SlidingUnderline
-          class="lig-copy-formats"
-          role="radiogroup"
-          :active="format"
-          :aria-label="t('palette.copyAs')"
-        >
-          <button
-            v-for="item in formats"
-            :key="item"
-            type="button"
-            role="radio"
-            :class="{ 'is-active': format === item }"
-            :aria-checked="format === item"
-            :tabindex="format === item ? 0 : -1"
-            @click="format = item"
-            @keydown="radioKey($event, formats, format, next => (format = next))"
-          >
-            <span :data-slide="item">{{ labelFor(item) }}</span>
-          </button>
-        </SlidingUnderline>
-      </div>
-      <div class="lig-source-palette">
-        <section class="lig-palette-column">
-          <PaletteNeutralRibbon :colors="neutrals" />
-        </section>
-        <PaletteOklch :variant="variant" />
-      </div>
-      <PaletteTerminalReference :variant="variant" />
-      <Collapsible
-        class="lig-more lig-ui ui"
-        :label="t('palette.more')"
-      >
-        <PaletteAccentTiers :variant="variant" />
-      </Collapsible>
-    </div>
-  </section>
-
-  <section
-    id="downloads"
-    class="l-section lig-section-quiet"
-  >
-    <p
-      class="l-label"
-      data-anchor="label"
-    >
-      Ports
-    </p>
-    <div class="l-body">
+    <template #label>{{ ' Source ' }}</template>
+    <div class="lig-palette-lead">
       <h2 class="lig-quiet-title">
-        {{ t('palette.sections.downloadsTitle') }}
+        {{ t('palette.sections.swatchesTitle') }}
       </h2>
-      <PaletteDownloads />
+      <NuxtLink
+        class="lig-oklch-note-link"
+        :to="link('/notes/color-design')"
+      >
+        {{ t('palette.oklch.designNote') }} ↗
+      </NuxtLink>
     </div>
-  </section>
+    <div class="lig-copy-bar">
+      <span class="lig-copy-label">{{ t('palette.copyAs') }}</span>
+      <SlidingUnderline
+        class="lig-copy-formats"
+        role="radiogroup"
+        :active="format"
+        :aria-label="t('palette.copyAs')"
+      >
+        <button
+          v-for="item in formats"
+          :key="item"
+          type="button"
+          role="radio"
+          :class="{ 'is-active': format === item }"
+          :aria-checked="format === item"
+          :tabindex="format === item ? 0 : -1"
+          @click="format = item"
+          @keydown="radioKey($event, formats, format, next => (format = next))"
+        >
+          <span :data-slide="item">{{ labelFor(item) }}</span>
+        </button>
+      </SlidingUnderline>
+    </div>
+    <div class="lig-source-palette">
+      <section class="lig-palette-column">
+        <PaletteNeutralRibbon :colors="neutrals" />
+      </section>
+      <PaletteOklch :variant="variant" />
+    </div>
+    <PaletteTerminalReference :variant="variant" />
+    <Collapsible
+      class="lig-more lig-ui ui"
+      :label="t('palette.more')"
+    >
+      <PaletteAccentTiers :variant="variant" />
+    </Collapsible>
+  </Section>
+
+  <Section
+    id="downloads"
+    class="lig-section-quiet"
+  >
+    <template #label>{{ ' Ports ' }}</template>
+    <h2 class="lig-quiet-title">
+      {{ t('palette.sections.downloadsTitle') }}
+    </h2>
+    <PaletteDownloads />
+  </Section>
 </template>

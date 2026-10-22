@@ -16,13 +16,13 @@ withDefaults(
     label-name="step.label"
     entry
   >
-    <h2 class="l-entry-title">
+    <EntryTitle>
       <Fill
         :value="title"
         name="step.title"
         :size="12"
       />
-    </h2>
+    </EntryTitle>
     <Fill
       v-if="code != null && !isFilled(code)"
       name="step.code"
@@ -32,8 +32,8 @@ withDefaults(
       v-else-if="code"
       :code="code"
     />
-    <div class="l-copy">
+    <Prose>
       <slot />
-    </div>
+    </Prose>
   </Block>
 </template>

@@ -86,20 +86,20 @@ useSeoMeta({
         :key="release.path"
         class="l-version"
       >
-        <p class="l-kicker">
+        <Kicker>
           <Fill
             :value="release.date"
             name="changelog.date"
             :size="10"
           /><template v-if="index === 0"> · {{ t('changelog.latest') }} </template>
-        </p>
-        <h2 class="l-entry-title">
+        </Kicker>
+        <EntryTitle>
           <Fill
             :value="release.title"
             name="changelog.title"
             :size="12"
           />
-        </h2>
+        </EntryTitle>
         <DocBody notes>
           <ChangelogRelease :open="index === 0">
             <ContentRenderer :value="release" />

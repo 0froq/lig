@@ -24,33 +24,27 @@ withDefaults(
 </script>
 
 <template>
-  <section
+  <Section
     :id="id"
-    class="l-section"
-    :class="{ 'is-entry': entry }"
+    :entry="entry"
   >
-    <p
-      class="l-label"
-      data-anchor="label"
-    >
+    <template #label>
       <Fill
         :value="label"
         :name="labelName"
         :size="6"
       />
-    </p>
-    <div class="l-body">
-      <h2
-        v-if="title !== undefined"
-        class="l-title"
-      >
-        <Fill
-          :value="title"
-          :name="titleName"
-          :size="14"
-        />
-      </h2>
-      <slot />
-    </div>
-  </section>
+    </template>
+    <template
+      v-if="title !== undefined"
+      #title
+    >
+      <Fill
+        :value="title"
+        :name="titleName"
+        :size="14"
+      />
+    </template>
+    <slot />
+  </Section>
 </template>

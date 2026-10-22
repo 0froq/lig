@@ -76,20 +76,17 @@ useSeoMeta({ robots: () => (doc.value?.title?.trim() ? undefined : 'noindex, fol
           />
         </NuxtLink>
       </p>
-      <NuxtLink
+      <EntryLink
         v-if="next"
-        class="l-entry"
         :to="link(next.to)"
       >
-        <span class="l-kicker">{{ t('docs.next') }}</span>
-        <span class="l-entry-title">
-          <Fill
-            :value="next.title"
-            name="doc.title"
-            :size="12"
-          />
-        </span>
-      </NuxtLink>
+        <template #kicker>{{ t('docs.next') }}</template>
+        <Fill
+          :value="next.title"
+          name="doc.title"
+          :size="12"
+        />
+      </EntryLink>
     </nav>
   </div>
 </template>
@@ -163,33 +160,6 @@ useSeoMeta({ robots: () => (doc.value?.title?.trim() ? undefined : 'noindex, fol
 
 .l-label a:hover {
   color: var(--fg);
-}
-
-.l-entry {
-  grid-column: span var(--span-body);
-  display: grid;
-  gap: 10px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
-}
-
-.l-entry-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: calc(clamp(32px, 3.6vw, 56px) * var(--title-scale));
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-  transition: color 0.3s;
-}
-
-:lang(zh) .l-entry-title {
-  letter-spacing: 0;
-}
-
-.l-entry:hover .l-entry-title {
-  color: var(--muted);
 }
 
 @media (max-width: 860px) {

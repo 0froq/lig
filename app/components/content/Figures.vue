@@ -37,9 +37,9 @@ const cols = computed(() => Math.min(4, Math.max(1, props.items.length)))
             :size="2"
         /></small>
       </dd>
-      <dd
+      <Prose
         v-if="item.copy != null"
-        class="l-copy"
+        as="dd"
       >
         <Fill
           v-if="!isFilled(item.copy)"
@@ -50,7 +50,14 @@ const cols = computed(() => Math.min(4, Math.max(1, props.items.length)))
           v-else
           :text="item.copy"
         />
-      </dd>
+      </Prose>
     </div>
   </dl>
 </template>
+
+<style scoped>
+.l-spec .l-copy {
+  max-width: 16rem;
+  font-size: 14px;
+}
+</style>

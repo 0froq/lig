@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import InstallLink from '../InstallLink.vue'
+
 // The wordmark, the handwritten line and the first call to action. The pen starts on its rule.
 const props = withDefaults(
   defineProps<{
@@ -32,66 +34,52 @@ const length = computed(() => Math.max(3, [...(product.name || 'name')].length))
 </script>
 
 <template>
-  <section class="l-hero">
-    <h1
-      class="l-word"
-      :style="{ '--len': length }"
-      :aria-label="product.name ? `${product.name}${product.mark}` : undefined"
-    >
+  <HeroFrame
+    :length="length"
+    :word-label="product.name ? `${product.name}${product.mark}` : undefined"
+  >
+    <template #word>
       <span data-anchor="word"
         ><Fill
           :value="product.name"
           name="product.name"
           :size="4" /></span
-      ><span
-        class="l-mark"
-        data-anchor="mark"
-        >{{ product.mark }}</span
-      >
-    </h1>
-    <div
-      class="l-hero-foot"
-      data-anchor="rule"
-    >
-      <p
-        class="l-tagline"
-        data-anchor="tagline"
-        lang="en"
-      >
-        <Fill
-          :value="tagline"
-          name="hero.tagline"
-          :size="10"
-        />
-      </p>
-      <NuxtLink
-        v-if="latest"
-        class="l-release"
-        :to="link('/changelog')"
-      >
-        <span
-          ><Fill
-            :value="latest.version"
-            name="changelog.version"
-            :size="6"
-        /></span>
-        <Fill
-          :value="latest.title"
-          name="changelog.title"
-          :size="12"
-        />
-      </NuxtLink>
-      <p class="l-lede">
-        <Fill
-          :value="lede"
-          name="hero.lede"
-          :size="40"
-        />
-      </p>
-      <InstallLink
-        v-if="cta"
-        class="l-cta"
+      ><AccentMark>{{ product.mark }}</AccentMark>
+    </template>
+    <template #tagline>
+      <Fill
+        :value="tagline"
+        name="hero.tagline"
+        :size="10"
       />
-    </div>
-  </section>
+    </template>
+    <NuxtLink
+      v-if="latest"
+      class="l-release"
+      :to="link('/changelog')"
+    >
+      <span
+        ><Fill
+          :value="latest.version"
+          name="changelog.version"
+          :size="6"
+      /></span>
+      <Fill
+        :value="latest.title"
+        name="changelog.title"
+        :size="12"
+      />
+    </NuxtLink>
+    <p class="l-lede">
+      <Fill
+        :value="lede"
+        name="hero.lede"
+        :size="40"
+      />
+    </p>
+    <CtaLink
+      v-if="cta"
+      :as="InstallLink"
+    />
+  </HeroFrame>
 </template>

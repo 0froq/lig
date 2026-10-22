@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import InstallLink from '../InstallLink.vue'
+
 // The closing line. Its full stop is where the pen ends and the last colour lands.
 withDefaults(
   defineProps<{
@@ -47,9 +49,9 @@ withDefaults(
       />
     </p>
     <slot />
-    <InstallLink
+    <CtaLink
       v-if="cta && !end"
-      class="l-cta"
+      :as="InstallLink"
     />
   </section>
 </template>

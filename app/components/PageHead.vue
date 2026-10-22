@@ -59,7 +59,7 @@ const section = computed(() => props.variant === 'section' || props.compact)
       class="l-page-foot"
       data-anchor="rule"
     >
-      <p class="l-kicker">
+      <Kicker>
         <slot name="kicker">
           <Fill
             :value="kicker"
@@ -67,7 +67,7 @@ const section = computed(() => props.variant === 'section' || props.compact)
             :size="8"
           />
         </slot>
-      </p>
+      </Kicker>
       <p
         v-if="lede != null"
         class="l-lede"
@@ -87,3 +87,9 @@ const section = computed(() => props.variant === 'section' || props.compact)
     </div>
   </section>
 </template>
+
+<style scoped>
+.l-page-foot .l-kicker {
+  grid-column: span var(--span-margin);
+}
+</style>

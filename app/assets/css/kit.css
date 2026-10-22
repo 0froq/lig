@@ -410,32 +410,6 @@ code {
   outline-offset: -2px;
 }
 
-/* Hero */
-.l-hero {
-  position: relative;
-  display: grid;
-  align-content: end;
-  min-height: 100svh;
-  padding: 0 var(--pad) clamp(32px, 6svh, 64px);
-}
-
-.l-word {
-  --word-fit: calc(108vw / var(--len));
-  /* Long names shrink so the word always fits the width */
-  --word-px: clamp(88px, min(27vw, var(--word-fit)), 440px);
-  margin: 0 0 0 -0.05em;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: calc(var(--word-px) * var(--display-scale));
-  line-height: 0.78;
-  letter-spacing: -0.045em;
-}
-
-.l-mark {
-  display: inline-block;
-  color: var(--accent);
-}
-
 /* Layers draw the stops, the tagline and the rules themselves */
 .has-bloom .l-mark {
   color: transparent;
@@ -530,134 +504,8 @@ html:not(.has-hand) .l-release {
   line-height: 1.15;
 }
 
-.l-hero-foot {
-  display: grid;
-  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  gap: var(--gap);
-  align-items: end;
-  margin-top: clamp(28px, 5svh, 56px);
-  padding-top: 20px;
-  border-top: 1px solid var(--line);
-}
-
-.l-tagline {
-  grid-column: span var(--span-margin);
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: calc(24px * var(--title-scale));
-  line-height: 1.1;
-}
-
-.l-hero-foot .l-lede {
-  grid-column: calc(var(--span-margin) + 2) / span 5;
-  margin: 0;
-}
-
 .l-lede {
   max-width: 30rem;
-  color: var(--muted);
-}
-
-.l-hero-foot .l-cta {
-  grid-column: 11 / span 2;
-  justify-self: end;
-}
-
-.l-cta {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
-  white-space: nowrap;
-}
-
-.l-cta::after {
-  content: '→';
-  transition: translate 0.4s var(--ease);
-}
-
-.l-cta:hover::after {
-  translate: 4px 0;
-}
-
-.l-cta::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -4px;
-  height: 1px;
-  background: currentColor;
-  transform-origin: right;
-  transform: scaleX(0.999);
-  transition: transform 0.6s var(--ease);
-}
-
-.l-cta:hover::before {
-  transform-origin: left;
-  animation: l-underline 0.8s var(--ease);
-}
-
-@keyframes l-underline {
-  0% {
-    transform: scaleX(1);
-    transform-origin: right;
-  }
-
-  45% {
-    transform: scaleX(0);
-    transform-origin: right;
-  }
-
-  46% {
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-
-  100% {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-}
-
-/* Sections */
-.l-section {
-  display: grid;
-  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  gap: var(--gap);
-  padding: calc(var(--section) * var(--section-scale)) var(--pad) 0;
-  scroll-margin-top: 64px;
-}
-
-.l-label {
-  grid-column: span var(--span-margin);
-  margin: 0;
-  font-family: var(--font-meta);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.l-body {
-  min-width: 0;
-  grid-column: span var(--span-body);
-}
-
-.l-title {
-  max-width: 18ch;
-  text-wrap: balance;
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: calc(clamp(40px, 5.2vw, 76px) * var(--title-scale));
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.l-copy {
-  margin: 0;
   color: var(--muted);
 }
 
@@ -695,11 +543,6 @@ html:not(.has-hand) .l-release {
   font-size: 14px;
   letter-spacing: 0;
   color: var(--muted);
-}
-
-.l-spec .l-copy {
-  max-width: 16rem;
-  font-size: 14px;
 }
 
 .l-statement {
@@ -908,27 +751,6 @@ html:not(.has-hand) .l-release {
   border-top: 1px solid var(--line);
 }
 
-.l-kicker {
-  margin: 0;
-  font-family: var(--font-meta);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.l-kicker a {
-  transition: color 0.3s;
-}
-
-.l-kicker a:hover {
-  color: var(--fg);
-}
-
-.l-page-foot .l-kicker {
-  grid-column: span var(--span-margin);
-}
-
 .l-page-foot .l-lede {
   grid-column: calc(var(--span-margin) + 1) / span 6;
   margin: 0;
@@ -940,42 +762,6 @@ html:not(.has-hand) .l-release {
   margin: 0;
   font-size: 14px;
   color: var(--muted);
-}
-
-.l-section.is-entry {
-  padding-top: calc(var(--section-tight) * var(--section-scale));
-}
-
-.l-section.is-entry .l-body {
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
-}
-
-.l-section.is-entry .l-label {
-  padding-top: 18px;
-}
-
-.l-entry {
-  display: grid;
-  gap: 14px;
-}
-
-.l-entry-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: calc(clamp(32px, 3.6vw, 56px) * var(--title-scale));
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-.l-section.is-entry .l-kicker + .l-entry-title {
-  margin-top: 14px;
-}
-
-.l-entry .l-copy {
-  max-width: 34rem;
 }
 
 .l-more {
@@ -994,18 +780,6 @@ html:not(.has-hand) .l-release {
 .l-more small {
   order: 2;
   font-size: 13px;
-  color: var(--muted);
-}
-
-.l-entry:hover .l-more::after {
-  translate: 4px 0;
-}
-
-a.l-entry .l-entry-title {
-  transition: color 0.3s;
-}
-
-a.l-entry:hover .l-entry-title {
   color: var(--muted);
 }
 
@@ -1028,10 +802,6 @@ a.l-entry:hover .l-entry-title {
   padding-top: 0;
 }
 
-.l-section.is-prose {
-  padding-top: calc(var(--section-tight) * var(--section-scale));
-}
-
 .l-prose {
   max-width: 36rem;
   font-family: var(--font-display);
@@ -1049,26 +819,6 @@ a.l-entry:hover .l-entry-title {
   font-size: 16px;
   line-height: 1.55;
   color: var(--muted);
-}
-
-.l-section.is-pager {
-  align-items: baseline;
-  padding-top: clamp(96px, 18svh, 200px);
-  padding-bottom: clamp(96px, 16svh, 180px);
-}
-
-.l-section.is-pager .l-label a {
-  transition: color 0.3s;
-}
-
-.l-section.is-pager .l-label a:hover {
-  color: var(--fg);
-}
-
-.l-section.is-pager .l-entry {
-  gap: 10px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
 }
 
 .l-final.is-end {
@@ -1181,16 +931,6 @@ main,
   color: var(--fg);
 }
 
-button.l-cta {
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-size: 15px;
-  cursor: pointer;
-}
-
 @media (max-width: 860px) {
   .l-header-actions > .l-nav,
   .l-top > .l-sections {
@@ -1244,10 +984,6 @@ button.l-cta {
   .l-label,
   .l-amount {
     justify-self: start;
-  }
-
-  .l-section.is-entry .l-label {
-    padding-top: 0;
   }
 
   .l-specs {
@@ -1306,21 +1042,6 @@ button.l-cta {
   opacity: 0;
 }
 
-/* Plain markdown inside a block */
-.l-body > p:not([class]) {
-  max-width: 34rem;
-  margin: 24px 0 0;
-  color: var(--muted);
-}
-
-.l-body > p:not([class]):first-child {
-  margin-top: 0;
-}
-
-.l-copy p {
-  margin: 0;
-}
-
 /* Markdown written straight on a page, outside any block */
 .l-page > :not(section) {
   max-width: 42rem;
@@ -1328,6 +1049,79 @@ button.l-cta {
 }
 
 /* Docs — prose lives in DocBody.vue; section chrome in SectionLayout.vue */
+
+/* Cross-component palette rules stay global until the final migration batch. */
+/* Label column plus body, centered as one measure. The label sits on the
+   right of its column so a long name grows away from the title.
+   The handwritten tagline uses the same right edge, so the stroke does not
+   run down the side of the page. */
+.lig-hero,
+.lig-hero ~ .l-section {
+  --edge: clamp(80px, 11vw, 220px);
+}
+
+.lig-hero .l-hero-foot,
+.lig-hero ~ .l-section {
+  --span-margin: 2;
+  --measure-gap: 48px;
+  box-sizing: border-box;
+  width: min(1080px, calc(100vw - var(--edge) * 2));
+  margin-inline: auto;
+  gap: var(--measure-gap);
+}
+
+.has-hand .lig-hero .l-tagline {
+  right: max(var(--edge), calc((100vw - 1080px) / 2));
+}
+
+.lig-hero ~ .l-section {
+  --span-body: 10;
+  padding-inline: 0;
+}
+
+.lig-hero ~ .l-section .l-body {
+  max-width: 48rem;
+}
+
+.lig-hero ~ .l-section .l-label {
+  padding-top: 0.55em;
+  color: var(--fg);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-align: end;
+}
+
+@media (max-width: 860px) {
+  .lig-hero,
+  .lig-hero ~ .l-section {
+    --edge: clamp(16px, 4vw, 28px);
+  }
+
+  .lig-hero ~ .l-section {
+    width: auto;
+    margin-inline: 0;
+    padding-inline: var(--edge);
+  }
+
+  .lig-hero ~ .l-section .l-label {
+    text-align: start;
+  }
+}
+
+.lig-hero ~ .l-section {
+  counter-increment: lig-leaf;
+}
+
+.lig-hero ~ .l-section .l-label::before {
+  margin-inline-end: 0.7em;
+  color: var(--muted);
+  content: counter(lig-leaf, lower-roman) '.';
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+}
 
 /* Code highlighting follows the paper, not its own background */
 .shiki,

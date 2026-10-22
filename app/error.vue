@@ -31,13 +31,12 @@ useSeoMeta({ robots: 'noindex, follow' })
         long
       >
         <template #meta>
-          <NuxtLink
-            class="l-cta"
+          <CtaLink
             :to="link('/')"
             @click.prevent="clearError({ redirect: link('/') })"
           >
             {{ copy('notFound.back') }}
-          </NuxtLink>
+          </CtaLink>
         </template>
       </PageHead>
     </Sheet>

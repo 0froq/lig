@@ -29,9 +29,9 @@ withDefaults(
       /></small>
     </p>
     <div>
-      <p
+      <Prose
         v-if="lede != null"
-        class="l-copy"
+        as="p"
       >
         <Fill
           v-if="!isFilled(lede)"
@@ -42,7 +42,7 @@ withDefaults(
           v-else
           :text="lede"
         />
-      </p>
+      </Prose>
       <dl
         v-if="facts.length"
         class="l-facts"

@@ -76,30 +76,30 @@ useShareMeta({
             class="l-note-entry"
             :to="link(`/notes/${slug(note.path)}`)"
           >
-            <p class="l-kicker">
+            <Kicker>
               <Fill
                 :value="note.date"
                 name="note.date"
                 :size="10"
               />
-            </p>
-            <h2 class="l-entry-title">
+            </Kicker>
+            <EntryTitle>
               <Fill
                 :value="note.title"
                 name="note.title"
                 :size="16"
               />
-            </h2>
-            <p
+            </EntryTitle>
+            <Prose
               v-if="note.description?.trim()"
-              class="l-copy"
+              as="p"
             >
               <Fill
                 :value="note.description"
                 name="note.description"
                 :size="24"
               />
-            </p>
+            </Prose>
             <span class="l-more"
               >{{ t('notes.read') }}
               <small>{{ t('notes.minutes', { n: readingMinutes(note.body) }) }}</small></span

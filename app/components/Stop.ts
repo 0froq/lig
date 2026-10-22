@@ -1,5 +1,6 @@
 import type { PropType, VNode } from 'vue'
 import { defineComponent, h } from 'vue'
+import AccentMark from './AccentMark.vue'
 import { placeholder } from './Fill'
 import { rich } from './RichText'
 
@@ -19,7 +20,7 @@ export default defineComponent({
     return (): VNode | (VNode | string)[] => {
       if (!isFilled(props.text)) return placeholder(props.size, props.name || undefined)
       const { body, stop } = splitStop(props.text, props.fallback)
-      const mark = h('span', { 'class': 'l-mark', 'data-anchor': props.anchor }, stop)
+      const mark = h(AccentMark, { anchor: props.anchor }, () => stop)
       return stop ? [...rich(body), mark] : rich(body)
     }
   },
