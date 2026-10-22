@@ -26,36 +26,29 @@ const families = computed(() => {
 <template>
   <div>
     <p class="lig-color-table-title"> {{ variant }} / accent.* </p>
-    <div
-      class="lig-color-table-scroll"
-      role="region"
-      tabindex="0"
-      :aria-label="t('palette.more')"
+    <PaletteColorTable
+      :label="t('palette.more')"
+      :table-style="{ '--pin-1': '7ch' }"
     >
-      <table
-        class="lig-color-table"
-        style="--pin-1: 7ch"
-      >
-        <thead>
-          <tr>
-            <th
-              scope="col"
-              class="lig-pin-1"
-            >
-              {{ t('palette.tiers.color') }}
-            </th>
-            <th
-              scope="col"
-              class="lig-pin-2 lig-pin-end"
-            >
-              {{ t('palette.tiers.tier') }}
-            </th>
-            <th scope="col"> HEX </th>
-            <th scope="col"> L </th>
-            <th scope="col"> C </th>
-            <th scope="col"> H </th>
-          </tr>
-        </thead>
+      <template #columns>
+        <th
+          scope="col"
+          class="lig-pin-1"
+        >
+          {{ t('palette.tiers.color') }}
+        </th>
+        <th
+          scope="col"
+          class="lig-pin-2 lig-pin-end"
+        >
+          {{ t('palette.tiers.tier') }}
+        </th>
+        <th scope="col"> HEX </th>
+        <th scope="col"> L </th>
+        <th scope="col"> C </th>
+        <th scope="col"> H </th>
+      </template>
+      <template #default>
         <tbody
           v-for="family in families"
           :key="family.name"
@@ -102,12 +95,22 @@ const families = computed(() => {
             <td>{{ level.h?.toFixed(1) ?? '—' }}</td>
           </tr>
         </tbody>
-      </table>
-      <span
-        class="lig-color-announcement"
-        role="status"
-        >{{ copied ? t('install.copied') : '' }}</span
-      >
-    </div>
+      </template>
+      <template #after>
+        <span
+          class="lig-color-announcement"
+          role="status"
+          >{{ copied ? t('install.copied') : '' }}</span
+        >
+      </template>
+    </PaletteColorTable>
   </div>
 </template>
+
+<style scoped>
+.lig-color-table-title {
+  margin: 16px 0 12px;
+  font: 11px/1.6 var(--font-meta);
+  font-variant-numeric: tabular-nums;
+}
+</style>
