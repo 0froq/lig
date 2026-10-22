@@ -17,9 +17,9 @@ withDefaults(defineProps<{
   crosshair: true,
 })
 defineSlots<{
-  header?: () => unknown
+  'header'?: () => unknown
   'row-header'?: (scope: { row: TRow }) => unknown
-  cell?: (scope: { row: TRow, column: TColumn }) => unknown
+  'cell'?: (scope: { row: TRow, column: TColumn }) => unknown
 }>()
 
 const hoverRow = ref<string | number>()
@@ -43,7 +43,7 @@ function clear() {
     role="group"
     :aria-label="label"
     :style="{
-      gridTemplateColumns: `max-content repeat(${Math.max(1, columns.length)}, minmax(${columnWidth}, 1fr))`,
+      'gridTemplateColumns': `max-content repeat(${Math.max(1, columns.length)}, minmax(${columnWidth}, 1fr))`,
       '--ui-grid-table-row-height': rowHeight,
     }"
     @pointerleave="clear"

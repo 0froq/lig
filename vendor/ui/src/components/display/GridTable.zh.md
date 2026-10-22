@@ -56,8 +56,8 @@ GridTable 是通用的 CSS 网格，用于矩阵式表格，例如为每个条�
 <script setup lang="ts">
 import type { ChoiceOption } from '@froq/ui/vue'
 import { Choice, GridTable } from '@froq/ui'
-import '@froq/ui/style.css'
 import { ref } from 'vue'
+import '@froq/ui/style.css'
 
 interface PortRow {
   id: string

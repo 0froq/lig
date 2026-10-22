@@ -56,8 +56,8 @@ Undeclared attributes, including `class` and `style`, are forwarded to the grid 
 <script setup lang="ts">
 import type { ChoiceOption } from '@froq/ui/vue'
 import { Choice, GridTable } from '@froq/ui'
-import '@froq/ui/style.css'
 import { ref } from 'vue'
+import '@froq/ui/style.css'
 
 interface PortRow {
   id: string
