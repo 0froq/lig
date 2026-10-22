@@ -202,3 +202,161 @@ const nvimSpans = computed(() => highlightSource(nvimSetup.value, 'lua', variant
   </section>
   <PaletteAgentSetup />
 </template>
+
+<style scoped>
+.lig-group {
+  margin: 48px 0 0;
+  font-family: var(--font-meta);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.lig-ports {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
+  margin-top: 40px;
+}
+
+.lig-port {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 10px;
+  padding-inline-start: 16px;
+  border-inline-start: 4px solid var(--line);
+}
+
+.lig-port-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.lig-project-icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 3px;
+}
+
+.lig-project-icon.is-mark {
+  border-radius: 0;
+}
+
+.lig-port-title a:hover {
+  color: var(--accent);
+}
+
+.lig-port :deep(h3),
+.lig-port :deep(p) {
+  margin: 0;
+}
+
+.lig-port :deep(.ui-code-block) {
+  margin-top: 6px;
+}
+
+.lig-port-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.lig-port-actions .lig-install-link {
+  margin-top: 4px;
+}
+
+.lig-port .lig-port-variants {
+  margin-top: 10px;
+  font: 12px/1.6 var(--font-meta);
+}
+
+.lig-install-link {
+  align-self: flex-start;
+  width: max-content;
+  margin-top: 14px;
+  color: var(--muted);
+  font: 12px/1.5 var(--font-meta);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  transition:
+    color 0.35s var(--ease),
+    border-color 0.35s var(--ease);
+}
+
+.lig-install-link:hover {
+  color: var(--fg);
+  border-bottom-color: currentColor;
+}
+
+.lig-port-variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+}
+
+.lig-port-variants :deep(a) {
+  color: var(--muted);
+  transition: color 0.3s var(--ease);
+}
+
+.lig-port-variants :deep(a.is-current) {
+  color: var(--fg);
+}
+
+.lig-port-variants :deep(.lig-download-symbol) {
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+.lig-port-variants :deep(.lig-port-all) {
+  margin-left: auto;
+  color: var(--fg);
+}
+
+.lig-port :deep(a:hover),
+.lig-port-manifest :deep(a:hover) {
+  color: var(--accent);
+}
+
+.lig-port :deep(a:focus-visible),
+.lig-port-manifest :deep(a:focus-visible) {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.lig-lightweight {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  margin-top: 48px;
+  padding-inline-start: 16px;
+  border-inline-start: 4px solid var(--line);
+}
+
+.lig-lightweight .lig-group {
+  margin: 0;
+  font-weight: 400;
+}
+
+.lig-port-manifest {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font: 11px/1.5 var(--font-meta);
+}
+
+@media (max-width: 860px) {
+  .lig-port-variants :deep(.lig-port-all) {
+    margin-left: 0;
+  }
+}
+</style>

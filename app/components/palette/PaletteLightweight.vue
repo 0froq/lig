@@ -52,3 +52,44 @@ function downloadName(port: (typeof LIGHTWEIGHT_PORTS)[number], id: LigVariant):
     </template>
   </GridTable>
 </template>
+
+<style scoped>
+.lig-matrix {
+  margin: 24px 0 0;
+}
+
+.lig-matrix .lig-matrix-port {
+  margin: 0;
+  font: inherit;
+}
+
+.lig-matrix :deep(.lig-download-link) {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.lig-matrix :deep(.lig-download-symbol) {
+  margin-inline-start: 0;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+  transition:
+    color 0.2s var(--ease),
+    scale 0.2s var(--ease);
+}
+
+.lig-matrix :deep(.lig-download-link:hover .lig-download-symbol),
+.lig-matrix :deep(.lig-download-link:focus-within .lig-download-symbol) {
+  color: var(--accent);
+  scale: 1.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lig-matrix :deep(.lig-download-symbol) {
+    transition: none;
+  }
+}
+</style>
