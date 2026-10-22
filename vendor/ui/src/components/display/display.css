@@ -186,6 +186,7 @@
 }
 
 .ui-grid-table {
+  --ui-grid-table-row-height: 48px;
   display: grid;
   width: 100%;
   overflow-x: auto;
