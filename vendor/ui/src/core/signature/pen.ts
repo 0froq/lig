@@ -307,7 +307,7 @@ export function createPenStroke(options: PenOptions): PenLayer | null {
       const section = anchors.finalSection ?? null
       const parent = mark?.parentElement ?? null
       const measure = mark ? document.createElement('canvas').getContext('2d') : null
-      const glyphText = mark?.firstChild?.textContent
+      const glyphText = mark?.textContent
       if (mark && section && parent && measure && glyphText != null) {
         const style = getComputedStyle(mark)
         measure.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
