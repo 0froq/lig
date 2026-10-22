@@ -141,252 +141,12 @@ code {
   font-size: 0.86em;
 }
 
-/* Content sits above the paper; each sheet is its own stacking context so the pen's
-   canvas (z-index -1 inside it) draws under the type but over the paper */
-.l-site {
-  position: relative;
-  z-index: 1;
-}
-
-.l-frame {
-  position: relative;
-  display: flex;
-  flex: 1 0 auto;
-  flex-direction: column;
-  width: 100%;
-  /* Nothing inside may widen the page. `clip` does not make a scroll container, so sticky still works. */
-  overflow-x: clip;
-}
-
-.ui-paper {
-  position: relative;
-}
-
-.ui-paper-grain {
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.ui-paper-body {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex: 1 0 auto;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 100%;
-}
-
-.l-sheet {
-  position: relative;
-  z-index: 0;
-}
-
-/* Header */
-.l-top {
-  position: absolute;
-  inset: 0 0 auto;
-  z-index: 10;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  height: 72px;
-  padding: 0 var(--pad);
-  font-size: 14px;
-}
-
-.l-brand {
-  grid-column: 1;
-  font-family: var(--font-display);
-  font-size: calc(24px * var(--title-scale));
-  letter-spacing: -0.01em;
-}
-
-.l-dot {
-  color: var(--accent);
-}
-
-.l-nav {
-  display: flex;
-  gap: 22px;
-  font: 11px/1.3 var(--font-meta);
-  color: var(--muted);
-}
-
-.l-header-actions {
-  grid-column: 3;
-  justify-self: end;
-  display: flex;
-  align-items: center;
-  gap: 28px;
-}
-
-/* Header controls speak like the nav: muted meta type, no frame, firmer on hover or open. */
-.l-menu,
-.l-language-select .ui-select-trigger {
-  gap: 8px;
-  padding: 4px 0;
-  color: var(--ui-muted);
-  font: 11px/1.3 var(--ui-font-meta);
-}
-
-.l-menu:hover,
-.l-menu[data-state='open'],
-.l-language-select .ui-select-trigger:hover,
-.l-language-select .ui-select-trigger[data-state='open'] {
-  color: var(--ui-fg);
-}
-
-/* Below the wide layout the three pages fold into one menu beside the language select. */
-.l-menu {
-  display: none;
-  align-items: center;
-  min-height: 28px;
-  border: 0;
-  cursor: pointer;
-  transition: color var(--ui-dur) var(--ui-ease);
-}
-
-.l-menu svg {
-  width: 10px;
-  height: 7px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.25;
-}
-
-.l-menu:focus-visible {
-  outline-offset: 2px;
-}
-
-/* One list for both: hairline frame, no radius or shadow, plain rows. */
-.l-menu-list.ui-menu-content,
-.l-language-select .ui-select-content {
-  min-width: 9.5rem;
-  padding: 4px 0;
-  border-color: var(--ui-line);
-  border-radius: 0;
-  box-shadow: none;
-  font: 11px/1.3 var(--ui-font-meta);
-}
-
-.l-menu-list .ui-menu-item,
-.l-language-select .ui-select-item {
-  position: relative;
-  padding: 8px 16px 8px 36px;
-  border-radius: 0;
-}
-
-/* Rows stay plain: hover and keyboard focus get an underline, not a fill. */
-.l-menu-list .ui-menu-item[data-highlighted],
-.l-language-select .ui-select-item[data-highlighted] {
-  background: none;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-}
-
-/* The current row keeps ink text and an accent dot in the left gutter: the checked value, or the current page. */
-.l-language-select .ui-select-item[data-state='checked'] {
-  background: none;
-  color: var(--ui-fg);
-}
-
-.l-menu-list [aria-current='page']::before {
-  content: '';
-}
-
-.l-language-select .ui-select-item > [aria-hidden='true'],
-.l-menu-list [aria-current='page']::before {
-  position: absolute;
-  top: 50%;
-  left: 16px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--ui-accent);
-  transform: translateY(-50%);
-}
-
-.l-nav a.router-link-active {
-  color: var(--fg);
-}
-
-/* The three pages sit beside the centred variant switch; when the two would touch they fold into the menu. */
-@media (max-width: 1100px) {
-  .l-header-actions > .l-nav {
-    display: none;
-  }
-
-  .l-menu {
-    display: inline-flex;
-  }
-}
-
-.l-top > .l-sections {
-  grid-column: 2;
-  justify-self: center;
-}
-
-.l-sections {
-  display: flex;
-  gap: 20px;
-  font-family: var(--font-meta);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.l-sections a {
-  transition: color 0.3s;
-}
-
-.l-sections a[aria-current='true'],
-.l-nav a:hover,
-.l-sections a:hover {
-  color: var(--fg);
-}
-
-/* The variant switch rests at the bottom edge once the head has scrolled away; the top edge belongs
-   to the pinned titles of open sections. */
-.l-theme-bar {
-  position: fixed;
-  bottom: max(16px, env(safe-area-inset-bottom));
-  left: 50%;
-  z-index: 20;
-  translate: -50% 0;
-  max-width: calc(100vw - 24px);
-  padding: 4px 8px;
-  background: var(--bg);
-  border: 1px solid var(--line);
-}
-
-.theme-bar-enter-active,
-.theme-bar-leave-active {
-  transition:
-    translate 0.6s var(--ease),
-    opacity 0.6s var(--ease);
-}
-
-.theme-bar-enter-from,
-.theme-bar-leave-to {
-  opacity: 0;
-  translate: -50% calc(100% + 32px);
-}
-
 .lig-theme-switch {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0 4px;
   font: 11px/1.4 var(--font-meta);
-}
-
-.l-top > .lig-theme-switch {
-  grid-column: 2;
-  justify-self: center;
 }
 
 .lig-theme-switch button {
@@ -450,21 +210,6 @@ html.has-stroke:not(.has-hand, :has(.l-sheet [data-anchor='final-mark'])) .l-foo
   .has-hand.has-stroke [data-anchor='rule'] {
     border-top-color: var(--line);
   }
-}
-
-.l-skip {
-  position: absolute;
-  top: 12px;
-  left: var(--pad);
-  z-index: 20;
-  padding: 6px 10px;
-  background: var(--bg);
-  font-size: 13px;
-  translate: 0 -200%;
-}
-
-.l-skip:focus {
-  translate: 0;
 }
 
 .l-release {
@@ -690,12 +435,6 @@ html:not(.has-hand) .l-release {
 
 .l-final .l-lede {
   margin: 0 0 16px;
-}
-
-.l-controls {
-  display: flex;
-  gap: 20px;
-  justify-self: end;
 }
 
 /* Inner pages */
@@ -932,33 +671,6 @@ main,
 }
 
 @media (max-width: 860px) {
-  .l-header-actions > .l-nav,
-  .l-top > .l-sections {
-    display: none;
-  }
-
-  .l-menu {
-    display: inline-flex;
-  }
-
-  .l-top {
-    grid-template-columns: 1fr auto;
-    height: auto;
-    min-height: 72px;
-    gap: 12px;
-    padding-block: 16px;
-  }
-
-  .l-top > .lig-theme-switch {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-
-  .l-header-actions {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
   .l-hero-foot,
   .l-page-foot,
   .l-section,

@@ -19,3 +19,26 @@ const { t } = useI18n()
     >
   </nav>
 </template>
+
+<style scoped>
+.l-sections {
+  display: flex;
+  gap: 20px;
+  font-family: var(--font-meta);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.l-sections a {
+  transition: color 0.3s;
+}
+
+/* Preserve the shared selector group here and in SiteHeader without a global rule. */
+.l-sections a[aria-current='true'],
+.l-nav a:hover,
+.l-sections a:hover {
+  color: var(--fg);
+}
+</style>
