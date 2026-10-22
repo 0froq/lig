@@ -67,6 +67,25 @@ const banks = computed(() => terminalColors(tokens.value))
 </template>
 
 <style scoped>
+.lig-parsed {
+  --scrollbar-thumb: color-mix(in oklab, var(--pv-fg) 35%, transparent);
+  isolation: isolate;
+  min-width: 0;
+  padding: 24px;
+  color: var(--pv-fg);
+  background: var(--pv-bg);
+  border: 1px solid var(--pv-line);
+}
+
+.lig-parsed-header,
+.lig-inspector-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  font: 12px/1.5 var(--font-meta);
+}
+
 .lig-ansi {
   font: 12px/1.6 var(--font-meta);
 }
@@ -160,6 +179,12 @@ const banks = computed(() => terminalColors(tokens.value))
 @media (prefers-reduced-motion: reduce) {
   .lig-ansi .lig-parsed-header a {
     transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .lig-parsed {
+    padding: 16px;
   }
 }
 </style>
