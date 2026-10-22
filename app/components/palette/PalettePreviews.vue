@@ -187,12 +187,8 @@ const previewStyle = computed(() => {
   color: var(--pv-muted);
   font-size: 14px;
 }
-</style>
-
-<style>
-/* Keep the original specificity: choice.css overrides the stage margin, and
-   the global mixed narrow-screen group overrides its columns. The retained
-   syntax context also overrides the editor border without depending on load order. */
+/* Stage and editor bases now share scope with their narrow-screen overrides.
+   The removed choice studies and syntax-stage context no longer override them. */
 .lig-stage {
   display: grid;
   grid-template-columns: 1.25fr 0.75fr;
@@ -206,10 +202,7 @@ const previewStyle = computed(() => {
 }
 
 @media (max-width: 860px) {
-  /* Retain the whole mixed group globally too. This local copy keeps the
-     original narrow-screen rule after the stage base regardless of chunk order. */
-  .lig-stage,
-  .lig-stage-syntax {
+  .lig-stage {
     grid-template-columns: 1fr;
   }
 

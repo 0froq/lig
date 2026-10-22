@@ -233,4 +233,90 @@ const neutrals = computed(() => {
 .lig-oklch-note-link:hover {
   color: var(--accent);
 }
+
+/* HeroFrame and Section are siblings created here, not in pages/index.vue.
+   Scope the Section root owned by this template, then deep into its internals.
+   This keeps the sibling relationship without requiring Showcase scope on labels. */
+/* Label column plus body, centered as one measure. The label sits on the
+   right of its column so a long name grows away from the title.
+   The handwritten tagline uses the same right edge, so the stroke does not
+   run down the side of the page. */
+.lig-hero ~ .l-section {
+  --edge: clamp(80px, 11vw, 220px);
+}
+
+.lig-hero ~ .l-section {
+  --span-margin: 2;
+  --measure-gap: 48px;
+  box-sizing: border-box;
+  width: min(1080px, calc(100vw - var(--edge) * 2));
+  margin-inline: auto;
+  gap: var(--measure-gap);
+}
+
+.lig-hero ~ .l-section {
+  --span-body: 10;
+  padding-inline: 0;
+}
+
+.lig-hero ~ .l-section :deep(.l-body) {
+  max-width: 48rem;
+}
+
+.lig-hero ~ .l-section :deep(.l-label) {
+  padding-top: 0.55em;
+  color: var(--fg);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-align: end;
+}
+
+@media (max-width: 860px) {
+  .lig-hero ~ .l-section {
+    --edge: clamp(16px, 4vw, 28px);
+  }
+
+  .lig-hero ~ .l-section {
+    width: auto;
+    margin-inline: 0;
+    padding-inline: var(--edge);
+  }
+
+  .lig-hero ~ .l-section :deep(.l-label) {
+    text-align: start;
+  }
+}
+
+.lig-hero ~ .l-section {
+  counter-increment: lig-leaf;
+}
+
+.lig-hero ~ .l-section :deep(.l-label)::before {
+  margin-inline-end: 0.7em;
+  color: var(--muted);
+  content: counter(lig-leaf, lower-roman) '.';
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.lig-more {
+  margin-top: 28px;
+}
+
+/* Keep closed sections compact, but leave space after an open section's content. */
+.lig-more:not(.is-open) + .lig-more {
+  margin-top: 0;
+}
+
+.lig-more:not(.is-open) + .lig-more > :deep(.ui-collapsible-trigger) {
+  padding-top: 8px;
+}
+
+/* Pinned titles sit under the notice bar when there is one. */
+.ui-collapsible.lig-more.is-open > :deep(.ui-collapsible-trigger) {
+  top: var(--banner-h, 0px);
+}
 </style>

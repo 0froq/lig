@@ -27,6 +27,30 @@ defineProps<{ id?: string; entry?: boolean }>()
 </template>
 
 <style scoped>
+/* Sections */
+.l-section {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: var(--gap);
+  padding: calc(var(--section) * var(--section-scale)) var(--pad) 0;
+  scroll-margin-top: 64px;
+}
+
+.l-title {
+  max-width: 18ch;
+  text-wrap: balance;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: calc(clamp(40px, 5.2vw, 76px) * var(--title-scale));
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+:lang(zh) .l-title {
+  letter-spacing: 0;
+}
+
 .l-label {
   grid-column: span var(--span-margin);
   margin: 0;
@@ -84,31 +108,16 @@ defineProps<{ id?: string; entry?: boolean }>()
 }
 
 @media (max-width: 860px) {
-  /* Keep mixed global groups intact. Only this component's elements get its scope. */
-  .l-hero-foot,
-  .l-page-foot,
-  .l-section,
-  .l-price {
+  .l-section {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .l-tagline,
-  .l-release,
-  .l-hero-foot .l-lede,
-  .l-hero-foot .l-cta,
-  .l-page-foot > *,
   .l-label,
-  .l-body,
-  .l-amount,
-  .l-price > div {
+  .l-body {
     grid-column: 1 / -1;
   }
 
-  .l-tagline,
-  .l-hero-foot .l-cta,
-  .l-page-foot .l-meta,
-  .l-label,
-  .l-amount {
+  .l-label {
     justify-self: start;
   }
 
@@ -135,31 +144,5 @@ defineProps<{ id?: string; entry?: boolean }>()
 /* The last section is the way out: more air above it than between the others. */
 #downloads.lig-section-quiet {
   padding-top: clamp(104px, 16svh, 176px);
-}
-</style>
-
-<style>
-/* Unscoped until the cross-component sibling rules are retired.
-   Adding a scope attribute would tie .lig-hero ~ .l-section and make padding
-   and gap depend on stylesheet loading order.
-   l-title also keeps its specificity so the global Chinese typography group wins. */
-/* Sections */
-.l-section {
-  display: grid;
-  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-  gap: var(--gap);
-  padding: calc(var(--section) * var(--section-scale)) var(--pad) 0;
-  scroll-margin-top: 64px;
-}
-
-.l-title {
-  max-width: 18ch;
-  text-wrap: balance;
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: calc(clamp(40px, 5.2vw, 76px) * var(--title-scale));
-  line-height: 1;
-  letter-spacing: -0.02em;
 }
 </style>

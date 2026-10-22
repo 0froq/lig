@@ -380,13 +380,31 @@ const year = new Date().getFullYear()
     font-size: clamp(20px, 5vw, 24px);
   }
 }
-</style>
-
-<style>
-/* Keep the base specificity below the global html.has-stroke footer-stop rules. */
-/* The pen or the paper lands this stop; see kit.css for when it hides until then. */
+/* The pen or the paper lands this stop; the html state rules below hide it until then. */
 .l-foot-stop {
   display: inline-block;
   color: var(--accent);
+}
+
+/* A page with no closing block of its own ends on the footer's stop: hidden until the paper or pen lands it.
+   Narrow handwriting stops at the tagline and never gets there, so the stop stays as type. */
+html.has-stroke:not(.has-hand, :has(.l-sheet [data-anchor='final-mark'])) .l-foot-stop {
+  color: transparent;
+}
+
+@media (min-width: 861px) {
+  html.has-stroke.has-hand:not(:has(.l-sheet [data-anchor='final-mark'])) .l-foot-stop {
+    color: transparent;
+  }
+}
+
+/* Installed: the page returns nothing */
+.l-foot {
+  transition: opacity 1.2s var(--ease);
+}
+
+.is-installed .l-foot {
+  opacity: 0;
+  pointer-events: none;
 }
 </style>

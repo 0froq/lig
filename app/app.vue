@@ -70,3 +70,43 @@ useHead(() => ({
     <UiDevtools />
   </div>
 </template>
+
+<style>
+/* Fill.ts and Stop.ts generate placeholders without scope attributes throughout
+   the app, including error pages. App has no single DOM root to anchor deep. */
+/* Empty copy: a block labeled with the field that still needs replacing */
+.l-fill {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: max-content;
+  min-width: calc(var(--fill, 8) * 0.5em);
+  max-width: 100%;
+  height: 1.35rem;
+  padding: 0 0.45rem;
+  vertical-align: middle;
+  border-radius: 2px;
+  background: var(--faint);
+  color: var(--fg);
+  font-family: var(--font-meta);
+  font-size: 0.68rem;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Each page is a new sheet */
+/* NuxtPage applies these classes to route roots, not App's own elements.
+   Keep their original specificity without requiring an App scope on route roots. */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.35s var(--ease);
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+</style>

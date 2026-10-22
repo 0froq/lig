@@ -120,4 +120,21 @@ onBeforeUnmount(() => {
 .l-skip:focus {
   translate: 0;
 }
+
+/* Installed: the page returns nothing */
+main {
+  transition: opacity 1.2s var(--ease);
+}
+
+.is-installed main {
+  opacity: 0;
+  pointer-events: none;
+}
+</style>
+
+<style>
+/* The layout toggles this class on html, outside every component scope. */
+.is-installed {
+  overflow: hidden;
+}
 </style>

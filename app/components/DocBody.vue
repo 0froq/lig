@@ -20,10 +20,30 @@ withDefaults(
 </template>
 
 <style scoped>
+/* Docs — prose lives in DocBody.vue; section chrome in SectionLayout.vue */
 .l-doc {
   max-width: 42rem;
   font-size: 16px;
   line-height: 1.7;
+}
+
+/* shared/final-mark.ts also emits raw MDC spans, not AccentMark instances.
+   Deep reaches their unscoped markup. Keep complete state selectors global:
+   a deep anchor before .has-* would incorrectly look for html inside this body.
+   These are the same fallback declarations owned by AccentMark, not new states. */
+:deep(.l-mark) {
+  display: inline-block;
+  color: var(--accent);
+}
+
+/* Layers draw the stops, the tagline and the rules themselves */
+:global(.has-bloom .l-mark) {
+  color: transparent;
+}
+
+/* Without washes the pen dots the last stop itself */
+:global(.has-stroke:not(.has-bloom) [data-anchor='final-mark']) {
+  color: transparent;
 }
 
 .l-doc :deep(h2) {

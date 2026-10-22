@@ -35,3 +35,34 @@ function select(next: LigVariant): void {
     </button>
   </SlidingUnderline>
 </template>
+
+<style scoped>
+.lig-theme-switch {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 4px;
+  font: 11px/1.4 var(--font-meta);
+}
+
+.lig-theme-switch button {
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  white-space: nowrap;
+}
+
+.lig-theme-switch button:hover,
+.lig-theme-switch button.is-active {
+  color: var(--fg);
+}
+
+.lig-theme-switch button:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -2px;
+}
+</style>

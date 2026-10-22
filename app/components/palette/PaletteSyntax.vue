@@ -46,6 +46,14 @@ const inks = computed(() =>
 </template>
 
 <style scoped>
+/* Base precedes the existing semantic layout and its 540px override. */
+.lig-swatch-groups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px 24px;
+  margin-top: 28px;
+}
+
 .lig-semantic-families {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -85,15 +93,9 @@ const inks = computed(() =>
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-</style>
 
-<style>
-/* Keep the base less specific than the existing scoped .lig-semantic-families,
-   including its narrow-screen override, even though migrated rules are appended. */
-.lig-swatch-groups {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 28px 24px;
-  margin-top: 28px;
+/* The sibling roots are created by this component, not by Stage itself. */
+.lig-semantic-families + .lig-parsed-stage {
+  margin-top: 32px;
 }
 </style>

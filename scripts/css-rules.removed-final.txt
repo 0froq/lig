@@ -1,0 +1,8 @@
+.lig-syntax-lede
+.lig-stage.lig-stage-syntax
+.lig-stage-syntax .lig-editor
+.lig-stage-syntax .lig-editor + .lig-editor
+.lig-source-palette > .lig-palette-column > .lig-palette-heading
+.lig-source-palette .lig-palette-heading > span:last-child
+.lig-stage-syntax
+.lig-oklch-title

@@ -85,6 +85,16 @@ const length = computed(() => Math.max(3, [...(product.name || 'name')].length))
 </template>
 
 <style scoped>
+.l-release {
+  grid-column: span var(--span-margin);
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 14px;
+  color: var(--muted);
+  transition: color 0.3s;
+}
+
 .l-release :deep(span) {
   font-family: var(--font-meta);
   font-size: 11px;
@@ -96,30 +106,17 @@ const length = computed(() => Math.max(3, [...(product.name || 'name')].length))
 }
 
 @media (max-width: 860px) {
-  /* Keep the mixed global group intact. Only Hero-owned elements get this scope. */
-  .l-tagline,
-  .l-release,
-  .l-hero-foot .l-lede,
-  .l-hero-foot .l-cta,
-  .l-page-foot > *,
-  .l-label,
-  .l-body,
-  .l-amount,
-  .l-price > div {
+  .l-release {
     grid-column: 1 / -1;
   }
 }
-</style>
 
-<style>
-/* Keep the original specificity for html.has-* and the global narrow mixed group. */
-.l-release {
-  grid-column: span var(--span-margin);
-  display: flex;
-  gap: 12px;
-  align-items: baseline;
-  font-size: 14px;
+html:not(.has-hand) .l-release {
+  grid-row: 2;
+}
+
+.l-lede {
+  max-width: 30rem;
   color: var(--muted);
-  transition: color 0.3s;
 }
 </style>

@@ -76,10 +76,6 @@ withDefaults(
 .l-final.is-end .l-final-title {
   font-size: calc(clamp(48px, 6.4vw, 104px) * var(--display-scale));
 }
-</style>
-
-<style>
-/* Keep the global Chinese typography group more specific than this base rule. */
 .l-final-title {
   margin: 0;
   font-family: var(--font-display);
@@ -87,5 +83,14 @@ withDefaults(
   font-size: calc(clamp(64px, 10vw, 168px) * var(--display-scale));
   line-height: 0.9;
   letter-spacing: -0.035em;
+}
+
+:lang(zh) .l-final-title {
+  letter-spacing: 0;
+}
+
+.l-lede {
+  max-width: 30rem;
+  color: var(--muted);
 }
 </style>

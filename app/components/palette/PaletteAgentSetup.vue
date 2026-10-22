@@ -71,4 +71,9 @@ const instruction = computed(() =>
   line-height: 1;
   letter-spacing: -0.02em;
 }
+
+/* Pinned titles sit under the notice bar when there is one. */
+.lig-ui :deep(.ui-code-block.is-collapsible.is-open > .ui-code-block-header) {
+  top: var(--banner-h, 0px);
+}
 </style>

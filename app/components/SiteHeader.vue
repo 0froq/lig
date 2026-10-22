@@ -334,11 +334,8 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
     grid-row: 1;
   }
 }
-</style>
-
-<style>
-/* Transition classes are framework-owned. Keep the base unscoped too so its
-   translate does not gain specificity over the enter/leave translate. */
+/* Transition adds classes to this component's own div. Base and states share
+   the same scope and specificity, with enter/leave translate after the base. */
 /* The variant switch rests at the bottom edge once the head has scrolled away; the top edge belongs
    to the pinned titles of open sections. */
 .l-theme-bar {
@@ -364,5 +361,15 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
 .theme-bar-leave-to {
   opacity: 0;
   translate: -50% calc(100% + 32px);
+}
+
+/* Installed: the page returns nothing */
+.l-top {
+  transition: opacity 1.2s var(--ease);
+}
+
+.is-installed .l-top {
+  opacity: 0;
+  pointer-events: none;
 }
 </style>

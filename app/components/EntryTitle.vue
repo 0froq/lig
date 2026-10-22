@@ -12,8 +12,8 @@ withDefaults(defineProps<{ as?: 'h2' | 'span' }>(), { as: 'h2' })
 </template>
 
 <style>
-/* The global Chinese typography group and the callers' scoped variants
-   (notably the changelog's margin) must keep winning in either load order. */
+/* Callers still own scoped margin overrides, notably changelog's 14px top margin.
+   Keep this base weaker regardless of lazy chunk order. */
 .l-entry-title {
   margin: 0;
   font-family: var(--font-display);
@@ -22,5 +22,11 @@ withDefaults(defineProps<{ as?: 'h2' | 'span' }>(), { as: 'h2' })
   line-height: 1.02;
   letter-spacing: -0.02em;
   text-wrap: balance;
+}
+</style>
+
+<style scoped>
+:lang(zh) .l-entry-title {
+  letter-spacing: 0;
 }
 </style>

@@ -10,12 +10,20 @@ withDefaults(defineProps<{ anchor?: 'mark' | 'final-mark' }>(), { anchor: 'mark'
   /></span>
 </template>
 
-<style>
-/* Stop.ts also renders this mark outside HeroFrame.
-   Keep the base unscoped so global .has-bloom .l-mark always wins,
-   including on routes that never load a hero. */
+<style scoped>
+/* Stop.ts also renders this mark outside HeroFrame. */
 .l-mark {
   display: inline-block;
   color: var(--accent);
+}
+
+/* Layers draw the stops, the tagline and the rules themselves */
+.has-bloom .l-mark {
+  color: transparent;
+}
+
+/* Without washes the pen dots the last stop itself */
+.has-stroke:not(.has-bloom) [data-anchor='final-mark'] {
+  color: transparent;
 }
 </style>

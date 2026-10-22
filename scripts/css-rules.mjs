@@ -1,6 +1,7 @@
 // Lossless-move check for the scoped-style refactor.
 // Reads every global stylesheet and every `<style>` block under app/, strips Vue scoping syntax,
-// and compares the set of (at-rule context, selector, declarations) with a stored baseline.
+// and compares the set of (at-rule context, individual selector, declarations) with a stored baseline.
+// Split both sides' selector lists so moving mixed groups to separate owners is lossless.
 //   node scripts/css-rules.mjs --write-baseline   record the current rules
 //   node scripts/css-rules.mjs                    compare; exit 1 on lost or new rules
 // Rules deleted on purpose are listed in scripts/css-rules.removed*.txt, one `selector` per line.
@@ -42,6 +43,38 @@ function normalizeDeclarations(body) {
     .map(part => part.replace(/\s+/g, ' ').trim())
     .filter(Boolean)
     .join('; ')
+}
+
+// Commas inside :not(), :has(), attribute strings, etc. do not split a rule.
+function splitSelectors(selector) {
+  const parts = []
+  let depth = 0
+  let quote = ''
+  let start = 0
+  for (let i = 0; i < selector.length; i++) {
+    const char = selector[i]
+    if (char === '\\') {
+      i++
+      continue
+    }
+    if (quote) {
+      if (char === quote) quote = ''
+    } else if (char === '"' || char === "'") quote = char
+    else if (char === '(' || char === '[') depth++
+    else if (char === ')' || char === ']') depth--
+    else if (char === ',' && depth === 0) {
+      parts.push(selector.slice(start, i).trim())
+      start = i + 1
+    }
+  }
+  parts.push(selector.slice(start).trim())
+  return parts
+}
+
+function expandRule(rule) {
+  const [context, selector, declarations] = rule.split(' | ')
+  if (selector.startsWith('@')) return [rule]
+  return splitSelectors(selector).map(part => `${context} | ${part} | ${declarations}`)
 }
 
 // A small block parser: at-rules with child rules, rules with declarations.
@@ -97,20 +130,22 @@ function collect() {
   return rules
 }
 
-const rules = collect()
+const rules = new Set([...collect()].flatMap(expandRule))
 if (process.argv.includes('--write-baseline')) {
   writeFileSync(baselineFile, `${JSON.stringify([...rules].sort(), null, 1)}\n`)
   process.stdout.write(`baseline: ${rules.size} rules\n`)
   process.exit(0)
 }
 
-const baseline = new Set(JSON.parse(readFileSync(baselineFile, 'utf8')))
-const removed = removedFiles.flatMap(file =>
-  readFileSync(file, 'utf8')
-    .split('\n')
-    .map(line => line.trim())
-    .filter(line => line && !line.startsWith('#')),
-)
+const baseline = new Set(JSON.parse(readFileSync(baselineFile, 'utf8')).flatMap(expandRule))
+const removed = removedFiles
+  .flatMap(file =>
+    readFileSync(file, 'utf8')
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line && !line.startsWith('#')),
+  )
+  .flatMap(selector => splitSelectors(normalizeSelector(selector)))
 const lost = [...baseline].filter(
   rule => !rules.has(rule) && !removed.some(selector => rule.split(' | ')[1] === selector),
 )

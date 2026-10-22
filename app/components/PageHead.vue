@@ -89,10 +89,6 @@ const section = computed(() => props.variant === 'section' || props.compact)
 </template>
 
 <style scoped>
-.l-page-foot .l-kicker {
-  grid-column: span var(--span-margin);
-}
-
 /* Inner pages */
 .l-page-head {
   display: grid;
@@ -109,18 +105,18 @@ const section = computed(() => props.variant === 'section' || props.compact)
 .is-section .l-page-title.is-long {
   font-size: clamp(44px, 6vw, 80px);
 }
-</style>
 
-<style>
-/* Keep the original specificity for the global Chinese typography, has-stroke
-   border and mixed narrow-screen groups. The section foot also stays unscoped:
-   its direct-child reset must not beat the scoped kicker's grid-column. */
 .is-section .l-page-foot {
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .is-section .l-page-foot > * {
   grid-column: auto;
+}
+
+/* After the equally specific section reset so the kicker keeps its original span. */
+.l-page-foot .l-kicker {
+  grid-column: span var(--span-margin);
 }
 
 .l-page-title {
@@ -130,6 +126,12 @@ const section = computed(() => props.variant === 'section' || props.compact)
   font-size: calc(clamp(96px, 17vw, 280px) * var(--display-scale));
   line-height: 0.82;
   letter-spacing: -0.04em;
+}
+
+/* The original long-title base wins this equal-specificity letter-spacing tie.
+   Keep Chinese tracking before .is-long, while its line-height override stays after. */
+:lang(zh) .l-page-title {
+  letter-spacing: 0;
 }
 
 .l-page-title.is-long {
@@ -164,33 +166,37 @@ const section = computed(() => props.variant === 'section' || props.compact)
   color: var(--muted);
 }
 
+.has-stroke [data-anchor='rule'] {
+  border-top-color: transparent;
+}
+
+/* Narrow handwriting stops at the tagline, so the foot keeps its own rule. */
 @media (max-width: 860px) {
-  /* Keep mixed groups intact and after the bases, even in a lazy-loaded chunk.
-     Their original specificity preserves the section and kicker overrides. */
-  .l-hero-foot,
-  .l-page-foot,
-  .l-section,
-  .l-price {
+  .has-hand.has-stroke [data-anchor='rule'] {
+    border-top-color: var(--line);
+  }
+}
+
+:lang(zh) .l-page-title.is-long {
+  line-height: 1.15;
+}
+
+.l-lede {
+  max-width: 30rem;
+  color: var(--muted);
+}
+
+@media (max-width: 860px) {
+  /* The more specific section, kicker and lede rules still beat these resets. */
+  .l-page-foot {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .l-tagline,
-  .l-release,
-  .l-hero-foot .l-lede,
-  .l-hero-foot .l-cta,
-  .l-page-foot > *,
-  .l-label,
-  .l-body,
-  .l-amount,
-  .l-price > div {
+  .l-page-foot > * {
     grid-column: 1 / -1;
   }
 
-  .l-tagline,
-  .l-hero-foot .l-cta,
-  .l-page-foot .l-meta,
-  .l-label,
-  .l-amount {
+  .l-page-foot .l-meta {
     justify-self: start;
   }
 }

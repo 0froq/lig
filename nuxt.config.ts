@@ -83,9 +83,8 @@ export default defineNuxtConfig({
     '@fontsource-variable/geist-mono/index.css',
     '@fontsource/instrument-serif/400.css',
     '@fontsource/instrument-serif/400-italic.css',
-    '~/assets/css/kit.css',
+    '~/assets/css/base.css',
     '~/assets/css/ui.css',
-    '~/assets/css/palette.css',
   ],
 
   app: {
