@@ -25,3 +25,38 @@ onBeforeUnmount(() => clearTimeout(timer))
     </button>
   </div>
 </template>
+
+<style scoped>
+/* Install page */
+.l-command {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  max-width: 34rem;
+  margin: 22px 0 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.l-command code {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.l-command button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.l-command button:hover {
+  color: var(--fg);
+}
+</style>

@@ -28,3 +28,14 @@ withDefaults(defineProps<{ lines?: string[] }>(), { lines: () => [] })
     />
   </p>
 </template>
+
+<style>
+/* Keep the global Chinese typography groups more specific than this base rule. */
+.l-statement {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: calc(clamp(44px, 6.4vw, 104px) * var(--poster-scale));
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+</style>
