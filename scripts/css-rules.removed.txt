@@ -1,0 +1,3 @@
+.l-prose
+.l-prose p
+.l-prose .l-excerpt

@@ -69,3 +69,11 @@ useSeoMeta({ robots: () => (page.value?.title?.trim() ? undefined : 'noindex, fo
     />
   </Sheet>
 </template>
+
+<style scoped>
+/* Markdown written straight on a page, outside any block */
+.l-page > :deep(:not(section)) {
+  max-width: 42rem;
+  margin-inline: var(--pad);
+}
+</style>

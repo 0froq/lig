@@ -139,4 +139,23 @@ withDefaults(
   padding-top: 0;
   border-top: 0;
 }
+
+.l-notes :deep(ul) {
+  max-width: 34rem;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+}
+
+.l-notes :deep(li) {
+  margin: 0;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.l-notes :deep(li:first-child) {
+  border-top: 0;
+  padding-top: 0;
+}
 </style>
