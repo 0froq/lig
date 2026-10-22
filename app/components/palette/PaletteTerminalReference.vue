@@ -47,33 +47,26 @@ onMounted(() => {
       </button>
     </p>
     <p class="lig-color-table-title"> {{ variant }} / terminal.ansi.0-15 </p>
-    <div
-      class="lig-color-table-scroll"
-      role="region"
-      tabindex="0"
-      :aria-label="t('palette.terminal.reference')"
-    >
-      <table class="lig-color-table">
-        <thead>
-          <tr>
-            <th
-              scope="col"
-              class="lig-pin-1"
-            >
-              ANSI
-            </th>
-            <th
-              scope="col"
-              class="lig-pin-2 lig-pin-end"
-            >
-              {{ t('palette.terminal.color') }}
-            </th>
-            <th scope="col"> HEX </th>
-            <th scope="col"> SGR fg / bg </th>
-            <th scope="col"> WCAG 2.2 </th>
-            <th scope="col"> APCA Lc </th>
-          </tr>
-        </thead>
+    <PaletteColorTable :label="t('palette.terminal.reference')">
+      <template #columns>
+        <th
+          scope="col"
+          class="lig-pin-1"
+        >
+          ANSI
+        </th>
+        <th
+          scope="col"
+          class="lig-pin-2 lig-pin-end"
+        >
+          {{ t('palette.terminal.color') }}
+        </th>
+        <th scope="col"> HEX </th>
+        <th scope="col"> SGR fg / bg </th>
+        <th scope="col"> WCAG 2.2 </th>
+        <th scope="col"> APCA Lc </th>
+      </template>
+      <template #default>
         <tbody
           v-for="bank in banks"
           :key="bank.start"
@@ -115,8 +108,8 @@ onMounted(() => {
             <td>{{ color.apca > 0 ? '+' : '' }}{{ color.apca.toFixed(0) }}</td>
           </tr>
         </tbody>
-      </table>
-    </div>
+      </template>
+    </PaletteColorTable>
     <span
       class="lig-color-announcement"
       role="status"
@@ -128,5 +121,49 @@ onMounted(() => {
 <style scoped>
 .lig-terminal-reference {
   scroll-margin-top: 100px;
+}
+
+.lig-aside {
+  max-width: 40rem;
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.lig-color-table-title {
+  margin: 16px 0 12px;
+  font: 11px/1.6 var(--font-meta);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The background copy button and live region are outside PaletteColorTable. */
+.lig-color-copy {
+  min-width: 8ch;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: var(--fg);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lig-color-copy:hover,
+.lig-color-copy:focus-visible {
+  border-bottom-color: var(--copy-color);
+}
+
+.lig-color-copy.is-copied {
+  color: var(--copy-color);
+}
+
+.lig-color-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 </style>
