@@ -139,3 +139,98 @@ const neutrals = computed(() => {
     <PaletteDownloads />
   </Section>
 </template>
+
+<style scoped>
+.lig-hero-icon {
+  flex: none;
+  align-self: center;
+  width: 0.65em;
+  height: 0.65em;
+}
+
+.lig-hero-name {
+  white-space: nowrap;
+}
+
+.lig-quiet-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.lig-palette-lead {
+  margin-bottom: 40px;
+}
+
+.lig-copy-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 28px;
+  margin-top: 36px;
+}
+
+.lig-copy-label {
+  color: var(--muted);
+  font-family: var(--font-meta);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lig-copy-formats {
+  display: flex;
+  gap: 6px 22px;
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.lig-copy-formats button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lig-copy-formats button:hover,
+.lig-copy-formats button.is-active {
+  color: var(--fg);
+}
+
+.lig-copy-formats button:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* A continuous neutral scale and an interactive map of the accent colors. */
+.lig-source-palette {
+  display: grid;
+  gap: 36px;
+  max-width: 48rem;
+  margin-top: 28px;
+}
+
+.lig-palette-column {
+  min-width: 0;
+}
+
+.lig-oklch-note-link {
+  display: inline-block;
+  margin-top: 12px;
+  font: 12px/1.5 var(--font-meta);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.lig-oklch-note-link:hover {
+  color: var(--accent);
+}
+</style>

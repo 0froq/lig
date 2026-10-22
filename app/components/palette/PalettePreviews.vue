@@ -71,3 +71,151 @@ const previewStyle = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.lig-editor,
+.lig-terminal,
+.lig-paper-card {
+  min-width: 0;
+  padding: 28px;
+}
+
+.lig-paper-card {
+  border-top: 1px solid color-mix(in srgb, var(--pv-fg) 14%, transparent);
+}
+
+/* Pane titles follow the CodeBlock title row: a rule under the label, then the source. */
+.lig-file {
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--pv-line);
+  font-family: var(--font-meta);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pv-muted);
+}
+
+.lig-editor .lig-file + .lig-code + .lig-file {
+  margin-top: 28px;
+}
+
+.lig-code {
+  margin: 0;
+  overflow-x: auto;
+  font-family: var(--font-meta);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.lig-code .kw {
+  color: var(--pv-keyword);
+}
+
+.lig-code .fn {
+  color: var(--pv-func);
+}
+
+.lig-code .ty {
+  color: var(--pv-type);
+}
+
+.lig-code .str {
+  color: var(--pv-string);
+}
+
+.lig-code .cm {
+  color: var(--pv-comment);
+}
+
+.lig-code .muted {
+  color: var(--pv-muted);
+}
+
+.lig-code .num {
+  color: var(--pv-number);
+}
+
+.lig-code .sp {
+  color: var(--pv-special);
+}
+
+.lig-code .op {
+  color: var(--pv-operator);
+}
+
+.lig-terminal {
+  font-family: var(--font-meta);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.lig-terminal p {
+  margin: 0;
+}
+
+.lig-terminal .prompt {
+  color: var(--pv-accent);
+}
+
+.lig-terminal .ok {
+  color: var(--pv-ok);
+}
+
+.lig-terminal .warn {
+  color: var(--pv-error);
+}
+
+.lig-terminal .muted {
+  color: var(--pv-muted);
+}
+
+.lig-paper-title {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 0.9;
+}
+
+.lig-paper-title .dot {
+  color: var(--pv-accent);
+}
+
+.lig-paper-lede {
+  max-width: 22ch;
+  margin: 12px 0 0;
+  color: var(--pv-muted);
+  font-size: 14px;
+}
+</style>
+
+<style>
+/* Keep the original specificity: choice.css overrides the stage margin, and
+   the global mixed narrow-screen group overrides its columns. The retained
+   syntax context also overrides the editor border without depending on load order. */
+.lig-stage {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  margin-top: 40px;
+  background: var(--pv-bg);
+  color: var(--pv-fg);
+}
+
+.lig-editor {
+  border-right: 1px solid color-mix(in srgb, var(--pv-fg) 14%, transparent);
+}
+
+@media (max-width: 860px) {
+  /* Retain the whole mixed group globally too. This local copy keeps the
+     original narrow-screen rule after the stage base regardless of chunk order. */
+  .lig-stage,
+  .lig-stage-syntax {
+    grid-template-columns: 1fr;
+  }
+
+  .lig-editor {
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--pv-fg) 14%, transparent);
+  }
+}
+</style>

@@ -372,3 +372,145 @@ onBeforeUnmount(() => cancelAnimationFrame(nudgeFrame))
     </div>
   </figure>
 </template>
+
+<style scoped>
+.lig-oklch {
+  margin: 0;
+  min-width: 0;
+}
+
+.lig-oklch-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+}
+
+.lig-oklch-plot {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 360px;
+  justify-self: center;
+  font-family: var(--font-meta);
+}
+
+.lig-oklch-grid {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.lig-oklch-ticks {
+  fill: var(--muted);
+  font-size: 10px;
+}
+
+.lig-oklch-point text {
+  fill: var(--fg);
+  font-size: 12px;
+}
+
+.lig-oklch-point circle {
+  stroke: var(--bg);
+  stroke-width: 2;
+  transition: r 260ms var(--ease);
+}
+
+.lig-oklch-point[role='button'] {
+  cursor: pointer;
+  outline: none;
+}
+
+.lig-oklch-point .lig-oklch-hit {
+  fill: transparent;
+  stroke: none;
+}
+
+.lig-oklch-point.is-current text {
+  fill: var(--point-color);
+}
+
+.lig-oklch-point line {
+  stroke-width: 2;
+  opacity: 0.65;
+  transition:
+    stroke-width 180ms var(--ease),
+    opacity 180ms var(--ease);
+}
+
+.lig-oklch-point.is-current line,
+.lig-oklch-point:focus-visible line {
+  stroke-width: 4;
+  opacity: 1;
+}
+
+.lig-oklch-readout {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font: 11px/1.6 var(--font-meta);
+}
+
+.lig-oklch-current {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lig-oklch-current::before {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--point-color);
+  content: '';
+}
+
+.lig-oklch-coordinates {
+  color: var(--muted);
+}
+
+.lig-oklch-readout button {
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: inset 0 -1px 0 var(--line);
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.lig-oklch-readout button:hover {
+  box-shadow: inset 0 -1px 0 var(--point-color);
+}
+
+.lig-oklch-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lig-oklch-point line,
+  .lig-oklch-point circle {
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .lig-oklch-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+}
+</style>

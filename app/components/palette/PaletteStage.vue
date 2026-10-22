@@ -19,3 +19,19 @@ const documents = examples.documents as SyntaxDocument[]
     <slot name="foot" />
   </div>
 </template>
+
+<style scoped>
+/* Parsed source and its node inspector use the selected token variant. */
+.lig-parsed-stage {
+  display: grid;
+  gap: 32px;
+  width: 100%;
+  max-width: 48rem;
+}
+
+@media (max-width: 600px) {
+  .lig-parsed-stage {
+    width: 100%;
+  }
+}
+</style>

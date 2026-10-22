@@ -268,3 +268,168 @@ function inSelection(start: number, end: number): boolean {
     </div>
   </section>
 </template>
+
+<style scoped>
+.lig-code {
+  margin: 0;
+  overflow-x: auto;
+  font-family: var(--font-meta);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.lig-parsed {
+  --scrollbar-thumb: color-mix(in oklab, var(--pv-fg) 35%, transparent);
+  isolation: isolate;
+  min-width: 0;
+  padding: 24px;
+  color: var(--pv-fg);
+  background: var(--pv-bg);
+  border: 1px solid var(--pv-line);
+}
+
+.lig-parsed-hint {
+  margin: 12px 0 24px;
+  font: 11px/1.7 var(--font-meta);
+}
+
+.lig-parsed-body {
+  min-width: 0;
+}
+
+.lig-parsed-code {
+  min-width: 0;
+  padding: 6px 0 16px;
+  tab-size: 2;
+}
+
+.lig-parsed-code .is-inspected {
+  background: var(--pv-selection);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--pv-muted);
+  text-underline-offset: 4px;
+}
+
+.lig-parsed-code.is-pinned .is-inspected {
+  text-decoration-style: solid;
+  text-decoration-color: var(--pv-fg);
+}
+
+.lig-inspector-panel {
+  display: grid;
+}
+
+.lig-inspector-heading {
+  min-height: 30px;
+  background: var(--pv-bg);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--pv-line);
+}
+
+.lig-inspector-content {
+  min-height: 0;
+  padding-inline: 4px;
+  overflow-anchor: none;
+  background: var(--pv-bg);
+}
+
+.lig-node-meta,
+.lig-node-color {
+  margin: 5px 0;
+}
+
+.lig-node-color {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lig-node-color i {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border: 1px solid var(--pv-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lig-parsed-code .is-inspected {
+    transition: text-decoration-color 180ms ease;
+  }
+}
+
+@media (max-width: 600px) {
+  .lig-parsed {
+    padding: 16px;
+  }
+}
+</style>
+
+<style>
+/* Popover forwards its classes to an internal, body-portaled element, not its
+   scoped root. Keep these rules and their mixed groups unscoped so the card,
+   library close button and Reka wrapper remain reachable with the original specificity. */
+.lig-parsed-header,
+.lig-inspector-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  font: 12px/1.5 var(--font-meta);
+}
+
+.lig-parsed-hint,
+.lig-node-meta,
+.lig-node-placeholder,
+.lig-node-hex {
+  color: var(--pv-muted);
+}
+
+.lig-parsed-code:focus-visible,
+.lig-inspector-content:focus-visible,
+.lig-node-inspector button:focus-visible,
+.lig-node-inspector select:focus-visible {
+  outline: 1px solid var(--pv-fg);
+  outline-offset: 4px;
+}
+
+.lig-node-inspector {
+  min-width: 0;
+  background: var(--pv-bg);
+  overflow-wrap: anywhere;
+  font: 11px/1.65 var(--font-meta);
+}
+
+.lig-node-inspector button {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.lig-inspector-floating {
+  box-shadow: none;
+  width: min(20rem, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 12px 40px 12px 12px;
+}
+
+.lig-inspector-floating.is-pinned {
+  border-color: var(--pv-muted);
+}
+
+/* Reka positions the outer wrapper; animating the card itself would not move its anchor. */
+@media (prefers-reduced-motion: no-preference) {
+  .lig-inspector-floating {
+    transition: border-color 180ms ease;
+  }
+
+  [data-reka-popper-content-wrapper]:has(> .lig-inspector-floating.is-moving) {
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+</style>
