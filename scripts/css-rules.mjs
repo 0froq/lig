@@ -3,14 +3,16 @@
 // and compares the set of (at-rule context, selector, declarations) with a stored baseline.
 //   node scripts/css-rules.mjs --write-baseline   record the current rules
 //   node scripts/css-rules.mjs                    compare; exit 1 on lost or new rules
-// Rules deleted on purpose are listed in scripts/css-rules.removed.txt, one `selector` per line.
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+// Rules deleted on purpose are listed in scripts/css-rules.removed*.txt, one `selector` per line.
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import process from 'node:process'
 
 const root = new URL('..', import.meta.url).pathname
 const baselineFile = join(root, 'scripts/css-rules.baseline.json')
-const removedFile = join(root, 'scripts/css-rules.removed.txt')
+const removedFiles = readdirSync(join(root, 'scripts'))
+  .filter(name => /^css-rules\.removed.*\.txt$/.test(name))
+  .map(name => join(root, 'scripts', name))
 
 function walk(dir, out = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -103,12 +105,12 @@ if (process.argv.includes('--write-baseline')) {
 }
 
 const baseline = new Set(JSON.parse(readFileSync(baselineFile, 'utf8')))
-const removed = existsSync(removedFile)
-  ? readFileSync(removedFile, 'utf8')
-      .split('\n')
-      .map(line => line.trim())
-      .filter(line => line && !line.startsWith('#'))
-  : []
+const removed = removedFiles.flatMap(file =>
+  readFileSync(file, 'utf8')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line && !line.startsWith('#')),
+)
 const lost = [...baseline].filter(
   rule => !rules.has(rule) && !removed.some(selector => rule.split(' | ')[1] === selector),
 )

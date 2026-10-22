@@ -1,0 +1,51 @@
+# choice.css was never loaded and its four study components were unused, so both were deleted.
+.lig-circle
+.lig-circle-ring path
+.lig-circle-ring
+.lig-circle-ring.is-drawn path
+.lig-circle-word
+.lig-circle-word:hover , .lig-circle-word:focus-visible , .lig-circle-word.is-active
+.lig-flip > span
+.lig-flip > span:first-child:not(.is-on)
+.lig-flip > span:not(:first-child):not(.is-on)
+.lig-flip
+.lig-flip:hover , .lig-flip:focus-visible
+.lig-lab-gap
+.lig-matrix
+.lig-matrix-axis
+.lig-matrix-axis.is-lit
+.lig-matrix-cell
+.lig-matrix-cell.is-active .lig-matrix-dot
+.lig-matrix-cell:focus-visible
+.lig-matrix-cell:hover .lig-matrix-dot
+.lig-matrix-dot
+.lig-matrix-grid > .lig-matrix-axis:nth-child(2) , .lig-matrix-grid > .lig-matrix-axis:nth-child(3)
+.lig-matrix-grid
+.lig-matrix-readout
+.lig-matrix-readout::after
+.lig-sentence
+.lig-sentence-mark
+.lig-stage , .lig-stage span , .lig-stage p
+.lig-stage-wrap .lig-stage
+.lig-stage-wrap
+.lig-stop
+.lig-stop-label
+.lig-stop-mark
+.lig-stop-options
+.lig-stop-word
+.lig-stop-word::after
+.lig-stop-word:focus-visible
+.lig-stop-word:hover , .lig-stop-word:focus-visible , .lig-stop-word.is-active
+.lig-stop-word:not(.is-active):hover::after
+.lig-wild
+.lig-wild-cmd
+.lig-wild-cursor
+.lig-wild-item
+.lig-wild-item.is-active
+.lig-wild-item:focus-visible
+.lig-wild-item:hover
+.lig-wild-menu
+@keyframes lig-blink
+@keyframes lig-draw
+.lig-circle-ring.is-drawn path , .lig-wild-cursor
+.lig-flip > span , .lig-matrix-dot
