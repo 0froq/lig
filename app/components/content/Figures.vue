@@ -60,4 +60,46 @@ const cols = computed(() => Math.min(4, Math.max(1, props.items.length)))
   max-width: 16rem;
   font-size: 14px;
 }
+
+.l-specs {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+  gap: var(--gap);
+  margin: 72px 0 0;
+}
+
+.l-spec {
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.l-spec dt {
+  font-size: 14px;
+}
+
+.l-spec dd {
+  margin: 0;
+}
+
+.l-figure {
+  margin: 36px 0 12px !important;
+  font-family: var(--font-display);
+  font-size: calc(clamp(72px, 8vw, 128px) * var(--poster-scale));
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+}
+
+.l-figure small {
+  margin-left: 6px;
+  font-family: var(--font-text);
+  font-size: 14px;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+@media (max-width: 860px) {
+  .l-specs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 </style>

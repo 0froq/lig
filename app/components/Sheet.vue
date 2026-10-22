@@ -14,3 +14,10 @@ useMeasureMotion(root)
     <slot />
   </div>
 </template>
+
+<style scoped>
+.l-sheet {
+  position: relative;
+  z-index: 0;
+}
+</style>

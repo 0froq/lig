@@ -115,3 +115,25 @@ watch(() => [props.light, props.dark], schedule)
     </div>
   </div>
 </template>
+
+<style scoped>
+.ui-paper {
+  position: relative;
+}
+
+.ui-paper-grain {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ui-paper-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100%;
+}
+</style>

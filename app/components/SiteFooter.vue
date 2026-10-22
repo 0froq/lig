@@ -321,12 +321,6 @@ const year = new Date().getFullYear()
   white-space: nowrap;
 }
 
-/* The pen or the paper lands this stop; see kit.css for when it hides until then. */
-.l-foot-stop {
-  display: inline-block;
-  color: var(--accent);
-}
-
 .l-foot-legal {
   display: flex;
   flex-wrap: wrap;
@@ -385,5 +379,14 @@ const year = new Date().getFullYear()
   .l-foot-thanks p {
     font-size: clamp(20px, 5vw, 24px);
   }
+}
+</style>
+
+<style>
+/* Keep the base specificity below the global html.has-stroke footer-stop rules. */
+/* The pen or the paper lands this stop; see kit.css for when it hides until then. */
+.l-foot-stop {
+  display: inline-block;
+  color: var(--accent);
 }
 </style>

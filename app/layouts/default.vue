@@ -87,3 +87,37 @@ onBeforeUnmount(() => {
     <Installed v-if="!product.install.href" />
   </Paper>
 </template>
+
+<style scoped>
+/* Content sits above the paper; each sheet is its own stacking context so the pen's
+   canvas (z-index -1 inside it) draws under the type but over the paper */
+.l-site {
+  position: relative;
+  z-index: 1;
+}
+
+.l-frame {
+  position: relative;
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  width: 100%;
+  /* Nothing inside may widen the page. `clip` does not make a scroll container, so sticky still works. */
+  overflow-x: clip;
+}
+
+.l-skip {
+  position: absolute;
+  top: 12px;
+  left: var(--pad);
+  z-index: 20;
+  padding: 6px 10px;
+  background: var(--bg);
+  font-size: 13px;
+  translate: 0 -200%;
+}
+
+.l-skip:focus {
+  translate: 0;
+}
+</style>
