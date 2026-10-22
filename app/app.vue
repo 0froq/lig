@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { UiDevtools } from '@froq/ui'
 import { canonicalUrl } from '~/utils/site'
 
 const { product } = useAppConfig()
 const { t } = useI18n()
 const localeHead = useLocaleHead()
 useLigTheme()
+const dev = import.meta.dev
 
 function skinStyle(): string {
   const skin = product.skin
@@ -61,4 +63,10 @@ useHead(() => ({
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+  <div
+    v-if="dev"
+    class="lig-ui ui"
+  >
+    <UiDevtools />
+  </div>
 </template>
