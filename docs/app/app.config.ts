@@ -24,7 +24,7 @@ export default defineAppConfig({
       },
       {
         label: 'docs.groups.contract',
-        items: ['/docs/tokens'],
+        items: ['/docs/tokens', '/docs/language'],
       },
     ],
   },

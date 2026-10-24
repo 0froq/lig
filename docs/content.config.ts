@@ -65,7 +65,7 @@ export default defineContentConfig({
         include: '**/*.md',
       },
       schema: z.object({
-        designStatus: z.literal('ai-draft').default('ai-draft'),
+        designStatus: z.enum(['ai-draft', 'reviewed', 'stable']).default('ai-draft'),
         model: field.omit({ name: true }).optional(),
         props: z.array(field).default([]),
         slots: z.array(field.omit({ type: true, required: true, default: true })).default([]),
