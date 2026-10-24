@@ -18,11 +18,10 @@ docs/           Docs site. It depends on this package. Component and docs change
 ## Components
 
 > [!NOTE]
-> AI draft. Not yet accepted by a manual design pass.
-> A working component is not a finished design.
-> Each note records `designStatus: ai-draft`.
-> The docs site shows that mark.
-> Keeping the current implementation does not clear it.
+> Design status is `ai-draft`, `reviewed`, or `stable`.
+> Most notes are still `ai-draft`. A working component is not a finished design.
+> Menu and Select lists are `reviewed`.
+> The docs site shows the mark on each note.
 
 Everything below is exported from `@froq/ui`.
 

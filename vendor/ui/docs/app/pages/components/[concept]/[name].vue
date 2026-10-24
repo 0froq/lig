@@ -30,6 +30,7 @@ usePaperOgImage({
       <h1>{{ item.name }}</h1>
       <ComponentStatus
         class="component-design-status"
+        :status="doc?.designStatus"
         explain
       />
       <p v-if="doc?.description">
