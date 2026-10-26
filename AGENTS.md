@@ -11,8 +11,8 @@
 - 自动部署保留 Cloudflare Workers Builds 的 GitHub connection。构建命令 `pnpm generate`，生产部署命令 `pnpm exec cf deploy`，预览部署命令 `pnpm exec cf previews deploy`。GitHub Actions 只做代码检查，不另建生产发布链路。详见 `docs/viteplus.md`。
 - 保留 `wrangler` 构建依赖和 `wrangler.config.ts` 的资源目录配置。当前 cf 静态构建会调用它，不直接运行 wrangler 命令。
 - 使用 `.node-version` / `mise.toml` 中的 Node 24.21.0。
-- Vite+ 测试配置在 `tooling/vite.config.ts`。使用 `vp run <script>`，测试使用 `vp run test`。不要为工具另加 Nuxt 不读取的根目录 Vite 配置。
-- 本项目不再使用 ESLint。Oxlint 和 Oxfmt 分别使用根目录 `.oxlintrc.json`、`.oxfmtrc.json`。脚本显式传入配置路径，不依赖 Vite+ 自动发现。Vue 类型检查仍使用 `nuxt typecheck`。
+- Vite+ 的 lint / fmt / 测试配置在根目录 `vite.config.ts`，由 `liangmi()` 提供。Nuxt 仍然通过 `nuxt.config.ts` 拥有应用 Vite，会忽略这份文件。不要把应用 bundler 配置写进根目录 Vite config。使用 `vp run <script>`，测试使用 `vp run test`。
+- 本项目不再使用 ESLint，也不再使用 `.oxlintrc.json` / `.oxfmtrc.json`。Vue 类型检查仍使用 `nuxt typecheck`。不要用内置 `vp check` 代替项目的 `pnpm check`。
 - `vendor/ui`、MDC 内容和生成文件不进入本项目的格式基线。库保留自己的上游规范，不要用项目格式化命令改库源码。
 - `syntax:test` 和 `syntax:check` 需要 `syntax/manifest.json` 指定的 Neovim 和 parser，本地验证。普通静态构建不需要这套原生工具。
 

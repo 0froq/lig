@@ -30,17 +30,17 @@ pnpm exec vp run test
 pnpm exec vp run generate
 ```
 
-Use `vp run`, not the built-in `vp dev`, `vp build` or `vp check`. Those built-in commands do not run this project's Nuxt scripts or combined checks. Nuxt continues to own the application's Vite configuration. Do not add a root Vite config that Nuxt ignores.
+Use `vp run`, not the built-in `vp dev`, `vp build` or `vp check`. Those built-in commands do not run this project's Nuxt scripts or combined checks. Nuxt continues to own the application's Vite configuration via `nuxt.config.ts`. Root `vite.config.ts` is the Vite+ tool config (`liangmi()` for lint, fmt and Vitest). Nuxt ignores that file; the B5004 warning is expected.
 
-The workspace override aligns Nuxt with Vite+'s Vite core. The `trustPolicy: no-downgrade` policy and cssnano override remain in place.
+The workspace override aligns Nuxt with Vite+'s Vite core. The `trustPolicy: no-downgrade` policy and cssnano override remain in place. `@liangmi/vp-config` and its Oxlint flat-config dependencies are listed in `trustPolicyExclude` because they are first publishes.
 
 ## Tests, lint and formatting
 
-Tests use `tooling/vite.config.ts`. The transformer explicitly uses `core/tsconfig.json`, so core and port checks do not require generated `.nuxt` TypeScript references.
+Tests use the root `vite.config.ts`. The transformer explicitly uses `core/tsconfig.json`, so core and port checks do not require generated `.nuxt` TypeScript references.
 
 `test` generates port artifacts, then runs all 48 existing non-UI token, syntax and port tests once. The ports aggregator imports its lightweight and Zed suites, which are not discovered a second time. Native syntax checks need the Neovim and parser revisions from `syntax/manifest.json`. See `syntax/README.md`.
 
-Oxlint and Oxfmt read root `.oxlintrc.json` and `.oxfmtrc.json` through explicit script arguments. Vue type checking still uses `nuxt typecheck`. ESLint-only Nuxt rules, unsupported Vue template rules, package catalog lint enforcement and Antfu style checks are no longer run.
+Oxlint and Oxfmt read the `lint` and `fmt` blocks from root `vite.config.ts`, via `@liangmi/vp-config` (`liangmi()`). Lig-specific ignores stay in that file. Vue type checking still uses `nuxt typecheck`; Oxlint type-aware checking stays off so `tokens` CI can lint without `.nuxt`. ESLint-only Nuxt rules, unsupported Vue template rules, package catalog lint enforcement and Antfu style checks are no longer run.
 
 Vendored UI, MDC content, public/generated artifacts, fixtures, historical plans and agent instructions are excluded from application-wide formatting. The vendored library retains its upstream conventions.
 
@@ -48,7 +48,7 @@ Three local `prettier-ignore` comments protect whitespace-sensitive SVG plots an
 
 Some third-party packages retain ESLint peer dependencies. That does not enable a project ESLint check.
 
-The existing `lint-staged` hook runs Oxlint and Oxfmt with explicit configuration paths. `vp staged` is not used because its configuration discovery currently requires a root Vite config.
+The existing `lint-staged` hook runs `vp lint --fix` and `vp fmt`, which now load `vite.config.ts`. The preset's `vp check --fix` staged task is excluded: this site's check is lint plus fmt plus `nuxt typecheck`, not built-in `vp check`.
 
 `build` and `generate` explicitly run `ports:generate` before Nuxt. Task caching remains disabled, especially for generation and deployment.
 
