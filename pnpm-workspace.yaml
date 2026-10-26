@@ -5,6 +5,10 @@ minimumReleaseAgeExclude:
 trustPolicy: no-downgrade
 trustPolicyExclude:
   - semver@6.3.1
+  # First publish of the Oxlint flat-config toolkit; required by @liangmi/vp-config.
+  - '@oxlint-flat-config/composer@0.3.1'
+  - oxlint-flat-config@0.4.0
+  - '@liangmi/vp-config@1.0.0'
 
 shellEmulator: true
 
@@ -30,6 +34,7 @@ catalog: { into-the-void: ^0.1.0, jiti: 2.7.0 }
 
 catalogs:
   dev:
+    '@liangmi/vp-config': 1.0.0
     '@types/node': 26.6.2
     cf: 1.0.0-beta.12
     lint-staged: ^16.1.6
