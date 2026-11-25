@@ -77,7 +77,7 @@ usePaperOgImage({
       </figure>
     </section>
     <aside class="home-draft">
-      <ComponentStatus explain />
+      <p>{{ t('components.statusGate') }}</p>
     </aside>
     <section
       class="home-index"
@@ -227,6 +227,13 @@ h1 > span {
 .home-draft {
   padding: 16px 0;
   border-block: 1px solid var(--ui-line);
+}
+
+.home-draft p {
+  max-width: 38rem;
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 13px;
 }
 
 .home-index {

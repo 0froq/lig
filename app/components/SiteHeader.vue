@@ -217,57 +217,6 @@ onBeforeUnmount(() => removeEventListener('scroll', onScroll))
   outline-offset: 2px;
 }
 
-/* Menu portals into the local .ui controls, Select into its own local portal.
-   Both remain below this header's scope. Library-generated elements need deep selectors. */
-/* One list for both: hairline frame, no radius or shadow, plain rows. */
-:deep(.l-menu-list.ui-menu-content),
-.l-language-select :deep(.ui-select-content) {
-  min-width: 9.5rem;
-  padding: 4px 0;
-  border-color: var(--ui-line);
-  border-radius: 0;
-  box-shadow: none;
-  font: 11px/1.3 var(--ui-font-meta);
-}
-
-:deep(.l-menu-list .ui-menu-item),
-.l-language-select :deep(.ui-select-item) {
-  position: relative;
-  padding: 8px 16px 8px 36px;
-  border-radius: 0;
-}
-
-/* Rows stay plain: hover and keyboard focus get an underline, not a fill. */
-:deep(.l-menu-list .ui-menu-item[data-highlighted]),
-.l-language-select :deep(.ui-select-item[data-highlighted]) {
-  background: none;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-}
-
-/* The current row keeps ink text and an accent dot in the left gutter: the checked value, or the current page. */
-.l-language-select :deep(.ui-select-item[data-state='checked']) {
-  background: none;
-  color: var(--ui-fg);
-}
-
-:deep(.l-menu-list [aria-current='page'])::before {
-  content: '';
-}
-
-.l-language-select :deep(.ui-select-item > [aria-hidden='true']),
-:deep(.l-menu-list [aria-current='page'])::before {
-  position: absolute;
-  top: 50%;
-  left: 16px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--ui-accent);
-  transform: translateY(-50%);
-}
-
 .l-nav a.router-link-active {
   color: var(--fg);
 }

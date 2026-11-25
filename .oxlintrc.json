@@ -1,7 +1,0 @@
-{
-  "plugins": ["typescript", "unicorn", "oxc", "vue"],
-  "categories": {
-    "correctness": "error"
-  },
-  "ignorePatterns": ["vendor/**", "content/**", "**/generated/**", ".agents/**"]
-}

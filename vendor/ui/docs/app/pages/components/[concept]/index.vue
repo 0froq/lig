@@ -26,7 +26,7 @@ usePaperOgImage({
           <NuxtLink :to="link(entry.to)">
             {{ entry.name }}
           </NuxtLink>
-          <ComponentStatus />
+          <ComponentStatus :status="docFor(concept.id, entry.name)?.designStatus" />
         </h2>
         <NuxtLink
           class="l-kicker"

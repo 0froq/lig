@@ -1,6 +1,6 @@
 ---
 title: Menu
-designStatus: ai-draft
+designStatus: reviewed
 description: An accessible menu with optional nested submenus.
 model:
   type: boolean
@@ -61,6 +61,10 @@ Selecting a leaf emits `select` with the `MenuItem` and the original cancelable 
 The component supports `v-model` for its boolean open state, defaulting to `false`. `modal` defaults to `true`. `dir` accepts `ltr` or `rtl`; when omitted it follows the Reka UI direction context, which falls back to `ltr`. The menu prefers `side`, `align`, and `sideOffset`, then automatically handles collisions with 12 pixels of collision padding. Undeclared attributes are forwarded to the menu content, not the trigger. The component root does not add the `.ui` class.
 
 By default, content is teleported into the closest consumer element with `class="ui"`; if there is none, it renders inline. On the server, only the trigger is rendered; menu content appears after opening on the client. A custom `portalTo` target must already exist and provide the consumer's theme and UI tokens. The library does not add Reka UI CSS variables to its token contract. Import `style.css` in the caller and provide a `.ui` ancestor for the library styles and default portal target.
+
+## Surface
+
+The list is a hairline (`--ui-line`), radius 0, and no shadow. A highlighted row is underlined. There is no fill and no accent bar. Row padding leaves a start gutter. Mark the current page with `aria-current="page"` on the item content and that gutter shows a 5px accent dot. Type is 11px `--ui-font-meta`. The same list is used by Select. See [Language](/docs/language).
 
 ## Usage
 
